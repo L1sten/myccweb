@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>杭州智联 - 智能媒资管理平台</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+<style>
+/* ===== shadcn/ui Design Tokens ===== */
+:root {
+  --primary:#1677ff;--primary-hover:#4096ff;--primary-bg:#e6f4ff;--primary-border:#91caff;
+  --purple:#722ed1;--purple-bg:#f9f0ff;--purple-border:#d3adf7;
+  --green:#52c41a;--green-bg:#f6ffed;
+  --orange:#fa8c16;--orange-bg:#fff7e6;
+  --text-primary:#1f1f1f;--text-secondary:#595959;--text-tertiary:#8c8c8c;--text-quaternary:#bfbfbf;
+  --border:#f0f0f0;--border-secondary:#e8e8e8;--bg-container:#fff;--bg-page:#f5f6f8;
+  --shadow-sm:0 1px 2px 0 rgba(0,0,0,.03),0 1px 6px -1px rgba(0,0,0,.02),0 2px 4px 0 rgba(0,0,0,.02);
+  --shadow-md:0 1px 2px -2px rgba(0,0,0,.16),0 3px 6px 0 rgba(0,0,0,.12),0 5px 12px -4px rgba(0,0,0,.09);
+  --shadow-lg:0 6px 16px 0 rgba(0,0,0,.08),0 3px 6px -4px rgba(0,0,0,.12),0 9px 28px 8px rgba(0,0,0,.05);
+  --radius-sm:6px;--radius-md:8px;--radius-lg:12px;
+  --transition:all .2s cubic-bezier(.645,.045,.355,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg-page);color:var(--text-primary);-webkit-font-smoothing:antialiased}
+
+/* ===== Layout ===== */
+.app{display:flex;height:100vh}
+
+/* ===== Sidebar ===== */
+.sidebar{width:240px;background:var(--bg-container);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-header{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sidebar-logo{width:28px;height:28px;background:var(--primary);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px}
+.sidebar-title{font-weight:600;font-size:15px}
+.sidebar-nav{flex:1;padding:8px;overflow-y:auto}
+.nav-label{font-size:11px;font-weight:600;color:var(--text-quaternary);text-transform:uppercase;letter-spacing:.5px;padding:16px 8px 4px}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius-md);cursor:pointer;color:var(--text-tertiary);font-size:13px;font-weight:500;transition:var(--transition)}
+.nav-item:hover{background:var(--bg-page);color:var(--text-primary)}
+.nav-item.active{background:var(--bg-page);color:var(--text-primary)}
+.nav-item i{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.nav-sub{display:none;padding-left:20px}
+.nav-sub.open{display:block}
+.nav-sub-item{padding:6px 12px;border-radius:var(--radius-md);cursor:pointer;color:var(--text-tertiary);font-size:13px;transition:var(--transition)}
+.nav-sub-item:hover{color:var(--text-primary);background:var(--bg-page)}
+.nav-sub-item.active{color:var(--text-primary);font-weight:500}
+
+/* ===== Main ===== */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:48px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;padding:0 16px;gap:8px;background:var(--bg-container)}
+.topbar-user{display:flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;border-radius:var(--radius-md);font-size:13px;cursor:pointer;transition:background .15s}
+.topbar-user:hover{background:var(--bg-page)}
+.topbar-avatar{width:28px;height:28px;border-radius:50%;background:var(--bg-page);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--text-tertiary)}
+.content{flex:1;overflow-y:auto;padding:24px}
+
+/* ===== Pages ===== */
+.page{display:none}.page.active{display:block}
+
+/* ===== Homepage ===== */
+.page-title{font-size:20px;font-weight:600;margin-bottom:20px}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.card{background:var(--bg-container);border:1px solid var(--border-secondary);border-radius:var(--radius-md);padding:20px;cursor:pointer;transition:var(--transition)}
+.card:hover{box-shadow:var(--shadow-md);border-color:var(--text-quaternary)}
+.card-icon{width:40px;height:40px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px}
+.card-icon.blue{background:var(--primary-bg);color:var(--primary)}
+.card-icon.purple{background:var(--purple-bg);color:var(--purple)}
+.card-icon.green{background:var(--green-bg);color:var(--green)}
+.card-icon.orange{background:var(--orange-bg);color:var(--orange)}
+.card-title{font-weight:600;font-size:15px;margin-bottom:4px}
+.card-desc{color:var(--text-tertiary);font-size:13px}
+
+/* ===== Stats ===== */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:var(--bg-container);border:1px solid var(--border-secondary);border-radius:var(--radius-md);padding:16px}
+.stat-label{font-size:12px;color:var(--text-tertiary);margin-bottom:4px}
+.stat-value{font-size:24px;font-weight:600}
+.stat-change{font-size:12px;margin-top:4px}
+.stat-change.up{color:var(--green)}.stat-change.down{color:#ff4d4f}
+
+/* ===== Table ===== */
+.table-wrapper{background:var(--bg-container);border:1px solid var(--border-secondary);border-radius:var(--radius-md);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:10px 16px;font-size:12px;font-weight:600;color:var(--text-tertiary);background:#fafafa;border-bottom:1px solid var(--border)}
+td{padding:10px 16px;font-size:13px;border-bottom:1px solid var(--border)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--primary-bg)}
+
+/* ===== Buttons ===== */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;border:1px solid transparent;transition:var(--transition);font-family:inherit}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{opacity:.9}
+.btn-outline{background:#fff;border-color:var(--border-secondary);color:var(--text-primary)}.btn-outline:hover{background:var(--bg-page)}
+.btn-sm{padding:4px 10px;font-size:12px}
+.btn-ghost{background:transparent;color:var(--text-primary)}.btn-ghost:hover{background:var(--bg-page)}
+
+/* ===== Badge ===== */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:9999px;font-size:11px;font-weight:500}
+.badge-default{background:var(--bg-page);color:var(--text-tertiary)}
+.badge-success{background:var(--green-bg);color:var(--green)}
+.badge-warning{background:var(--orange-bg);color:var(--orange)}
+.badge-destructive{background:#fff2f0;color:#ff4d4f}
+
+/* ===== Meizi Module ===== */
+.search-area{background:var(--bg-container);border-bottom:1px solid var(--border);border-radius:var(--radius-md) var(--radius-md) 0 0}
+.search-tabs{display:flex;padding:0 24px;gap:0}
+.search-tab{padding:12px 20px;font-size:13px;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;transition:var(--transition)}
+.search-tab:hover{color:var(--primary)}
+.search-tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:500}
+.search-row{display:flex;align-items:center;gap:0;padding:12px 24px}
+.type-select{border:1px solid var(--border-secondary);border-radius:var(--radius-sm) 0 0 var(--radius-sm);padding:8px 12px;font-size:13px;outline:none;background:var(--bg-page);border-right:none;font-family:inherit;min-width:80px}
+.search-input-meizi{flex:1;border:1px solid var(--border-secondary);border-left:none;border-right:none;padding:8px 14px;font-size:13px;outline:none;font-family:inherit}
+.search-input-meizi::placeholder{color:var(--text-quaternary)}
+.match-select{border:1px solid var(--border-secondary);border-left:none;border-right:none;padding:8px 10px;font-size:13px;outline:none;background:var(--bg-page);font-family:inherit;min-width:120px}
+.search-btn-meizi{background:var(--primary);color:#fff;border:none;padding:8px 24px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-size:13px;cursor:pointer;font-family:inherit;transition:var(--transition);display:flex;align-items:center;gap:6px}
+.search-btn-meizi:hover{background:var(--primary-hover)}
+.filter-row{display:flex;align-items:center;gap:16px;padding:0 24px 12px}
+.filter-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-tertiary)}
+.filter-item select{border:1px solid var(--border-secondary);border-radius:var(--radius-sm);padding:4px 8px;font-size:12px;outline:none;background:#fff;font-family:inherit;cursor:pointer}
+.meizi-content{padding:20px 0}
+.meizi-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.toolbar-btn{border:1px solid var(--border-secondary);border-radius:var(--radius-sm);padding:6px 14px;font-size:12px;cursor:pointer;background:#fff;color:var(--text-secondary);font-family:inherit;display:inline-flex;align-items:center;gap:5px;transition:var(--transition)}
+.toolbar-btn:hover{color:var(--primary);border-color:var(--primary)}
+.toolbar-btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.toolbar-btn.primary:hover{background:var(--primary-hover)}
+.toolbar-info{font-size:12px;color:var(--text-tertiary);display:flex;align-items:center;gap:8px;margin-left:8px}
+.toolbar-info b{color:var(--primary);font-weight:500}
+.image-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.image-card{background:var(--bg-container);border-radius:var(--radius-md);border:1px solid var(--border-secondary);overflow:hidden;transition:var(--transition);cursor:pointer;position:relative}
+.image-card:hover{border-color:var(--primary);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.image-thumb{width:100%;aspect-ratio:4/3;overflow:hidden}
+.image-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .4s cubic-bezier(.645,.045,.355,1)}
+.image-card:hover .image-thumb img{transform:scale(1.05)}
+.image-info{padding:12px}
+.image-title{font-size:13px;color:var(--text-primary);margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.image-meta{display:flex;align-items:center;justify-content:space-between}
+.image-date{font-size:11px;color:var(--text-quaternary)}
+.image-source{font-size:11px;color:var(--primary);background:var(--primary-bg);padding:2px 8px;border-radius:10px;border:1px solid var(--primary-border)}
+.card-check{position:absolute;top:10px;left:10px;z-index:2;width:18px;height:18px;border-radius:4px;border:2px solid #fff;background:rgba(0,0,0,.15);backdrop-filter:blur(2px);cursor:pointer;opacity:0;transition:var(--transition);display:flex;align-items:center;justify-content:center}
+.image-card:hover .card-check{opacity:1}
+.card-check.checked{opacity:1;background:var(--primary);border-color:var(--primary)}
+.card-check.checked::after{content:'✓';color:#fff;font-size:12px;font-weight:600}
+
+/* ===== LLM Module ===== */
+.feature-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.feature-card{background:var(--bg-container);border-radius:var(--radius-md);border:1px solid var(--border-secondary);padding:20px;cursor:pointer;transition:var(--transition);position:relative;overflow:hidden}
+.feature-card:hover{border-color:var(--primary);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius-md) var(--radius-md) 0 0}
+.feature-card:nth-child(1)::before{background:linear-gradient(90deg,#1677ff,#4096ff)}
+.feature-card:nth-child(2)::before{background:linear-gradient(90deg,#722ed1,#b37feb)}
+.feature-card:nth-child(3)::before{background:linear-gradient(90deg,#fa8c16,#ffc53d)}
+.feature-card:nth-child(4)::before{background:linear-gradient(90deg,#52c41a,#95de64)}
+.feature-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px}
+.feature-card:nth-child(1) .feature-icon{background:var(--primary-bg);color:var(--primary)}
+.feature-card:nth-child(2) .feature-icon{background:var(--purple-bg);color:var(--purple)}
+.feature-card:nth-child(3) .feature-icon{background:var(--orange-bg);color:var(--orange)}
+.feature-card:nth-child(4) .feature-icon{background:var(--green-bg);color:var(--green)}
+.feature-title{font-size:15px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.feature-title i{font-size:14px;color:var(--text-quaternary)}
+.feature-desc{font-size:12px;color:var(--text-tertiary);line-height:1.5}
+.llm-tabs{display:flex;gap:0;margin-bottom:20px;border-bottom:1px solid var(--border)}
+.llm-tab{padding:10px 20px;font-size:14px;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;transition:var(--transition)}
+.llm-tab:hover{color:var(--primary)}
+.llm-tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:500}
+.filter-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.filter-left{display:flex;gap:8px}
+.filter-chip{padding:5px 14px;border-radius:16px;font-size:13px;cursor:pointer;border:1px solid var(--border-secondary);color:var(--text-secondary);transition:var(--transition);background:#fff}
+.filter-chip:hover{border-color:var(--primary);color:var(--primary)}
+.filter-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.search-box{display:flex;align-items:center;gap:6px;border:1px solid var(--border-secondary);border-radius:20px;padding:5px 14px;background:#fff;transition:var(--transition)}
+.search-box:focus-within{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1)}
+.search-box input{border:none;outline:none;font-size:13px;font-family:inherit;width:160px;background:transparent}
+.search-box i{color:var(--text-quaternary);font-size:14px}
+.masonry{columns:4;column-gap:16px}
+.masonry-item{break-inside:avoid;margin-bottom:16px;border-radius:var(--radius-md);overflow:hidden;background:var(--bg-container);border:1px solid var(--border-secondary);cursor:pointer;transition:var(--transition)}
+.masonry-item:hover{border-color:var(--primary);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.masonry-item img{width:100%;display:block;transition:transform .4s cubic-bezier(.645,.045,.355,1)}
+.masonry-item:hover img{transform:scale(1.03)}
+.masonry-info{padding:10px 12px}
+.masonry-title{font-size:13px;color:var(--text-primary);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.masonry-meta{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text-quaternary)}
+.masonry-tag{font-size:11px;padding:2px 8px;border-radius:10px;background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border)}
+
+/* ===== Pitcher Module ===== */
+.pitcher-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.pitcher-desc{font-size:13px;color:var(--text-tertiary);margin-top:4px}
+.create-btn{background:var(--primary);color:#fff;border:none;padding:8px 20px;border-radius:var(--radius-sm);font-size:13px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:var(--transition);box-shadow:0 2px 0 rgba(0,0,0,.04)}
+.create-btn:hover{background:var(--primary-hover);transform:translateY(-1px);box-shadow:0 4px 12px rgba(22,119,255,.25)}
+.search-bar{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.search-input{border:1px solid var(--border-secondary);border-radius:var(--radius-sm);padding:8px 14px;font-size:13px;outline:none;width:280px;font-family:inherit;transition:var(--transition)}
+.search-input::placeholder{color:var(--text-quaternary)}
+.search-input:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1)}
+.date-input{border:1px solid var(--border-secondary);border-radius:var(--radius-sm);padding:8px 12px;font-size:13px;outline:none;font-family:inherit;color:var(--text-tertiary);transition:var(--transition)}
+.date-input:focus{border-color:var(--primary);color:var(--text-primary)}
+.search-btn{background:var(--primary);color:#fff;border:none;padding:8px 20px;border-radius:var(--radius-sm);font-size:13px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;transition:var(--transition)}
+.search-btn:hover{background:var(--primary-hover)}
+.table-card{background:var(--bg-container);border-radius:var(--radius-md);border:1px solid var(--border-secondary);overflow:hidden;box-shadow:var(--shadow-sm)}
+.tag{display:inline-block;padding:3px 10px;border-radius:10px;font-size:12px}
+.tag-active{background:#f6ffed;color:#52c41a;border:1px solid #b7eb8f}
+.tag-pending{background:#fff7e6;color:#fa8c16;border:1px solid #ffd591}
+.tag-completed{background:var(--primary-bg);color:var(--primary);border:1px solid var(--primary-border)}
+.action-link{color:var(--primary);cursor:pointer;font-size:12px;margin-right:10px;transition:var(--transition)}
+.action-link:hover{text-decoration:underline}
+
+/* ===== Modal ===== */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:1000}
+.modal-overlay.show{display:flex}
+.modal{background:var(--bg-container);border-radius:var(--radius-lg);width:640px;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:modalIn .25s cubic-bezier(.645,.045,.355,1)}
+@keyframes modalIn{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-header{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:16px;font-weight:600}
+.modal-close{width:32px;height:32px;border:none;background:none;cursor:pointer;font-size:18px;color:var(--text-tertiary);border-radius:var(--radius-sm);transition:var(--transition);display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:var(--bg-page);color:var(--text-primary)}
+.modal-body{padding:24px}
+.form-item{margin-bottom:16px}
+.form-label{display:block;font-size:13px;color:var(--text-secondary);margin-bottom:6px}
+.form-input{width:100%;border:1px solid var(--border-secondary);border-radius:var(--radius-sm);padding:8px 12px;font-size:13px;outline:none;font-family:inherit;transition:var(--transition)}
+.form-input:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1)}
+.form-textarea{width:100%;border:1px solid var(--border-secondary);border-radius:var(--radius-sm);padding:8px 12px;font-size:13px;outline:none;font-family:inherit;resize:vertical;min-height:80px;transition:var(--transition)}
+.form-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1)}
+.modal-footer{padding:12px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+.btn-default{background:#fff;color:var(--text-secondary);border-color:var(--border-secondary)}.btn-default:hover{color:var(--primary);border-color:var(--primary)}
+.btn-modal-primary{background:var(--primary);color:#fff;border-color:var(--primary)}.btn-modal-primary:hover{background:var(--primary-hover);box-shadow:0 2px 8px rgba(22,119,255,.25)}
+
+/* ===== Upload Modal ===== */
+.upload-zone{border:2px dashed var(--border-secondary);border-radius:var(--radius-lg);padding:48px 24px;color:var(--text-tertiary);transition:var(--transition);cursor:pointer;text-align:center}
+.upload-zone:hover{border-color:var(--primary);background:var(--primary-bg)}
+.upload-zone i{font-size:48px;color:var(--text-quaternary);margin-bottom:12px;display:block}
+.upload-zone p{font-size:14px;margin-bottom:4px;color:var(--text-secondary)}
+.upload-zone p span{color:var(--primary);font-weight:500}
+.upload-zone small{font-size:12px;color:var(--text-quaternary)}
+
+/* ===== Pagination ===== */
+.pagination{display:flex;align-items:center;justify-content:center;gap:6px;padding:20px 0}
+.page-btn{min-width:32px;height:32px;border:1px solid var(--border-secondary);border-radius:var(--radius-sm);display:inline-flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;background:#fff;color:var(--text-secondary);transition:var(--transition)}
+.page-btn:hover{color:var(--primary);border-color:var(--primary)}
+.page-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.page-btn.disabled{opacity:.35;pointer-events:none}
+
+/* ===== PRD Panel ===== */
+.main-content{flex:1;overflow:hidden;display:flex}
+.main-split{display:flex;height:100%;overflow:hidden}
+.main-split>.page-container{flex:1;min-width:0;overflow-y:auto;padding:24px}
+.prd-panel{width:460px;flex-shrink:0;display:flex;border-left:1px solid var(--border)}
+.prd-toc{width:180px;border-right:1px solid var(--border);overflow-y:auto;background:#fafafa}
+.prd-toc-title{padding:16px 16px 8px;font-size:12px;font-weight:600;color:var(--text-quaternary);letter-spacing:.5px}
+.prd-toc-item{display:block;padding:6px 16px;font-size:13px;cursor:pointer;border-left:2px solid transparent;transition:var(--transition);color:var(--text-secondary);text-decoration:none}
+.prd-toc-item:hover{color:var(--primary);background:rgba(0,0,0,.02)}
+.prd-toc-item.active{color:var(--primary);background:rgba(0,0,0,.03);border-left-color:var(--primary);font-weight:500}
+.prd-toc-item.sub{padding-left:28px;font-size:12px}
+.prd-content{flex:1;overflow-y:auto;padding:24px 20px}
+
+/* ===== PRD Body ===== */
+.prd-body h1{font-size:22px;font-weight:700;margin:0 0 8px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.prd-body h2{font-size:17px;font-weight:600;margin:28px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.prd-body h3{font-size:14px;font-weight:600;margin:20px 0 8px}
+.prd-body h4{font-size:13px;font-weight:600;margin:16px 0 6px}
+.prd-body p{font-size:13px;line-height:1.8;margin-bottom:10px;color:var(--text-secondary)}
+.prd-body ul,.prd-body ol{font-size:13px;line-height:1.8;margin-bottom:10px;padding-left:24px;color:var(--text-secondary)}
+.prd-body li{margin-bottom:4px}
+.prd-body strong{color:var(--text-primary);font-weight:600}
+.prd-body table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}
+.prd-body th{background:#fafafa;padding:8px 12px;text-align:left;font-weight:600;border:1px solid var(--border);color:var(--text-primary)}
+.prd-body td{padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary)}
+.prd-body hr{border:none;border-top:1px solid var(--border);margin:20px 0}
+
+/* ===== Sys Layout ===== */
+.sys-layout{display:flex;gap:16px;height:calc(100vh - 48px - 48px)}
+.sys-nav{width:180px;flex-shrink:0}
+.sys-nav-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius-md);cursor:pointer;font-size:13px;color:var(--text-tertiary);transition:var(--transition);margin-bottom:2px}
+.sys-nav-item:hover{background:var(--bg-page);color:var(--text-primary)}
+.sys-nav-item.active{background:var(--bg-page);color:var(--text-primary);font-weight:500}
+.sys-nav-item i{font-size:16px;width:20px;text-align:center}
+.sys-content{flex:1;min-width:0}
+.sys-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.sys-title{font-size:18px;font-weight:600}
+
+/* ===== Utility ===== */
+.flex{display:flex}.items-center{align-items:center}.gap-2{gap:8px}.gap-4{gap:16px}.mb-4{margin-bottom:16px}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">智</div>
+      <div class="sidebar-title">杭州智联</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-label">概览</div>
+      <div class="nav-item active" onclick="switchPage('home')"><i class="ri-home-4-line"></i> 首页</div>
+      <div class="nav-label">业务</div>
+      <div class="nav-item" onclick="switchPage('meizi')"><i class="ri-gallery-line"></i> 智能媒资</div>
+      <div class="nav-item" onclick="switchPage('llm')"><i class="ri-brain-line"></i> 传播大模型</div>
+      <div class="nav-item" onclick="switchPage('agent')"><i class="ri-robot-2-line"></i> 智能体平台</div>
+      <div class="nav-item" onclick="switchPage('pitcher')"><i class="ri-send-plane-line"></i> 传播投手</div>
+      <div class="nav-label">系统</div>
+      <div class="nav-item" onclick="toggleSub('sys-sub',this)">
+        <i class="ri-settings-3-line"></i> 系统管理
+        <i class="ri-arrow-down-s-line" style="margin-left:auto;font-size:12px"></i>
+      </div>
+      <div class="nav-sub" id="sys-sub">
+        <div class="nav-sub-item" onclick="switchPage('sys-user')">用户管理</div>
+        <div class="nav-sub-item" onclick="switchPage('sys-dept')">部门管理</div>
+        <div class="nav-sub-item" onclick="switchPage('sys-role')">角色管理</div>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-user">
+        <div class="topbar-avatar">城</div>
+        <span>城江</span>
+        <i class="ri-arrow-down-s-line" style="font-size:12px;color:var(--text-quaternary)"></i>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="main-split">
+        <div class="page-container">
+          <!-- ===== 首页 ===== -->
+          <div class="page active" id="page-home">
+            <div class="page-title">工作台</div>
+            <div class="stats-grid">
+              <div class="stat-card"><div class="stat-label">媒资总量</div><div class="stat-value">12,847</div><div class="stat-change up"><i class="ri-arrow-up-s-line"></i> 12.5%</div></div>
+              <div class="stat-card"><div class="stat-label">今日发布</div><div class="stat-value">36</div><div class="stat-change up"><i class="ri-arrow-up-s-line"></i> 8.2%</div></div>
+              <div class="stat-card"><div class="stat-label">活跃用户</div><div class="stat-value">1,284</div><div class="stat-change down"><i class="ri-arrow-down-s-line"></i> 2.1%</div></div>
+              <div class="stat-card"><div class="stat-label">智能体</div><div class="stat-value">28</div><div class="stat-change up"><i class="ri-arrow-up-s-line"></i> 4.0%</div></div>
+            </div>
+            <div class="page-title" style="margin-top:8px">快捷入口</div>
+            <div class="cards-grid">
+              <div class="card" onclick="switchPage('meizi')">
+                <div class="card-icon blue"><i class="ri-gallery-line"></i></div>
+                <div class="card-title">智能媒资</div>
+                <div class="card-desc">媒资采集、编辑、审核、发布全流程管理</div>
+              </div>
+              <div class="card" onclick="switchPage('llm')">
+                <div class="card-icon purple"><i class="ri-brain-line"></i></div>
+                <div class="card-title">传播大模型</div>
+                <div class="card-desc">AI驱动的内容生成与传播分析</div>
+              </div>
+              <div class="card" onclick="switchPage('agent')">
+                <div class="card-icon green"><i class="ri-robot-2-line"></i></div>
+                <div class="card-title">智能体平台</div>
+                <div class="card-desc">创建、配置、管理AI智能体</div>
+              </div>
+              <div class="card" onclick="switchPage('pitcher')">
+                <div class="card-icon orange"><i class="ri-send-plane-line"></i></div>
+                <div class="card-title">传播投手</div>
+                <div class="card-desc">智能投放策略与效果追踪</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== 智能媒资 ===== -->
+          <div class="page" id="page-meizi">
+            <div class="search-area">
+              <div class="search-tabs">
+                <div class="search-tab active" onclick="switchSearchTab(this)">精准检索</div>
+                <div class="search-tab" onclick="switchSearchTab(this)">文搜图</div>
+                <div class="search-tab" onclick="switchSearchTab(this)">图搜图</div>
+              </div>
+              <div class="search-row">
+                <select class="type-select"><option>全部</option><option>图片</option><option>视频</option><option>文档</option></select>
+                <input class="search-input-meizi" id="meiziSearch" placeholder="输入关键词，多个用空格隔开进行搜索">
+                <select class="match-select"><option>包含全部关键词</option><option>包含任一关键词</option><option>精确匹配</option></select>
+                <button class="search-btn-meizi" onclick="doMeiziSearch()"><i class="ri-search-line"></i>搜索</button>
+              </div>
+              <div class="filter-row">
+                <div class="filter-item"><span>发布时间:</span><select><option>全部</option><option>今天</option><option>本周</option><option>本月</option></select></div>
+                <div class="filter-item"><span>资源库:</span><select><option>全部</option><option>集团库</option><option>个人库</option><option>共享库</option></select></div>
+              </div>
+            </div>
+            <div class="meizi-content">
+              <div class="meizi-toolbar">
+                <button class="toolbar-btn primary"><i class="ri-download-2-line"></i>下载</button>
+                <button class="toolbar-btn"><i class="ri-folder-add-line"></i>添加到个人素材库</button>
+                <div class="toolbar-info">
+                  <label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" id="selectAllMeizi" onclick="toggleSelectAllMeizi()"> 全选</label>
+                  已选 <b id="meiziSelectedCount">0</b>
+                  <span style="margin-left:4px">找到约 <b>343</b> 条相关消息</span>
+                </div>
+                <div style="margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-tertiary)">
+                  <span>排序:</span>
+                  <select style="border:1px solid var(--border-secondary);border-radius:var(--radius-sm);padding:4px 8px;font-size:12px;outline:none;background:#fff"><option>时间 ↓</option><option>时间 ↑</option><option>相关度</option></select>
+                </div>
+              </div>
+              <div class="image-grid" id="meiziGrid"></div>
+              <div class="pagination">
+                <div class="page-btn disabled"><i class="ri-arrow-left-s-line"></i></div>
+                <div class="page-btn active">1</div><div class="page-btn">2</div><div class="page-btn">3</div><div class="page-btn">4</div><div class="page-btn">5</div>
+                <div class="page-btn">…</div><div class="page-btn">35</div>
+                <div class="page-btn"><i class="ri-arrow-right-s-line"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== 传播大模型 ===== -->
+          <div class="page" id="page-llm">
+            <div class="feature-grid">
+              <div class="feature-card" onclick="alert('新闻报道（功能开发中）')">
+                <div class="feature-icon"><i class="ri-article-line"></i></div>
+                <div class="feature-title">新闻报道 <i class="ri-arrow-right-line"></i></div>
+                <div class="feature-desc">AI赋能稿件创作</div>
+              </div>
+              <div class="feature-card" onclick="alert('AI生图（功能开发中）')">
+                <div class="feature-icon"><i class="ri-image-line"></i></div>
+                <div class="feature-title">AI生图 <i class="ri-arrow-right-line"></i></div>
+                <div class="feature-desc">灵感一键出图</div>
+              </div>
+              <div class="feature-card" onclick="alert('AI成片（功能开发中）')">
+                <div class="feature-icon"><i class="ri-movie-2-line"></i></div>
+                <div class="feature-title">AI成片 <i class="ri-arrow-right-line"></i></div>
+                <div class="feature-desc">一键创作视频新闻</div>
+              </div>
+              <div class="feature-card" onclick="alert('AI视频（功能开发中）')">
+                <div class="feature-icon"><i class="ri-video-line"></i></div>
+                <div class="feature-title">AI视频 <i class="ri-arrow-right-line"></i></div>
+                <div class="feature-desc">智能视频创作工具</div>
+              </div>
+            </div>
+            <div class="llm-tabs">
+              <div class="llm-tab active" onclick="switchLlmTab(this)">灵感广场</div>
+              <div class="llm-tab" onclick="switchLlmTab(this)">应用广场</div>
+              <div class="llm-tab" onclick="switchLlmTab(this)">智能体广场</div>
+            </div>
+            <div class="filter-bar">
+              <div class="filter-left">
+                <div class="filter-chip active" onclick="switchFilterChip(this)">全部</div>
+                <div class="filter-chip" onclick="switchFilterChip(this)">视频</div>
+                <div class="filter-chip" onclick="switchFilterChip(this)">图片</div>
+                <div class="filter-chip" onclick="switchFilterChip(this)">海报</div>
+              </div>
+              <div class="search-box">
+                <i class="ri-search-line"></i>
+                <input placeholder="搜索灵感...">
+              </div>
+            </div>
+            <div class="masonry" id="masonryGrid"></div>
+          </div>
+
+          <!-- ===== 智能体平台 ===== -->
+          <div class="page" id="page-agent">
+            <div class="page-title">智能体平台</div>
+            <div class="cards-grid">
+              <div class="card"><div class="card-icon purple"><i class="ri-robot-2-line"></i></div><div class="card-title">内容创作助手</div><div class="card-desc">自动生成新闻稿件、标题优化</div></div>
+              <div class="card"><div class="card-icon blue"><i class="ri-chat-smile-2-line"></i></div><div class="card-title">智能客服</div><div class="card-desc">7×24小时在线问答服务</div></div>
+              <div class="card"><div class="card-icon green"><i class="ri-line-chart-line"></i></div><div class="card-title">数据分析助手</div><div class="card-desc">传播效果分析与趋势预测</div></div>
+            </div>
+          </div>
+
+          <!-- ===== 传播投手 ===== -->
+          <div class="page" id="page-pitcher">
+            <div class="pitcher-header">
+              <div>
+                <div class="page-title">传播任务管理</div>
+                <div class="pitcher-desc">管理和监控所有传播任务</div>
+              </div>
+              <button class="create-btn" onclick="openPitcherCreate()"><i class="ri-add-line"></i>新建传播任务</button>
+            </div>
+            <div class="search-bar">
+              <input class="search-input" placeholder="搜索任务名称...">
+              <input class="date-input" type="date">
+              <span style="color:var(--text-quaternary)">—</span>
+              <input class="date-input" type="date">
+              <button class="search-btn"><i class="ri-search-line"></i>查询</button>
+            </div>
+            <div class="table-card">
+              <table>
+                <thead><tr><th>任务名称</th><th>传播渠道</th><th>开始时间</th><th>结束时间</th><th>状态</th><th>操作</th></tr></thead>
+                <tbody>
+                  <tr><td><span style="color:var(--primary);cursor:pointer">正能量传播推送任务</span></td><td>微信公众号、微博、抖音</td><td>2026-03-20 00:00</td><td>2026-03-25 23:59</td><td><span class="tag tag-active">进行中</span></td><td><span class="action-link"><i class="ri-eye-line"></i>查看</span><span class="action-link"><i class="ri-bar-chart-line"></i>数据</span><span class="action-link"><i class="ri-edit-line"></i>编辑</span><span class="action-link" style="color:#ff4d4f"><i class="ri-delete-bin-line"></i>删除</span></td></tr>
+                  <tr><td>品牌宣传活动推广</td><td>小红书、B站</td><td>2026-03-18 00:00</td><td>2026-03-22 23:59</td><td><span class="tag tag-completed">已完成</span></td><td><span class="action-link"><i class="ri-eye-line"></i>查看</span><span class="action-link"><i class="ri-bar-chart-line"></i>数据</span><span class="action-link"><i class="ri-edit-line"></i>编辑</span><span class="action-link" style="color:#ff4d4f"><i class="ri-delete-bin-line"></i>删除</span></td></tr>
+                  <tr><td>数贸会预热报道</td><td>微信公众号、今日头条</td><td>2026-03-15 00:00</td><td>2026-03-19 23:59</td><td><span class="tag tag-completed">已完成</span></td><td><span class="action-link"><i class="ri-eye-line"></i>查看</span><span class="action-link"><i class="ri-bar-chart-line"></i>数据</span><span class="action-link"><i class="ri-edit-line"></i>编辑</span><span class="action-link" style="color:#ff4d4f"><i class="ri-delete-bin-line"></i>删除</span></td></tr>
+                  <tr><td>杭州城市形象推广</td><td>抖音、快手、微博</td><td>2026-03-10 00:00</td><td>2026-03-14 23:59</td><td><span class="tag tag-completed">已完成</span></td><td><span class="action-link"><i class="ri-eye-line"></i>查看</span><span class="action-link"><i class="ri-bar-chart-line"></i>数据</span><span class="action-link"><i class="ri-edit-line"></i>编辑</span><span class="action-link" style="color:#ff4d4f"><i class="ri-delete-bin-line"></i>删除</span></td></tr>
+                  <tr><td>会展行业趋势报告</td><td>微信公众号、36氪</td><td>2026-03-25 00:00</td><td>2026-04-01 23:59</td><td><span class="tag tag-pending">待执行</span></td><td><span class="action-link"><i class="ri-eye-line"></i>查看</span><span class="action-link"><i class="ri-bar-chart-line"></i>数据</span><span class="action-link"><i class="ri-edit-line"></i>编辑</span><span class="action-link" style="color:#ff4d4f"><i class="ri-delete-bin-line"></i>删除</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ===== 用户管理 ===== -->
+          <div class="page" id="page-sys-user">
+            <div class="sys-layout" style="height:auto">
+              <div class="sys-nav">
+                <div class="sys-nav-item active"><i class="ri-user-3-line"></i> 用户管理</div>
+                <div class="sys-nav-item" onclick="switchPage('sys-dept')"><i class="ri-building-line"></i> 部门管理</div>
+                <div class="sys-nav-item" onclick="switchPage('sys-role')"><i class="ri-shield-user-line"></i> 角色管理</div>
+              </div>
+              <div class="sys-content">
+                <div class="sys-header"><div class="sys-title">用户管理</div><button class="btn btn-primary"><i class="ri-add-line"></i> 新增用户</button></div>
+                <div class="table-wrapper">
+                  <table>
+                    <thead><tr><th>用户名</th><th>姓名</th><th>部门</th><th>角色</th><th>状态</th><th>操作</th></tr></thead>
+                    <tbody>
+                      <tr><td>admin</td><td>管理员</td><td>总经办</td><td>超级管理员</td><td><span class="badge badge-success">启用</span></td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
+                      <tr><td>zhangsan</td><td>张三</td><td>技术部</td><td>开发者</td><td><span class="badge badge-success">启用</span></td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
+                      <tr><td>lisi</td><td>李四</td><td>运营部</td><td>运营人员</td><td><span class="badge badge-success">启用</span></td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
+                      <tr><td>wangwu</td><td>王五</td><td>产品部</td><td>产品经理</td><td><span class="badge badge-warning">停用</span></td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== 部门管理 ===== -->
+          <div class="page" id="page-sys-dept">
+            <div class="sys-layout" style="height:auto">
+              <div class="sys-nav">
+                <div class="sys-nav-item" onclick="switchPage('sys-user')"><i class="ri-user-3-line"></i> 用户管理</div>
+                <div class="sys-nav-item active"><i class="ri-building-line"></i> 部门管理</div>
+                <div class="sys-nav-item" onclick="switchPage('sys-role')"><i class="ri-shield-user-line"></i> 角色管理</div>
+              </div>
+              <div class="sys-content">
+                <div class="sys-header"><div class="sys-title">部门管理</div><button class="btn btn-primary"><i class="ri-add-line"></i> 新增部门</button></div>
+                <div class="table-wrapper">
+                  <table>
+                    <thead><tr><th>部门名称</th><th>部门编码</th><th>负责人</th><th>人数</th><th>状态</th><th>操作</th></tr></thead>
+                    <tbody>
+                      <tr><td>总经办</td><td>GM</td><td>管理员</td><td>3</td><td><span class="badge badge-success">启用</span></td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
+                      <tr><td>技术部</td><td>TECH</td><td>张三</td><td>25</td><td><span class="badge badge-success">启用</span></td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
+                      <tr><td>运营部</td><td>OPS</td><td>李四</td><td>12</td><td><span class="badge badge-success">启用</span></td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
+                      <tr><td>产品部</td><td>PM</td><td>王五</td><td>8</td><td><span class="badge badge-success">启用</span></td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== 角色管理 ===== -->
+          <div class="page" id="page-sys-role">
+            <div class="sys-layout" style="height:auto">
+              <div class="sys-nav">
+                <div class="sys-nav-item" onclick="switchPage('sys-user')"><i class="ri-user-3-line"></i> 用户管理</div>
+                <div class="sys-nav-item" onclick="switchPage('sys-dept')"><i class="ri-building-line"></i> 部门管理</div>
+                <div class="sys-nav-item active"><i class="ri-shield-user-line"></i> 角色管理</div>
+              </div>
+              <div class="sys-content">
+                <div class="sys-header"><div class="sys-title">角色管理</div><button class="btn btn-primary"><i class="ri-add-line"></i> 新增角色</button></div>
+                <div class="table-wrapper">
+                  <table>
+                    <thead><tr><th>角色名称</th><th>角色编码</th><th>用户数</th><th>描述</th><th>操作</th></tr></thead>
+                    <tbody>
+                      <tr><td>超级管理员</td><td>super_admin</td><td>1</td><td>拥有全部权限</td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
+                      <tr><td>开发者</td><td>developer</td><td>8</td><td>技术开发权限</td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
+                      <tr><td>运营人员</td><td>operator</td><td>12</td><td>内容运营权限</td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
+                      <tr><td>产品经理</td><td>product_manager</td><td>5</td><td>产品管理权限</td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.page-container -->
+
+        <!-- ===== PRD Panel ===== -->
+        <div class="prd-panel" id="prdPanel">
+          <div class="prd-toc" id="prdToc"></div>
+          <div class="prd-content prd-body" id="prdContent"></div>
+        </div>
+
+      </div><!-- /.main-split -->
+    </div><!-- /.main-content -->
+  </div><!-- /.main -->
+</div><!-- /.app -->
+
+<!-- Pitcher Create Modal -->
+<div class="modal-overlay" id="pitcherCreateModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">新建传播任务</div><button class="modal-close" onclick="closeModal('pitcherCreateModal')"><i class="ri-close-line"></i></button></div>
+    <div class="modal-body">
+      <div class="form-item"><div class="form-label">任务名称 <span style="color:#ff4d4f">*</span></div><input class="form-input" placeholder="请输入任务名称"></div>
+      <div class="form-item"><div class="form-label">传播渠道 <span style="color:#ff4d4f">*</span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:12px">
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer"><input type="checkbox" style="accent-color:var(--primary)"> 微信公众号</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer"><input type="checkbox" style="accent-color:var(--primary)"> 微博</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer"><input type="checkbox" style="accent-color:var(--primary)"> 抖音</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer"><input type="checkbox" style="accent-color:var(--primary)"> 小红书</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer"><input type="checkbox" style="accent-color:var(--primary)"> B站</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer"><input type="checkbox" style="accent-color:var(--primary)"> 今日头条</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer"><input type="checkbox" style="accent-color:var(--primary)"> 快手</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer"><input type="checkbox" style="accent-color:var(--primary)"> 36氪</label>
+        </div>
+      </div>
+      <div class="form-item"><div class="form-label">开始时间 <span style="color:#ff4d4f">*</span></div><input class="form-input" type="datetime-local"></div>
+      <div class="form-item"><div class="form-label">结束时间 <span style="color:#ff4d4f">*</span></div><input class="form-input" type="datetime-local"></div>
+      <div class="form-item"><div class="form-label">备注</div><textarea class="form-textarea" placeholder="请输入备注信息（选填）"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closeModal('pitcherCreateModal')">取消</button>
+      <button class="btn btn-modal-primary" onclick="closeModal('pitcherCreateModal')">提交</button>
+    </div>
+  </div>
+</div>
+
+<!-- Upload Modal -->
+<div class="modal-overlay" id="uploadModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">上传素材</div><button class="modal-close" onclick="closeModal('uploadModal')"><i class="ri-close-line"></i></button></div>
+    <div class="modal-body">
+      <div class="upload-zone">
+        <i class="ri-upload-cloud-2-line"></i>
+        <p>拖拽文件到此处，或 <span>点击上传</span></p>
+        <small>支持 JPG、PNG、GIF、MP4、PDF 格式，单文件不超过 500MB</small>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closeModal('uploadModal')">取消</button>
+      <button class="btn btn-modal-primary" onclick="closeModal('uploadModal')">开始上传</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========== SPA Routing ==========
+function switchPage(pageId) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  var target = document.getElementById('page-' + pageId);
+  if (target) target.classList.add('active');
+
+  document.querySelectorAll('.sidebar-nav .nav-item').forEach(function(i){ i.classList.remove('active'); });
+  document.querySelectorAll('.sidebar-nav .nav-sub-item').forEach(function(i){ i.classList.remove('active'); });
+
+  var items = document.querySelectorAll('.sidebar-nav .nav-item');
+  if (pageId === 'home' && items[0]) items[0].classList.add('active');
+  else if (pageId === 'meizi' && items[1]) items[1].classList.add('active');
+  else if (pageId === 'llm' && items[2]) items[2].classList.add('active');
+  else if (pageId === 'agent' && items[3]) items[3].classList.add('active');
+  else if (pageId === 'pitcher' && items[4]) items[4].classList.add('active');
+  else if (pageId.startsWith('sys-')) {
+    if (items[5]) items[5].classList.add('active');
+    document.getElementById('sys-sub').classList.add('open');
+    document.querySelectorAll('.sidebar-nav .nav-sub-item').forEach(function(si){
+      if (si.textContent.includes(pageId==='sys-user'?'用户':pageId==='sys-dept'?'部门':'角色')) si.classList.add('active');
+    });
+  }
+  window.location.hash = pageId;
+}
+
+function toggleSub(id) {
+  var sub = document.getElementById(id);
+  if (sub) sub.classList.toggle('open');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+window.addEventListener('hashchange', function(){ var h = window.location.hash.slice(1); if(h) switchPage(h); });
+window.addEventListener('DOMContentLoaded', function(){ var h = window.location.hash.slice(1); if(h) switchPage(h); });
+
+// ========== Meizi Module ==========
+var meiziImages = [
+  {title:'深粉郁金香',date:'2026-03-20 13:39',source:'集团库',img:'https://picsum.photos/seed/tulip1/400/300'},
+  {title:'粉色郁金香',date:'2026-03-20 13:39',source:'集团库',img:'https://picsum.photos/seed/tulip2/400/300'},
+  {title:'淡粉郁金香',date:'2026-03-20 13:39',source:'集团库',img:'https://picsum.photos/seed/tulip3/400/300'},
+  {title:'红色郁金香',date:'2026-03-20 13:39',source:'集团库',img:'https://picsum.photos/seed/tulip4/400/300'},
+  {title:'冬季风暴袭击纽约（3）.jpg',date:'2026-01-27 17:54',source:'集团库',img:'https://picsum.photos/seed/snow1/400/300'},
+  {title:'冬季风暴袭击纽约（2）.jpg',date:'2026-01-27 17:54',source:'集团库',img:'https://picsum.photos/seed/snow2/400/300'},
+  {title:'冬季风暴袭击纽约（1）.jpg',date:'2026-01-27 17:54',source:'集团库',img:'https://picsum.photos/seed/snow3/400/300'},
+  {title:'腊八到 粥飘香（1）#.jpg',date:'2026-01-27 17:54',source:'集团库',img:'https://picsum.photos/seed/food1/400/300'},
+  {title:'天津首开至宜昌高铁（1）.jpg',date:'2026-01-27 17:54',source:'集团库',img:'https://picsum.photos/seed/train1/400/300'},
+  {title:'春季花海创意海报',date:'2026-03-15 10:22',source:'个人库',img:'https://picsum.photos/seed/flower1/400/300'},
+];
+var meiziSelected = new Set();
+function renderMeizi(data) {
+  var g = document.getElementById('meiziGrid');
+  g.innerHTML = data.map(function(img,i){
+    var ck = meiziSelected.has(i)?' checked':'';
+    return '<div class="image-card"><div class="card-check'+ck+'" onclick="event.stopPropagation();toggleMeiziSelect('+i+',this)"></div>'+
+      '<div class="image-thumb"><img src="'+img.img+'" alt="'+img.title+'" loading="lazy"></div>'+
+      '<div class="image-info"><div class="image-title">'+img.title+'</div>'+
+      '<div class="image-meta"><span class="image-date">'+img.date+'</span><span class="image-source">'+img.source+'</span></div></div></div>';
+  }).join('');
+}
+function toggleMeiziSelect(i,el){if(meiziSelected.has(i)){meiziSelected.delete(i);el.classList.remove('checked')}else{meiziSelected.add(i);el.classList.add('checked')}document.getElementById('meiziSelectedCount').textContent=meiziSelected.size}
+function toggleSelectAllMeizi(){var a=document.getElementById('selectAllMeizi').checked;meiziSelected.clear();if(a)for(var i=0;i<meiziImages.length;i++)meiziSelected.add(i);document.getElementById('meiziSelectedCount').textContent=meiziSelected.size;renderMeizi(meiziImages)}
+function switchSearchTab(el){el.parentElement.querySelectorAll('.search-tab').forEach(function(n){n.classList.remove('active')});el.classList.add('active')}
+function doMeiziSearch(){var k=document.getElementById('meiziSearch').value.trim();if(!k){renderMeizi(meiziImages);return}renderMeizi(meiziImages.filter(function(i){return i.title.indexOf(k)>=0}))}
+renderMeizi(meiziImages);
+
+// ========== LLM Module ==========
+var llmItems=[
+  {title:'春日spring 2026',tag:'AI生图',h:220,color:'#e8f5e9',seed:'spring1'},
+  {title:'首倡之地 振兴苗乡',tag:'海报',h:320,color:'#fff3e0',seed:'miao1'},
+  {title:'Spring Equinox 春分万物生',tag:'海报',h:360,color:'#fce4ec',seed:'equinox1'},
+  {title:'惊蛰 JINGZHE 2026',tag:'AI生图',h:280,color:'#e8f5e9',seed:'jingzhe1'},
+  {title:'3D卡通角色设计',tag:'AI生图',h:260,color:'#f3e5f5',seed:'cartoon1'},
+  {title:'静物水果写生',tag:'AI生图',h:240,color:'#fff8e1',seed:'fruit1'},
+  {title:'乡村振兴专题报道配图',tag:'图片',h:300,color:'#e8f5e9',seed:'rural1'},
+  {title:'西湖春景 杭州城市宣传',tag:'AI生图',h:200,color:'#e3f2fd',seed:'westlake1'},
+  {title:'数字赋能故宫焕新',tag:'视频',h:280,color:'#fce4ec',seed:'gugong1'},
+  {title:'春日花海创意海报',tag:'海报',h:340,color:'#f3e5f5',seed:'flower2'},
+  {title:'AI生成中国风水墨画',tag:'AI生图',h:260,color:'#e0f2f1',seed:'ink1'},
+  {title:'科技感城市夜景',tag:'AI生图',h:220,color:'#e8eaf6',seed:'city1'},
+];
+function renderMasonry(){
+  var g=document.getElementById('masonryGrid');
+  g.innerHTML=llmItems.map(function(it){
+    return '<div class="masonry-item"><div style="height:'+it.h+'px;background:'+it.color+';overflow:hidden"><img src="https://picsum.photos/seed/'+it.seed+'/400/'+it.h+'" alt="'+it.title+'" loading="lazy"></div><div class="masonry-info"><div class="masonry-title">'+it.title+'</div><div class="masonry-meta"><span class="masonry-tag">'+it.tag+'</span><span>AI生成</span></div></div></div>';
+  }).join('');
+}
+function switchLlmTab(el){el.parentElement.querySelectorAll('.llm-tab').forEach(function(n){n.classList.remove('active')});el.classList.add('active')}
+function switchFilterChip(el){el.parentElement.querySelectorAll('.filter-chip').forEach(function(n){n.classList.remove('active')});el.classList.add('active')}
+renderMasonry();
+
+// ========== Pitcher Module ==========
+function openPitcherCreate(){document.getElementById('pitcherCreateModal').classList.add('show')}
+
+// ========== PRD Module ==========
+var prdMd = `# 杭州智联 — 智能媒资管理平台 产品需求文档
+
+## 1. 产品概述
+
+### 1.1 产品背景
+杭州智联智能媒资管理平台是面向媒体行业的一体化智能媒资管理与内容传播平台。当前媒体机构面临媒资分散、内容生产效率低、传播渠道多但缺乏统一管控等痛点，平台通过 AI 技术赋能内容采集、创作、审核、发布全链路，帮助媒体机构实现数字化转型。
+
+### 1.2 产品目标
+- 打造统一的媒资管理中心，实现资源的高效检索与管理
+- 通过 AI 大模型提升内容创作效率，降低人工成本
+- 提供智能传播能力，实现多渠道内容的精准投放与效果追踪
+- 建立系统化的权限管理体系，保障数据安全与合规
+
+### 1.3 用户角色
+
+**超级管理员**
+拥有平台全部权限，负责系统级配置，包括用户管理、部门管理、角色权限分配等。超级管理员可查看并操作所有业务模块的数据。
+
+**内容编辑**
+负责媒资的日常管理，包括素材的检索、编辑、审核与发布。内容编辑主要使用智能媒资模块，对平台资源进行全生命周期管理。
+
+**运营人员**
+负责传播任务的创建、执行与效果监控。运营人员主要使用传播投手模块和传播大模型模块，制定传播策略并跟踪传播效果。
+
+**数据分析人员**
+负责传播效果的数据分析与趋势预测。数据分析人员使用智能体平台中的数据分析助手，对平台运营数据进行深度挖掘。
+
+---
+
+## 2. 功能需求
+
+### 2.1 首页工作台
+
+#### 2.1.1 数据概览
+
+首页顶部展示四张核心数据统计卡片，帮助用户快速了解平台运营状况。
+
+**媒资总量**
+- 取数规则：取当前平台全部媒资库（含集团库、个人库、共享库）中的资源总数
+- 展示内容：数字格式化为千分位（如 12,847），下方显示环比增长率（正数显示为"↑ x.x%"，负数显示为"↓ x.x%"）
+
+**今日发布**
+- 取数规则：取当日 00:00 至当前时刻新发布的媒资数量
+- 展示内容：当日发布数，下方显示环比增长率
+
+**活跃用户**
+- 取数规则：取当日登录并有操作行为（搜索、编辑、发布、下载等）的去重用户数
+- 展示内容：去重用户数，下方显示环比增长率
+
+**智能体**
+- 取数规则：取当前平台已创建且状态为"启用"的智能体总数
+- 展示内容：智能体总数，下方显示环比增长率
+
+#### 2.1.2 快捷入口
+
+数据概览下方展示四个业务模块的快捷入口卡片，方便用户快速进入各功能模块。
+
+**卡片展示规则**
+- 每张卡片包含：模块图标、模块名称、一句话功能简介
+- 卡片为可点击状态，点击后跳转至对应模块页面
+- 四个模块依次为：智能媒资、传播大模型、智能体平台、传播投手
+
+**模块说明**
+- 智能媒资：媒资采集、编辑、审核、发布全流程管理
+- 传播大模型：AI 驱动的内容生成与传播分析
+- 智能体平台：创建、配置、管理 AI 智能体
+- 传播投手：智能投放策略与效果追踪
+
+### 2.2 智能媒资模块
+
+#### 2.2.1 检索功能
+
+**检索模式**
+
+支持三种检索模式，通过顶部标签页切换，默认选中"精准检索"：
+
+- 精准检索：按用户输入的关键词精确匹配媒资的标题、描述、标签等元数据字段
+- 文搜图：用户输入自然语言描述，系统通过语义理解返回相关图片结果
+- 图搜图：用户上传一张图片，系统返回视觉上相似的图片结果
+
+点击切换 tab 时，下方搜索区域的输入控件对应调整（如图搜图模式下输入框变为图片上传区域）。
+
+**检索输入**
+
+精准检索模式下的输入区域由左至右包含以下控件：
+
+- 类型下拉框：选项为"全部""图片""视频""文档"，默认选中"全部"。用于限定搜索结果的媒资类型。
+- 关键词输入框：支持输入单个或多个关键词。多个关键词以空格分隔，按关键词匹配模式（见下）进行检索。
+- 匹配模式下拉框：选项为"包含全部关键词""包含任一关键词""精确匹配"，默认选中"包含全部关键词"。
+  - 包含全部关键词：搜索结果需同时包含所有输入的关键词
+  - 包含任一关键词：搜索结果包含任一关键词即返回
+  - 精确匹配：搜索结果需完全匹配输入的关键词短语
+- 搜索按钮：点击触发搜索，或在输入框中按下回车键触发搜索
+
+#### 2.2.2 高级筛选
+
+搜索区域下方为筛选栏，支持按以下条件进一步缩小搜索范围：
+
+**发布时间**
+- 选项为"全部""今天""本周""本月"，默认选中"全部"
+- 选中"今天"：筛选当日发布的媒资
+- 选中"本周"：筛选本周发布的媒资（周一至当前）
+- 选中"本月"：筛选本月发布的媒资（1号至当前）
+
+**资源库**
+- 选项为"全部""集团库""个人库""共享库"，默认选中"全部"
+- 集团库：机构统一管理的公共资源库
+- 个人库：用户个人上传和管理的资源库
+- 共享库：跨部门或跨团队共享的资源库
+
+筛选条件变更后自动触发搜索结果刷新，无需手动点击搜索。
+
+#### 2.2.3 搜索结果区域
+
+**工具栏**
+
+搜索结果上方为操作工具栏，从左至右依次为：
+
+- 下载按钮：批量下载已选中的媒资。当未选中任何资源时，该按钮仍可点击但提示"请先选择要下载的资源"。
+- 添加到个人素材库按钮：将选中的媒资添加至当前用户的个人素材库。可重复添加，已添加的资源提示"已在个人素材库中"。
+- 全选复选框：勾选后选中当前页所有资源；取消勾选则清除全部选择。
+- 已选数量：实时显示当前已选中的资源数量，格式为"已选 X"。
+- 清除选择：点击后清空所有选中状态。
+- 结果统计：显示"找到约 X 条相关消息"。
+- 排序下拉框：选项为"时间 ↓（默认）""时间 ↑""相关度"，切换后即时刷新排序结果。
+
+**结果网格**
+
+搜索结果以网格形式展示，每行展示 5 个资源卡片，超出后自动换行。每个资源卡片包含以下元素：
+
+- 复选框：位于卡片左上角，默认隐藏，鼠标悬浮在卡片上时显示。选中后常驻显示并变为激活状态。
+- 更多操作按钮：位于卡片右上角，默认隐藏，鼠标悬浮时显示。点击后弹出操作菜单（预览、下载、删除、添加标签等）。
+- 缩略图：卡片主体区域，宽高比 4:3，图片居中裁剪展示。鼠标悬浮时图片有轻微放大效果。
+- 标题：显示媒资标题，超长时单行省略并显示完整标题的 tooltip。
+- 元信息行：左侧显示发布日期（格式为 YYYY-MM-DD HH:mm），右侧显示来源标签（如"集团库"）。
+
+**分页**
+
+网格底部展示分页控件，包含：
+
+- 上一页按钮：在第一页时置灰不可点击
+- 页码按钮：显示当前页前后若干页的页码，当前页高亮显示
+- 省略号：当总页数较多时，中间未显示的页码以省略号替代
+- 尾页按钮：直接跳转到最后一页
+- 下一页按钮：在最后一页时置灰不可点击
+
+#### 2.2.4 上传素材
+
+**触发方式**
+点击搜索区域右上方的"上传"按钮打开上传弹窗。
+
+**上传弹窗**
+
+弹窗内展示上传区域，支持两种上传方式：
+
+- 拖拽上传：用户将文件拖拽至上传区域
+- 点击上传：点击上传区域打开系统文件选择器
+
+**格式与限制**
+- 支持格式：JPG、PNG、GIF、MP4、PDF
+- 单文件大小上限：500MB
+- 超过大小限制时，上传按钮置灰并提示"文件大小超出限制"
+- 不支持的格式时，提示"暂不支持该文件格式"
+
+**弹窗操作**
+- 取消按钮：关闭弹窗，不执行上传
+- 开始上传按钮：点击后开始上传已选择的文件，上传过程中按钮变为加载状态，上传完成后自动关闭弹窗并刷新列表
+
+### 2.3 传播大模型模块
+
+#### 2.3.1 功能入口
+
+模块顶部展示四个功能入口卡片，每个卡片可点击进入对应功能：
+
+**新闻报道**
+- 功能说明：AI 赋能稿件创作，支持自动撰写新闻稿件、智能优化标题等
+- 点击后跳转至新闻报道功能页面
+
+**AI 生图**
+- 功能说明：通过文字描述一键生成高质量图片
+- 点击后跳转至 AI 生图功能页面
+
+**AI 成片**
+- 功能说明：自动将文字、图片素材组合生成视频新闻
+- 点击后跳转至 AI 成片功能页面
+
+**AI 视频**
+- 功能说明：智能视频创作工具，支持视频剪辑、字幕生成等
+- 点击后跳转至 AI 视频功能页面
+
+#### 2.3.2 广场
+
+功能入口下方为内容广场区域，通过 tab 切换展示不同类型的内容：
+
+**Tab 切换**
+- 灵感广场：展示 AI 生成的创意内容，供用户参考和二次创作
+- 应用广场：展示平台提供的各类 AI 应用工具
+- 智能体广场：展示平台已有的智能体及其能力
+
+Tab 切换时下方内容区域即时更新，无需刷新页面。默认选中"灵感广场"。
+
+#### 2.3.3 筛选与搜索
+
+**筛选标签栏**
+
+Tab 下方为内容类型筛选栏，包含以下标签：
+
+- 全部（默认选中）
+- 视频
+- 图片
+- 海报
+
+标签为单选模式，点击切换后下方内容网格即时过滤。已选中的标签呈高亮状态，未选中标签呈描边状态。
+
+**搜索框**
+
+筛选标签栏右侧为搜索框，支持输入关键词搜索当前 tab 下的内容。输入关键词后按回车或点击搜索图标触发搜索。搜索范围限定在当前 tab 和已选中的类型标签范围内。
+
+#### 2.3.4 内容展示
+
+**瀑布流布局**
+
+搜索结果以瀑布流（Masonry）网格形式展示，内容卡片高度不等，自动排列填充。
+
+**卡片元素**
+
+每张内容卡片包含以下元素：
+
+- 缩略图：卡片上方展示内容的预览图，宽度撑满卡片，高度按原始比例自适应
+- 标题：显示内容标题，超长时单行省略
+- 标签：显示内容类型标签（如"AI 生图""海报""视频"），以不同颜色区分
+- 来源信息：显示"AI 生成"标识
+
+**交互行为**
+- 鼠标悬浮在卡片上时，卡片有轻微上浮效果，同时图片有微缩放动画
+- 点击卡片可查看内容详情
+
+### 2.4 智能体平台模块
+
+#### 2.4.1 智能体列表
+
+模块以卡片列表形式展示平台已部署的智能体。
+
+**卡片展示**
+
+每张智能体卡片包含以下信息：
+
+- 智能体图标：不同智能体使用不同颜色的图标加以区分
+- 智能体名称：显示智能体的名称
+- 功能描述：一句话说明该智能体的核心能力
+
+**已有智能体**
+
+当前平台预置以下智能体：
+
+- 内容创作助手：自动生成新闻稿件、标题优化
+- 智能客服：7×24 小时在线问答服务
+- 数据分析助手：传播效果分析与趋势预测
+
+**交互行为**
+- 点击卡片可进入该智能体的详情页或对话界面
+- 鼠标悬浮时卡片有上浮和阴影增强效果
+
+#### 2.4.2 智能体详情
+
+点击智能体卡片后进入智能体详情页，展示该智能体的详细信息、使用说明和操作入口。具体交互根据各智能体类型有所不同：
+
+- 内容创作助手：进入后显示输入框，用户输入主题和要求后生成稿件
+- 智能客服：进入后显示对话窗口，支持实时问答
+- 数据分析助手：进入后展示数据面板和分析入口
+
+### 2.5 传播投手模块
+
+#### 2.5.1 模块头部
+
+模块顶部左侧显示模块标题"传播任务管理"和副标题"管理和监控所有传播任务"。顶部右侧显示"新建传播任务"按钮。
+
+#### 2.5.2 搜索与筛选
+
+头部下方为搜索筛选区域，从左至右包含：
+
+**关键词搜索框**
+- 支持输入任务名称进行模糊搜索
+- 输入关键词后点击"查询"按钮或按回车键触发搜索
+
+**时间范围选择**
+- 包含开始日期和结束日期两个日期选择器
+- 日期格式为 YYYY-MM-DD
+- 两个日期之间以"—"连接
+- 结束日期不可早于开始日期，否则提示"结束日期不能早于开始日期"
+- 选择日期后点击"查询"按钮触发搜索
+
+**查询按钮**
+- 点击后根据关键词和时间范围组合条件查询任务列表
+- 关键词和日期条件为"且"关系，同时满足时才返回结果
+
+#### 2.5.3 任务列表
+
+搜索结果以表格形式展示所有传播任务。以下逐一说明各字段的展示规则：
+
+**任务名称**
+- 展示规则：任务名称文本，首行任务名称以链接样式展示（可点击），其余行为普通文本
+- 取数规则：取创建任务时填写的任务名称
+- 点击行为：点击任务名称跳转至该任务的详情页面
+
+**传播渠道**
+- 展示规则：显示该任务配置的所有传播渠道名称，以顿号分隔（如"微信公众号、微博、抖音"）
+- 取数规则：取创建任务时选择的渠道列表，按选择顺序排列
+
+**开始时间**
+- 展示规则：格式为 YYYY-MM-DD HH:mm
+- 取数规则：取创建任务时设置的开始时间
+
+**结束时间**
+- 展示规则：格式为 YYYY-MM-DD HH:mm
+- 取数规则：取创建任务时设置的结束时间
+
+**状态**
+- 展示规则：以标签形式展示任务当前状态
+- 取值与样式：
+  - 进行中：绿色背景标签
+  - 已完成：蓝色背景标签
+  - 待执行：橙色背景标签
+- 取数规则：根据当前时间与任务时间范围自动判断——当前时间早于开始时间为"待执行"，在开始与结束时间之间为"进行中"，超过结束时间为"已完成"
+
+**操作列**
+- 展示规则：显示当前状态下可用的操作链接
+- 按钮显示规则：
+  - 所有状态下均显示：查看、数据、编辑
+  - 所有状态下均显示：删除（红色文字标识，以区别于其他操作）
+- 各操作说明：
+  - 查看：跳转至任务详情页，查看任务配置与执行情况
+  - 数据：跳转至任务数据面板，查看传播效果数据（阅读量、转发量、评论量等）
+  - 编辑：打开编辑弹窗，可修改任务名称、渠道、时间等配置。"已完成"状态下编辑后，任务状态变更为"待执行"
+  - 删除：二次确认后删除任务，删除后列表即时刷新。"进行中"状态的任务删除时额外提示"该任务正在进行中，确认删除？"
+
+#### 2.5.4 新建传播任务
+
+点击模块头部的"新建传播任务"按钮，打开新建任务弹窗。弹窗表单包含以下字段：
+
+**任务名称**
+- 类型：文本输入框
+- 是否必填：是，以红色星号标识
+- 校验规则：不能为空，长度限制 1-100 个字符
+- placeholder：请输入任务名称
+
+**传播渠道**
+- 类型：多选复选框组
+- 是否必填：是，至少选择一个渠道
+- 可选项：微信公众号、微博、抖音、小红书、B站、今日头条、快手、36氪
+- 校验规则：未选择任何渠道时点击提交，提示"请至少选择一个传播渠道"
+
+**开始时间**
+- 类型：日期时间选择器
+- 是否必填：是
+- 校验规则：不能早于当前时间，否则提示"开始时间不能早于当前时间"
+
+**结束时间**
+- 类型：日期时间选择器
+- 是否必填：是
+- 校验规则：
+  - 不能早于开始时间，否则提示"结束时间不能早于开始时间"
+  - 不能与开始时间相同，否则提示"结束时间必须晚于开始时间"
+
+**备注**
+- 类型：多行文本框
+- 是否必填：否
+- placeholder：请输入备注信息（选填）
+
+**弹窗按钮**
+- 取消按钮：关闭弹窗，不执行任何操作
+- 提交按钮：校验所有必填项通过后提交表单，提交成功后关闭弹窗并刷新任务列表，同时提示"创建成功"
+
+### 2.6 系统管理模块
+
+系统管理模块包含用户管理、部门管理、角色管理三个子功能，通过左侧导航菜单切换。
+
+#### 2.6.1 用户管理
+
+**页面布局**
+
+用户管理页面分为左右两部分：
+
+- 左侧为子功能导航菜单，包含"用户管理""部门管理""角色管理"三个入口，当前选中项高亮显示
+- 右侧为用户管理内容区域
+
+**表格字段**
+
+用户列表以表格形式展示，各字段展示规则如下：
+
+- 用户名：系统登录账号，唯一标识
+- 姓名：用户的真实姓名
+- 部门：用户所属部门名称，取自部门管理中已创建的部门数据
+- 角色：用户被分配的角色名称，取自角色管理中已创建的角色数据
+- 状态：用户当前的启用状态，取值为"启用""停用""禁用"，以不同颜色标签区分——启用为绿色、停用为橙色、禁用为红色
+- 操作：显示"编辑"按钮，点击可修改该用户的信息
+
+**新增用户**
+
+点击表格上方的"新增用户"按钮，打开新增用户弹窗。弹窗中需填写用户名、姓名、选择部门和角色，提交后新增用户出现在表格中。
+
+#### 2.6.2 部门管理
+
+**表格字段**
+
+部门列表以表格形式展示，各字段展示规则如下：
+
+- 部门名称：部门的显示名称
+- 部门编码：部门的唯一编码标识（如"GM""TECH""OPS"）
+- 负责人：该部门的负责人姓名
+- 人数：该部门下的用户数量，取数规则为关联了该部门的用户总数
+- 状态：部门的启用状态，取值为"启用"或"停用"，以绿色和橙色标签区分
+- 操作：显示"编辑"按钮，点击可修改该部门的信息
+
+**新增部门**
+
+点击表格上方的"新增部门"按钮，打开新增部门弹窗。弹窗中需填写部门名称、部门编码、选择负责人，提交后新增部门出现在表格中。
+
+#### 2.6.3 角色管理
+
+**表格字段**
+
+角色列表以表格形式展示，各字段展示规则如下：
+
+- 角色名称：角色的显示名称
+- 角色编码：角色的唯一编码标识（如"super_admin""developer""operator"）
+- 用户数：被分配了该角色的用户数量，取数规则为关联了该角色的用户总数
+- 描述：角色的功能描述
+- 操作：显示"编辑"按钮，点击可修改该角色的信息
+
+**新增角色**
+
+点击表格上方的"新增角色"按钮，打开新增角色弹窗。弹窗中需填写角色名称、角色编码和描述，提交后新增角色出现在表格中。
+
+**预置角色**
+
+系统预置以下角色，不可删除但可编辑权限配置：
+
+- 超级管理员：拥有全部权限
+- 开发者：技术开发权限
+- 运营人员：内容运营权限
+- 产品经理：产品管理权限
+- UI 设计师：设计相关权限
+- 只读用户：仅查看权限
+
+---
+
+## 3. 全局交互规则
+
+### 3.1 页面导航
+
+**侧边栏**
+
+平台左侧为固定宽度的侧边栏，包含：
+
+- 平台 Logo 和名称（杭州智联）
+- 一级导航：首页、智能媒资、传播大模型、智能体平台、传播投手、系统管理
+- 系统管理为可展开/收起的菜单项，点击展开显示二级导航（用户管理、部门管理、角色管理）
+
+**页面切换**
+
+点击侧边栏导航项切换页面，当前激活的导航项高亮显示。页面通过 hash 路由实现无刷新切换，浏览器前进后退按钮可正常工作。
+
+### 3.2 顶部栏
+
+页面顶部为全局顶部栏，右侧显示当前登录用户信息（头像和姓名）。点击用户区域可展开用户操作菜单。
+
+### 3.3 弹窗交互
+
+**打开弹窗**
+- 弹窗从居中位置弹出，背景出现半透明遮罩层
+- 弹窗出现时有缩放和渐显的过渡动画
+
+**关闭弹窗**
+- 点击弹窗右上角关闭按钮
+- 点击遮罩层区域（非弹窗内容区域）
+- 点击弹窗底部的"取消"按钮
+- 以上三种方式均可关闭弹窗
+
+**弹窗表单**
+- 必填字段以红色星号标识
+- 提交前进行前端校验，校验不通过时在对应字段下方显示错误提示
+- 提交过程中按钮变为加载状态，防止重复提交
+
+---
+
+## 4. 版本规划
+
+### 4.1 v1.0 — 智能媒资
+- 实现媒资的搜索、筛选、展示、上传功能
+- 实现批量下载和个人素材库管理
+- 实现精准检索、文搜图、图搜图三种搜索模式
+- 状态：已完成
+
+### 4.2 v1.1 — 传播大模型
+- 实现新闻报道、AI 生图、AI 成片、AI 视频四个功能入口
+- 实现灵感广场、应用广场、智能体广场三个内容广场
+- 实现瀑布流内容展示和筛选搜索功能
+- 状态：开发中
+
+### 4.3 v1.2 — 智能体平台
+- 实现内容创作助手、智能客服、数据分析助手三个智能体
+- 实现智能体详情页和对话交互
+- 状态：规划中
+
+### 4.4 v2.0 — 传播投手
+- 实现传播任务的创建、查询、编辑、删除
+- 实现任务状态管理和传播数据查看
+- 状态：规划中
+`;
+
+function md2html(md) {
+  var html = md;
+  // split into blocks so we don't process inside fenced code
+  var parts = html.split(/(\n```[\s\S]*?```\n)/);
+  for (var p = 0; p < parts.length; p++) {
+    if (parts[p].startsWith('\n```')) continue;
+    var b = parts[p];
+    // tables
+    var tableParts = b.split(/\n((?:\|.+\|\n?)+)/);
+    for (var tp = 0; tp < tableParts.length; tp++) {
+      if (/^\|.+\|/.test(tableParts[tp].trim())) {
+        var rows = tableParts[tp].trim().split('\n').filter(function(r){return r.trim().length>0});
+        if (rows.length >= 2 && /^\|[\s\-:|]+\|$/.test(rows[1])) {
+          var thtml = '<table><thead><tr>';
+          rows[0].split('|').filter(function(c){return c.trim().length>0}).forEach(function(c){thtml+='<th>'+c.trim()+'</th>'});
+          thtml += '</tr></thead><tbody>';
+          for (var ri = 2; ri < rows.length; ri++) {
+            thtml += '<tr>';
+            rows[ri].split('|').filter(function(c){return c.trim().length>0}).forEach(function(c){thtml+='<td>'+c.trim()+'</td>'});
+            thtml += '</tr>';
+          }
+          thtml += '</tbody></table>';
+          tableParts[tp] = thtml;
+        }
+      }
+    }
+    b = tableParts.join('');
+
+    // headings
+    b = b.replace(/^### (.+)$/gm, function(m,t){var id=t.toLowerCase().replace(/[^\w\u4e00-\u9fff]+/g,'-');return '<h3 id="'+id+'">'+t+'</h3>'});
+    b = b.replace(/^## (.+)$/gm, function(m,t){var id=t.toLowerCase().replace(/[^\w\u4e00-\u9fff]+/g,'-');return '<h2 id="'+id+'">'+t+'</h2>'});
+    b = b.replace(/^# (.+)$/gm, function(m,t){var id=t.toLowerCase().replace(/[^\w\u4e00-\u9fff]+/g,'-');return '<h1 id="'+id+'">'+t+'</h1>'});
+    // hr
+    b = b.replace(/^---$/gm, '<hr>');
+    // bold
+    b = b.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    // unordered lists
+    b = b.replace(/^(\s*)[-*] (.+)$/gm, '$1<li>$2</li>');
+    b = b.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+    // paragraphs
+    var lines = b.split('\n');
+    var result = [];
+    var inTag = false;
+    lines.forEach(function(line) {
+      var trimmed = line.trim();
+      if (!trimmed) { inTag = false; result.push(''); return; }
+      if (/^<(h[1-6]|ul|ol|table|thead|tbody|tr|th|td|hr|p)/i.test(trimmed)) { inTag = false; result.push(trimmed); return; }
+      result.push(trimmed);
+    });
+    b = result.join('\n');
+    b = b.replace(/^(?!<[a-z])((?!<).+)$/gm, function(m) { return m.trim() ? '<p>'+m+'</p>' : ''; });
+    b = b.replace(/<p>\s*<\/p>/g, '');
+    parts[p] = b;
+  }
+  html = parts.join('');
+  return html;
+}
+
+(function buildToc() {
+  var toc = document.getElementById('prdToc');
+  var content = document.getElementById('prdContent');
+  var prdHTML = md2html(prdMd);
+  content.innerHTML = prdHTML;
+
+  var titleEl = document.createElement('div');
+  titleEl.className = 'prd-toc-title';
+  titleEl.textContent = '产品需求文档';
+  toc.appendChild(titleEl);
+
+  var headings = content.querySelectorAll('h1, h2, h3');
+  var tocItems = [];
+  headings.forEach(function(h) {
+    var a = document.createElement('a');
+    a.className = 'prd-toc-item' + (h.tagName === 'H3' ? ' sub' : '');
+    a.textContent = h.textContent;
+    a.dataset.target = h.id;
+    a.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById(this.dataset.target).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    toc.appendChild(a);
+    tocItems.push(a);
+  });
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        tocItems.forEach(function(item) { item.classList.remove('active'); });
+        var active = toc.querySelector('[data-target="'+entry.target.id+'"]');
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { root: content, rootMargin: '-20% 0px -70% 0px' });
+  headings.forEach(function(h) { observer.observe(h); });
+})();
+</script>
+</body>
+</html>
