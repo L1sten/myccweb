@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>杭州智联 - 智能媒资管理平台</title>
+<title>杭州会展智能体管理平台</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
 <style>
@@ -57,7 +57,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 
 /* ===== Homepage ===== */
 .page-title{font-size:20px;font-weight:600;margin-bottom:20px}
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.cards-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
 .card{background:var(--bg-container);border:1px solid var(--border-secondary);border-radius:var(--radius-md);padding:20px;cursor:pointer;transition:var(--transition)}
 .card:hover{box-shadow:var(--shadow-md);border-color:var(--text-quaternary)}
 .card-icon{width:40px;height:40px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px}
@@ -88,6 +88,7 @@ tr:hover td{background:var(--primary-bg)}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;border:1px solid transparent;transition:var(--transition);font-family:inherit}
 .btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{opacity:.9}
 .btn-outline{background:#fff;border-color:var(--border-secondary);color:var(--text-primary)}.btn-outline:hover{background:var(--bg-page)}
+.btn-danger{background:#ff4d4f;color:#fff;border-color:#ff4d4f}.btn-danger:hover{background:#ff7875;border-color:#ff7875}
 .btn-sm{padding:4px 10px;font-size:12px}
 .btn-ghost{background:transparent;color:var(--text-primary)}.btn-ghost:hover{background:var(--bg-page)}
 
@@ -198,6 +199,8 @@ tr:hover td{background:var(--primary-bg)}
 .tag-completed{background:var(--primary-bg);color:var(--primary);border:1px solid var(--primary-border)}
 .action-link{color:var(--primary);cursor:pointer;font-size:12px;margin-right:10px;transition:var(--transition)}
 .action-link:hover{text-decoration:underline}
+.action-link-danger{color:#ff4d4f}
+.action-link-danger:hover{color:#ff7875}
 
 /* ===== Modal ===== */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:1000}
@@ -209,15 +212,11 @@ tr:hover td{background:var(--primary-bg)}
 .modal-close{width:32px;height:32px;border:none;background:none;cursor:pointer;font-size:18px;color:var(--text-tertiary);border-radius:var(--radius-sm);transition:var(--transition);display:flex;align-items:center;justify-content:center}
 .modal-close:hover{background:var(--bg-page);color:var(--text-primary)}
 .modal-body{padding:24px}
-.form-item{margin-bottom:16px}
-.form-label{display:block;font-size:13px;color:var(--text-secondary);margin-bottom:6px}
 .form-input{width:100%;border:1px solid var(--border-secondary);border-radius:var(--radius-sm);padding:8px 12px;font-size:13px;outline:none;font-family:inherit;transition:var(--transition)}
 .form-input:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1)}
 .form-textarea{width:100%;border:1px solid var(--border-secondary);border-radius:var(--radius-sm);padding:8px 12px;font-size:13px;outline:none;font-family:inherit;resize:vertical;min-height:80px;transition:var(--transition)}
 .form-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1)}
 .modal-footer{padding:12px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
-.btn-default{background:#fff;color:var(--text-secondary);border-color:var(--border-secondary)}.btn-default:hover{color:var(--primary);border-color:var(--primary)}
-.btn-modal-primary{background:var(--primary);color:#fff;border-color:var(--primary)}.btn-modal-primary:hover{background:var(--primary-hover);box-shadow:0 2px 8px rgba(22,119,255,.25)}
 
 /* ===== Upload Modal ===== */
 .upload-zone{border:2px dashed var(--border-secondary);border-radius:var(--radius-lg);padding:48px 24px;color:var(--text-tertiary);transition:var(--transition);cursor:pointer;text-align:center}
@@ -268,12 +267,43 @@ tr:hover td{background:var(--primary-bg)}
 .sys-nav-item:hover{background:var(--bg-page);color:var(--text-primary)}
 .sys-nav-item.active{background:var(--bg-page);color:var(--text-primary);font-weight:500}
 .sys-nav-item i{font-size:16px;width:20px;text-align:center}
-.sys-content{flex:1;min-width:0}
-.sys-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.sys-title{font-size:18px;font-weight:600}
+.sys-content{flex:1;min-width:0;overflow-y:auto}
+.sys-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.sys-toolbar-left{display:flex;align-items:center;gap:4px}
+.sys-toolbar-label{font-size:13px;color:var(--text-secondary);margin-right:4px}
+.sys-input{padding:6px 10px;border:1px solid var(--border-secondary);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;outline:none;width:160px;transition:border-color .15s}
+.sys-input:focus{border-color:var(--primary)}
+.sys-input::placeholder{color:var(--text-quaternary)}
+.sys-select{padding:6px 10px;border:1px solid var(--border-secondary);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;outline:none;background:#fff;cursor:pointer}
+.sys-select:focus{border-color:var(--primary)}
+.sys-pagination{display:flex;align-items:center;justify-content:space-between;margin-top:16px;font-size:13px;color:var(--text-tertiary)}
+.sys-page-info{display:flex;align-items:center;gap:4px}
+.sys-page-nav{display:flex;align-items:center;gap:4px}
+.sys-page-nav .active-page{background:var(--primary);color:#fff;border-color:var(--primary)}
+.user-avatar{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--bg-page);color:var(--text-quaternary);font-size:13px;margin-right:6px;vertical-align:middle}
+.link-btn{color:var(--primary);cursor:pointer;font-size:13px;margin-right:8px;transition:var(--transition)}
+.link-btn:hover{text-decoration:underline}
+.cell-desc{font-size:12px;color:var(--text-tertiary);margin-top:2px;font-weight:400}
+.form-group{margin-bottom:16px}
+.form-group .form-label{display:block;font-size:13px;color:var(--text-secondary);margin-bottom:6px}
+.required{color:#ff4d4f}
+.perm-tree{border:1px solid var(--border-secondary);border-radius:var(--radius-sm);padding:12px;max-height:320px;overflow-y:auto}
+.perm-group{margin-bottom:8px}
+.perm-group:last-child{margin-bottom:0}
+.perm-item{display:flex;align-items:center;gap:6px;padding:4px 0;font-size:13px;cursor:pointer;user-select:none}
+.perm-item input[type="checkbox"]{width:16px;height:16px;cursor:pointer;accent-color:var(--primary)}
+.perm-root{font-weight:500;color:var(--text-primary)}
+.perm-leaf{padding-left:24px;color:var(--text-secondary)}
 
 /* ===== Utility ===== */
 .flex{display:flex}.items-center{align-items:center}.gap-2{gap:8px}.gap-4{gap:16px}.mb-4{margin-bottom:16px}
+
+/* ===== Focus Visible ===== */
+*:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:var(--radius-sm)}
+button:focus:not(:focus-visible),a:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:not(:focus-visible),textarea:focus:not(:focus-visible){outline:none}
+
+/* ===== Reduced Motion ===== */
+@media(prefers-reduced-motion:reduce){*{animation-duration:0s!important;transition-duration:0s!important}}
 </style>
 </head>
 <body>
@@ -283,7 +313,7 @@ tr:hover td{background:var(--primary-bg)}
   <div class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logo">智</div>
-      <div class="sidebar-title">杭州智联</div>
+      <div class="sidebar-title">杭州会展智能体</div>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-label">概览</div>
@@ -299,9 +329,9 @@ tr:hover td{background:var(--primary-bg)}
         <i class="ri-arrow-down-s-line" style="margin-left:auto;font-size:12px"></i>
       </div>
       <div class="nav-sub" id="sys-sub">
-        <div class="nav-sub-item" onclick="switchPage('sys-user')">用户管理</div>
-        <div class="nav-sub-item" onclick="switchPage('sys-dept')">部门管理</div>
+        <div class="nav-sub-item" onclick="switchPage('sys-user')">账户管理</div>
         <div class="nav-sub-item" onclick="switchPage('sys-role')">角色管理</div>
+        <div class="nav-sub-item" onclick="switchPage('sys-dept')">部门管理</div>
       </div>
     </nav>
   </div>
@@ -322,13 +352,6 @@ tr:hover td{background:var(--primary-bg)}
           <!-- ===== 首页 ===== -->
           <div class="page active" id="page-home">
             <div class="page-title">工作台</div>
-            <div class="stats-grid">
-              <div class="stat-card"><div class="stat-label">媒资总量</div><div class="stat-value">12,847</div><div class="stat-change up"><i class="ri-arrow-up-s-line"></i> 12.5%</div></div>
-              <div class="stat-card"><div class="stat-label">今日发布</div><div class="stat-value">36</div><div class="stat-change up"><i class="ri-arrow-up-s-line"></i> 8.2%</div></div>
-              <div class="stat-card"><div class="stat-label">活跃用户</div><div class="stat-value">1,284</div><div class="stat-change down"><i class="ri-arrow-down-s-line"></i> 2.1%</div></div>
-              <div class="stat-card"><div class="stat-label">智能体</div><div class="stat-value">28</div><div class="stat-change up"><i class="ri-arrow-up-s-line"></i> 4.0%</div></div>
-            </div>
-            <div class="page-title" style="margin-top:8px">快捷入口</div>
             <div class="cards-grid">
               <div class="card" onclick="switchPage('meizi')">
                 <div class="card-icon blue"><i class="ri-gallery-line"></i></div>
@@ -470,62 +493,136 @@ tr:hover td{background:var(--primary-bg)}
               <table>
                 <thead><tr><th>任务名称</th><th>传播渠道</th><th>开始时间</th><th>结束时间</th><th>状态</th><th>操作</th></tr></thead>
                 <tbody>
-                  <tr><td><span style="color:var(--primary);cursor:pointer">正能量传播推送任务</span></td><td>微信公众号、微博、抖音</td><td>2026-03-20 00:00</td><td>2026-03-25 23:59</td><td><span class="tag tag-active">进行中</span></td><td><span class="action-link"><i class="ri-eye-line"></i>查看</span><span class="action-link"><i class="ri-bar-chart-line"></i>数据</span><span class="action-link"><i class="ri-edit-line"></i>编辑</span><span class="action-link" style="color:#ff4d4f"><i class="ri-delete-bin-line"></i>删除</span></td></tr>
-                  <tr><td>品牌宣传活动推广</td><td>小红书、B站</td><td>2026-03-18 00:00</td><td>2026-03-22 23:59</td><td><span class="tag tag-completed">已完成</span></td><td><span class="action-link"><i class="ri-eye-line"></i>查看</span><span class="action-link"><i class="ri-bar-chart-line"></i>数据</span><span class="action-link"><i class="ri-edit-line"></i>编辑</span><span class="action-link" style="color:#ff4d4f"><i class="ri-delete-bin-line"></i>删除</span></td></tr>
-                  <tr><td>数贸会预热报道</td><td>微信公众号、今日头条</td><td>2026-03-15 00:00</td><td>2026-03-19 23:59</td><td><span class="tag tag-completed">已完成</span></td><td><span class="action-link"><i class="ri-eye-line"></i>查看</span><span class="action-link"><i class="ri-bar-chart-line"></i>数据</span><span class="action-link"><i class="ri-edit-line"></i>编辑</span><span class="action-link" style="color:#ff4d4f"><i class="ri-delete-bin-line"></i>删除</span></td></tr>
-                  <tr><td>杭州城市形象推广</td><td>抖音、快手、微博</td><td>2026-03-10 00:00</td><td>2026-03-14 23:59</td><td><span class="tag tag-completed">已完成</span></td><td><span class="action-link"><i class="ri-eye-line"></i>查看</span><span class="action-link"><i class="ri-bar-chart-line"></i>数据</span><span class="action-link"><i class="ri-edit-line"></i>编辑</span><span class="action-link" style="color:#ff4d4f"><i class="ri-delete-bin-line"></i>删除</span></td></tr>
-                  <tr><td>会展行业趋势报告</td><td>微信公众号、36氪</td><td>2026-03-25 00:00</td><td>2026-04-01 23:59</td><td><span class="tag tag-pending">待执行</span></td><td><span class="action-link"><i class="ri-eye-line"></i>查看</span><span class="action-link"><i class="ri-bar-chart-line"></i>数据</span><span class="action-link"><i class="ri-edit-line"></i>编辑</span><span class="action-link" style="color:#ff4d4f"><i class="ri-delete-bin-line"></i>删除</span></td></tr>
+                  <tr><td><span class="link-btn" style="margin-right:0">正能量传播推送任务</span></td><td>微信公众号、微博、抖音</td><td>2026-03-20 00:00</td><td>2026-03-25 23:59</td><td><span class="tag tag-active">进行中</span></td><td><span class="action-link"><i class="ri-eye-line"></i>查看</span><span class="action-link"><i class="ri-bar-chart-line"></i>数据</span><span class="action-link"><i class="ri-edit-line"></i>编辑</span><span class="action-link action-link-danger"><i class="ri-delete-bin-line"></i>删除</span></td></tr>
+                  <tr><td>品牌宣传活动推广</td><td>小红书、B站</td><td>2026-03-18 00:00</td><td>2026-03-22 23:59</td><td><span class="tag tag-completed">已完成</span></td><td><span class="action-link"><i class="ri-eye-line"></i>查看</span><span class="action-link"><i class="ri-bar-chart-line"></i>数据</span><span class="action-link"><i class="ri-edit-line"></i>编辑</span><span class="action-link action-link-danger"><i class="ri-delete-bin-line"></i>删除</span></td></tr>
+                  <tr><td>数贸会预热报道</td><td>微信公众号、今日头条</td><td>2026-03-15 00:00</td><td>2026-03-19 23:59</td><td><span class="tag tag-completed">已完成</span></td><td><span class="action-link"><i class="ri-eye-line"></i>查看</span><span class="action-link"><i class="ri-bar-chart-line"></i>数据</span><span class="action-link"><i class="ri-edit-line"></i>编辑</span><span class="action-link action-link-danger"><i class="ri-delete-bin-line"></i>删除</span></td></tr>
+                  <tr><td>杭州城市形象推广</td><td>抖音、快手、微博</td><td>2026-03-10 00:00</td><td>2026-03-14 23:59</td><td><span class="tag tag-completed">已完成</span></td><td><span class="action-link"><i class="ri-eye-line"></i>查看</span><span class="action-link"><i class="ri-bar-chart-line"></i>数据</span><span class="action-link"><i class="ri-edit-line"></i>编辑</span><span class="action-link action-link-danger"><i class="ri-delete-bin-line"></i>删除</span></td></tr>
+                  <tr><td>会展行业趋势报告</td><td>微信公众号、36氪</td><td>2026-03-25 00:00</td><td>2026-04-01 23:59</td><td><span class="tag tag-pending">待执行</span></td><td><span class="action-link"><i class="ri-eye-line"></i>查看</span><span class="action-link"><i class="ri-bar-chart-line"></i>数据</span><span class="action-link"><i class="ri-edit-line"></i>编辑</span><span class="action-link action-link-danger"><i class="ri-delete-bin-line"></i>删除</span></td></tr>
                 </tbody>
               </table>
             </div>
           </div>
 
-          <!-- ===== 用户管理 ===== -->
+          <!-- ===== 账户管理 ===== -->
           <div class="page" id="page-sys-user">
             <div class="sys-layout" style="height:auto">
               <div class="sys-nav">
-                <div class="sys-nav-item active"><i class="ri-user-3-line"></i> 用户管理</div>
-                <div class="sys-nav-item" onclick="switchPage('sys-dept')"><i class="ri-building-line"></i> 部门管理</div>
+                <div class="sys-nav-item active"><i class="ri-user-3-line"></i> 账户管理</div>
                 <div class="sys-nav-item" onclick="switchPage('sys-role')"><i class="ri-shield-user-line"></i> 角色管理</div>
+                <div class="sys-nav-item" onclick="switchPage('sys-dept')"><i class="ri-building-line"></i> 部门管理</div>
               </div>
               <div class="sys-content">
-                <div class="sys-header"><div class="sys-title">用户管理</div><button class="btn btn-primary"><i class="ri-add-line"></i> 新增用户</button></div>
+                <div class="sys-toolbar">
+                  <div class="sys-toolbar-left">
+                    <span class="sys-toolbar-label">用户名/姓名</span>
+                    <input type="text" class="sys-input" placeholder="请输入">
+                    <span class="sys-toolbar-label" style="margin-left:8px">部门</span>
+                    <select class="sys-select"><option>全部</option><option>总经办</option><option>技术部</option><option>运营部</option><option>产品部</option></select>
+                    <button class="btn btn-primary btn-sm" style="margin-left:8px">查询</button>
+                    <button class="btn btn-outline btn-sm">重置</button>
+                  </div>
+                  <button class="btn btn-primary" onclick="openModal('addUserModal')"><i class="ri-add-line"></i> 新增用户</button>
+                </div>
                 <div class="table-wrapper">
                   <table>
                     <thead><tr><th>用户名</th><th>姓名</th><th>部门</th><th>角色</th><th>状态</th><th>操作</th></tr></thead>
                     <tbody>
-                      <tr><td>admin</td><td>管理员</td><td>总经办</td><td>超级管理员</td><td><span class="badge badge-success">启用</span></td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
-                      <tr><td>zhangsan</td><td>张三</td><td>技术部</td><td>开发者</td><td><span class="badge badge-success">启用</span></td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
-                      <tr><td>lisi</td><td>李四</td><td>运营部</td><td>运营人员</td><td><span class="badge badge-success">启用</span></td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
-                      <tr><td>wangwu</td><td>王五</td><td>产品部</td><td>产品经理</td><td><span class="badge badge-warning">停用</span></td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
+                      <tr><td><span class="user-avatar"><i class="ri-user-3-fill"></i></span> admin</td><td>管理员</td><td>技术部</td><td>超级管理员</td><td><span class="badge badge-success">已启用</span></td><td><a class="link-btn" onclick="openModal('editUserModal')">编辑</a> <a class="link-btn" onclick="confirmAction('确定删除该用户吗？',function(){})">删除</a> <a class="link-btn" onclick="confirmAction('确定重置该用户的密码吗？',function(){})">重置密码</a></td></tr>
+                      <tr><td><span class="user-avatar"><i class="ri-user-3-fill"></i></span> lijingtao</td><td>李景涛</td><td>运营部</td><td>普通管理员</td><td><span class="badge badge-success">已启用</span></td><td><a class="link-btn" onclick="openModal('editUserModal')">编辑</a> <a class="link-btn" onclick="confirmAction('确定删除该用户吗？',function(){})">删除</a> <a class="link-btn" onclick="confirmAction('确定重置该用户的密码吗？',function(){})">重置密码</a></td></tr>
+                      <tr><td><span class="user-avatar"><i class="ri-user-3-fill"></i></span> yuanlin</td><td>苑琳</td><td>运营部</td><td>普通管理员</td><td><span class="badge badge-success">已启用</span></td><td><a class="link-btn" onclick="openModal('editUserModal')">编辑</a> <a class="link-btn" onclick="confirmAction('确定删除该用户吗？',function(){})">删除</a> <a class="link-btn" onclick="confirmAction('确定重置该用户的密码吗？',function(){})">重置密码</a></td></tr>
+                      <tr><td><span class="user-avatar"><i class="ri-user-3-fill"></i></span> xukai</td><td>徐凯</td><td>运营部</td><td>普通管理员</td><td><span class="badge badge-success">已启用</span></td><td><a class="link-btn" onclick="openModal('editUserModal')">编辑</a> <a class="link-btn" onclick="confirmAction('确定删除该用户吗？',function(){})">删除</a> <a class="link-btn" onclick="confirmAction('确定重置该用户的密码吗？',function(){})">重置密码</a></td></tr>
+                      <tr><td><span class="user-avatar"><i class="ri-user-3-fill"></i></span> zhengqian</td><td>郑倩</td><td>运营部</td><td>普通管理员</td><td><span class="badge badge-success">已启用</span></td><td><a class="link-btn" onclick="openModal('editUserModal')">编辑</a> <a class="link-btn" onclick="confirmAction('确定删除该用户吗？',function(){})">删除</a> <a class="link-btn" onclick="confirmAction('确定重置该用户的密码吗？',function(){})">重置密码</a></td></tr>
+                      <tr><td><span class="user-avatar"><i class="ri-user-3-fill"></i></span> sunxu</td><td>孙旭</td><td>运营部</td><td>普通管理员</td><td><span class="badge badge-success">已启用</span></td><td><a class="link-btn" onclick="openModal('editUserModal')">编辑</a> <a class="link-btn" onclick="confirmAction('确定删除该用户吗？',function(){})">删除</a> <a class="link-btn" onclick="confirmAction('确定重置该用户的密码吗？',function(){})">重置密码</a></td></tr>
+                      <tr><td><span class="user-avatar"><i class="ri-user-3-fill"></i></span> heyuan</td><td>何源</td><td>运营部</td><td>普通管理员</td><td><span class="badge badge-success">已启用</span></td><td><a class="link-btn" onclick="openModal('editUserModal')">编辑</a> <a class="link-btn" onclick="confirmAction('确定删除该用户吗？',function(){})">删除</a> <a class="link-btn" onclick="confirmAction('确定重置该用户的密码吗？',function(){})">重置密码</a></td></tr>
+                      <tr><td><span class="user-avatar"><i class="ri-user-3-fill"></i></span> wangziming</td><td>王子鸣</td><td>运营部</td><td>普通管理员</td><td><span class="badge badge-success">已启用</span></td><td><a class="link-btn" onclick="openModal('editUserModal')">编辑</a> <a class="link-btn" onclick="confirmAction('确定删除该用户吗？',function(){})">删除</a> <a class="link-btn" onclick="confirmAction('确定重置该用户的密码吗？',function(){})">重置密码</a></td></tr>
+                      <tr><td><span class="user-avatar"><i class="ri-user-3-fill"></i></span> chenpeng</td><td>陈鹏</td><td>运营部</td><td>普通管理员</td><td><span class="badge badge-success">已启用</span></td><td><a class="link-btn" onclick="openModal('editUserModal')">编辑</a> <a class="link-btn" onclick="confirmAction('确定删除该用户吗？',function(){})">删除</a> <a class="link-btn" onclick="confirmAction('确定重置该用户的密码吗？',function(){})">重置密码</a></td></tr>
                     </tbody>
                   </table>
+                </div>
+                <div class="sys-pagination">
+                  <div class="sys-page-info">每页 <select class="sys-select" style="width:60px"><option>10</option><option>20</option><option>50</option></select> 条，共 9 条</div>
+                  <div class="sys-page-nav">
+                    <button class="btn btn-ghost btn-sm" disabled>&lt;</button>
+                    <button class="btn btn-ghost btn-sm active-page">1</button>
+                    <button class="btn btn-ghost btn-sm" disabled>&gt;</button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- ===== 部门管理 ===== -->
-          <div class="page" id="page-sys-dept">
-            <div class="sys-layout" style="height:auto">
-              <div class="sys-nav">
-                <div class="sys-nav-item" onclick="switchPage('sys-user')"><i class="ri-user-3-line"></i> 用户管理</div>
-                <div class="sys-nav-item active"><i class="ri-building-line"></i> 部门管理</div>
-                <div class="sys-nav-item" onclick="switchPage('sys-role')"><i class="ri-shield-user-line"></i> 角色管理</div>
+          <!-- ===== 编辑用户弹窗 ===== -->
+          <div class="modal-overlay" id="editUserModal" onclick="if(event.target===this)closeModal('editUserModal')">
+            <div class="modal" style="width:480px">
+              <div class="modal-header">
+                <div class="modal-title">编辑用户</div>
+                <button class="modal-close" onclick="closeModal('editUserModal')"><i class="ri-close-line"></i></button>
               </div>
-              <div class="sys-content">
-                <div class="sys-header"><div class="sys-title">部门管理</div><button class="btn btn-primary"><i class="ri-add-line"></i> 新增部门</button></div>
-                <div class="table-wrapper">
-                  <table>
-                    <thead><tr><th>部门名称</th><th>部门编码</th><th>负责人</th><th>人数</th><th>状态</th><th>操作</th></tr></thead>
-                    <tbody>
-                      <tr><td>总经办</td><td>GM</td><td>管理员</td><td>3</td><td><span class="badge badge-success">启用</span></td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
-                      <tr><td>技术部</td><td>TECH</td><td>张三</td><td>25</td><td><span class="badge badge-success">启用</span></td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
-                      <tr><td>运营部</td><td>OPS</td><td>李四</td><td>12</td><td><span class="badge badge-success">启用</span></td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
-                      <tr><td>产品部</td><td>PM</td><td>王五</td><td>8</td><td><span class="badge badge-success">启用</span></td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
-                    </tbody>
-                  </table>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label class="form-label">用户名</label>
+                  <input type="text" class="form-input" value="admin" disabled>
                 </div>
+                <div class="form-group">
+                  <label class="form-label">姓名</label>
+                  <input type="text" class="form-input" value="管理员">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">新密码</label>
+                  <input type="password" class="form-input" placeholder="新密码">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">部门</label>
+                  <input type="text" class="form-input" value="技术部" disabled>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">角色</label>
+                  <select class="form-input"><option>超级管理员</option><option>普通管理员</option></select>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('editUserModal')">取消</button>
+                <button class="btn btn-primary" onclick="closeModal('editUserModal')">保存</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== 新增用户弹窗 ===== -->
+          <div class="modal-overlay" id="addUserModal" onclick="if(event.target===this)closeModal('addUserModal')">
+            <div class="modal" style="width:480px">
+              <div class="modal-header">
+                <div class="modal-title">新增用户</div>
+                <button class="modal-close" onclick="closeModal('addUserModal')"><i class="ri-close-line"></i></button>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span> 用户名</label>
+                  <input type="text" class="form-input" placeholder="请输入用户名">
+                </div>
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span> 姓名</label>
+                  <input type="text" class="form-input" placeholder="请输入姓名">
+                </div>
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span> 密码</label>
+                  <input type="password" class="form-input" placeholder="请输入密码">
+                </div>
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span> 部门</label>
+                  <select class="form-input"><option>请选择部门</option><option>总经办</option><option>技术部</option><option>运营部</option><option>产品部</option></select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span> 角色</label>
+                  <select class="form-input"><option>请选择角色</option><option>超级管理员</option><option>普通管理员</option></select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">状态</label>
+                  <select class="form-input"><option>已启用</option><option>已禁用</option></select>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('addUserModal')">取消</button>
+                <button class="btn btn-primary" onclick="closeModal('addUserModal')">保存</button>
               </div>
             </div>
           </div>
@@ -534,26 +631,179 @@ tr:hover td{background:var(--primary-bg)}
           <div class="page" id="page-sys-role">
             <div class="sys-layout" style="height:auto">
               <div class="sys-nav">
-                <div class="sys-nav-item" onclick="switchPage('sys-user')"><i class="ri-user-3-line"></i> 用户管理</div>
-                <div class="sys-nav-item" onclick="switchPage('sys-dept')"><i class="ri-building-line"></i> 部门管理</div>
+                <div class="sys-nav-item" onclick="switchPage('sys-user')"><i class="ri-user-3-line"></i> 账户管理</div>
                 <div class="sys-nav-item active"><i class="ri-shield-user-line"></i> 角色管理</div>
+                <div class="sys-nav-item" onclick="switchPage('sys-dept')"><i class="ri-building-line"></i> 部门管理</div>
               </div>
               <div class="sys-content">
-                <div class="sys-header"><div class="sys-title">角色管理</div><button class="btn btn-primary"><i class="ri-add-line"></i> 新增角色</button></div>
+                <div class="sys-toolbar">
+                  <button class="btn btn-primary" onclick="openModal('addRoleModal')"><i class="ri-add-line"></i> 新增角色</button>
+                </div>
                 <div class="table-wrapper">
                   <table>
-                    <thead><tr><th>角色名称</th><th>角色编码</th><th>用户数</th><th>描述</th><th>操作</th></tr></thead>
+                    <thead><tr><th>角色名称</th><th>用户数</th><th>创建人</th><th>创建时间</th><th>更新时间</th><th>操作</th></tr></thead>
                     <tbody>
-                      <tr><td>超级管理员</td><td>super_admin</td><td>1</td><td>拥有全部权限</td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
-                      <tr><td>开发者</td><td>developer</td><td>8</td><td>技术开发权限</td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
-                      <tr><td>运营人员</td><td>operator</td><td>12</td><td>内容运营权限</td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
-                      <tr><td>产品经理</td><td>product_manager</td><td>5</td><td>产品管理权限</td><td><button class="btn btn-ghost btn-sm">编辑</button></td></tr>
+                      <tr><td><div>普通管理员</div><div class="cell-desc">只能使用基础管理功能</div></td><td>7</td><td>admin</td><td>2026-03-12 00:00:00</td><td>2026-03-12 00:00:00</td><td><a class="link-btn" onclick="openModal('addRoleModal')">编辑</a> <a class="link-btn" onclick="confirmAction('确定删除该角色吗？',function(){})">删除</a></td></tr>
+                      <tr><td><div>超级管理员</div><div class="cell-desc">拥有本系统全部权限</div></td><td>1</td><td>admin</td><td>2026-03-12 00:00:00</td><td>2026-03-12 00:00:00</td><td><a class="link-btn" onclick="openModal('addRoleModal')">编辑</a> <a class="link-btn" style="color:var(--text-quaternary)" title="超级管理员不可删除">删除</a></td></tr>
                     </tbody>
                   </table>
                 </div>
               </div>
             </div>
           </div>
+
+          <!-- ===== 新增角色弹窗 ===== -->
+          <div class="modal-overlay" id="addRoleModal" onclick="if(event.target===this)closeModal('addRoleModal')">
+            <div class="modal" style="width:520px">
+              <div class="modal-header">
+                <div class="modal-title">新增角色</div>
+                <button class="modal-close" onclick="closeModal('addRoleModal')"><i class="ri-close-line"></i></button>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span> 角色名称</label>
+                  <input type="text" class="form-input" placeholder="请输入角色名称">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">权限设置</label>
+                  <div class="perm-tree" id="permTree">
+                    <div class="perm-group">
+                      <label class="perm-item perm-root"><input type="checkbox" onchange="permToggle(this)"> 工作台</label>
+                      <label class="perm-item perm-leaf"><input type="checkbox" onchange="permLeafChange(this)"> 数据看板</label>
+                      <label class="perm-item perm-leaf"><input type="checkbox" onchange="permLeafChange(this)"> 操作日志</label>
+                    </div>
+                    <div class="perm-group">
+                      <label class="perm-item perm-root"><input type="checkbox" onchange="permToggle(this)"> 智能媒资</label>
+                      <label class="perm-item perm-leaf"><input type="checkbox" onchange="permLeafChange(this)"> 素材检索</label>
+                      <label class="perm-item perm-leaf"><input type="checkbox" onchange="permLeafChange(this)"> 素材上传</label>
+                      <label class="perm-item perm-leaf"><input type="checkbox" onchange="permLeafChange(this)"> 素材审核</label>
+                      <label class="perm-item perm-leaf"><input type="checkbox" onchange="permLeafChange(this)"> 素材下载</label>
+                    </div>
+                    <div class="perm-group">
+                      <label class="perm-item perm-root"><input type="checkbox" onchange="permToggle(this)"> 传播大模型</label>
+                      <label class="perm-item perm-leaf"><input type="checkbox" onchange="permLeafChange(this)"> 新闻报道</label>
+                      <label class="perm-item perm-leaf"><input type="checkbox" onchange="permLeafChange(this)"> AI 生图</label>
+                      <label class="perm-item perm-leaf"><input type="checkbox" onchange="permLeafChange(this)"> AI 成片</label>
+                      <label class="perm-item perm-leaf"><input type="checkbox" onchange="permLeafChange(this)"> AI 视频</label>
+                    </div>
+                    <div class="perm-group">
+                      <label class="perm-item perm-root"><input type="checkbox" onchange="permToggle(this)"> 智能体平台</label>
+                      <label class="perm-item perm-leaf"><input type="checkbox" onchange="permLeafChange(this)"> 内容创作助手</label>
+                      <label class="perm-item perm-leaf"><input type="checkbox" onchange="permLeafChange(this)"> 智能客服</label>
+                      <label class="perm-item perm-leaf"><input type="checkbox" onchange="permLeafChange(this)"> 数据分析助手</label>
+                    </div>
+                    <div class="perm-group">
+                      <label class="perm-item perm-root"><input type="checkbox" onchange="permToggle(this)"> 传播投手</label>
+                      <label class="perm-item perm-leaf"><input type="checkbox" onchange="permLeafChange(this)"> 任务管理</label>
+                      <label class="perm-item perm-leaf"><input type="checkbox" onchange="permLeafChange(this)"> 数据查看</label>
+                    </div>
+                    <div class="perm-group">
+                      <label class="perm-item perm-root"><input type="checkbox" onchange="permToggle(this)"> 系统管理</label>
+                      <label class="perm-item perm-leaf"><input type="checkbox" onchange="permLeafChange(this)"> 账户管理</label>
+                      <label class="perm-item perm-leaf"><input type="checkbox" onchange="permLeafChange(this)"> 角色管理</label>
+                      <label class="perm-item perm-leaf"><input type="checkbox" onchange="permLeafChange(this)"> 部门管理</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('addRoleModal')">取消</button>
+                <button class="btn btn-primary" onclick="closeModal('addRoleModal')">保存</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== 部门管理 ===== -->
+          <div class="page" id="page-sys-dept">
+            <div class="sys-layout" style="height:auto">
+              <div class="sys-nav">
+                <div class="sys-nav-item" onclick="switchPage('sys-user')"><i class="ri-user-3-line"></i> 账户管理</div>
+                <div class="sys-nav-item" onclick="switchPage('sys-role')"><i class="ri-shield-user-line"></i> 角色管理</div>
+                <div class="sys-nav-item active"><i class="ri-building-line"></i> 部门管理</div>
+              </div>
+              <div class="sys-content">
+                <div class="sys-toolbar">
+                  <button class="btn btn-primary" onclick="openModal('addDeptModal')"><i class="ri-add-line"></i> 新增部门</button>
+                </div>
+                <div class="table-wrapper">
+                  <table>
+                    <thead><tr><th>部门名称</th><th>部门编码</th><th>负责人</th><th>人数</th><th>状态</th><th>操作</th></tr></thead>
+                    <tbody>
+                      <tr><td>技术部</td><td>TECH</td><td>张三</td><td>15</td><td><span class="badge badge-success">已启用</span></td><td><a class="link-btn" onclick="openModal('editDeptModal')">编辑</a> <a class="link-btn" onclick="confirmAction('确定删除该部门吗？',function(){})">删除</a></td></tr>
+                      <tr><td>运营部</td><td>OPS</td><td>李四</td><td>12</td><td><span class="badge badge-success">已启用</span></td><td><a class="link-btn" onclick="openModal('editDeptModal')">编辑</a> <a class="link-btn" onclick="confirmAction('确定删除该部门吗？',function(){})">删除</a></td></tr>
+                      <tr><td>产品部</td><td>PM</td><td>王五</td><td>8</td><td><span class="badge badge-success">已启用</span></td><td><a class="link-btn" onclick="openModal('editDeptModal')">编辑</a> <a class="link-btn" onclick="confirmAction('确定删除该部门吗？',function(){})">删除</a></td></tr>
+                      <tr><td>总经办</td><td>GM</td><td>管理员</td><td>3</td><td><span class="badge badge-success">已启用</span></td><td><a class="link-btn" onclick="openModal('editDeptModal')">编辑</a> <a class="link-btn" onclick="confirmAction('确定删除该部门吗？',function(){})">删除</a></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== 新增部门弹窗 ===== -->
+          <div class="modal-overlay" id="addDeptModal" onclick="if(event.target===this)closeModal('addDeptModal')">
+            <div class="modal" style="width:480px">
+              <div class="modal-header">
+                <div class="modal-title">新增部门</div>
+                <button class="modal-close" onclick="closeModal('addDeptModal')"><i class="ri-close-line"></i></button>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span> 部门名称</label>
+                  <input type="text" class="form-input" placeholder="请输入部门名称">
+                </div>
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span> 部门编码</label>
+                  <input type="text" class="form-input" placeholder="请输入部门编码">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">负责人</label>
+                  <select class="form-input"><option>请选择负责人</option><option>管理员</option><option>张三</option><option>李四</option><option>王五</option></select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">状态</label>
+                  <select class="form-input"><option>已启用</option><option>已禁用</option></select>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('addDeptModal')">取消</button>
+                <button class="btn btn-primary" onclick="closeModal('addDeptModal')">保存</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== 编辑部门弹窗 ===== -->
+          <div class="modal-overlay" id="editDeptModal" onclick="if(event.target===this)closeModal('editDeptModal')">
+            <div class="modal" style="width:480px">
+              <div class="modal-header">
+                <div class="modal-title">编辑部门</div>
+                <button class="modal-close" onclick="closeModal('editDeptModal')"><i class="ri-close-line"></i></button>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span> 部门名称</label>
+                  <input type="text" class="form-input" value="技术部">
+                </div>
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span> 部门编码</label>
+                  <input type="text" class="form-input" value="TECH">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">负责人</label>
+                  <select class="form-input"><option>张三</option><option>李四</option><option>王五</option><option>管理员</option></select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">状态</label>
+                  <select class="form-input"><option>已启用</option><option>已禁用</option></select>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('editDeptModal')">取消</button>
+                <button class="btn btn-primary" onclick="closeModal('editDeptModal')">保存</button>
+              </div>
+            </div>
+          </div>
+
 
         </div><!-- /.page-container -->
 
@@ -569,12 +819,12 @@ tr:hover td{background:var(--primary-bg)}
 </div><!-- /.app -->
 
 <!-- Pitcher Create Modal -->
-<div class="modal-overlay" id="pitcherCreateModal">
+<div class="modal-overlay" id="pitcherCreateModal" onclick="if(event.target===this)closeModal('pitcherCreateModal')">
   <div class="modal">
     <div class="modal-header"><div class="modal-title">新建传播任务</div><button class="modal-close" onclick="closeModal('pitcherCreateModal')"><i class="ri-close-line"></i></button></div>
     <div class="modal-body">
-      <div class="form-item"><div class="form-label">任务名称 <span style="color:#ff4d4f">*</span></div><input class="form-input" placeholder="请输入任务名称"></div>
-      <div class="form-item"><div class="form-label">传播渠道 <span style="color:#ff4d4f">*</span></div>
+      <div class="form-group"><div class="form-label">任务名称 <span class="required">*</span></div><input class="form-input" placeholder="请输入任务名称"></div>
+      <div class="form-group"><div class="form-label">传播渠道 <span class="required">*</span></div>
         <div style="display:flex;flex-wrap:wrap;gap:12px">
           <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer"><input type="checkbox" style="accent-color:var(--primary)"> 微信公众号</label>
           <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer"><input type="checkbox" style="accent-color:var(--primary)"> 微博</label>
@@ -586,19 +836,19 @@ tr:hover td{background:var(--primary-bg)}
           <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer"><input type="checkbox" style="accent-color:var(--primary)"> 36氪</label>
         </div>
       </div>
-      <div class="form-item"><div class="form-label">开始时间 <span style="color:#ff4d4f">*</span></div><input class="form-input" type="datetime-local"></div>
-      <div class="form-item"><div class="form-label">结束时间 <span style="color:#ff4d4f">*</span></div><input class="form-input" type="datetime-local"></div>
-      <div class="form-item"><div class="form-label">备注</div><textarea class="form-textarea" placeholder="请输入备注信息（选填）"></textarea></div>
+      <div class="form-group"><div class="form-label">开始时间 <span class="required">*</span></div><input class="form-input" type="datetime-local"></div>
+      <div class="form-group"><div class="form-label">结束时间 <span class="required">*</span></div><input class="form-input" type="datetime-local"></div>
+      <div class="form-group"><div class="form-label">备注</div><textarea class="form-textarea" placeholder="请输入备注信息（选填）"></textarea></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-default" onclick="closeModal('pitcherCreateModal')">取消</button>
-      <button class="btn btn-modal-primary" onclick="closeModal('pitcherCreateModal')">提交</button>
+      <button class="btn btn-outline" onclick="closeModal('pitcherCreateModal')">取消</button>
+      <button class="btn btn-primary" onclick="closeModal('pitcherCreateModal')">提交</button>
     </div>
   </div>
 </div>
 
 <!-- Upload Modal -->
-<div class="modal-overlay" id="uploadModal">
+<div class="modal-overlay" id="uploadModal" onclick="if(event.target===this)closeModal('uploadModal')">
   <div class="modal">
     <div class="modal-header"><div class="modal-title">上传素材</div><button class="modal-close" onclick="closeModal('uploadModal')"><i class="ri-close-line"></i></button></div>
     <div class="modal-body">
@@ -609,8 +859,8 @@ tr:hover td{background:var(--primary-bg)}
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-default" onclick="closeModal('uploadModal')">取消</button>
-      <button class="btn btn-modal-primary" onclick="closeModal('uploadModal')">开始上传</button>
+      <button class="btn btn-outline" onclick="closeModal('uploadModal')">取消</button>
+      <button class="btn btn-primary" onclick="closeModal('uploadModal')">开始上传</button>
     </div>
   </div>
 </div>
@@ -646,7 +896,26 @@ function toggleSub(id) {
   if (sub) sub.classList.toggle('open');
 }
 
-function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { var el=document.getElementById(id); el.classList.remove('show'); if(el.id==='_confirm'){setTimeout(function(){el.remove()},200);} }
+function confirmAction(msg, cb) { var d=document.createElement('div'); d.className='modal-overlay show'; d.id='_confirm'; d.innerHTML='<div class="modal" style="width:400px"><div class="modal-header"><div class="modal-title">提示</div><button class="modal-close" onclick="closeModal(\'_confirm\')"><i class="ri-close-line"></i></button></div><div class="modal-body"><p style="font-size:14px;color:var(--text-primary)">'+msg+'</p></div><div class="modal-footer"><button class="btn btn-outline" onclick="closeModal(\'_confirm\')">取消</button><button class="btn btn-danger" id="_confirmOk">确定</button></div></div>'; d.addEventListener('click',function(e){if(e.target===d)closeModal('_confirm');}); document.body.appendChild(d); document.getElementById('_confirmOk').onclick=function(){closeModal('_confirm');cb();}; }
+
+// ========== Permission Tree ==========
+function permToggle(root) {
+  var group = root.closest('.perm-group');
+  var leaves = group.querySelectorAll('.perm-leaf input[type=checkbox]');
+  for (var i = 0; i < leaves.length; i++) { leaves[i].checked = root.checked; leaves[i].indeterminate = false; }
+}
+function permLeafChange(leaf) {
+  var group = leaf.closest('.perm-group');
+  var root = group.querySelector('.perm-root input[type=checkbox]');
+  var leaves = group.querySelectorAll('.perm-leaf input[type=checkbox]');
+  var checked = 0;
+  for (var i = 0; i < leaves.length; i++) { if (leaves[i].checked) checked++; }
+  if (checked === 0) { root.checked = false; root.indeterminate = false; }
+  else if (checked === leaves.length) { root.checked = true; root.indeterminate = false; }
+  else { root.checked = false; root.indeterminate = true; }
+}
 
 window.addEventListener('hashchange', function(){ var h = window.location.hash.slice(1); if(h) switchPage(h); });
 window.addEventListener('DOMContentLoaded', function(){ var h = window.location.hash.slice(1); if(h) switchPage(h); });
@@ -710,516 +979,9 @@ renderMasonry();
 function openPitcherCreate(){document.getElementById('pitcherCreateModal').classList.add('show')}
 
 // ========== PRD Module ==========
-var prdMd = `# 杭州智联 — 智能媒资管理平台 产品需求文档
+var prdMd = '';
 
-## 1. 产品概述
-
-### 1.1 产品背景
-杭州智联智能媒资管理平台是面向媒体行业的一体化智能媒资管理与内容传播平台。当前媒体机构面临媒资分散、内容生产效率低、传播渠道多但缺乏统一管控等痛点，平台通过 AI 技术赋能内容采集、创作、审核、发布全链路，帮助媒体机构实现数字化转型。
-
-### 1.2 产品目标
-- 打造统一的媒资管理中心，实现资源的高效检索与管理
-- 通过 AI 大模型提升内容创作效率，降低人工成本
-- 提供智能传播能力，实现多渠道内容的精准投放与效果追踪
-- 建立系统化的权限管理体系，保障数据安全与合规
-
-### 1.3 用户角色
-
-**超级管理员**
-拥有平台全部权限，负责系统级配置，包括用户管理、部门管理、角色权限分配等。超级管理员可查看并操作所有业务模块的数据。
-
-**内容编辑**
-负责媒资的日常管理，包括素材的检索、编辑、审核与发布。内容编辑主要使用智能媒资模块，对平台资源进行全生命周期管理。
-
-**运营人员**
-负责传播任务的创建、执行与效果监控。运营人员主要使用传播投手模块和传播大模型模块，制定传播策略并跟踪传播效果。
-
-**数据分析人员**
-负责传播效果的数据分析与趋势预测。数据分析人员使用智能体平台中的数据分析助手，对平台运营数据进行深度挖掘。
-
----
-
-## 2. 功能需求
-
-### 2.1 首页工作台
-
-#### 2.1.1 数据概览
-
-首页顶部展示四张核心数据统计卡片，帮助用户快速了解平台运营状况。
-
-**媒资总量**
-- 取数规则：取当前平台全部媒资库（含集团库、个人库、共享库）中的资源总数
-- 展示内容：数字格式化为千分位（如 12,847），下方显示环比增长率（正数显示为"↑ x.x%"，负数显示为"↓ x.x%"）
-
-**今日发布**
-- 取数规则：取当日 00:00 至当前时刻新发布的媒资数量
-- 展示内容：当日发布数，下方显示环比增长率
-
-**活跃用户**
-- 取数规则：取当日登录并有操作行为（搜索、编辑、发布、下载等）的去重用户数
-- 展示内容：去重用户数，下方显示环比增长率
-
-**智能体**
-- 取数规则：取当前平台已创建且状态为"启用"的智能体总数
-- 展示内容：智能体总数，下方显示环比增长率
-
-#### 2.1.2 快捷入口
-
-数据概览下方展示四个业务模块的快捷入口卡片，方便用户快速进入各功能模块。
-
-**卡片展示规则**
-- 每张卡片包含：模块图标、模块名称、一句话功能简介
-- 卡片为可点击状态，点击后跳转至对应模块页面
-- 四个模块依次为：智能媒资、传播大模型、智能体平台、传播投手
-
-**模块说明**
-- 智能媒资：媒资采集、编辑、审核、发布全流程管理
-- 传播大模型：AI 驱动的内容生成与传播分析
-- 智能体平台：创建、配置、管理 AI 智能体
-- 传播投手：智能投放策略与效果追踪
-
-### 2.2 智能媒资模块
-
-#### 2.2.1 检索功能
-
-**检索模式**
-
-支持三种检索模式，通过顶部标签页切换，默认选中"精准检索"：
-
-- 精准检索：按用户输入的关键词精确匹配媒资的标题、描述、标签等元数据字段
-- 文搜图：用户输入自然语言描述，系统通过语义理解返回相关图片结果
-- 图搜图：用户上传一张图片，系统返回视觉上相似的图片结果
-
-点击切换 tab 时，下方搜索区域的输入控件对应调整（如图搜图模式下输入框变为图片上传区域）。
-
-**检索输入**
-
-精准检索模式下的输入区域由左至右包含以下控件：
-
-- 类型下拉框：选项为"全部""图片""视频""文档"，默认选中"全部"。用于限定搜索结果的媒资类型。
-- 关键词输入框：支持输入单个或多个关键词。多个关键词以空格分隔，按关键词匹配模式（见下）进行检索。
-- 匹配模式下拉框：选项为"包含全部关键词""包含任一关键词""精确匹配"，默认选中"包含全部关键词"。
-  - 包含全部关键词：搜索结果需同时包含所有输入的关键词
-  - 包含任一关键词：搜索结果包含任一关键词即返回
-  - 精确匹配：搜索结果需完全匹配输入的关键词短语
-- 搜索按钮：点击触发搜索，或在输入框中按下回车键触发搜索
-
-#### 2.2.2 高级筛选
-
-搜索区域下方为筛选栏，支持按以下条件进一步缩小搜索范围：
-
-**发布时间**
-- 选项为"全部""今天""本周""本月"，默认选中"全部"
-- 选中"今天"：筛选当日发布的媒资
-- 选中"本周"：筛选本周发布的媒资（周一至当前）
-- 选中"本月"：筛选本月发布的媒资（1号至当前）
-
-**资源库**
-- 选项为"全部""集团库""个人库""共享库"，默认选中"全部"
-- 集团库：机构统一管理的公共资源库
-- 个人库：用户个人上传和管理的资源库
-- 共享库：跨部门或跨团队共享的资源库
-
-筛选条件变更后自动触发搜索结果刷新，无需手动点击搜索。
-
-#### 2.2.3 搜索结果区域
-
-**工具栏**
-
-搜索结果上方为操作工具栏，从左至右依次为：
-
-- 下载按钮：批量下载已选中的媒资。当未选中任何资源时，该按钮仍可点击但提示"请先选择要下载的资源"。
-- 添加到个人素材库按钮：将选中的媒资添加至当前用户的个人素材库。可重复添加，已添加的资源提示"已在个人素材库中"。
-- 全选复选框：勾选后选中当前页所有资源；取消勾选则清除全部选择。
-- 已选数量：实时显示当前已选中的资源数量，格式为"已选 X"。
-- 清除选择：点击后清空所有选中状态。
-- 结果统计：显示"找到约 X 条相关消息"。
-- 排序下拉框：选项为"时间 ↓（默认）""时间 ↑""相关度"，切换后即时刷新排序结果。
-
-**结果网格**
-
-搜索结果以网格形式展示，每行展示 5 个资源卡片，超出后自动换行。每个资源卡片包含以下元素：
-
-- 复选框：位于卡片左上角，默认隐藏，鼠标悬浮在卡片上时显示。选中后常驻显示并变为激活状态。
-- 更多操作按钮：位于卡片右上角，默认隐藏，鼠标悬浮时显示。点击后弹出操作菜单（预览、下载、删除、添加标签等）。
-- 缩略图：卡片主体区域，宽高比 4:3，图片居中裁剪展示。鼠标悬浮时图片有轻微放大效果。
-- 标题：显示媒资标题，超长时单行省略并显示完整标题的 tooltip。
-- 元信息行：左侧显示发布日期（格式为 YYYY-MM-DD HH:mm），右侧显示来源标签（如"集团库"）。
-
-**分页**
-
-网格底部展示分页控件，包含：
-
-- 上一页按钮：在第一页时置灰不可点击
-- 页码按钮：显示当前页前后若干页的页码，当前页高亮显示
-- 省略号：当总页数较多时，中间未显示的页码以省略号替代
-- 尾页按钮：直接跳转到最后一页
-- 下一页按钮：在最后一页时置灰不可点击
-
-#### 2.2.4 上传素材
-
-**触发方式**
-点击搜索区域右上方的"上传"按钮打开上传弹窗。
-
-**上传弹窗**
-
-弹窗内展示上传区域，支持两种上传方式：
-
-- 拖拽上传：用户将文件拖拽至上传区域
-- 点击上传：点击上传区域打开系统文件选择器
-
-**格式与限制**
-- 支持格式：JPG、PNG、GIF、MP4、PDF
-- 单文件大小上限：500MB
-- 超过大小限制时，上传按钮置灰并提示"文件大小超出限制"
-- 不支持的格式时，提示"暂不支持该文件格式"
-
-**弹窗操作**
-- 取消按钮：关闭弹窗，不执行上传
-- 开始上传按钮：点击后开始上传已选择的文件，上传过程中按钮变为加载状态，上传完成后自动关闭弹窗并刷新列表
-
-### 2.3 传播大模型模块
-
-#### 2.3.1 功能入口
-
-模块顶部展示四个功能入口卡片，每个卡片可点击进入对应功能：
-
-**新闻报道**
-- 功能说明：AI 赋能稿件创作，支持自动撰写新闻稿件、智能优化标题等
-- 点击后跳转至新闻报道功能页面
-
-**AI 生图**
-- 功能说明：通过文字描述一键生成高质量图片
-- 点击后跳转至 AI 生图功能页面
-
-**AI 成片**
-- 功能说明：自动将文字、图片素材组合生成视频新闻
-- 点击后跳转至 AI 成片功能页面
-
-**AI 视频**
-- 功能说明：智能视频创作工具，支持视频剪辑、字幕生成等
-- 点击后跳转至 AI 视频功能页面
-
-#### 2.3.2 广场
-
-功能入口下方为内容广场区域，通过 tab 切换展示不同类型的内容：
-
-**Tab 切换**
-- 灵感广场：展示 AI 生成的创意内容，供用户参考和二次创作
-- 应用广场：展示平台提供的各类 AI 应用工具
-- 智能体广场：展示平台已有的智能体及其能力
-
-Tab 切换时下方内容区域即时更新，无需刷新页面。默认选中"灵感广场"。
-
-#### 2.3.3 筛选与搜索
-
-**筛选标签栏**
-
-Tab 下方为内容类型筛选栏，包含以下标签：
-
-- 全部（默认选中）
-- 视频
-- 图片
-- 海报
-
-标签为单选模式，点击切换后下方内容网格即时过滤。已选中的标签呈高亮状态，未选中标签呈描边状态。
-
-**搜索框**
-
-筛选标签栏右侧为搜索框，支持输入关键词搜索当前 tab 下的内容。输入关键词后按回车或点击搜索图标触发搜索。搜索范围限定在当前 tab 和已选中的类型标签范围内。
-
-#### 2.3.4 内容展示
-
-**瀑布流布局**
-
-搜索结果以瀑布流（Masonry）网格形式展示，内容卡片高度不等，自动排列填充。
-
-**卡片元素**
-
-每张内容卡片包含以下元素：
-
-- 缩略图：卡片上方展示内容的预览图，宽度撑满卡片，高度按原始比例自适应
-- 标题：显示内容标题，超长时单行省略
-- 标签：显示内容类型标签（如"AI 生图""海报""视频"），以不同颜色区分
-- 来源信息：显示"AI 生成"标识
-
-**交互行为**
-- 鼠标悬浮在卡片上时，卡片有轻微上浮效果，同时图片有微缩放动画
-- 点击卡片可查看内容详情
-
-### 2.4 智能体平台模块
-
-#### 2.4.1 智能体列表
-
-模块以卡片列表形式展示平台已部署的智能体。
-
-**卡片展示**
-
-每张智能体卡片包含以下信息：
-
-- 智能体图标：不同智能体使用不同颜色的图标加以区分
-- 智能体名称：显示智能体的名称
-- 功能描述：一句话说明该智能体的核心能力
-
-**已有智能体**
-
-当前平台预置以下智能体：
-
-- 内容创作助手：自动生成新闻稿件、标题优化
-- 智能客服：7×24 小时在线问答服务
-- 数据分析助手：传播效果分析与趋势预测
-
-**交互行为**
-- 点击卡片可进入该智能体的详情页或对话界面
-- 鼠标悬浮时卡片有上浮和阴影增强效果
-
-#### 2.4.2 智能体详情
-
-点击智能体卡片后进入智能体详情页，展示该智能体的详细信息、使用说明和操作入口。具体交互根据各智能体类型有所不同：
-
-- 内容创作助手：进入后显示输入框，用户输入主题和要求后生成稿件
-- 智能客服：进入后显示对话窗口，支持实时问答
-- 数据分析助手：进入后展示数据面板和分析入口
-
-### 2.5 传播投手模块
-
-#### 2.5.1 模块头部
-
-模块顶部左侧显示模块标题"传播任务管理"和副标题"管理和监控所有传播任务"。顶部右侧显示"新建传播任务"按钮。
-
-#### 2.5.2 搜索与筛选
-
-头部下方为搜索筛选区域，从左至右包含：
-
-**关键词搜索框**
-- 支持输入任务名称进行模糊搜索
-- 输入关键词后点击"查询"按钮或按回车键触发搜索
-
-**时间范围选择**
-- 包含开始日期和结束日期两个日期选择器
-- 日期格式为 YYYY-MM-DD
-- 两个日期之间以"—"连接
-- 结束日期不可早于开始日期，否则提示"结束日期不能早于开始日期"
-- 选择日期后点击"查询"按钮触发搜索
-
-**查询按钮**
-- 点击后根据关键词和时间范围组合条件查询任务列表
-- 关键词和日期条件为"且"关系，同时满足时才返回结果
-
-#### 2.5.3 任务列表
-
-搜索结果以表格形式展示所有传播任务。以下逐一说明各字段的展示规则：
-
-**任务名称**
-- 展示规则：任务名称文本，首行任务名称以链接样式展示（可点击），其余行为普通文本
-- 取数规则：取创建任务时填写的任务名称
-- 点击行为：点击任务名称跳转至该任务的详情页面
-
-**传播渠道**
-- 展示规则：显示该任务配置的所有传播渠道名称，以顿号分隔（如"微信公众号、微博、抖音"）
-- 取数规则：取创建任务时选择的渠道列表，按选择顺序排列
-
-**开始时间**
-- 展示规则：格式为 YYYY-MM-DD HH:mm
-- 取数规则：取创建任务时设置的开始时间
-
-**结束时间**
-- 展示规则：格式为 YYYY-MM-DD HH:mm
-- 取数规则：取创建任务时设置的结束时间
-
-**状态**
-- 展示规则：以标签形式展示任务当前状态
-- 取值与样式：
-  - 进行中：绿色背景标签
-  - 已完成：蓝色背景标签
-  - 待执行：橙色背景标签
-- 取数规则：根据当前时间与任务时间范围自动判断——当前时间早于开始时间为"待执行"，在开始与结束时间之间为"进行中"，超过结束时间为"已完成"
-
-**操作列**
-- 展示规则：显示当前状态下可用的操作链接
-- 按钮显示规则：
-  - 所有状态下均显示：查看、数据、编辑
-  - 所有状态下均显示：删除（红色文字标识，以区别于其他操作）
-- 各操作说明：
-  - 查看：跳转至任务详情页，查看任务配置与执行情况
-  - 数据：跳转至任务数据面板，查看传播效果数据（阅读量、转发量、评论量等）
-  - 编辑：打开编辑弹窗，可修改任务名称、渠道、时间等配置。"已完成"状态下编辑后，任务状态变更为"待执行"
-  - 删除：二次确认后删除任务，删除后列表即时刷新。"进行中"状态的任务删除时额外提示"该任务正在进行中，确认删除？"
-
-#### 2.5.4 新建传播任务
-
-点击模块头部的"新建传播任务"按钮，打开新建任务弹窗。弹窗表单包含以下字段：
-
-**任务名称**
-- 类型：文本输入框
-- 是否必填：是，以红色星号标识
-- 校验规则：不能为空，长度限制 1-100 个字符
-- placeholder：请输入任务名称
-
-**传播渠道**
-- 类型：多选复选框组
-- 是否必填：是，至少选择一个渠道
-- 可选项：微信公众号、微博、抖音、小红书、B站、今日头条、快手、36氪
-- 校验规则：未选择任何渠道时点击提交，提示"请至少选择一个传播渠道"
-
-**开始时间**
-- 类型：日期时间选择器
-- 是否必填：是
-- 校验规则：不能早于当前时间，否则提示"开始时间不能早于当前时间"
-
-**结束时间**
-- 类型：日期时间选择器
-- 是否必填：是
-- 校验规则：
-  - 不能早于开始时间，否则提示"结束时间不能早于开始时间"
-  - 不能与开始时间相同，否则提示"结束时间必须晚于开始时间"
-
-**备注**
-- 类型：多行文本框
-- 是否必填：否
-- placeholder：请输入备注信息（选填）
-
-**弹窗按钮**
-- 取消按钮：关闭弹窗，不执行任何操作
-- 提交按钮：校验所有必填项通过后提交表单，提交成功后关闭弹窗并刷新任务列表，同时提示"创建成功"
-
-### 2.6 系统管理模块
-
-系统管理模块包含用户管理、部门管理、角色管理三个子功能，通过左侧导航菜单切换。
-
-#### 2.6.1 用户管理
-
-**页面布局**
-
-用户管理页面分为左右两部分：
-
-- 左侧为子功能导航菜单，包含"用户管理""部门管理""角色管理"三个入口，当前选中项高亮显示
-- 右侧为用户管理内容区域
-
-**表格字段**
-
-用户列表以表格形式展示，各字段展示规则如下：
-
-- 用户名：系统登录账号，唯一标识
-- 姓名：用户的真实姓名
-- 部门：用户所属部门名称，取自部门管理中已创建的部门数据
-- 角色：用户被分配的角色名称，取自角色管理中已创建的角色数据
-- 状态：用户当前的启用状态，取值为"启用""停用""禁用"，以不同颜色标签区分——启用为绿色、停用为橙色、禁用为红色
-- 操作：显示"编辑"按钮，点击可修改该用户的信息
-
-**新增用户**
-
-点击表格上方的"新增用户"按钮，打开新增用户弹窗。弹窗中需填写用户名、姓名、选择部门和角色，提交后新增用户出现在表格中。
-
-#### 2.6.2 部门管理
-
-**表格字段**
-
-部门列表以表格形式展示，各字段展示规则如下：
-
-- 部门名称：部门的显示名称
-- 部门编码：部门的唯一编码标识（如"GM""TECH""OPS"）
-- 负责人：该部门的负责人姓名
-- 人数：该部门下的用户数量，取数规则为关联了该部门的用户总数
-- 状态：部门的启用状态，取值为"启用"或"停用"，以绿色和橙色标签区分
-- 操作：显示"编辑"按钮，点击可修改该部门的信息
-
-**新增部门**
-
-点击表格上方的"新增部门"按钮，打开新增部门弹窗。弹窗中需填写部门名称、部门编码、选择负责人，提交后新增部门出现在表格中。
-
-#### 2.6.3 角色管理
-
-**表格字段**
-
-角色列表以表格形式展示，各字段展示规则如下：
-
-- 角色名称：角色的显示名称
-- 角色编码：角色的唯一编码标识（如"super_admin""developer""operator"）
-- 用户数：被分配了该角色的用户数量，取数规则为关联了该角色的用户总数
-- 描述：角色的功能描述
-- 操作：显示"编辑"按钮，点击可修改该角色的信息
-
-**新增角色**
-
-点击表格上方的"新增角色"按钮，打开新增角色弹窗。弹窗中需填写角色名称、角色编码和描述，提交后新增角色出现在表格中。
-
-**预置角色**
-
-系统预置以下角色，不可删除但可编辑权限配置：
-
-- 超级管理员：拥有全部权限
-- 开发者：技术开发权限
-- 运营人员：内容运营权限
-- 产品经理：产品管理权限
-- UI 设计师：设计相关权限
-- 只读用户：仅查看权限
-
----
-
-## 3. 全局交互规则
-
-### 3.1 页面导航
-
-**侧边栏**
-
-平台左侧为固定宽度的侧边栏，包含：
-
-- 平台 Logo 和名称（杭州智联）
-- 一级导航：首页、智能媒资、传播大模型、智能体平台、传播投手、系统管理
-- 系统管理为可展开/收起的菜单项，点击展开显示二级导航（用户管理、部门管理、角色管理）
-
-**页面切换**
-
-点击侧边栏导航项切换页面，当前激活的导航项高亮显示。页面通过 hash 路由实现无刷新切换，浏览器前进后退按钮可正常工作。
-
-### 3.2 顶部栏
-
-页面顶部为全局顶部栏，右侧显示当前登录用户信息（头像和姓名）。点击用户区域可展开用户操作菜单。
-
-### 3.3 弹窗交互
-
-**打开弹窗**
-- 弹窗从居中位置弹出，背景出现半透明遮罩层
-- 弹窗出现时有缩放和渐显的过渡动画
-
-**关闭弹窗**
-- 点击弹窗右上角关闭按钮
-- 点击遮罩层区域（非弹窗内容区域）
-- 点击弹窗底部的"取消"按钮
-- 以上三种方式均可关闭弹窗
-
-**弹窗表单**
-- 必填字段以红色星号标识
-- 提交前进行前端校验，校验不通过时在对应字段下方显示错误提示
-- 提交过程中按钮变为加载状态，防止重复提交
-
----
-
-## 4. 版本规划
-
-### 4.1 v1.0 — 智能媒资
-- 实现媒资的搜索、筛选、展示、上传功能
-- 实现批量下载和个人素材库管理
-- 实现精准检索、文搜图、图搜图三种搜索模式
-- 状态：已完成
-
-### 4.2 v1.1 — 传播大模型
-- 实现新闻报道、AI 生图、AI 成片、AI 视频四个功能入口
-- 实现灵感广场、应用广场、智能体广场三个内容广场
-- 实现瀑布流内容展示和筛选搜索功能
-- 状态：开发中
-
-### 4.3 v1.2 — 智能体平台
-- 实现内容创作助手、智能客服、数据分析助手三个智能体
-- 实现智能体详情页和对话交互
-- 状态：规划中
-
-### 4.4 v2.0 — 传播投手
-- 实现传播任务的创建、查询、编辑、删除
-- 实现任务状态管理和传播数据查看
-- 状态：规划中
-`;
+function md2html(md) {
 
 function md2html(md) {
   var html = md;
@@ -1282,39 +1044,48 @@ function md2html(md) {
 (function buildToc() {
   var toc = document.getElementById('prdToc');
   var content = document.getElementById('prdContent');
-  var prdHTML = md2html(prdMd);
-  content.innerHTML = prdHTML;
 
-  var titleEl = document.createElement('div');
-  titleEl.className = 'prd-toc-title';
-  titleEl.textContent = '产品需求文档';
-  toc.appendChild(titleEl);
+  function renderPrd(md) {
+    prdMd = md;
+    var prdHTML = md2html(md);
+    content.innerHTML = prdHTML;
 
-  var headings = content.querySelectorAll('h1, h2, h3');
-  var tocItems = [];
-  headings.forEach(function(h) {
-    var a = document.createElement('a');
-    a.className = 'prd-toc-item' + (h.tagName === 'H3' ? ' sub' : '');
-    a.textContent = h.textContent;
-    a.dataset.target = h.id;
-    a.addEventListener('click', function(e) {
-      e.preventDefault();
-      document.getElementById(this.dataset.target).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    var titleEl = document.createElement('div');
+    titleEl.className = 'prd-toc-title';
+    titleEl.textContent = '产品需求文档';
+    toc.appendChild(titleEl);
+
+    var headings = content.querySelectorAll('h1, h2, h3');
+    var tocItems = [];
+    headings.forEach(function(h) {
+      var a = document.createElement('a');
+      a.className = 'prd-toc-item' + (h.tagName === 'H3' ? ' sub' : '');
+      a.textContent = h.textContent;
+      a.dataset.target = h.id;
+      a.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById(this.dataset.target).scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      toc.appendChild(a);
+      tocItems.push(a);
     });
-    toc.appendChild(a);
-    tocItems.push(a);
-  });
 
-  var observer = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        tocItems.forEach(function(item) { item.classList.remove('active'); });
-        var active = toc.querySelector('[data-target="'+entry.target.id+'"]');
-        if (active) active.classList.add('active');
-      }
-    });
-  }, { root: content, rootMargin: '-20% 0px -70% 0px' });
-  headings.forEach(function(h) { observer.observe(h); });
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          tocItems.forEach(function(item) { item.classList.remove('active'); });
+          var active = tocItems.find(function(item) { return item.dataset.target === entry.target.id; });
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -60% 0px' });
+    headings.forEach(function(h) { observer.observe(h); });
+  }
+
+  fetch('PRD.md')
+    .then(function(res) { return res.text(); })
+    .then(renderPrd)
+    .catch(function() { content.innerHTML = '<p style="padding:2rem;color:var(--danger)">PRD.md 加载失败</p>'; });
 })();
 </script>
 </body>
