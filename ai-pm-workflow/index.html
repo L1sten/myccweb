@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 赋能产品经理 — 从需求到上线的全流程实战</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens ===== */
+:root {
+  /* Deep blue theme — tinted neutrals toward indigo */
+  --bg-deep: oklch(13% 0.035 260);
+  --bg-surface: oklch(16% 0.035 260);
+  --bg-elevated: oklch(20% 0.04 260);
+  --bg-card: oklch(22% 0.04 260);
+  --border: oklch(28% 0.04 260);
+  --border-subtle: oklch(24% 0.035 260);
+  --text-primary: oklch(93% 0.008 260);
+  --text-secondary: oklch(72% 0.015 260);
+  --text-muted: oklch(55% 0.02 260);
+  /* Accent: vivid cyan-blue */
+  --accent: oklch(74% 0.14 220);
+  --accent-dim: oklch(48% 0.10 220);
+  --accent-glow: oklch(74% 0.14 220 / 0.15);
+  /* Warm accent: soft amber */
+  --accent-warm: oklch(78% 0.12 65);
+  --success: oklch(72% 0.14 155);
+  --danger: oklch(65% 0.18 25);
+  --font-display: 'Space Grotesk', 'Noto Sans SC', sans-serif;
+  --font-body: 'Noto Sans SC', 'Space Grotesk', sans-serif;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --slide-w: 100vw;
+  --slide-h: 100vh;
+}
+
+/* ===== Reset ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-snap-type: y mandatory; overflow-x: hidden; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== Slide Base ===== */
+.slide {
+  width: var(--slide-w);
+  min-height: var(--slide-h);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 6vh 8vw;
+  position: relative;
+  scroll-snap-align: start;
+  overflow: hidden;
+}
+
+/* ===== Navigation ===== */
+.nav-dots {
+  position: fixed;
+  right: 2vw;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 100;
+}
+.nav-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  opacity: 0.35;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-out-expo);
+  border: none;
+  padding: 0;
+}
+.nav-dot:hover { opacity: 0.7; transform: scale(1.3); }
+.nav-dot.active {
+  opacity: 1;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+  transform: scale(1.2);
+}
+
+/* Keyboard hint */
+.key-hint {
+  position: fixed;
+  bottom: 2vh;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  opacity: 0.4;
+  z-index: 100;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+  transition: opacity 0.5s;
+}
+
+/* ===== Progress Bar ===== */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--accent);
+  z-index: 200;
+  transition: width 0.4s var(--ease-out-expo);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+/* ===== Slide Counter ===== */
+.slide-counter {
+  position: fixed;
+  bottom: 2vh;
+  right: 2vw;
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  z-index: 100;
+  letter-spacing: 0.1em;
+}
+
+/* ===== Ambient BG ===== */
+.ambient-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border-subtle) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.15;
+  pointer-events: none;
+}
+.ambient-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  opacity: 0.08;
+}
+
+/* ===== Typography ===== */
+.slide-label {
+  font-family: var(--font-display);
+  font-size: clamp(0.8rem, 1vw, 0.95rem);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+.slide-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.5vw, 3.8rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+  max-width: 900px;
+}
+.slide-title .accent { color: var(--accent); }
+.slide-title .warm { color: var(--accent-warm); }
+.slide-subtitle {
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 700px;
+  font-weight: 300;
+}
+h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+
+/* ===== Cards ===== */
+.card-grid {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+.card-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.card-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.card-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s var(--ease-out-expo);
+  position: relative;
+  overflow: hidden;
+}
+.card:hover {
+  border-color: var(--accent-dim);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px oklch(0% 0 0 / 0.3);
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.card:hover::before { opacity: 1; }
+.card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+.card-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+.card-desc {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ===== Workflow Steps (vertical timeline) ===== */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 2rem;
+  position: relative;
+  max-width: 800px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 24px;
+  bottom: 24px;
+  width: 2px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-warm), var(--success));
+  opacity: 0.4;
+}
+.timeline-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  padding: 0.75rem 0;
+  position: relative;
+}
+.timeline-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+  position: relative;
+  z-index: 1;
+}
+.timeline-content { flex: 1; }
+.timeline-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+.timeline-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ===== Stat Row ===== */
+.stat-row {
+  display: flex;
+  gap: 3rem;
+  margin-top: 2rem;
+}
+.stat {
+  text-align: left;
+}
+.stat-value {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+/* ===== Pain Points ===== */
+.pain-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+  max-width: 700px;
+}
+.pain-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: all 0.3s var(--ease-out-expo);
+}
+.pain-item:hover {
+  border-color: var(--danger);
+  box-shadow: 0 0 20px oklch(65% 0.18 25 / 0.08);
+}
+.pain-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--danger);
+  opacity: 0.6;
+  flex-shrink: 0;
+  width: 28px;
+}
+.pain-text {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.pain-text strong { color: var(--text-primary); font-weight: 500; }
+
+/* ===== Before / After ===== */
+.comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+  max-width: 900px;
+}
+.comp-col { }
+.comp-col-header {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.comp-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.comp-list li {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  line-height: 1.5;
+}
+.comp-old li { background: oklch(65% 0.18 25 / 0.08); border: 1px solid oklch(65% 0.18 25 / 0.15); }
+.comp-new li { background: oklch(70% 0.14 155 / 0.06); border: 1px solid oklch(70% 0.14 155 / 0.12); }
+
+/* ===== Code / Terminal ===== */
+.terminal {
+  background: oklch(12% 0.03 260);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 1.5rem;
+  max-width: 750px;
+}
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: oklch(14% 0.03 260);
+  border-bottom: 1px solid var(--border);
+}
+.terminal-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.terminal-dot.red { background: oklch(65% 0.18 25); }
+.terminal-dot.yellow { background: oklch(80% 0.14 90); }
+.terminal-dot.green { background: oklch(70% 0.14 155); }
+.terminal-title {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-left: 8px;
+  font-family: var(--font-display);
+}
+.terminal-body {
+  padding: 1.25rem 1.5rem;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.88rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+.terminal-body .prompt { color: var(--accent); }
+.terminal-body .cmd { color: var(--text-primary); }
+.terminal-body .comment { color: var(--text-muted); font-style: italic; }
+.terminal-body .highlight { color: var(--accent-warm); }
+
+/* ===== Tag / Badge ===== */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  font-family: var(--font-display);
+}
+.tag-accent { background: oklch(72% 0.15 195 / 0.12); color: var(--accent); border: 1px solid oklch(72% 0.15 195 / 0.2); }
+.tag-warm { background: oklch(75% 0.12 55 / 0.1); color: var(--accent-warm); border: 1px solid oklch(75% 0.12 55 / 0.18); }
+.tag-success { background: oklch(70% 0.14 155 / 0.1); color: var(--success); border: 1px solid oklch(70% 0.14 155 / 0.18); }
+
+/* ===== Two Column Layout ===== */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+.two-col-wide {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* ===== Skills list ===== */
+.skill-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+.skill-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: all 0.3s var(--ease-out-expo);
+}
+.skill-item:hover {
+  border-color: var(--accent-dim);
+}
+.skill-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.1rem;
+}
+.skill-info { flex: 1; }
+.skill-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.skill-desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+/* ===== Timeline horizontal ===== */
+.htimeline {
+  display: flex;
+  gap: 0;
+  margin-top: 2rem;
+  position: relative;
+  max-width: 100%;
+}
+.htimeline::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-warm), var(--success));
+  opacity: 0.4;
+}
+.htimeline-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  padding-top: 44px;
+}
+.htimeline-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  position: absolute;
+  top: 14px;
+  z-index: 1;
+  border: 2px solid var(--bg-deep);
+}
+.htimeline-label {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 0.3rem;
+}
+.htimeline-text {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  max-width: 130px;
+}
+
+/* ===== Takeaway ===== */
+.takeaway-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+  max-width: 750px;
+}
+.takeaway-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.takeaway-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--accent);
+  opacity: 0.5;
+  flex-shrink: 0;
+  width: 36px;
+  line-height: 1.2;
+}
+.takeaway-text {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.takeaway-text strong { color: var(--text-primary); font-weight: 500; }
+
+/* ===== Cover specifics ===== */
+.cover-slide { justify-content: center; align-items: flex-start; }
+.cover-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: oklch(72% 0.15 195 / 0.08);
+  border: 1px solid oklch(72% 0.15 195 / 0.15);
+  font-size: 0.88rem;
+  color: var(--accent);
+  margin-bottom: 2rem;
+  font-family: var(--font-display);
+  letter-spacing: 0.05em;
+}
+.cover-meta {
+  margin-top: 2.5rem;
+  display: flex;
+  gap: 2rem;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+.cover-meta span { display: flex; align-items: center; gap: 6px; }
+
+/* ===== Slide entrance animations ===== */
+.slide [data-anim] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s var(--ease-out-expo), transform 0.6s var(--ease-out-expo);
+}
+.slide.visible [data-anim] { opacity: 1; transform: translateY(0); }
+.slide [data-anim="1"] { transition-delay: 0.05s; }
+.slide [data-anim="2"] { transition-delay: 0.12s; }
+.slide [data-anim="3"] { transition-delay: 0.19s; }
+.slide [data-anim="4"] { transition-delay: 0.26s; }
+.slide [data-anim="5"] { transition-delay: 0.33s; }
+.slide [data-anim="6"] { transition-delay: 0.40s; }
+.slide [data-anim="7"] { transition-delay: 0.47s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .slide [data-anim] { opacity: 1; transform: none; transition: none; }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .slide { padding: 4vh 6vw; }
+  .card-grid.cols-3, .card-grid.cols-4 { grid-template-columns: 1fr 1fr; }
+  .two-col, .two-col-wide { grid-template-columns: 1fr; }
+  .comparison { grid-template-columns: 1fr; }
+  .htimeline { flex-wrap: wrap; }
+  .htimeline-item { flex: 0 0 33.33%; margin-bottom: 1rem; }
+  .stat-row { flex-wrap: wrap; gap: 1.5rem; }
+}
+@media (max-width: 600px) {
+  .card-grid.cols-2, .card-grid.cols-3, .card-grid.cols-4 { grid-template-columns: 1fr; }
+  .nav-dots { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Navigation Dots -->
+<nav class="nav-dots" id="navDots"></nav>
+
+<!-- Slide Counter -->
+<div class="slide-counter" id="slideCounter">01 / 11</div>
+
+<!-- Keyboard hint -->
+<div class="key-hint">↑↓ 或滚动翻页</div>
+
+<!-- Theme Switch -->
+<a href="./light.html" style="position:fixed;top:2vh;left:2vw;z-index:200;font-size:0.75rem;color:var(--text-muted);text-decoration:none;font-family:var(--font-display);letter-spacing:0.05em;opacity:0.6;transition:opacity 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">Light →</a>
+
+<!-- ============ SLIDE 1: COVER ============ -->
+<section class="slide cover-slide" id="slide-1">
+  <div class="ambient-grid"></div>
+  <div class="ambient-glow" style="background:var(--accent);top:-200px;right:-100px;"></div>
+
+  <div class="cover-tag" data-anim="1">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+    Product Management × AI
+  </div>
+
+  <h1 class="slide-title" data-anim="2">
+    从需求到上线<br><span class="accent">AI 赋能产品经理</span>的全流程实战
+  </h1>
+
+  <p class="slide-subtitle" data-anim="3">
+    用 Claude Code、Figma、GitHub 重新定义产品工作流<br>
+    从需求调研到原型设计，从 PRD 撰写到部署上线
+  </p>
+
+  <div class="cover-meta" data-anim="4">
+    <span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      30-40 min
+    </span>
+    <span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      面向产品经理同行
+    </span>
+    <span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      实操案例为主
+    </span>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2: PAIN POINTS ============ -->
+<section class="slide" id="slide-2">
+  <div class="ambient-grid"></div>
+  <div class="ambient-glow" style="background:var(--danger);bottom:-200px;left:-100px;"></div>
+
+  <span class="slide-label" data-anim="1">Chapter 01</span>
+  <h2 class="slide-title" data-anim="2">传统 PM 工作流的<span class="warm">四大痛点</span></h2>
+
+  <!-- Excalidraw diagram: Pain Points Comparison -->
+  <div data-anim="3" style="margin-top:1.5rem;">
+    <svg viewBox="0 0 1040 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1040px;">
+      <!-- Old workflow - red side -->
+      <rect x="20" y="0" width="400" height="28" rx="6" fill="oklch(65% 0.18 25 / 0.12)" stroke="oklch(65% 0.18 25 / 0.3)" stroke-width="1"/>
+      <text x="220" y="19" text-anchor="middle" fill="oklch(65% 0.18 25)" font-family="Space Grotesk, Noto Sans SC, sans-serif" font-size="14" font-weight="600">传统工作流 ❌</text>
+
+      <rect x="20" y="40" width="400" height="44" rx="8" fill="oklch(65% 0.18 25 / 0.08)" stroke="oklch(65% 0.18 25 / 0.2)" stroke-width="1"/>
+      <text x="220" y="56" text-anchor="middle" fill="oklch(93% 0.008 260)" font-family="Noto Sans SC, sans-serif" font-size="13" font-weight="500">在 Axure/Figma 里拖控件画原型</text>
+      <text x="220" y="72" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="11">一个布局调整就是半天</text>
+
+      <line x1="220" y1="84" x2="220" y2="100" stroke="oklch(65% 0.18 25 / 0.3)" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+
+      <rect x="20" y="100" width="400" height="44" rx="8" fill="oklch(65% 0.18 25 / 0.08)" stroke="oklch(65% 0.18 25 / 0.2)" stroke-width="1"/>
+      <text x="220" y="116" text-anchor="middle" fill="oklch(93% 0.008 260)" font-family="Noto Sans SC, sans-serif" font-size="13" font-weight="500">在飞书/Word 里写 PRD 文档</text>
+      <text x="220" y="132" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="11">文档与原型割裂，各说各话</text>
+
+      <line x1="220" y1="144" x2="220" y2="160" stroke="oklch(65% 0.18 25 / 0.3)" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+
+      <rect x="20" y="160" width="400" height="44" rx="8" fill="oklch(65% 0.18 25 / 0.08)" stroke="oklch(65% 0.18 25 / 0.2)" stroke-width="1"/>
+      <text x="220" y="176" text-anchor="middle" fill="oklch(93% 0.008 260)" font-family="Noto Sans SC, sans-serif" font-size="13" font-weight="500">开反复会给开发讲解需求</text>
+      <text x="220" y="192" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="11">理解偏差，沟通损耗巨大</text>
+
+      <line x1="220" y1="204" x2="220" y2="220" stroke="oklch(65% 0.18 25 / 0.3)" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+
+      <rect x="20" y="220" width="400" height="44" rx="8" fill="oklch(65% 0.18 25 / 0.08)" stroke="oklch(65% 0.18 25 / 0.2)" stroke-width="1"/>
+      <text x="220" y="236" text-anchor="middle" fill="oklch(93% 0.008 260)" font-family="Noto Sans SC, sans-serif" font-size="13" font-weight="500">用户调研费时费力且不精准</text>
+      <text x="220" y="252" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="11">样本少、覆盖面窄、反馈慢</text>
+
+      <!-- VS circle -->
+      <circle cx="520" cy="135" r="32" fill="oklch(72% 0.15 195 / 0.1)" stroke="oklch(74% 0.14 220)" stroke-width="2"/>
+      <text x="520" y="141" text-anchor="middle" fill="oklch(74% 0.14 220)" font-family="Space Grotesk, sans-serif" font-size="16" font-weight="700">VS</text>
+
+      <!-- New workflow - green side -->
+      <rect x="620" y="0" width="400" height="28" rx="6" fill="oklch(70% 0.14 155 / 0.12)" stroke="oklch(70% 0.14 155 / 0.3)" stroke-width="1"/>
+      <text x="820" y="19" text-anchor="middle" fill="oklch(72% 0.14 155)" font-family="Space Grotesk, Noto Sans SC, sans-serif" font-size="14" font-weight="600">AI 工作流 ✅</text>
+
+      <rect x="620" y="40" width="400" height="44" rx="8" fill="oklch(70% 0.14 155 / 0.06)" stroke="oklch(70% 0.14 155 / 0.15)" stroke-width="1"/>
+      <text x="820" y="56" text-anchor="middle" fill="oklch(93% 0.008 260)" font-family="Noto Sans SC, sans-serif" font-size="13" font-weight="500">Claude Code 一句描述生成原型</text>
+      <text x="820" y="72" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="11">完整 HTML + CSS + JS，即开即用</text>
+
+      <line x1="820" y1="84" x2="820" y2="100" stroke="oklch(70% 0.14 155 / 0.3)" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+
+      <rect x="620" y="100" width="400" height="44" rx="8" fill="oklch(70% 0.14 155 / 0.06)" stroke="oklch(70% 0.14 155 / 0.15)" stroke-width="1"/>
+      <text x="820" y="116" text-anchor="middle" fill="oklch(93% 0.008 260)" font-family="Noto Sans SC, sans-serif" font-size="13" font-weight="500">自动生成完整 PRD 文档</text>
+      <text x="820" y="132" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="11">HTML 格式，含流程图和原型嵌入</text>
+
+      <line x1="820" y1="144" x2="820" y2="160" stroke="oklch(70% 0.14 155 / 0.3)" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+
+      <rect x="620" y="160" width="400" height="44" rx="8" fill="oklch(70% 0.14 155 / 0.06)" stroke="oklch(70% 0.14 155 / 0.15)" stroke-width="1"/>
+      <text x="820" y="176" text-anchor="middle" fill="oklch(93% 0.008 260)" font-family="Noto Sans SC, sans-serif" font-size="13" font-weight="500">HTML + MD 直接交付开发</text>
+      <text x="820" y="192" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="11">前端照着做，后端对接接口</text>
+
+      <line x1="820" y1="204" x2="820" y2="220" stroke="oklch(70% 0.14 155 / 0.3)" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+
+      <rect x="620" y="220" width="400" height="44" rx="8" fill="oklch(70% 0.14 155 / 0.06)" stroke="oklch(70% 0.14 155 / 0.15)" stroke-width="1"/>
+      <text x="820" y="236" text-anchor="middle" fill="oklch(93% 0.008 260)" font-family="Noto Sans SC, sans-serif" font-size="13" font-weight="500">AI 对话式调研，精准高效</text>
+      <text x="820" y="252" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="11">模拟用户对话，深度挖掘真实需求</text>
+
+      <!-- Bottom summary -->
+      <text x="220" y="295" text-anchor="middle" fill="oklch(65% 0.18 25)" font-family="Noto Sans SC, sans-serif" font-size="12" font-weight="500">反复改稿 · 沟通损耗 · 调研低效</text>
+      <text x="820" y="295" text-anchor="middle" fill="oklch(72% 0.14 155)" font-family="Noto Sans SC, sans-serif" font-size="12" font-weight="500">一次生成 · 文档联动 · AI 精准调研</text>
+
+      <!-- Arrow markers -->
+      <defs>
+        <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="oklch(65% 0.18 25 / 0.5)"/>
+        </marker>
+        <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="oklch(70% 0.14 155 / 0.5)"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3: NEW PARADIGM ============ -->
+<section class="slide" id="slide-3">
+  <div class="ambient-grid"></div>
+  <div class="ambient-glow" style="background:var(--accent);top:50%;left:-200px;transform:translateY(-50%);"></div>
+
+  <span class="slide-label" data-anim="1">Chapter 02</span>
+  <h2 class="slide-title" data-anim="2">AI 时代 PM 的<span class="accent">新范式</span></h2>
+  <p class="slide-subtitle" data-anim="3">从需求到上线再到数据驱动迭代，AI 覆盖产品全生命周期</p>
+
+  <!-- Workflow Panorama SVG — 7 steps -->
+  <div data-anim="4" style="margin-top:2rem;">
+    <svg viewBox="0 0 1400 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1400px;">
+      <!-- Step 1: Requirement Research -->
+      <rect x="10" y="40" width="170" height="100" rx="10" fill="oklch(72% 0.15 195 / 0.06)" stroke="oklch(74% 0.14 220)" stroke-width="1.5"/>
+      <text x="95" y="70" text-anchor="middle" fill="oklch(74% 0.14 220)" font-family="Noto Sans SC, sans-serif" font-size="13" font-weight="600">需求调研</text>
+      <text x="95" y="90" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">Claude Code</text>
+      <text x="95" y="105" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">对话式采集</text>
+      <text x="95" y="120" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">7 维度评估</text>
+      <text x="95" y="25" text-anchor="middle" font-size="18"> </text>
+
+      <line x1="180" y1="90" x2="208" y2="90" stroke="oklch(55% 0.02 260)" stroke-width="1.5" opacity="0.5" marker-end="url(#arrow-step)"/>
+
+      <!-- Step 2: Prototype Design -->
+      <rect x="208" y="40" width="170" height="100" rx="10" fill="oklch(75% 0.12 55 / 0.06)" stroke="oklch(78% 0.12 65)" stroke-width="1.5"/>
+      <text x="293" y="70" text-anchor="middle" fill="oklch(78% 0.12 65)" font-family="Noto Sans SC, sans-serif" font-size="13" font-weight="600">原型设计</text>
+      <text x="293" y="90" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">Claude Code</text>
+      <text x="293" y="105" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">一句话生成</text>
+      <text x="293" y="120" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">高保真 HTML</text>
+      <text x="293" y="25" text-anchor="middle" font-size="18"> </text>
+
+      <line x1="378" y1="90" x2="406" y2="90" stroke="oklch(55% 0.02 260)" stroke-width="1.5" opacity="0.5" marker-end="url(#arrow-step)"/>
+
+      <!-- Step 3: PRD Writing -->
+      <rect x="406" y="40" width="170" height="100" rx="10" fill="oklch(70% 0.14 155 / 0.06)" stroke="oklch(72% 0.14 155)" stroke-width="1.5"/>
+      <text x="491" y="70" text-anchor="middle" fill="oklch(72% 0.14 155)" font-family="Noto Sans SC, sans-serif" font-size="13" font-weight="600">PRD 撰写</text>
+      <text x="491" y="90" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">Claude Code</text>
+      <text x="491" y="105" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">自动生成</text>
+      <text x="491" y="120" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">详细文档</text>
+      <text x="491" y="25" text-anchor="middle" font-size="18"> </text>
+
+      <line x1="576" y1="90" x2="604" y2="90" stroke="oklch(55% 0.02 260)" stroke-width="1.5" opacity="0.5" marker-end="url(#arrow-step)"/>
+
+      <!-- Step 4: Figma Optimization -->
+      <rect x="604" y="40" width="170" height="100" rx="10" fill="oklch(65% 0.15 300 / 0.06)" stroke="oklch(70% 0.15 300)" stroke-width="1.5"/>
+      <text x="689" y="70" text-anchor="middle" fill="oklch(70% 0.15 300)" font-family="Noto Sans SC, sans-serif" font-size="13" font-weight="600">Figma 优化</text>
+      <text x="689" y="90" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">Figma 生成</text>
+      <text x="689" y="105" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">Claude Code</text>
+      <text x="689" y="120" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">读取优化</text>
+      <text x="689" y="25" text-anchor="middle" font-size="18"> </text>
+
+      <line x1="774" y1="90" x2="802" y2="90" stroke="oklch(55% 0.02 260)" stroke-width="1.5" opacity="0.5" marker-end="url(#arrow-step)"/>
+
+      <!-- Step 5: Delivery & Deploy -->
+      <rect x="802" y="40" width="170" height="100" rx="10" fill="oklch(70% 0.14 155 / 0.06)" stroke="oklch(72% 0.14 155)" stroke-width="1.5"/>
+      <text x="887" y="70" text-anchor="middle" fill="oklch(72% 0.14 155)" font-family="Noto Sans SC, sans-serif" font-size="13" font-weight="600">交付开发</text>
+      <text x="887" y="90" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">HTML + MD</text>
+      <text x="887" y="105" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">前后端协同</text>
+      <text x="887" y="120" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">一键部署</text>
+      <text x="887" y="25" text-anchor="middle" font-size="18"> </text>
+
+      <line x1="972" y1="90" x2="1000" y2="90" stroke="oklch(55% 0.02 260)" stroke-width="1.5" opacity="0.5" marker-end="url(#arrow-step)"/>
+
+      <!-- Step 6: Data Analysis -->
+      <rect x="1000" y="40" width="170" height="100" rx="10" fill="oklch(65% 0.15 300 / 0.06)" stroke="oklch(70% 0.15 300)" stroke-width="1.5"/>
+      <text x="1085" y="70" text-anchor="middle" fill="oklch(70% 0.15 300)" font-family="Noto Sans SC, sans-serif" font-size="13" font-weight="600">数据分析</text>
+      <text x="1085" y="90" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">埋点方案</text>
+      <text x="1085" y="105" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">数据看板</text>
+      <text x="1085" y="120" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">归因分析</text>
+      <text x="1085" y="25" text-anchor="middle" font-size="18"> </text>
+
+      <line x1="1170" y1="90" x2="1198" y2="90" stroke="oklch(55% 0.02 260)" stroke-width="1.5" opacity="0.5" marker-end="url(#arrow-step)"/>
+
+      <!-- Step 7: AB Test / Iterate -->
+      <rect x="1198" y="40" width="170" height="100" rx="10" fill="oklch(70% 0.14 155 / 0.06)" stroke="oklch(72% 0.14 155)" stroke-width="1.5"/>
+      <text x="1283" y="70" text-anchor="middle" fill="oklch(72% 0.14 155)" font-family="Noto Sans SC, sans-serif" font-size="13" font-weight="600">AB 实验</text>
+      <text x="1283" y="90" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">假设验证</text>
+      <text x="1283" y="105" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">效果度量</text>
+      <text x="1283" y="120" text-anchor="middle" fill="oklch(72% 0.015 260)" font-family="Noto Sans SC, sans-serif" font-size="10">持续迭代</text>
+      <text x="1283" y="25" text-anchor="middle" font-size="18"> </text>
+
+      <!-- Tool tags -->
+      <rect x="80" y="160" width="520" height="30" rx="6" fill="oklch(72% 0.15 195 / 0.06)" stroke="oklch(74% 0.14 220 / 0.3)" stroke-width="1"/>
+      <text x="340" y="180" text-anchor="middle" fill="oklch(74% 0.14 220)" font-family="Noto Sans SC, sans-serif" font-size="11">Claude Code — 需求采集 · 原型生成 · PRD 撰写 · 原型优化 · 数据分析辅助</text>
+
+      <rect x="604" y="160" width="170" height="30" rx="6" fill="oklch(65% 0.15 300 / 0.06)" stroke="oklch(70% 0.15 300 / 0.3)" stroke-width="1"/>
+      <text x="689" y="180" text-anchor="middle" fill="oklch(70% 0.15 300)" font-family="Noto Sans SC, sans-serif" font-size="11">Figma — 创意发散</text>
+
+      <rect x="802" y="160" width="170" height="30" rx="6" fill="oklch(70% 0.14 155 / 0.06)" stroke="oklch(72% 0.14 155 / 0.3)" stroke-width="1"/>
+      <text x="887" y="180" text-anchor="middle" fill="oklch(72% 0.14 155)" font-family="Noto Sans SC, sans-serif" font-size="11">GitHub — 协同 · 部署</text>
+
+      <!-- Deliverables -->
+      <rect x="300" y="210" width="800" height="36" rx="8" fill="oklch(75% 0.12 55 / 0.06)" stroke="oklch(78% 0.12 65 / 0.3)" stroke-width="1"/>
+      <text x="700" y="226" text-anchor="middle" fill="oklch(78% 0.12 65)" font-family="Noto Sans SC, sans-serif" font-size="11" font-weight="500">交付物 → 前端 .html 高保真原型 | 后端 .md 详细 PRD | 全员 → Pages 链接 | 上线后 → 数据驱动迭代</text>
+
+      <defs>
+        <marker id="arrow-step" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="oklch(55% 0.02 260 / 0.6)"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+</section>
+
+<!-- ============ SLIDE 4: REQUIREMENT RESEARCH ============ -->
+<section class="slide" id="slide-4">
+  <div class="ambient-grid"></div>
+  <div class="ambient-glow" style="background:var(--accent);top:-100px;right:-150px;"></div>
+
+  <span class="slide-label" data-anim="1">Chapter 03</span>
+  <h2 class="slide-title" data-anim="2">需求调研：<span class="accent">对话式</span>采集</h2>
+
+  <div class="two-col" data-anim="3">
+    <div>
+      <p class="slide-subtitle" style="margin-bottom:1.5rem;">
+        不再填模板，不再写长段。跟 Claude Code <strong style="color:var(--text-primary)">像聊天一样说需求</strong>，它会主动追问关键维度，帮你补全盲点。
+      </p>
+      <div class="card-grid" style="gap:0.75rem;">
+        <div class="card" style="padding:1rem 1.25rem;">
+          <div class="card-desc"><strong style="color:var(--accent)">7 个关键维度</strong>自动评估：背景痛点、业务目标、用户场景、核心旅程、现有方案、业务规则、参考竞品</div>
+        </div>
+        <div class="card" style="padding:1rem 1.25rem;">
+          <div class="card-desc"><strong style="color:var(--accent-warm)">至少 3 轮深度追问</strong>，每轮 3-5 个启发式问题，挖掘你没说出口的需求</div>
+        </div>
+        <div class="card" style="padding:1rem 1.25rem;">
+          <div class="card-desc"><strong style="color:var(--success)">多轮确认后</strong>才开始写，确保方向对了再动手</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span class="terminal-dot red"></span>
+        <span class="terminal-dot yellow"></span>
+        <span class="terminal-dot green"></span>
+        <span class="terminal-title">Claude Code</span>
+      </div>
+      <div class="terminal-body">
+        <span class="prompt">❯</span> <span class="cmd">我要做一个网络资源管理的功能</span><br><br>
+        <span class="comment">我来评估一下当前需求的清晰度：</span><br>
+        <span class="comment">✅ 背景/痛点：网络资源需要管理</span><br>
+        <span class="comment">⚠️ 业务目标：不够明确</span><br>
+        <span class="comment">⚠️ 用户场景：谁在用？</span><br>
+        <span class="comment">❌ 核心旅程：需要补充</span><br><br>
+        <span class="highlight">追问：</span>这个功能的用户主要是谁？<br>
+        他们现在是怎么管理网络资源的？<br>
+        最想解决的核心问题是什么？
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 5: PROTOTYPE DESIGN ============ -->
+<section class="slide" id="slide-5">
+  <div class="ambient-grid"></div>
+  <div class="ambient-glow" style="background:var(--accent-warm);bottom:-150px;right:-100px;"></div>
+
+  <span class="slide-label" data-anim="1">Chapter 04</span>
+  <h2 class="slide-title" data-anim="2">原型设计：<span class="warm">一句描述</span>生成高保真</h2>
+
+  <div class="two-col-wide" data-anim="3">
+    <div>
+      <p class="slide-subtitle" style="margin-bottom:1.5rem;">
+        告诉 Claude Code 你想要什么页面，它直接输出 <strong style="color:var(--text-primary)">完整的 HTML + CSS + JS</strong>，不是线框图，是可以直接打开看的高保真原型。
+      </p>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-title">Claude Code</span>
+        </div>
+        <div class="terminal-body">
+          <span class="prompt">❯</span> <span class="cmd">做一个媒资系统的网络资源管理页面</span><br>
+          <span class="cmd">左侧导航 + 顶部筛选 + 表格列表</span><br>
+          <span class="cmd">支持批量操作和导入导出</span><br><br>
+          <span class="comment">正在生成原型...</span><br>
+          <span class="highlight">✓ 已创建 network-resource/index.html</span><br>
+          <span class="highlight">✓ 包含：侧边栏、筛选栏、数据表格、</span><br>
+          <span class="highlight">  批量操作、弹窗、PRD 面板</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card" style="padding:0;border:1px solid var(--border);overflow:hidden;">
+        <div style="background:oklch(15% 0.03 260);padding:8px 12px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border);">
+          <span style="width:8px;height:8px;border-radius:50%;background:oklch(65% 0.18 25);"></span>
+          <span style="width:8px;height:8px;border-radius:50%;background:oklch(80% 0.14 90);"></span>
+          <span style="width:8px;height:8px;border-radius:50%;background:oklch(70% 0.14 155);"></span>
+          <span style="font-size:0.7rem;color:var(--text-muted);margin-left:8px;">network-resource/index.html</span>
+        </div>
+        <div style="padding:1rem;font-size:0.75rem;color:var(--text-secondary);line-height:1.8;font-family:'SF Mono',monospace;">
+          <div style="color:var(--accent);">&lt;div class="app-layout"&gt;</div>
+          <div style="padding-left:1rem;color:var(--text-muted);">← 侧边栏导航</div>
+          <div style="padding-left:1rem;color:var(--text-muted);">← 顶部 header</div>
+          <div style="padding-left:1rem;color:var(--text-muted);">← 筛选工具栏</div>
+          <div style="padding-left:1rem;color:var(--text-muted);">← 数据表格 + 批量操作</div>
+          <div style="padding-left:1rem;color:var(--text-muted);">← PRD 详情面板</div>
+          <div style="color:var(--accent);">&lt;/div&gt;</div>
+          <br>
+          <div style="color:var(--text-muted);">/* 完整 CSS 样式 */</div>
+          <div style="color:var(--text-muted);">/* 响应式适配 */</div>
+          <div style="color:var(--text-muted);">/* Hash 路由 SPA */</div>
+        </div>
+      </div>
+      <div style="margin-top:0.75rem;display:flex;gap:0.5rem;">
+        <span class="tag tag-accent">单文件 HTML</span>
+        <span class="tag tag-warm">即开即用</span>
+        <span class="tag tag-success">2265 行</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 6: PROTOTYPE OPTIMIZE ============ -->
+<section class="slide" id="slide-6">
+  <div class="ambient-grid"></div>
+  <div class="ambient-glow" style="background:var(--accent);top:20%;left:-100px;"></div>
+
+  <span class="slide-label" data-anim="1">Chapter 05</span>
+  <h2 class="slide-title" data-anim="2">原型优化：<span class="accent">Figma + AI</span> 协作模式</h2>
+
+  <div class="two-col" data-anim="3">
+    <div>
+      <p class="slide-subtitle" style="margin-bottom:1.5rem;">
+        Figma 每月 3000 积分有限，新模式：<strong style="color:var(--text-primary)">Figma 生成初稿 → Claude Code 读取优化</strong>，两者互补，各取所长。
+      </p>
+
+      <div class="comparison">
+        <div class="comp-col comp-old">
+          <div class="comp-col-header" style="color:var(--danger);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6"/><path d="M9 9l6 6"/></svg>
+            旧模式
+          </div>
+          <ul class="comp-list">
+            <li>Figma 全程生成，积分飞速消耗</li>
+            <li>生成后还要手动调整细节</li>
+            <li>改一处要重新生成整个页面</li>
+          </ul>
+        </div>
+        <div class="comp-col comp-new">
+          <div class="comp-col-header" style="color:var(--success);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+            新模式
+          </div>
+          <ul class="comp-list">
+            <li>Figma 出初稿，快速定方向</li>
+            <li>Claude Code 读取后精细优化</li>
+            <li>增量修改，哪里不对改哪里</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:1.25rem;">
+        <div class="card-desc">
+          <strong style="color:var(--accent)">进阶技巧</strong>：安装 <code style="background:oklch(72% 0.15 195 / 0.1);padding:2px 6px;border-radius:4px;font-size:0.82em;">frontend-design</code> / <code style="background:oklch(75% 0.12 55 / 0.1);padding:2px 6px;border-radius:4px;font-size:0.82em;">teach-impeccable</code> 等 Skill，让 AI 自动套用专业设计规范 — 配色系统、字体排版、动效节奏、响应式策略一键提升，原型质量直接拉满
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card" style="margin-bottom:1rem;">
+        <div class="card-icon" style="background:oklch(72% 0.15 195 / 0.1);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <div class="card-title">案例：舆情分析报告</div>
+        <div class="card-desc">Figma 生成仪表盘初稿，Claude Code 读取后优化图表布局、交互状态、数据展示细节</div>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:oklch(75% 0.12 55 / 0.1);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-warm)" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <div class="card-title">案例：云媒资部门素材库</div>
+        <div class="card-desc">Figma 生成编目功能框架，Claude Code 补充交互细节：表单验证、状态流转、空状态处理</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 7: PRD WRITING ============ -->
+<section class="slide" id="slide-7">
+  <div class="ambient-grid"></div>
+  <div class="ambient-glow" style="background:var(--success);bottom:-100px;left:-150px;"></div>
+
+  <span class="slide-label" data-anim="1">Chapter 06</span>
+  <h2 class="slide-title" data-anim="2">PRD 撰写：<span class="accent">AI 自动生成</span>详细文档</h2>
+
+  <div class="two-col" data-anim="3">
+    <div>
+      <p class="slide-subtitle" style="margin-bottom:1.5rem;">
+        原型确认后，Claude Code 基于已有原型<strong style="color:var(--text-primary)">自动生成完整 PRD</strong>，包含用户旅程图、功能清单、详细交互规则、流程图。
+      </p>
+
+      <div class="card-grid" style="gap:0.75rem;">
+        <div class="card" style="padding:1rem 1.25rem;">
+          <div class="card-desc"><strong style="color:var(--accent)">HTML 格式</strong> — 独立可运行，左侧悬浮目录导航，支持版本切换</div>
+        </div>
+        <div class="card" style="padding:1rem 1.25rem;">
+          <div class="card-desc"><strong style="color:var(--accent-warm)">Mermaid 流程图</strong> — 用户旅程、业务流程、异常分支自动生成</div>
+        </div>
+        <div class="card" style="padding:1rem 1.25rem;">
+          <div class="card-desc"><strong style="color:var(--success)">原型嵌入</strong> — PRD 中直接 iframe 嵌入原型切片，文档与原型强联动</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card" style="padding:0;border:1px solid var(--border);overflow:hidden;">
+        <div style="background:oklch(15% 0.03 260);padding:8px 12px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border);">
+          <span style="width:8px;height:8px;border-radius:50%;background:oklch(65% 0.18 25);"></span>
+          <span style="width:8px;height:8px;border-radius:50%;background:oklch(80% 0.14 90);"></span>
+          <span style="width:8px;height:8px;border-radius:50%;background:oklch(70% 0.14 155);"></span>
+          <span style="font-size:0.7rem;color:var(--text-muted);margin-left:8px;">prd_v1.0.html — 43KB</span>
+        </div>
+        <div style="padding:1rem;font-size:0.72rem;color:var(--text-secondary);line-height:2;font-family:'SF Mono',monospace;">
+          <div style="color:var(--accent);">一、需求背景</div>
+          <div style="color:var(--text-muted);padding-left:1rem;">  现状问题、为什么现在做</div>
+          <div style="color:var(--accent);">二、需求目标</div>
+          <div style="color:var(--text-muted);padding-left:1rem;">  四列表格：目标/描述/指标/目标值</div>
+          <div style="color:var(--accent);">三、用户与使用场景</div>
+          <div style="color:var(--text-muted);padding-left:1rem;">  User Journey Map</div>
+          <div style="color:var(--accent);">四、需求功能清单</div>
+          <div style="color:var(--text-muted);padding-left:1rem;">  模块/功能/优先级/描述</div>
+          <div style="color:var(--accent);">五、详细方案</div>
+          <div style="color:var(--text-muted);padding-left:1rem;">  Mermaid 流程图 + 交互规则 + 原型 iframe</div>
+          <div style="color:var(--accent);">六、业务流程图</div>
+          <div style="color:var(--accent);">七、异常与边界处理</div>
+          <div style="color:var(--text-muted);padding-left:1rem;">  断网、空数据、无权限...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 8: DEV COLLABORATION ============ -->
+<section class="slide" id="slide-8">
+  <div class="ambient-grid"></div>
+  <div class="ambient-glow" style="background:var(--accent-warm);top:-100px;left:50%;"></div>
+
+  <span class="slide-label" data-anim="1">Chapter 07</span>
+  <h2 class="slide-title" data-anim="2">前后端协同：<span class="warm">HTML + MD</span> 就够了</h2>
+
+  <div class="two-col" data-anim="3">
+    <div>
+      <p class="slide-subtitle" style="margin-bottom:1.5rem;">
+        不需要 Axure 链接、不需要 Figma 权限。给开发的交付物极其简单：
+      </p>
+
+      <div class="card-grid cols-2" style="gap:1rem;">
+        <div class="card" style="text-align:center;">
+          <div style="font-size:2rem;margin-bottom:0.5rem;"> </div>
+          <div class="card-title">给前端</div>
+          <div class="card-desc">一个 HTML 文件<br>包含完整的 UI 和交互</div>
+          <div style="margin-top:0.75rem;">
+            <span class="tag tag-accent">.html</span>
+          </div>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:2rem;margin-bottom:0.5rem;"> </div>
+          <div class="card-title">给后端</div>
+          <div class="card-desc">一个 MD 文件<br>包含接口逻辑和业务规则</div>
+          <div style="margin-top:0.75rem;">
+            <span class="tag tag-warm">.md</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:1.25rem;">
+        <div class="card-desc">
+          <strong style="color:var(--success)">效果</strong>：开发不需要反复问"这个弹窗长什么样"、"这个状态是什么意思"，打开 HTML 就能看到所有细节。
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card" style="margin-bottom:1.25rem;">
+        <div class="card-desc">
+          <strong style="color:oklch(70% 0.15 300)">测试协同</strong> — 测试人员基于 PRD + 原型直接编写用例，异常分支和边界条件一目了然
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:1.25rem;">
+        <div class="card-desc">
+          <strong style="color:oklch(70% 0.15 300)">测试视角</strong>：PRD 里的异常处理章节 + 原型里的空状态/错误提示，让测试同学不用反复找 PM 确认"断网了怎么办"、"没数据时长什么样"
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:1.25rem;">
+        <div class="card-desc">
+          <strong style="color:var(--success)">效果</strong>：前后端测试三方拿到同一份交付物，无需反复找 PM 确认细节，协作效率翻倍提升。
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:1rem;border-color:var(--border);">
+        <div class="card-desc" style="color:var(--text-muted);">
+          <strong style="color:var(--accent)">附：GitHub Pages 部署</strong> — <code style="font-size:0.85rem;background:var(--bg-card);padding:2px 6px;border-radius:4px;">git push</code> 即可上线，外部合作方也能直接访问
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 9: SKILL CREATOR ============ -->
+<section class="slide" id="slide-9">
+  <div class="ambient-grid"></div>
+  <div class="ambient-glow" style="background:var(--accent-warm);top:30%;right:-150px;"></div>
+
+  <span class="slide-label" data-anim="1">Chapter 08</span>
+  <h2 class="slide-title" data-anim="2">封装你的<span class="warm">专属 Skill</span></h2>
+  <p class="slide-subtitle" data-anim="3">当某个工作流步骤反复出现时，把它封装成 Skill，一劳永逸</p>
+
+  <div class="two-col" data-anim="4" style="margin-top:2rem;">
+    <div>
+      <div class="card" style="margin-bottom:1.25rem;">
+        <div class="card-desc" style="margin-bottom:1rem;">
+          你是否发现自己<strong style="color:var(--text-primary)">反复给 AI 输入同样的指令</strong>？比如"按这个格式写 PRD"、"用这个风格画原型"——这就是该封装 Skill 的信号。
+        </div>
+        <div class="card-desc">
+          <strong style="color:var(--accent-warm)">skill-creator</strong> 是 Claude Code 内置的 Skill 创建工具，对话式引导你把重复指令打包成可复用的 Skill，一次封装、随处调用。
+        </div>
+      </div>
+
+      <div class="card-grid" style="gap:0.75rem;">
+        <div class="card" style="padding:1rem 1.25rem;">
+          <div class="card-desc"><strong style="color:var(--accent)">Markdown 格式</strong> — Skill 本质是一个 .md 文件，易于编写和维护</div>
+        </div>
+        <div class="card" style="padding:1rem 1.25rem;">
+          <div class="card-desc"><strong style="color:var(--accent-warm)">自动安装</strong> — 创建后自动注册到 Claude Code，立即可用</div>
+        </div>
+        <div class="card" style="padding:1rem 1.25rem;">
+          <div class="card-desc"><strong style="color:var(--success)">社区共享</strong> — 优秀 Skill 可发布到社区，让全团队甚至全行业受益</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-title">Claude Code</span>
+        </div>
+        <div class="terminal-body">
+          <span class="prompt">❯</span> <span class="cmd">/skill-creator</span><br><br>
+          <span class="comment">你想创建什么 Skill？描述一下它的用途...</span><br><br>
+          <span class="prompt">❯</span> <span class="cmd">我想创建一个 PRD 模板 Skill</span><br>
+          <span class="cmd">包含固定的章节结构和排版规范</span><br><br>
+          <span class="comment">好的，我来帮你生成 Skill 文件...</span><br>
+          <span class="highlight">✓ 已创建 prd-template.md</span><br>
+          <span class="highlight">✓ 已自动安装到 Claude Code</span><br>
+          <span class="comment">使用方式：输入 /prd-template 即可触发</span>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:1rem;">
+        <div class="card-desc" style="font-size:0.82rem;">
+          <strong style="color:var(--accent)">我的实践</strong>：我用 skill-creator 封装了 <code style="background:oklch(75% 0.12 55 / 0.1);padding:2px 6px;border-radius:4px;font-size:0.9em;">myccweb-deploy</code>（一键将 PRD / 原型部署到公网）和 <code style="background:oklch(70% 0.14 155 / 0.08);padding:2px 6px;border-radius:4px;font-size:0.9em;">prototype-prd-sync</code>（增量需求只描述新增部分，既有功能不做赘述）两个 Skill，今天的分享内容本身就是这些 Skill 的实战成果
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 10: SKILLS ECOSYSTEM ============ -->
+<section class="slide" id="slide-10">
+  <div class="ambient-grid"></div>
+  <div class="ambient-glow" style="background:var(--accent);bottom:-100px;right:-100px;"></div>
+
+  <span class="slide-label" data-anim="1">Chapter 09</span>
+  <h2 class="slide-title" data-anim="2">Skills 生态：<span class="accent">插件化的</span>超能力</h2>
+  <p class="slide-subtitle" data-anim="3">Claude Code 支持安装 Skills，像 VS Code 插件一样扩展 AI 的能力</p>
+
+  <div class="card-grid cols-3" data-anim="4">
+    <div class="card">
+      <div class="card-icon" style="background:oklch(72% 0.15 195 / 0.1);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+      </div>
+      <div class="card-title">frontend-design</div>
+      <div class="card-desc">专业前端设计规范，生成高质量 UI，避免 AI 味。内置配色、字体、动效、响应式等完整指南</div>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:oklch(75% 0.12 55 / 0.1);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-warm)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+      </div>
+      <div class="card-title">prototype-prd-sync</div>
+      <div class="card-desc">原型与 PRD 双向同步，改了原型自动更新 PRD 中对应的交互描述和流程图</div>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:oklch(70% 0.14 155 / 0.1);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
+      <div class="card-title">agile-pm-workflow</div>
+      <div class="card-desc">敏捷 PM 需求产出工作流，从需求采集到 PRD 输出的 7 步标准流程</div>
+    </div>
+  </div>
+
+  <div class="card-grid cols-3" data-anim="5" style="margin-top:1rem;">
+    <div class="card">
+      <div class="card-icon" style="background:oklch(65% 0.15 300 / 0.1);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="oklch(70% 0.15 300)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+      </div>
+      <div class="card-title">teach-impeccable</div>
+      <div class="card-desc">收集项目设计上下文，让 AI 生成的 UI 更贴合你的品牌和风格</div>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:oklch(60% 0.12 200 / 0.1);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="oklch(65% 0.12 200)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </div>
+      <div class="card-title">figma 相关 Skills</div>
+      <div class="card-desc">Figma Code Connect、Design System Rules 等，打通设计到代码的最后一公里</div>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:oklch(65% 0.10 130 / 0.1);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="oklch(65% 0.14 130)" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      </div>
+      <div class="card-title">myccweb-deploy</div>
+      <div class="card-desc">自动在 myccweb 创建项目并部署到 GitHub Pages，一个命令搞定发布</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 11: CASE STUDY ============ -->
+<section class="slide" id="slide-11">
+  <div class="ambient-grid"></div>
+  <div class="ambient-glow" style="background:var(--accent-warm);top:-100px;right:-100px;"></div>
+
+  <span class="slide-label" data-anim="1">Chapter 10</span>
+  <h2 class="slide-title" data-anim="2">案例复盘：<span class="warm">网络资源管理</span></h2>
+  <p class="slide-subtitle" data-anim="3">从需求到上线的完整时间线 — 实际项目实录</p>
+
+  <div class="htimeline" data-anim="4">
+    <div class="htimeline-item">
+      <div class="htimeline-dot" style="background:var(--accent);"></div>
+      <div class="htimeline-label">需求采集</div>
+      <div class="htimeline-text">对话式确认需求背景、用户场景、核心功能点</div>
+    </div>
+    <div class="htimeline-item">
+      <div class="htimeline-dot" style="background:var(--accent);"></div>
+      <div class="htimeline-label">原型生成</div>
+      <div class="htimeline-text">一句描述生成完整 HTML 原型，含侧边栏、表格、弹窗</div>
+    </div>
+    <div class="htimeline-item">
+      <div class="htimeline-dot" style="background:var(--accent-warm);"></div>
+      <div class="htimeline-label">原型迭代</div>
+      <div class="htimeline-text">多轮对话调整交互细节、补充 PRD 面板、响应式适配</div>
+    </div>
+    <div class="htimeline-item">
+      <div class="htimeline-dot" style="background:var(--accent-warm);"></div>
+      <div class="htimeline-label">PRD 生成</div>
+      <div class="htimeline-text">自动生成详细 PRD，含用户旅程、功能清单、流程图</div>
+    </div>
+    <div class="htimeline-item">
+      <div class="htimeline-dot" style="background:var(--success);"></div>
+      <div class="htimeline-label">交付开发</div>
+      <div class="htimeline-text">MD + HTML 同时给到前后端测试三方，一份链接搞定所有交付</div>
+    </div>
+    <div class="htimeline-item">
+      <div class="htimeline-dot" style="background:oklch(70% 0.15 300);"></div>
+      <div class="htimeline-label">数据分析</div>
+      <div class="htimeline-text">上线后埋点 + 数据看板，AI 辅助归因分析</div>
+    </div>
+    <div class="htimeline-item">
+      <div class="htimeline-dot" style="background:oklch(70% 0.15 300);"></div>
+      <div class="htimeline-label">AB 实验</div>
+      <div class="htimeline-text">假设验证 → 效果度量 → 持续迭代优化</div>
+    </div>
+  </div>
+
+  <div class="stat-row" data-anim="5" style="margin-top:3rem;">
+    <div class="stat">
+      <div class="stat-value">2265</div>
+      <div class="stat-label">行代码，AI 一次生成</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">43KB</div>
+      <div class="stat-label">完整 PRD，含原型嵌入</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">3</div>
+      <div class="stat-label">方协同：前后端测试</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">0</div>
+      <div class="stat-label">次需求评审会</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 12: TAKEAWAYS ============ -->
+<section class="slide" id="slide-12">
+  <div class="ambient-grid"></div>
+  <div class="ambient-glow" style="background:var(--accent);top:30%;left:-200px;"></div>
+  <div class="ambient-glow" style="background:var(--accent-warm);bottom:-100px;right:-100px;"></div>
+
+  <span class="slide-label" data-anim="1">Takeaways</span>
+  <h2 class="slide-title" data-anim="2">带走这 <span class="accent">6 件事</span></h2>
+
+  <div class="takeaway-list" data-anim="3">
+    <div class="takeaway-item">
+      <div class="takeaway-num">01</div>
+      <div class="takeaway-text"><strong>原型即代码，代码即原型</strong> — 别再拖控件了，用自然语言描述你的想法，AI 帮你还原成可运行的界面</div>
+    </div>
+    <div class="takeaway-item">
+      <div class="takeaway-num">02</div>
+      <div class="takeaway-text"><strong>PRD 不是 Word 文档</strong> — HTML 格式的 PRD 可以直接嵌入原型、包含流程图、支持版本管理，开发打开就能看</div>
+    </div>
+    <div class="takeaway-item">
+      <div class="takeaway-num">03</div>
+      <div class="takeaway-text"><strong>Figma + AI 是互补，不是替代</strong> — Figma 做创意发散，AI 做精细落地，两者结合效率最大化</div>
+    </div>
+    <div class="takeaway-item">
+      <div class="takeaway-num">04</div>
+      <div class="takeaway-text"><strong>给开发的交付物越简单越好</strong> — 一个 HTML + 一个 MD，比 50 页 PPT 管用</div>
+    </div>
+    <div class="takeaway-item">
+      <div class="takeaway-num">05</div>
+      <div class="takeaway-text"><strong>Skills 是 AI 的插件系统</strong> — 装上对的 Skills，Claude Code 就从通用助手变成你的专属 PM 助手</div>
+    </div>
+    <div class="takeaway-item">
+      <div class="takeaway-num">06</div>
+      <div class="takeaway-text"><strong>AI 只是加速了重复性工作的效率</strong> — 省下来的时间，请用来思考业务底层逻辑和 AI 无法理解的事，比如商业化拓展</div>
+    </div>
+  </div>
+
+  <div style="margin-top:3rem;display:flex;gap:1rem;align-items:center;" data-anim="4">
+    <span style="font-size:1.5rem;"> </span>
+    <div>
+      <div style="font-family:var(--font-display);font-weight:600;font-size:1.1rem;">Thanks & Q/A</div>
+      <div style="font-size:0.85rem;color:var(--text-muted);margin-top:0.25rem;">扫码查看项目：l1sten.github.io/myccweb</div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function() {
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  const progressBar = document.getElementById('progressBar');
+  const slideCounter = document.getElementById('slideCounter');
+  const navDots = document.getElementById('navDots');
+
+  // Create nav dots
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'nav-dot';
+    dot.setAttribute('aria-label', '跳转到第 ' + (i + 1) + ' 页');
+    dot.addEventListener('click', () => {
+      slides[i].scrollIntoView({ behavior: 'smooth' });
+    });
+    navDots.appendChild(dot);
+  });
+  const dots = navDots.querySelectorAll('.nav-dot');
+
+  // Intersection Observer for visibility
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        const idx = Array.from(slides).indexOf(entry.target);
+        // Update progress
+        progressBar.style.width = ((idx + 1) / total * 100) + '%';
+        // Update counter
+        slideCounter.textContent = String(idx + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+        // Update dots
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      }
+    });
+  }, { threshold: 0.4 });
+
+  slides.forEach(s => observer.observe(s));
+
+  // Keyboard navigation
+  let currentSlide = 0;
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+      e.preventDefault();
+      if (currentSlide < total - 1) {
+        currentSlide++;
+        slides[currentSlide].scrollIntoView({ behavior: 'smooth' });
+      }
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      if (currentSlide > 0) {
+        currentSlide--;
+        slides[currentSlide].scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  });
+
+  // Sync currentSlide on scroll
+  const scrollObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        currentSlide = Array.from(slides).indexOf(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => scrollObserver.observe(s));
+
+  // Hide key hint after first interaction
+  let hinted = false;
+  const hideHint = () => {
+    if (!hinted) {
+      hinted = true;
+      document.querySelector('.key-hint').style.opacity = '0';
+    }
+  };
+  document.addEventListener('keydown', hideHint, { once: true });
+  document.addEventListener('wheel', hideHint, { once: true });
+
+  // Make first slide visible immediately
+  slides[0].classList.add('visible');
+})();
+</script>
+</body>
+</html>
