@@ -652,7 +652,7 @@ h3 {
 <nav class="nav-dots" id="navDots"></nav>
 
 <!-- Slide Counter -->
-<div class="slide-counter" id="slideCounter">01 / 11</div>
+<div class="slide-counter" id="slideCounter">01 / 13</div>
 
 <!-- Keyboard hint -->
 <div class="key-hint">↑↓ 或滚动翻页</div>
@@ -704,7 +704,7 @@ h3 {
   <h2 class="slide-title" data-anim="2">传统 PM 工作流的<span class="warm">四大痛点</span></h2>
 
   <!-- Excalidraw diagram: Pain Points Comparison -->
-  <div data-anim="3" style="margin-top:1.5rem;">
+  <div data-anim="3" style="margin-top:1.5rem;display:flex;justify-content:center;">
     <svg viewBox="0 0 1040 370" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1040px;">
       <!-- Old workflow - red side -->
       <rect x="20" y="0" width="400" height="32" rx="6" fill="oklch(65% 0.18 25 / 0.12)" stroke="oklch(65% 0.18 25 / 0.3)" stroke-width="1"/>
@@ -1360,8 +1360,111 @@ h3 {
   </div>
 </section>
 
-<!-- ============ SLIDE 12: TAKEAWAYS ============ -->
+<!-- ============ SLIDE 12: EFFICIENCY COMPARISON ============ -->
 <section class="slide" id="slide-12">
+  <div class="ambient-grid"></div>
+  <div class="ambient-glow" style="background:var(--accent);top:-100px;left:-100px;"></div>
+  <div class="ambient-glow" style="background:var(--success);bottom:-100px;right:-100px;"></div>
+
+  <span class="slide-label" data-anim="1">效率对比</span>
+  <h2 class="slide-title" data-anim="2">新老工作流的<span class="accent">效率差异</span></h2>
+  <p class="slide-subtitle" data-anim="3">基于实际项目的量化对比数据</p>
+
+  <div data-anim="4" style="margin-top:2rem;display:flex;justify-content:center;">
+    <svg viewBox="0 0 1040 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1040px;">
+      <!-- Table header -->
+      <rect x="0" y="0" width="260" height="44" rx="8" fill="oklch(20% 0.02 260)" stroke="var(--border)" stroke-width="1"/>
+      <text x="130" y="28" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="14" font-weight="600">对比维度</text>
+
+      <rect x="270" y="0" width="380" height="44" rx="8" fill="oklch(65% 0.18 25 / 0.12)" stroke="oklch(65% 0.18 25 / 0.25)" stroke-width="1"/>
+      <text x="460" y="28" text-anchor="middle" fill="oklch(65% 0.18 25)" font-family="Space Grotesk, Noto Sans SC, sans-serif" font-size="14" font-weight="600">传统工作流 ❌</text>
+
+      <rect x="660" y="0" width="380" height="44" rx="8" fill="oklch(70% 0.14 155 / 0.12)" stroke="oklch(70% 0.14 155 / 0.25)" stroke-width="1"/>
+      <text x="850" y="28" text-anchor="middle" fill="oklch(72% 0.14 155)" font-family="Space Grotesk, Noto Sans SC, sans-serif" font-size="14" font-weight="600">AI 工作流 ✅</text>
+
+      <!-- Row 1: Prototype -->
+      <rect x="0" y="52" width="260" height="56" rx="8" fill="oklch(18% 0.02 260)" stroke="var(--border)" stroke-width="1"/>
+      <text x="130" y="80" text-anchor="middle" fill="oklch(90% 0.008 260)" font-family="Noto Sans SC, sans-serif" font-size="14" font-weight="600">原型设计</text>
+      <text x="130" y="96" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="11">从需求到可交互原型</text>
+
+      <rect x="270" y="52" width="380" height="56" rx="8" fill="oklch(65% 0.18 25 / 0.04)" stroke="oklch(65% 0.18 25 / 0.12)" stroke-width="1"/>
+      <text x="310" y="76" fill="oklch(93% 0.008 260)" font-family="Space Grotesk, sans-serif" font-size="22" font-weight="700">2-3</text>
+      <text x="358" y="76" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="13">天</text>
+      <text x="310" y="96" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="12">Axure/Figma 手动搭建</text>
+
+      <rect x="660" y="52" width="380" height="56" rx="8" fill="oklch(70% 0.14 155 / 0.04)" stroke="oklch(70% 0.14 155 / 0.12)" stroke-width="1"/>
+      <text x="700" y="76" fill="oklch(72% 0.14 155)" font-family="Space Grotesk, sans-serif" font-size="22" font-weight="700">5</text>
+      <text x="722" y="76" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="13">分钟</text>
+      <text x="700" y="96" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="12">一句描述，AI 即时生成</text>
+
+      <!-- Row 2: PRD -->
+      <rect x="0" y="116" width="260" height="56" rx="8" fill="oklch(18% 0.02 260)" stroke="var(--border)" stroke-width="1"/>
+      <text x="130" y="144" text-anchor="middle" fill="oklch(90% 0.008 260)" font-family="Noto Sans SC, sans-serif" font-size="14" font-weight="600">PRD 撰写</text>
+      <text x="130" y="160" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="11">从原型到完整文档</text>
+
+      <rect x="270" y="116" width="380" height="56" rx="8" fill="oklch(65% 0.18 25 / 0.04)" stroke="oklch(65% 0.18 25 / 0.12)" stroke-width="1"/>
+      <text x="310" y="140" fill="oklch(93% 0.008 260)" font-family="Space Grotesk, sans-serif" font-size="22" font-weight="700">1-2</text>
+      <text x="358" y="140" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="13">天</text>
+      <text x="310" y="160" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="12">手动编写，与原型割裂</text>
+
+      <rect x="660" y="116" width="380" height="56" rx="8" fill="oklch(70% 0.14 155 / 0.04)" stroke="oklch(70% 0.14 155 / 0.12)" stroke-width="1"/>
+      <text x="700" y="140" fill="oklch(72% 0.14 155)" font-family="Space Grotesk, sans-serif" font-size="22" font-weight="700">10</text>
+      <text x="728" y="140" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="13">分钟</text>
+      <text x="700" y="160" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="12">AI 自动生成，与原型同步</text>
+
+      <!-- Row 3: Communication -->
+      <rect x="0" y="180" width="260" height="56" rx="8" fill="oklch(18% 0.02 260)" stroke="var(--border)" stroke-width="1"/>
+      <text x="130" y="208" text-anchor="middle" fill="oklch(90% 0.008 260)" font-family="Noto Sans SC, sans-serif" font-size="14" font-weight="600">需求评审</text>
+      <text x="130" y="224" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="11">对齐前后端理解</text>
+
+      <rect x="270" y="180" width="380" height="56" rx="8" fill="oklch(65% 0.18 25 / 0.04)" stroke="oklch(65% 0.18 25 / 0.12)" stroke-width="1"/>
+      <text x="310" y="204" fill="oklch(93% 0.008 260)" font-family="Space Grotesk, sans-serif" font-size="22" font-weight="700">2-3</text>
+      <text x="358" y="204" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="13">轮会议</text>
+      <text x="310" y="224" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="12">反复讲解，理解偏差频发</text>
+
+      <rect x="660" y="180" width="380" height="56" rx="8" fill="oklch(70% 0.14 155 / 0.04)" stroke="oklch(70% 0.14 155 / 0.12)" stroke-width="1"/>
+      <text x="700" y="204" fill="oklch(72% 0.14 155)" font-family="Space Grotesk, sans-serif" font-size="22" font-weight="700">0</text>
+      <text x="722" y="204" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="13">轮</text>
+      <text x="700" y="224" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="12">HTML + MD 即文档，所见即所得</text>
+
+      <!-- Row 4: User Research -->
+      <rect x="0" y="244" width="260" height="56" rx="8" fill="oklch(18% 0.02 260)" stroke="var(--border)" stroke-width="1"/>
+      <text x="130" y="272" text-anchor="middle" fill="oklch(90% 0.008 260)" font-family="Noto Sans SC, sans-serif" font-size="14" font-weight="600">用户调研</text>
+      <text x="130" y="288" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="11">从发起到获取洞察</text>
+
+      <rect x="270" y="244" width="380" height="56" rx="8" fill="oklch(65% 0.18 25 / 0.04)" stroke="oklch(65% 0.18 25 / 0.12)" stroke-width="1"/>
+      <text x="310" y="268" fill="oklch(93% 0.008 260)" font-family="Space Grotesk, sans-serif" font-size="22" font-weight="700">1-2</text>
+      <text x="358" y="268" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="13">周</text>
+      <text x="310" y="288" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="12">问卷 + 访谈，样本有限</text>
+
+      <rect x="660" y="244" width="380" height="56" rx="8" fill="oklch(70% 0.14 155 / 0.04)" stroke="oklch(70% 0.14 155 / 0.12)" stroke-width="1"/>
+      <text x="700" y="268" fill="oklch(72% 0.14 155)" font-family="Space Grotesk, sans-serif" font-size="22" font-weight="700">实时</text>
+      <text x="700" y="288" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="12">AI 模拟用户对话，深度挖掘</text>
+
+      <!-- Row 5: Full Cycle -->
+      <rect x="0" y="308" width="260" height="56" rx="8" fill="oklch(18% 0.02 260)" stroke="var(--border)" stroke-width="1"/>
+      <text x="130" y="336" text-anchor="middle" fill="oklch(90% 0.008 260)" font-family="Noto Sans SC, sans-serif" font-size="14" font-weight="600">完整周期</text>
+      <text x="130" y="352" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="11">从需求到可交付物</text>
+
+      <rect x="270" y="308" width="380" height="56" rx="8" fill="oklch(65% 0.18 25 / 0.04)" stroke="oklch(65% 0.18 25 / 0.12)" stroke-width="1"/>
+      <text x="310" y="332" fill="oklch(93% 0.008 260)" font-family="Space Grotesk, sans-serif" font-size="22" font-weight="700">1-2</text>
+      <text x="358" y="332" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="13">周</text>
+      <text x="310" y="352" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="12">串行流程，各环节割裂</text>
+
+      <rect x="660" y="308" width="380" height="56" rx="8" fill="oklch(70% 0.14 155 / 0.04)" stroke="oklch(70% 0.14 155 / 0.12)" stroke-width="1"/>
+      <text x="700" y="332" fill="oklch(72% 0.14 155)" font-family="Space Grotesk, sans-serif" font-size="22" font-weight="700">30</text>
+      <text x="740" y="332" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="13">分钟</text>
+      <text x="700" y="352" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="12">端到端 AI 驱动，一站交付</text>
+
+      <!-- Bottom highlight -->
+      <rect x="320" y="380" width="400" height="32" rx="16" fill="oklch(72% 0.14 220 / 0.12)" stroke="oklch(74% 0.14 220 / 0.3)" stroke-width="1"/>
+      <text x="520" y="401" text-anchor="middle" fill="oklch(74% 0.14 220)" font-family="Space Grotesk, Noto Sans SC, sans-serif" font-size="14" font-weight="700">整体效率提升 10x+</text>
+    </svg>
+  </div>
+</section>
+
+<!-- ============ SLIDE 13: TAKEAWAYS ============ -->
+<section class="slide" id="slide-13">
   <div class="ambient-grid"></div>
   <div class="ambient-glow" style="background:var(--accent);top:30%;left:-200px;"></div>
   <div class="ambient-glow" style="background:var(--accent-warm);bottom:-100px;right:-100px;"></div>
