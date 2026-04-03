@@ -1506,34 +1506,147 @@ h3 {
   <span class="slide-label" data-anim="1">Closing</span>
   <h2 class="slide-title" data-anim="2">从 Prompt 到 Harness：<span class="accent">AI 工程化的三段演进</span></h2>
 
-  <div class="takeaway-list" data-anim="3">
-    <div class="takeaway-item">
-      <div class="takeaway-num" style="color:var(--accent);">01</div>
-      <div class="takeaway-text"><strong>Prompt Engineering</strong>（2023）— 写好提示词，调教单轮对话，"你是什么专家"就是这个阶段的产物</div>
-    </div>
-    <div class="takeaway-item">
-      <div class="takeaway-num" style="color:var(--accent-warm);">02</div>
-      <div class="takeaway-text"><strong>Context Engineering</strong>（2024-2025）— 管理上下文窗口、记忆、工具调用，让 AI 在正确的时机看到正确的信息</div>
-    </div>
-    <div class="takeaway-item">
-      <div class="takeaway-num" style="color:var(--success);">03</div>
-      <div class="takeaway-text"><strong>Harness Engineering</strong>（2025+）— 多角色协作架构：Planner 规划、Generator 生成、Evaluator 校验，AI 不再是一个人干活</div>
-    </div>
+  <div data-anim="3" style="margin-top:1rem;display:flex;justify-content:center;">
+    <svg viewBox="0 0 1040 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1040px;">
+      <!-- Evolution arrow -->
+      <defs>
+        <marker id="arrowR" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <path d="M0,0 L8,3 L0,6" fill="oklch(55% 0.02 260)" />
+        </marker>
+      </defs>
+      <line x1="180" y1="155" x2="370" y2="155" stroke="oklch(55% 0.02 260)" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrowR)"/>
+      <line x1="540" y1="155" x2="730" y2="155" stroke="oklch(55% 0.02 260)" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrowR)"/>
+
+      <!-- Phase 1: Prompt Engineering -->
+      <rect x="0" y="40" width="220" height="230" rx="12" fill="oklch(22% 0.02 260)" stroke="oklch(65% 0.18 25 / 0.4)" stroke-width="1.5"/>
+      <rect x="0" y="40" width="220" height="36" rx="12" fill="oklch(65% 0.18 25 / 0.15)"/>
+      <rect x="0" y="64" width="220" height="12" fill="oklch(65% 0.18 25 / 0.15)"/>
+      <text x="110" y="64" text-anchor="middle" fill="oklch(65% 0.18 25)" font-family="Space Grotesk, sans-serif" font-size="14" font-weight="700">Phase 1</text>
+      <text x="110" y="102" text-anchor="middle" fill="oklch(90% 0.008 260)" font-family="Space Grotesk, Noto Sans SC, sans-serif" font-size="16" font-weight="700">Prompt Engineering</text>
+      <text x="110" y="122" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="11">2023</text>
+      <!-- Single node -->
+      <circle cx="110" cy="170" r="22" fill="oklch(65% 0.18 25 / 0.12)" stroke="oklch(65% 0.18 25 / 0.35)" stroke-width="1.5"/>
+      <text x="110" y="175" text-anchor="middle" fill="oklch(65% 0.18 25)" font-family="Space Grotesk, sans-serif" font-size="11" font-weight="600">AI</text>
+      <text x="110" y="210" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="10">写好提示词</text>
+      <text x="110" y="226" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="10">调教单轮对话</text>
+      <text x="110" y="256" text-anchor="middle" fill="oklch(50% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="10" font-style="italic">"你是什么专家"</text>
+
+      <!-- Phase 2: Context Engineering -->
+      <rect x="290" y="40" width="260" height="230" rx="12" fill="oklch(22% 0.02 260)" stroke="oklch(65% 0.14 55 / 0.4)" stroke-width="1.5"/>
+      <rect x="290" y="40" width="260" height="36" rx="12" fill="oklch(65% 0.14 55 / 0.15)"/>
+      <rect x="290" y="64" width="260" height="12" fill="oklch(65% 0.14 55 / 0.15)"/>
+      <text x="420" y="64" text-anchor="middle" fill="oklch(65% 0.14 55)" font-family="Space Grotesk, sans-serif" font-size="14" font-weight="700">Phase 2</text>
+      <text x="420" y="102" text-anchor="middle" fill="oklch(90% 0.008 260)" font-family="Space Grotesk, Noto Sans SC, sans-serif" font-size="16" font-weight="700">Context Engineering</text>
+      <text x="420" y="122" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="11">2024-2025</text>
+      <!-- Three connected nodes -->
+      <circle cx="360" cy="170" r="20" fill="oklch(65% 0.14 55 / 0.12)" stroke="oklch(65% 0.14 55 / 0.35)" stroke-width="1.5"/>
+      <text x="360" y="175" text-anchor="middle" fill="oklch(65% 0.14 55)" font-family="Space Grotesk, sans-serif" font-size="10" font-weight="600">记忆</text>
+      <circle cx="420" cy="160" r="22" fill="oklch(65% 0.14 55 / 0.12)" stroke="oklch(65% 0.14 55 / 0.35)" stroke-width="1.5"/>
+      <text x="420" y="165" text-anchor="middle" fill="oklch(65% 0.14 55)" font-family="Space Grotesk, sans-serif" font-size="11" font-weight="600">AI</text>
+      <circle cx="480" cy="170" r="20" fill="oklch(65% 0.14 55 / 0.12)" stroke="oklch(65% 0.14 55 / 0.35)" stroke-width="1.5"/>
+      <text x="480" y="175" text-anchor="middle" fill="oklch(65% 0.14 55)" font-family="Space Grotesk, sans-serif" font-size="10" font-weight="600">工具</text>
+      <line x1="378" y1="165" x2="400" y2="162" stroke="oklch(65% 0.14 55 / 0.4)" stroke-width="1.2"/>
+      <line x1="440" y1="162" x2="462" y2="165" stroke="oklch(65% 0.14 55 / 0.4)" stroke-width="1.2"/>
+      <text x="420" y="210" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="10">管理上下文窗口</text>
+      <text x="420" y="226" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="10">记忆 + 工具调用</text>
+      <text x="420" y="256" text-anchor="middle" fill="oklch(50% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="10" font-style="italic">正确时机 × 正确信息</text>
+
+      <!-- Phase 3: Harness Engineering -->
+      <rect x="660" y="40" width="260" height="230" rx="12" fill="oklch(22% 0.02 260)" stroke="oklch(70% 0.14 155 / 0.4)" stroke-width="1.5"/>
+      <rect x="660" y="40" width="260" height="36" rx="12" fill="oklch(70% 0.14 155 / 0.15)"/>
+      <rect x="660" y="64" width="260" height="12" fill="oklch(70% 0.14 155 / 0.15)"/>
+      <text x="790" y="64" text-anchor="middle" fill="oklch(70% 0.14 155)" font-family="Space Grotesk, sans-serif" font-size="14" font-weight="700">Phase 3</text>
+      <text x="790" y="102" text-anchor="middle" fill="oklch(90% 0.008 260)" font-family="Space Grotesk, Noto Sans SC, sans-serif" font-size="16" font-weight="700">Harness Engineering</text>
+      <text x="790" y="122" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="11">2025+</text>
+      <!-- Three role nodes with labels -->
+      <circle cx="730" cy="155" r="24" fill="oklch(65% 0.18 25 / 0.12)" stroke="oklch(65% 0.18 25 / 0.35)" stroke-width="1.5"/>
+      <text x="730" y="153" text-anchor="middle" fill="oklch(65% 0.18 25)" font-family="Space Grotesk, sans-serif" font-size="9" font-weight="700">Plan</text>
+      <text x="730" y="163" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="8">规划</text>
+      <circle cx="790" cy="155" r="24" fill="oklch(72% 0.14 220 / 0.12)" stroke="oklch(72% 0.14 220 / 0.35)" stroke-width="1.5"/>
+      <text x="790" y="153" text-anchor="middle" fill="oklch(72% 0.14 220)" font-family="Space Grotesk, sans-serif" font-size="9" font-weight="700">Gen</text>
+      <text x="790" y="163" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="8">生成</text>
+      <circle cx="850" cy="155" r="24" fill="oklch(70% 0.14 155 / 0.12)" stroke="oklch(70% 0.14 155 / 0.35)" stroke-width="1.5"/>
+      <text x="850" y="153" text-anchor="middle" fill="oklch(70% 0.14 155)" font-family="Space Grotesk, sans-serif" font-size="9" font-weight="700">Eval</text>
+      <text x="850" y="163" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="8">校验</text>
+      <!-- Connections -->
+      <line x1="752" y1="150" x2="768" y2="150" stroke="oklch(55% 0.02 260 / 0.4)" stroke-width="1.2"/>
+      <line x1="812" y1="150" x2="828" y2="150" stroke="oklch(55% 0.02 260 / 0.4)" stroke-width="1.2"/>
+      <text x="790" y="210" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="10">多角色协作架构</text>
+      <text x="790" y="226" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="10">Planner · Generator · Evaluator</text>
+      <text x="790" y="256" text-anchor="middle" fill="oklch(50% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="10" font-style="italic">AI 不再是一个人干活</text>
+
+      <!-- Bottom timeline bar -->
+      <rect x="120" y="310" width="800" height="36" rx="18" fill="oklch(20% 0.02 260)" stroke="oklch(55% 0.02 260 / 0.15)" stroke-width="1"/>
+      <text x="200" y="333" text-anchor="middle" fill="oklch(65% 0.18 25)" font-family="Space Grotesk, sans-serif" font-size="12" font-weight="600">2023</text>
+      <text x="520" y="333" text-anchor="middle" fill="oklch(65% 0.14 55)" font-family="Space Grotesk, sans-serif" font-size="12" font-weight="600">2024-25</text>
+      <text x="840" y="333" text-anchor="middle" fill="oklch(70% 0.14 155)" font-family="Space Grotesk, sans-serif" font-size="12" font-weight="600">2025+</text>
+      <!-- China marker -->
+      <line x1="890" y1="310" x2="890" y2="346" stroke="oklch(65% 0.18 25 / 0.6)" stroke-width="1.5" stroke-dasharray="3 2"/>
+      <text x="940" y="333" text-anchor="middle" fill="oklch(65% 0.18 25)" font-family="Space Grotesk, Noto Sans SC, sans-serif" font-size="10" font-weight="600">CN ~2028</text>
+      <!-- Progress fill -->
+      <rect x="120" y="310" width="400" height="36" rx="18" fill="oklch(70% 0.14 155 / 0.06)"/>
+    </svg>
   </div>
 
-  <div class="takeaway-list" data-anim="4" style="margin-top:1.5rem;">
+  <div class="takeaway-list" data-anim="4" style="margin-top:0.5rem;">
     <div class="takeaway-item">
       <div class="takeaway-num" style="color:var(--text-muted);font-size:1rem;"> </div>
       <div class="takeaway-text">硅谷大厂已进入第三阶段，预计 <strong>2028 年底</strong>这股风吹到中国 — 但不必过度恐慌</div>
     </div>
     <div class="takeaway-item">
       <div class="takeaway-num" style="color:var(--text-muted);font-size:1rem;"> </div>
-      <div class="takeaway-text">Claude 的源码仍在模仿人类的记忆机制（甚至包括 <strong>autoDream</strong> 模仿人类做梦）— AI 自身也在学习如何"做人"</div>
+      <div class="takeaway-text">Anthropic 的 Claude 源码仍在模仿人类的记忆机制，内置了 <strong>autoDream</strong> 机制自动进行记忆归纳沉淀学习 — AI 自身也在学习如何"做人"</div>
     </div>
-    <div class="takeaway-item">
-      <div class="takeaway-num" style="color:var(--text-muted);font-size:1rem;"> </div>
-      <div class="takeaway-text">产品经理作为项目的 <strong>Planner</strong>，永远要以用户需求为导向 — 这是 AI 做不到的</div>
-    </div>
+  </div>
+
+  <div data-anim="4b" style="margin-top:1.5rem;display:flex;justify-content:center;">
+    <svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:800px;">
+      <defs>
+        <marker id="arrowSmall" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+          <path d="M0,0 L7,2.5 L0,5" fill="oklch(55% 0.02 260)" />
+        </marker>
+      </defs>
+
+      <!-- Anthropic label -->
+      <text x="400" y="22" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Space Grotesk, sans-serif" font-size="12" font-weight="600" letter-spacing="2">ANTHROPIC HARNESS ARCHITECTURE</text>
+
+      <!-- Planner box — highlighted -->
+      <rect x="40" y="40" width="200" height="120" rx="12" fill="oklch(65% 0.18 25 / 0.12)" stroke="oklch(65% 0.18 25)" stroke-width="2"/>
+      <rect x="40" y="40" width="200" height="32" rx="12" fill="oklch(65% 0.18 25 / 0.2)"/>
+      <rect x="40" y="60" width="200" height="12" fill="oklch(65% 0.18 25 / 0.2)"/>
+      <text x="140" y="62" text-anchor="middle" fill="oklch(65% 0.18 25)" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="700">Planner</text>
+      <text x="140" y="90" text-anchor="middle" fill="oklch(90% 0.008 260)" font-family="Noto Sans SC, sans-serif" font-size="12">需求理解 · 优先级判断</text>
+      <text x="140" y="108" text-anchor="middle" fill="oklch(90% 0.008 260)" font-family="Noto Sans SC, sans-serif" font-size="12">用户洞察 · 方向决策</text>
+      <text x="140" y="135" text-anchor="middle" fill="oklch(65% 0.18 25)" font-family="Noto Sans SC, sans-serif" font-size="11" font-weight="700">PM = 不可替代</text>
+      <!-- Crown icon -->
+      <text x="140" y="38" text-anchor="middle" font-size="14"> </text>
+
+      <!-- Generator box -->
+      <rect x="300" y="40" width="200" height="120" rx="12" fill="oklch(22% 0.02 260)" stroke="oklch(72% 0.14 220 / 0.4)" stroke-width="1.5"/>
+      <rect x="300" y="40" width="200" height="32" rx="12" fill="oklch(72% 0.14 220 / 0.1)"/>
+      <rect x="300" y="60" width="200" height="12" fill="oklch(72% 0.14 220 / 0.1)"/>
+      <text x="400" y="62" text-anchor="middle" fill="oklch(72% 0.14 220)" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="700">Generator</text>
+      <text x="400" y="90" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="12">代码生成 · 原型产出</text>
+      <text x="400" y="108" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="12">文档撰写 · 自动化执行</text>
+      <text x="400" y="135" text-anchor="middle" fill="oklch(50% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="11">AI 可替代</text>
+
+      <!-- Evaluator box -->
+      <rect x="560" y="40" width="200" height="120" rx="12" fill="oklch(22% 0.02 260)" stroke="oklch(70% 0.14 155 / 0.4)" stroke-width="1.5"/>
+      <rect x="560" y="40" width="200" height="32" rx="12" fill="oklch(70% 0.14 155 / 0.1)"/>
+      <rect x="560" y="60" width="200" height="12" fill="oklch(70% 0.14 155 / 0.1)"/>
+      <text x="660" y="62" text-anchor="middle" fill="oklch(70% 0.14 155)" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="700">Evaluator</text>
+      <text x="660" y="90" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="12">质量校验 · 测试验证</text>
+      <text x="660" y="108" text-anchor="middle" fill="oklch(55% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="12">反馈闭环 · 持续改进</text>
+      <text x="660" y="135" text-anchor="middle" fill="oklch(50% 0.02 260)" font-family="Noto Sans SC, sans-serif" font-size="11">AI 可替代</text>
+
+      <!-- Arrows: Planner -> Generator -> Evaluator -->
+      <line x1="240" y1="100" x2="298" y2="100" stroke="oklch(55% 0.02 260)" stroke-width="1.5" marker-end="url(#arrowSmall)"/>
+      <line x1="500" y1="100" x2="558" y2="100" stroke="oklch(55% 0.02 260)" stroke-width="1.5" marker-end="url(#arrowSmall)"/>
+
+      <!-- Bottom annotation -->
+      <line x1="140" y1="162" x2="140" y2="180" stroke="oklch(65% 0.18 25 / 0.5)" stroke-width="1.5" stroke-dasharray="3 2"/>
+      <text x="400" y="192" text-anchor="middle" fill="oklch(65% 0.18 25)" font-family="Noto Sans SC, sans-serif" font-size="12" font-weight="600">只有 Planner 需要理解"人" — 这正是产品经理的核心价值</text>
+    </svg>
   </div>
 
   <div style="margin-top:2.5rem;display:flex;gap:1rem;align-items:center;" data-anim="5">
