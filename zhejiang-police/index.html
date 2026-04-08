@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>浙江公安主题填报系统 — 原型 & PRD</title>
+<style>
+:root {
+  --border: #E2E8F0; --bg: #F8FAFC; --text: #0F172A; --muted: #64748B;
+  --accent: #1E4FCC; --accent-light: #E8F0FE; --gold: #C9A04E; --gold-soft: rgba(201,160,78,0.12);
+  --radius: 8px; --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(13,43,107,0.08); --shadow-lg: 0 12px 40px rgba(13,43,107,0.12);
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #EEF1F5; color: var(--text); -webkit-font-smoothing: antialiased; }
+
+/* ===== Header ===== */
+.top-header {
+  height: 52px; background: linear-gradient(135deg, #091E52 0%, #0D2B6B 40%, #1E4FCC 100%);
+  display: flex; align-items: center; padding: 0 24px; gap: 14px; flex-shrink: 0;
+  position: relative; overflow: hidden;
+}
+.top-header::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 24px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 24'%3E%3Cpath d='M0 24V12C40 4 80 18 120 10S200-2 240 8 320 18 400 6V24Z' fill='white' opacity='0.06'/%3E%3C/svg%3E") repeat-x bottom center;
+  background-size: 400px 24px; pointer-events: none;
+}
+.top-header .seal {
+  width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid rgba(201,160,78,0.35);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  font-size: 14px; font-weight: 800; color: rgba(201,160,78,0.6); position: relative; z-index: 1;
+}
+.top-header h1 { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: 1px; position: relative; z-index: 1; }
+.top-header .badge {
+  font-size: 10px; padding: 3px 10px; border-radius: 10px;
+  background: var(--gold-soft); border: 1px solid rgba(201,160,78,0.25);
+  color: var(--gold); font-weight: 600; letter-spacing: 0.5px;
+  position: relative; z-index: 1;
+}
+.top-header .divider-dot {
+  width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,0.25);
+  position: relative; z-index: 1;
+}
+
+/* ===== Layout ===== */
+.main-split { display: flex; height: calc(100vh - 52px); overflow: hidden; }
+
+/* ===== Left: Prototype Side ===== */
+.proto-side { flex: 1; min-width: 0; display: flex; flex-direction: column; background: #E2E6EE; }
+
+.proto-tabs {
+  display: flex; gap: 0; background: #fff; border-bottom: 1px solid var(--border);
+  flex-shrink: 0; padding: 0 8px;
+}
+.proto-tab {
+  position: relative; padding: 12px 18px; font-size: 13px; font-weight: 500;
+  color: var(--muted); cursor: pointer; border: none; background: none;
+  font-family: inherit; transition: color 0.25s ease; white-space: nowrap;
+}
+.proto-tab::after {
+  content: ''; position: absolute; bottom: 0; left: 50%; right: 50%;
+  height: 2px; background: var(--accent); border-radius: 1px;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.proto-tab:hover { color: var(--text); }
+.proto-tab.active { color: var(--accent); font-weight: 600; }
+.proto-tab.active::after { left: 12px; right: 12px; }
+
+.proto-frame-wrap {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  padding: 20px; overflow: hidden;
+}
+
+/* Phone frame */
+.proto-phone {
+  width: 393px; height: 100%; max-height: 860px;
+  border-radius: 44px; overflow: hidden; position: relative;
+  background: #000; padding: 12px;
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0,0,0,0.08), inset 0 0 0 1px rgba(255,255,255,0.05);
+}
+.proto-phone::before {
+  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 126px; height: 34px; background: #000; border-radius: 0 0 20px 20px; z-index: 5;
+}
+.proto-phone-screen {
+  width: 100%; height: 100%; border-radius: 34px; overflow: hidden;
+  background: #fff; position: relative;
+}
+.proto-phone-screen iframe { width: 100%; height: 100%; border: none; display: block; }
+.proto-phone-screen::after {
+  content: ''; position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+  width: 140px; height: 5px; border-radius: 3px; background: rgba(0,0,0,0.15); z-index: 5;
+}
+
+/* ===== Right: PRD Panel ===== */
+.prd-panel {
+  width: 540px; flex-shrink: 0; display: flex;
+  border-left: 1px solid var(--border); background: #fff;
+  box-shadow: -4px 0 24px rgba(13,43,107,0.04);
+}
+.prd-toc {
+  width: 184px; border-right: 1px solid var(--border);
+  overflow-y: auto; background: var(--bg); flex-shrink: 0;
+  padding: 20px 0;
+}
+.prd-toc::-webkit-scrollbar { width: 3px; }
+.prd-toc::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+.prd-toc-title {
+  font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 1.5px;
+  text-transform: uppercase; padding: 0 16px 12px; border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+.prd-toc-item {
+  display: block; padding: 7px 16px; font-size: 12px; color: var(--muted);
+  cursor: pointer; transition: all 0.2s ease; line-height: 1.5;
+  border-left: 2px solid transparent; position: relative;
+}
+.prd-toc-item:hover { color: var(--text); background: #F0F4F8; }
+.prd-toc-item.active {
+  color: var(--accent); border-left-color: var(--accent); font-weight: 600;
+  background: var(--accent-light);
+}
+.prd-toc-item[data-level="1"] { font-weight: 600; color: var(--text); font-size: 13px; padding-top: 12px; margin-top: 4px; }
+.prd-toc-item[data-level="3"] { padding-left: 28px; font-size: 11px; }
+
+.prd-content {
+  flex: 1; overflow-y: auto; padding: 28px 32px 40px; min-width: 0;
+}
+.prd-content::-webkit-scrollbar { width: 5px; }
+.prd-content::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 5px; }
+
+/* PRD Markdown Styles */
+.prd-body h1 {
+  font-size: 22px; font-weight: 800; margin: 0 0 20px; padding-bottom: 14px;
+  border-bottom: 2px solid var(--accent); letter-spacing: 0.3px; color: var(--text);
+}
+.prd-body h2 {
+  font-size: 17px; font-weight: 700; margin: 32px 0 14px; color: var(--accent);
+  padding-left: 12px; border-left: 3px solid var(--accent); line-height: 1.3;
+}
+.prd-body h3 { font-size: 15px; font-weight: 600; margin: 24px 0 10px; color: var(--text); }
+.prd-body h4 { font-size: 13px; font-weight: 600; margin: 18px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.prd-body p { font-size: 13.5px; line-height: 1.75; margin: 0 0 12px; color: #334155; }
+.prd-body ul, .prd-body ol { font-size: 13.5px; line-height: 1.75; margin: 0 0 12px; padding-left: 24px; color: #334155; }
+.prd-body li { margin-bottom: 4px; }
+.prd-body li::marker { color: var(--accent); }
+.prd-body strong { color: var(--text); font-weight: 600; }
+.prd-body code {
+  font-size: 12px; font-family: 'SF Mono', 'Fira Code', Menlo, monospace;
+  background: #F1F5F9; padding: 2px 6px; border-radius: 4px; color: var(--accent);
+  border: 1px solid #E2E8F0;
+}
+.prd-body pre {
+  background: #0F172A; color: #CBD5E1; padding: 16px 20px; border-radius: 10px;
+  font-size: 12.5px; line-height: 1.65; margin: 12px 0; overflow-x: auto;
+  border: 1px solid #1E293B;
+  font-family: 'SF Mono', 'Fira Code', Menlo, monospace;
+}
+.prd-body pre code { background: none; color: inherit; padding: 0; border: none; }
+.prd-body blockquote {
+  border-left: 3px solid var(--gold); padding: 10px 16px; margin: 12px 0;
+  background: linear-gradient(90deg, #FFFBEB, #FEF3C7 200%); border-radius: 0 8px 8px 0;
+  font-size: 13px; color: #92400E;
+}
+.prd-body hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+.prd-body table {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  margin: 14px 0; font-size: 12.5px; border-radius: var(--radius);
+  overflow: hidden; border: 1px solid var(--border);
+}
+.prd-body th {
+  background: #F1F5F9; text-align: left; padding: 10px 12px;
+  font-weight: 600; color: var(--text); white-space: nowrap;
+  border-bottom: 1px solid var(--border); font-size: 12px; letter-spacing: 0.3px;
+}
+.prd-body td {
+  padding: 8px 12px; border-bottom: 1px solid #F1F5F9; color: #475569; vertical-align: top;
+}
+.prd-body tr:last-child td { border-bottom: none; }
+.prd-body tr:hover td { background: #F8FAFC; }
+.prd-body a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.15s; }
+.prd-body a:hover { border-bottom-color: var(--accent); }
+
+/* Loading state */
+.prd-loading {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 200px; gap: 12px;
+}
+.prd-spinner {
+  width: 24px; height: 24px; border: 2.5px solid #E2E8F0; border-top-color: var(--accent);
+  border-radius: 50%; animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== Responsive ===== */
+@media (max-width: 1100px) {
+  .prd-panel { width: 400px; }
+  .prd-toc { width: 150px; }
+}
+@media (max-width: 900px) {
+  .prd-toc { display: none; }
+  .prd-panel { width: 360px; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-header">
+  <div class="seal">浙</div>
+  <h1>浙江公安主题填报系统</h1>
+  <div class="divider-dot"></div>
+  <span class="badge">原型 + PRD</span>
+</div>
+
+<main class="main-split">
+  <!-- Left: Prototype -->
+  <div class="proto-side">
+    <div class="proto-tabs">
+      <button class="proto-tab active" data-page="prototype.html">主题列表</button>
+      <button class="proto-tab" data-page="detail.html">主题详情</button>
+      <button class="proto-tab" data-page="submit.html">稿件填报</button>
+      <button class="proto-tab" data-page="create-theme.html">新建主题</button>
+    </div>
+    <div class="proto-frame-wrap">
+      <div class="proto-phone">
+        <div class="proto-phone-screen">
+          <iframe id="protoFrame" src="prototype.html"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: PRD -->
+  <div class="prd-panel">
+    <div class="prd-toc" id="prdToc">
+      <div class="prd-toc-title">目录</div>
+    </div>
+    <div class="prd-content prd-body" id="prdContent">
+      <div class="prd-loading">
+        <div class="prd-spinner"></div>
+        <p style="color:var(--muted);font-size:13px;">加载 PRD 文档...</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+// ===== Tab Switching =====
+var tabs = document.querySelectorAll('.proto-tab');
+var iframe = document.getElementById('protoFrame');
+tabs.forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    tabs.forEach(function(t) { t.classList.remove('active'); });
+    tab.classList.add('active');
+    iframe.src = tab.dataset.page;
+  });
+});
+
+// ===== Markdown to HTML =====
+function md2html(md) {
+  var html = md;
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, function(m, lang, code) {
+    return '<pre><code>' + code.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</code></pre>';
+  });
+  html = html.replace(/(?:^|\n)(\|.+\|)\n(\|[-| :]+\|)\n((?:\|.+\|\n?)*)/g, function(m, header, sep, body) {
+    var hCells = header.split('|').filter(function(c){return c.trim();});
+    var rows = body.trim().split('\n');
+    var out = '<table><thead><tr>' + hCells.map(function(c){return '<th>'+c.trim()+'</th>';}).join('') + '</tr></thead><tbody>';
+    rows.forEach(function(row) {
+      var cells = row.split('|').filter(function(c){return c.trim();});
+      out += '<tr>' + cells.map(function(c){return '<td>'+c.trim()+'</td>';}).join('') + '</tr>';
+    });
+    return out + '</tbody></table>';
+  });
+  var hIdx = 0;
+  html = html.replace(/^#### (.+)$/gm, function(m, t) { return '<h4 id="h-'+(hIdx++)+'">'+t+'</h4>'; });
+  html = html.replace(/^### (.+)$/gm, function(m, t) { return '<h3 id="h-'+(hIdx++)+'">'+t+'</h3>'; });
+  html = html.replace(/^## (.+)$/gm, function(m, t) { return '<h2 id="h-'+(hIdx++)+'">'+t+'</h2>'; });
+  html = html.replace(/^# (.+)$/gm, function(m, t) { return '<h1 id="h-'+(hIdx++)+'">'+t+'</h1>'; });
+  html = html.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  html = html.replace(/^---+$/gm, '<hr>');
+  html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+  html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/\n{2,}/g, '</p><p>');
+  if (!html.startsWith('<')) html = '<p>' + html;
+  if (!html.endsWith('>')) html += '</p>';
+  html = html.replace(/<p>\s*<(h[1-4]|pre|ul|ol|table|blockquote|hr)/g, '<$1');
+  html = html.replace(/<\/(h[1-4]|pre|ul|ol|table|blockquote)>\s*<\/p>/g, '</$1>');
+  return html;
+}
+
+// ===== Load PRD =====
+var prdContent = document.getElementById('prdContent');
+var prdToc = document.getElementById('prdToc');
+
+var prdMd = '# 浙江公安主题填报系统 — 产品需求文档（PRD）\n\n> 版本：v1.0\n> 日期：2026-04-07\n> 产品：浙江公安主题填报移动端系统\n> 甲方：浙江省公安厅融媒体中心\n\n---\n\n## 1. 产品概述\n\n### 1.1 背景\n\n浙江省公安厅融媒体中心需要一个移动端主题填报系统，用于管理公安主题宣传的稿件收集、主题配置和专题推荐。系统需体现浙江公安特色，兼顾政务严肃性和视觉美观度。\n\n### 1.2 产品定位\n\n面向浙江省公安厅内部工作人员的移动端内容管理工具，核心功能是主题创建、稿件填报和专题推荐配置。\n\n### 1.3 设计风格\n\n**政务蓝 + 水墨浙江**\n- 主色调：深蓝渐变（`#0D2B6B` → `#1E4FCC`），体现公安专业与权威\n- 强调色：金色（`#C9A04E`），呼应警徽元素\n- 装饰元素：水墨山水 SVG 剪影，体现浙江地域特色\n- 蓝色竖线装饰条，致敬公安肩章\n\n---\n\n## 2. 系统架构\n\n### 2.1 功能模块\n\n系统包含三个平行模块，本期实现「主题填报」模块，其余两个模块预留入口：\n\n| 模块 | 状态 | 说明 |\n|------|------|------|\n| **主题填报** | 本期实现 | 主题创建、管理、稿件填报、专题推荐配置 |\n| 数据报告 | 预留入口 | 未来实现，用于数据统计与分析 |\n| 异常处置 | 预留入口 | 未来实现，用于异常稿件处理 |\n\n### 2.2 页面清单\n\n| 页面 | 文件 | 说明 |\n|------|------|------|\n| 主题列表 | `index.html` | 系统入口页，展示所有主题卡片 |\n| 主题详情 | `detail.html` | 展示主题下的稿件列表和专题推荐 |\n| 稿件填报 | `submit.html` | 填写并提交稿件信息的表单页 |\n| 新建主题 | `create-theme.html` | 创建新主题并配置专题推荐 |\n\n### 2.3 页面流转\n\n```\n主题列表（入口）\n  │\n  ├── 点击卡片「详情」按钮 ──→ 主题详情页\n  │                               └── 返回按钮 ──→ 主题列表\n  │\n  ├── 点击卡片「详情」按钮 ──→ 主题详情页\n  │                               └── 返回按钮 ──→ 主题列表\n  │\n  ├── 点击卡片「填报」按钮 ──→ 稿件填报页\n  │                               └── 返回/提交 ──→ 主题列表\n  │\n  ├── 点击卡片「编辑」按钮 ──→ 编辑主题页（复用新建主题页，预填已有数据）\n  │                               └── 保存 ──→ 主题列表\n  │\n  └── 点击右上角「+」按钮 ──→ 新建主题页\n                                   └── 保存 ──→ 主题列表\n```\n\n---\n\n## 3. 功能需求\n\n### 3.1 主题列表页\n\n**页面路径：** `index.html`（系统入口）\n\n**功能描述：** 展示所有已创建的主题，提供快速导航到详情、填报和新建的入口。\n\n**页面结构：**\n\n| 区域 | 说明 |\n|------|------|\n| 顶部导航栏 | 固定定位，蓝色渐变背景，左侧显示"主题填报"标题，右侧为金色"+"新建按钮 |\n| 内容区域 | 可垂直滚动，展示主题卡片列表 |\n| 底部导航栏 | 固定定位，三个 Tab 入口：主题填报（当前高亮）、数据报告（灰色）、异常处置（灰色） |\n\n**主题卡片结构：**\n\n| 元素 | 说明 |\n|------|------|\n| Banner 区域 | 180px 高，蓝色渐变背景 + 水墨山水 SVG 装饰 |\n| 主题标题 | 18px 加粗，最多显示完整标题 |\n| 主题描述 | 14px 灰色，最多 2 行，超出省略 |\n| 操作按钮 | 三个并排按钮：「详情」（描边样式）、「填报」（填充样式）、「编辑」（灰色幽灵样式，跳转编辑主题页） |\n\n**数据字段：**\n\n| 字段 | 类型 | 必填 | 说明 |\n|------|------|------|------|\n| 主题名称 | 文本 | 是 | 显示在卡片标题处 |\n| 主题描述 | 文本 | 否 | 显示在卡片描述处，最多 2 行 |\n| Banner 图 | 图片 | 是 | 1200×600px，JPG/PNG/WEBP |\n| 专题推荐 | 列表 | 否 | 可配置的推荐卡片列表 |\n\n---\n\n### 3.2 主题详情页\n\n**页面路径：** `detail.html`\n\n**功能描述：** 展示某个主题的完整信息，包括重点稿件列表和专题推荐。\n\n**页面结构：**\n\n| 区域 | 高度/位置 | 说明 |\n|------|-----------|------|\n| 返回按钮 | 固定悬浮，左上角 | 半透明圆形按钮，返回主题列表 |\n| 状态栏 | 44px，顶部固定 | 显示时间和系统图标 |\n| Banner 区域 | 280px | 深蓝渐变 + 山水 SVG + 装饰印章元素 |\n| Banner 标题 | Banner 内 | 主标题（24px 白色）+ 副标题（32px 金色） |\n| 标签栏 | Banner 底部 | 显示警务类型标签，如"共富警务 · 共治警务 · 生态警务" |\n| 重点稿件列表 | 可滚动 | 10 条文章卡片，左图右文布局 |\n| 专题推荐 | 可滚动 | 5 张特色推荐卡片，各有独特配色 |\n| 页脚 | 底部 | "浙江省公安厅融媒体中心" |\n\n**重点稿件卡片：**\n\n| 元素 | 说明 |\n|------|------|\n| 缩略图 | 112×76px，蓝色渐变占位，左上角带序号标签（1-10） |\n| 稿件标题 | 14px 加粗，最多 2 行，超出省略 |\n| 来源 + 时间 | 12px 灰色，格式："来源名 · YYYY/M/D HH:mm" |\n\n**专题推荐卡片（可配置化）：**\n\n每张推荐卡片由后台配置决定，通过「新建主题」页的专题推荐配置模块设置。推荐卡片的样式由系统预设，内容（图片和链接）由用户配置。\n\n| 卡片编号 | 主题 | 配色 |\n|----------|------|------|\n| 1 | 三大警务体系建设 | 蓝色系 |\n| 2 | 三能浙警 | 橙色系 |\n| 3 | 百日攻坚专项行动 | 紫色系 |\n| 4 | 道路交通秩序综合整治 | 深蓝-青色系 |\n| 5 | 藏蓝她声 | 粉色系 |\n\n> **注意：** 当前专题推荐的内容为静态演示数据。实际生产环境中，推荐卡片的内容应从「新建主题」时用户配置的数据中读取。\n\n---\n\n### 3.3 稿件填报页\n\n**页面路径：** `submit.html`\n\n**功能描述：** 填写并提交稿件信息到指定主题下。\n\n**页面结构：**\n\n| 区域 | 说明 |\n|------|------|\n| 顶部导航栏 | 白色背景，左侧返回按钮，居中"稿件填报"标题 |\n| 基础信息录入卡片 | 白色圆角卡片，包含 4 个表单字段 |\n| 封面图上传卡片 | 白色圆角卡片，包含上传区域 |\n| 提交按钮 | 蓝色渐变全宽按钮，56px 高 |\n\n**表单字段：**\n\n| 字段 | 类型 | 必填 | 输入方式 | 图标 | 说明 |\n|------|------|------|----------|------|------|\n| 稿件标题 | 文本 | 是 | 单行输入 | 文档图标 | 占位提示："请输入稿件的完整标题" |\n| 发布时间 | 日期时间 | 否 | 日期时间选择器 | 日历图标 | 格式：YYYY/MM/DD HH:mm |\n| 稿件链接 | URL | 否 | 多行文本域 | 链接图标 | 占位提示："https://..." |\n| 发布媒体 | 文本 | 否 | 单行输入 | 报纸图标 | 占位提示："如：人民网、人民日报、法治日报" |\n\n**封面图上传：**\n\n| 属性 | 说明 |\n|------|------|\n| 上传方式 | 点击上传或拖拽上传 |\n| 比例要求 | 16:9 |\n| 大小限制 | 2MB 以内 |\n| 支持格式 | JPG, PNG, WEBP |\n| 上传状态 | 默认显示上传提示 → 上传后显示预览 |\n\n**交互行为：**\n\n| 交互 | 说明 |\n|------|------|\n| 输入聚焦 | 边框变蓝（`#1E4FCC`）+ 外发光效果 |\n| 必填校验 | 稿件标题为空时显示红色边框 + 错误提示 |\n| 提交流程 | 点击提交 → 校验 → 显示"稿件提交成功"Toast → 1.8s 后跳转主题列表 |\n\n---\n\n### 3.4 新建主题页\n\n**页面路径：** `create-theme.html`\n\n**功能描述：** 创建新的宣传主题，配置主题基本信息和专题推荐内容。\n\n**页面结构：**\n\n| 区域 | 说明 |\n|------|------|\n| 顶部导航栏 | 白色背景，左侧返回按钮，居中"新建主题"标题 |\n| 主题信息卡片 | 白色圆角卡片，包含名称、描述、题图上传 |\n| 专题推荐配置卡片 | 白色圆角卡片，可动态添加多个推荐项 |\n| 保存按钮 | 蓝色渐变全宽按钮，64px 高 |\n\n**主题信息字段：**\n\n| 字段 | 类型 | 必填 | 说明 |\n|------|------|------|------|\n| 主题名称 | 文本 | 是 | 单行输入，预填示例："人民公安从这里走来" |\n| 主题描述 | 多行文本 | 否 | 多行文本域，占位提示："描述该主题的核心精神与报道方向..."，支持自动增高 |\n| 题图上传 | 图片 | 是 | 建议尺寸 1200×600px，支持 JPG/PNG/WEBP，支持点击和拖拽上传，上传后显示预览覆盖层，可重新上传 |\n\n**专题推荐配置：**\n\n该模块允许用户为当前主题配置专属的专题推荐卡片。每个推荐项对应主题详情页中的一张推荐卡片。\n\n| 操作 | 说明 |\n|------|------|\n| 添加推荐 | 点击「添加推荐」按钮，动态新增一个推荐项卡片 |\n| 删除推荐 | 点击推荐项右上角「×」按钮，带淡出动画移除 |\n| 空状态 | 无推荐项时显示引导提示："点击上方按钮添加专题推荐" |\n\n**推荐项字段：**\n\n| 字段 | 类型 | 必填 | 说明 |\n|------|------|------|------|\n| 推荐图 | 图片 | 是 | 比例建议 21:9，大小上限 2MB，支持 JPG/PNG/WEBP |\n| 推荐链接 | URL | 是 | 点击推荐卡片后的跳转地址，占位提示："https://example.com/topic" |\n\n**新增推荐项交互：**\n\n| 交互 | 说明 |\n|------|------|\n| 添加动画 | 新增项从上方滑入（`slideIn` 动画，0.3s） |\n| 自动滚动 | 新增后自动滚动到该项可见位置 |\n| 图片上传 | 点击上传区域触发文件选择，选择后实时显示缩略图预览 |\n| 删除动画 | 淡出 + 上移（0.2s）后移除 DOM |\n| 序号标记 | 自动递增编号："推荐专题 #1"、"推荐专题 #2"... |\n\n**保存交互：**\n\n| 步骤 | 说明 |\n|------|------|\n| 1. 点击保存 | 按钮显示 loading 旋转动画，文字切换为加载状态 |\n| 2. 等待 1s | 模拟保存过程 |\n| 3. 显示 Toast | 居中弹出"主题创建成功"提示，带金色对勾动画 |\n| 4. 跳转 | 1.6s 后 Toast 消失，自动跳转回主题列表页 |\n\n---\n\n## 4. 视觉规范\n\n### 4.1 色彩体系\n\n| 角色 | 色值 | 用途 |\n|------|------|------|\n| 主色（深蓝） | `#0D2B6B` → `#1E4FCC` 渐变 | 导航栏、Banner、主按钮 |\n| 强调色（金） | `#C9A04E` | 警徽元素、状态指示、重要数据 |\n| 辅助色（淡青） | `#E8F4FD` | 次要背景、按钮悬浮态 |\n| 背景色 | `#F5F7FA` | 页面底色 |\n| 卡片白 | `#FFFFFF` | 卡片、表单背景 |\n| 文字主色 | `#1A1A2E` | 标题、正文 |\n| 文字辅色 | `#6B7280` | 描述、来源、时间 |\n| 输入框背景 | `#F9FAFB` | 表单输入框底色 |\n| 边框色 | `#E5E7EB` | 输入框边框、分隔线 |\n| 焦点色 | `#1E4FCC` | 输入框聚焦态边框 |\n| 占位符色 | `#9CA3AF` | 输入框 placeholder |\n\n### 4.2 字体\n\n```\nfont-family: \'PingFang SC\', \'Microsoft YaHei\', -apple-system, BlinkMacSystemFont, sans-serif;\n```\n\n| 用途 | 字号 | 字重 | 颜色 |\n|------|------|------|------|\n| Banner 主标题 | 24px | 700 | #FFFFFF |\n| Banner 副标题 | 32-36px | 800 | #C9A04E |\n| 页面标题 | 18-20px | 700 | #1A1A2E |\n| 卡片标题 | 18px | 700 | #1A1A2E |\n| 正文 | 14-15px | 400-500 | #1A1A2E |\n| 描述/辅助文字 | 12-13px | 400 | #6B7280 / #9CA3AF |\n| 标签/徽章 | 11-12px | 500-600 | 视场景 |\n\n### 4.3 间距与圆角\n\n| 元素 | 圆角 | 阴影 |\n|------|------|------|\n| 卡片 | 12px | `0 2px 12px rgba(13,43,107,0.08)` |\n| 输入框 | 8px | 聚焦时 `0 0 0 3px rgba(30,79,204,0.1)` |\n| 按钮 | 8-12px | 主按钮 `0 4px 16px rgba(13,43,107,0.3)` |\n| 状态标签 | 20px（胶囊） | — |\n\n### 4.4 装饰元素\n\n| 元素 | 说明 |\n|------|------|\n| 水墨山水 SVG | Banner 区域使用 3-4 层半透明白色山脉剪影，不透明度 4-8%，模拟水墨画效果 |\n| 蓝色竖线装饰条 | 宽 4px，高度 16-24px，蓝渐变，出现在区块标题左侧 |\n| 金色光点 | Banner 中 1.5-2px 圆形金色点缀，不透明度 15-30% |\n| 装饰印章 | 右上角半透明圆形元素，含"浙"字 |\n| 微光动画 | Banner 内星点闪烁动画（3s 循环） |\n\n---\n\n## 5. 交互规范\n\n### 5.1 页面过渡\n\n| 交互 | 效果 |\n|------|------|\n| 卡片点击 | `scale(0.98)`，0.2s |\n| 按钮点击 | `opacity: 0.85`，0.2s |\n| 返回按钮 | `opacity: 0.6`，0.2s |\n| 滚动 | 平滑滚动 `scroll-behavior: smooth` |\n| 双击防抖 | iOS 双击缩放已禁用 |\n\n### 5.2 表单交互\n\n| 交互 | 效果 |\n|------|------|\n| 输入聚焦 | 边框变为 `#1E4FCC` + 蓝色外发光 |\n| 标签高亮 | 聚焦时标签字重变粗（400 → 700） |\n| 必填校验失败 | 输入框边框变红，下方显示错误提示 |\n| 校验恢复 | 输入内容后自动清除错误状态 |\n| 文件上传 | 选择文件后显示预览覆盖层 |\n| 重新上传 | 点击"重新上传"按钮重新选择文件 |\n\n### 5.3 Toast 提示\n\n| 场景 | 文案 | 图标 |\n|------|------|------|\n| 稿件提交成功 | "稿件提交成功" | 发送图标 |\n| 主题创建成功 | "主题创建成功" | 金色对勾 |\n\nToast 样式：居中弹出，半透明深蓝背景 + 毛玻璃效果，1.6s 后自动消失。\n\n---\n\n## 6. 技术规范\n\n### 6.1 技术约束\n\n| 约束 | 说明 |\n|------|------|\n| 输出格式 | 纯 HTML 文件，所有 CSS 和 JS 内联 |\n| 外部依赖 | 零依赖，不引用任何 CDN、字体或框架 |\n| 目标视口 | 375px 宽度移动端优先 |\n| 安全区域 | 适配 `env(safe-area-inset-bottom)` |\n| 图片格式 | 所有图标使用内联 SVG |\n\n### 6.2 浏览器兼容\n\n- iOS Safari 14+\n- Android Chrome 90+\n- 微信内置浏览器\n\n### 6.3 性能要求\n\n| 指标 | 目标 |\n|------|------|\n| 首屏加载 | < 1s（单文件，无网络请求） |\n| CSS 动画帧率 | ≥ 30fps |\n| 文件大小 | 单文件 < 30KB（不含用户上传的图片） |\n\n---\n\n## 7. 数据模型\n\n### 7.1 主题（Theme）\n\n```\nTheme {\n  id:          string      // 唯一标识\n  name:        string      // 主题名称（必填）\n  description: string      // 主题描述\n  bannerImage: file        // 题图（1200×600px）\n  createdAt:   datetime    // 创建时间\n  recommends:  Recommend[] // 专题推荐列表\n}\n```\n\n### 7.2 推荐项（Recommend）\n\n```\nRecommend {\n  id:      string    // 唯一标识\n  image:   file      // 推荐图（21:9 比例，≤2MB）\n  url:     string    // 推荐链接 URL\n  sortOrder: int     // 排序序号\n}\n```\n\n### 7.3 稿件（Article）\n\n```\nArticle {\n  id:           string    // 唯一标识\n  themeId:      string    // 所属主题 ID\n  title:        string    // 稿件标题（必填）\n  publishedAt:  datetime  // 发布时间\n  url:          string    // 稿件链接\n  readCount:    int       // 阅读量\n  media:        string    // 发布媒体（如：人民网、人民日报）\n  coverImage:   file      // 封面图（16:9 比例，≤2MB）\n  submittedAt:  datetime  // 提交时间\n}\n```\n\n---\n\n## 8. 未来规划\n### 8.1 异常处置模块（二期）\n\n- 巡检异常通知和处置\n- 数据异常通知和处置\n- 评论异常通知和处置\n\n---\n';
+
+prdContent.innerHTML = md2html(prdMd);
+buildToc();
+
+function buildToc() {
+  var headings = prdContent.querySelectorAll('h1, h2, h3');
+  var tocHtml = '<div class="prd-toc-title">目录</div>';
+  headings.forEach(function(h) {
+    var level = h.tagName.replace('H','');
+    var text = h.textContent;
+    tocHtml += '<span class="prd-toc-item" data-level="'+level+'" data-target="'+h.id+'">'+text+'</span>';
+  });
+  prdToc.innerHTML = tocHtml;
+
+  prdToc.querySelectorAll('.prd-toc-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      var target = document.getElementById(item.dataset.target);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        prdToc.querySelectorAll('.prd-toc-item').forEach(function(i) { i.classList.remove('active'); });
+        var active = prdToc.querySelector('[data-target="'+entry.target.id+'"]');
+        if (active) {
+          active.classList.add('active');
+          active.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+    });
+  }, { root: prdContent, rootMargin: '0px 0px -60% 0px', threshold: 0 });
+  headings.forEach(function(h) { if (h.id) observer.observe(h); });
+}
+</script>
+</body>
+</html>

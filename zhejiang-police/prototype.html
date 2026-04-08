@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>主题填报 - 浙江公安</title>
+<style>
+  /* ========== Reset & Base ========== */
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #F5F7FA;
+    color: #1A1A2E;
+    line-height: 1.5;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* ========== Fixed Header ========== */
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: linear-gradient(135deg, #0D2B6B 0%, #1E4FCC 100%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    z-index: 100;
+    overflow: hidden;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 375 30' preserveAspectRatio='none'%3E%3Cpath d='M0,30 L0,20 Q30,8 60,16 Q90,24 120,14 Q150,4 180,12 Q210,20 240,10 Q270,0 300,12 Q330,24 375,16 L375,30 Z' fill='white' fill-opacity='0.06'/%3E%3Cpath d='M0,30 L0,24 Q50,14 100,20 Q150,26 200,18 Q250,10 300,20 Q340,28 375,22 L375,30 Z' fill='white' fill-opacity='0.04'/%3E%3C/svg%3E") no-repeat bottom center;
+    background-size: 100% 100%;
+    pointer-events: none;
+  }
+
+  .header-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .header-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(201, 160, 78, 0.6);
+    background: rgba(201, 160, 78, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 1;
+  }
+
+  .header-btn:active {
+    opacity: 0.75;
+    transform: scale(0.92);
+  }
+
+  .header-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* ========== Main Content ========== */
+  .main {
+    padding: 72px 16px 72px;
+    min-height: 100vh;
+  }
+
+  /* ========== Section Header ========== */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .section-bar {
+    width: 4px;
+    height: 18px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, #1E4FCC, #0D2B6B);
+  }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1A1A2E;
+    letter-spacing: 0.5px;
+  }
+
+  .section-count {
+    font-size: 12px;
+    color: #6B7280;
+    margin-left: auto;
+  }
+
+  /* ========== Theme Card ========== */
+  .card {
+    background: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(13, 43, 107, 0.08);
+    overflow: hidden;
+    margin-bottom: 16px;
+    transition: transform 0.2s ease;
+  }
+
+  .card:active {
+    transform: scale(0.98);
+  }
+
+  /* Banner */
+  .card-banner {
+    position: relative;
+    height: 180px;
+    overflow: hidden;
+  }
+
+  .card-banner--active {
+    background: linear-gradient(135deg, #0D2B6B 0%, #1E4FCC 50%, #2D5BD6 100%);
+  }
+
+  .card-banner--archived {
+    background: linear-gradient(135deg, #374151 0%, #4B5563 50%, #6B7280 100%);
+  }
+
+  /* Mountain decorations inside banner */
+  .card-banner .mountain-bg {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  /* Status Tag */
+  .status-tag {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(4px);
+    z-index: 2;
+  }
+
+  .status-tag--active {
+    background: rgba(30, 79, 204, 0.9);
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .status-tag--archived {
+    background: rgba(107, 114, 128, 0.9);
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  /* Gold accent line on banner */
+  .card-banner::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #C9A04E, transparent);
+    opacity: 0.4;
+  }
+
+  /* Info Section */
+  .card-info {
+    padding: 16px;
+  }
+
+  .card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1A1A2E;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    line-height: 1.4;
+  }
+
+  .card-desc {
+    font-size: 14px;
+    color: #6B7280;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  /* Action Buttons */
+  .card-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 10px 0;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    border: none;
+    outline: none;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
+
+  .btn:active {
+    opacity: 0.85;
+  }
+
+  .btn svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .btn--outline {
+    background: #FFFFFF;
+    color: #1E4FCC;
+    border: 1.5px solid #1E4FCC;
+  }
+
+  .btn--primary {
+    background: linear-gradient(135deg, #0D2B6B, #1E4FCC);
+    color: #FFFFFF;
+    border: none;
+    box-shadow: 0 2px 8px rgba(13, 43, 107, 0.25);
+  }
+
+  .btn--ghost {
+    background: #F3F4F6;
+    color: #6B7280;
+    border: 1.5px solid #E5E7EB;
+  }
+
+  /* ========== Third Card (lighter variant) ========== */
+  .card-banner--pending {
+    background: linear-gradient(135deg, #0D2B6B 0%, #1942A8 40%, #2456C4 100%);
+  }
+
+  .status-tag--pending {
+    background: rgba(245, 158, 11, 0.9);
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  /* ========== Bottom Tab Bar ========== */
+  .tabbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: #FFFFFF;
+    border-top: 1px solid #E5E7EB;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    z-index: 100;
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.05);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    flex: 1;
+    height: 100%;
+    cursor: pointer;
+    position: relative;
+    transition: opacity 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .tab:active {
+    opacity: 0.7;
+  }
+
+  .tab-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: transparent;
+    position: absolute;
+    top: 4px;
+    transition: background 0.2s ease;
+  }
+
+  .tab--active .tab-dot {
+    background: #1E4FCC;
+  }
+
+  .tab svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .tab-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #9CA3AF;
+    transition: color 0.2s ease;
+    letter-spacing: 0.3px;
+  }
+
+  .tab--active .tab-label {
+    color: #1E4FCC;
+    font-weight: 600;
+  }
+
+  /* ========== Utility ========== */
+  .safe-bottom {
+    height: env(safe-area-inset-bottom, 0);
+  }
+
+  /* Subtle shimmer on banner for active card */
+  @keyframes shimmer {
+    0% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+    100% { opacity: 0.3; }
+  }
+
+  .shimmer-star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: rgba(201, 160, 78, 0.6);
+    animation: shimmer 3s ease-in-out infinite;
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== Header ========== -->
+<header class="header">
+  <!-- Mountain silhouette overlay -->
+  <svg class="mountain-bg" style="position:absolute;bottom:0;left:0;right:0;height:100%;opacity:0.06;pointer-events:none;" viewBox="0 0 375 56" preserveAspectRatio="none">
+    <path d="M0,56 L0,42 Q20,30 40,38 Q55,44 70,34 Q85,24 100,30 Q120,38 140,28 Q160,18 180,26 Q200,34 220,24 Q240,14 260,22 Q280,30 300,20 Q320,10 340,24 Q360,36 375,28 L375,56 Z" fill="white"/>
+    <path d="M0,56 L0,46 Q40,36 80,42 Q120,48 160,38 Q200,28 240,40 Q280,48 320,36 Q350,28 375,38 L375,56 Z" fill="white" opacity="0.5"/>
+  </svg>
+
+  <span class="header-title">主题填报</span>
+  <a href="create-theme.html" class="header-btn" aria-label="新建主题">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#C9A04E" stroke-width="2.5" stroke-linecap="round">
+      <line x1="12" y1="5" x2="12" y2="19"/>
+      <line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+  </a>
+</header>
+
+<!-- ========== Main Content ========== -->
+<main class="main">
+
+  <!-- Section Header -->
+  <div class="section-header">
+    <div class="section-bar"></div>
+    <span class="section-title">当前主题</span>
+    <span class="section-count">共 3 项</span>
+  </div>
+
+  <!-- ===== Card 1: 进行中 ===== -->
+  <div class="card">
+    <div class="card-banner card-banner--active">
+      <!-- Ink-wash mountain SVG -->
+      <svg class="mountain-bg" viewBox="0 0 375 180" preserveAspectRatio="xMidYMax slice" style="width:100%;height:100%;">
+        <!-- Distant mountains - lightest -->
+        <path d="M-10,180 L-10,120 Q30,85 70,105 Q100,120 130,95 Q170,65 210,90 Q250,110 280,80 Q310,55 350,85 Q370,100 385,75 L385,180 Z" fill="white" fill-opacity="0.06"/>
+        <!-- Mid mountains -->
+        <path d="M-10,180 L-10,135 Q40,100 80,125 Q110,140 150,110 Q190,80 230,115 Q270,140 310,105 Q340,85 385,115 L385,180 Z" fill="white" fill-opacity="0.08"/>
+        <!-- Near mountains - darkest -->
+        <path d="M-10,180 L-10,150 Q30,125 60,140 Q90,155 130,130 Q170,110 200,135 Q240,155 280,128 Q320,110 360,140 L385,130 L385,180 Z" fill="white" fill-opacity="0.05"/>
+        <!-- Water/mist at bottom -->
+        <path d="M0,170 Q50,162 100,168 Q150,174 200,166 Q250,160 300,168 Q350,175 375,165 L375,180 L0,180 Z" fill="white" fill-opacity="0.04"/>
+        <!-- Gold accent sparkle -->
+        <circle cx="320" cy="40" r="1.5" fill="#C9A04E" fill-opacity="0.3"/>
+        <circle cx="60" cy="50" r="1" fill="#C9A04E" fill-opacity="0.2"/>
+        <circle cx="200" cy="30" r="1" fill="#C9A04E" fill-opacity="0.15"/>
+      </svg>
+
+      <!-- Decorative stars -->
+      <div class="shimmer-star" style="top:25px;left:40px;"></div>
+      <div class="shimmer-star" style="top:45px;left:280px;animation-delay:1s;"></div>
+      <div class="shimmer-star" style="top:35px;left:160px;animation-delay:2s;"></div>
+
+    </div>
+    <div class="card-info">
+      <h2 class="card-title">人民公安从这里走来</h2>
+      <p class="card-desc">传承红色基因，筑牢忠诚警魂。全面展示新时代人民公安为人民服务的精神风貌与奋斗历程。</p>
+      <div class="card-actions">
+        <a href="detail.html" class="btn btn--outline">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1E4FCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          详情
+        </a>
+        <a href="submit.html" class="btn btn--primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9"/>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+          填报
+        </a>
+        <a href="create-theme.html?edit=1" class="btn btn--ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+          编辑
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Card 2 ===== -->
+  <div class="card">
+    <div class="card-banner card-banner--archived">
+      <svg class="mountain-bg" viewBox="0 0 375 180" preserveAspectRatio="xMidYMax slice" style="width:100%;height:100%;">
+        <path d="M-10,180 L-10,125 Q35,95 75,115 Q110,130 145,100 Q185,70 225,100 Q260,125 295,90 Q330,65 370,95 L385,85 L385,180 Z" fill="white" fill-opacity="0.05"/>
+        <path d="M-10,180 L-10,145 Q45,120 85,140 Q125,155 165,125 Q205,100 245,130 Q285,150 325,120 Q355,105 385,130 L385,180 Z" fill="white" fill-opacity="0.06"/>
+        <path d="M0,165 Q60,155 120,162 Q180,170 240,158 Q300,150 375,160 L375,180 L0,180 Z" fill="white" fill-opacity="0.03"/>
+      </svg>
+    </div>
+    <div class="card-info">
+      <h2 class="card-title">铸牢中华民族共同体意识</h2>
+      <p class="card-desc">深入贯彻落实党的民族政策，促进各民族像石榴籽一样紧紧抱在一起，共同团结奋斗。</p>
+      <div class="card-actions">
+        <a href="detail.html" class="btn btn--outline">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1E4FCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          详情
+        </a>
+        <a href="submit.html" class="btn btn--primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9"/>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+          填报
+        </a>
+        <a href="create-theme.html?edit=1" class="btn btn--ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+          编辑
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Card 3: 待审核 ===== -->
+  <div class="card">
+    <div class="card-banner card-banner--pending">
+      <svg class="mountain-bg" viewBox="0 0 375 180" preserveAspectRatio="xMidYMax slice" style="width:100%;height:100%;">
+        <path d="M-10,180 L-10,115 Q25,80 65,100 Q95,115 130,88 Q170,60 210,88 Q245,110 280,82 Q315,60 355,90 L385,78 L385,180 Z" fill="white" fill-opacity="0.05"/>
+        <path d="M-10,180 L-10,140 Q50,115 90,135 Q130,150 175,120 Q215,95 255,125 Q295,148 335,115 Q360,100 385,125 L385,180 Z" fill="white" fill-opacity="0.07"/>
+        <path d="M0,168 Q55,158 110,164 Q165,172 220,160 Q275,152 335,162 Q360,166 375,158 L375,180 L0,180 Z" fill="white" fill-opacity="0.04"/>
+        <circle cx="300" cy="35" r="1.5" fill="#C9A04E" fill-opacity="0.25"/>
+        <circle cx="80" cy="45" r="1" fill="#C9A04E" fill-opacity="0.2"/>
+      </svg>
+      <div class="shimmer-star" style="top:30px;left:300px;animation-delay:0.5s;"></div>
+      <div class="shimmer-star" style="top:50px;left:80px;animation-delay:1.5s;"></div>
+    </div>
+    <div class="card-info">
+      <h2 class="card-title">数字赋能智慧警务建设</h2>
+      <p class="card-desc">以数字化改革为引领，全面推进公安工作质量变革、效率变革、动力变革，奋力谱写新时代智慧警务新篇章。</p>
+      <div class="card-actions">
+        <a href="detail.html" class="btn btn--outline">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1E4FCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          详情
+        </a>
+        <a href="submit.html" class="btn btn--primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9"/>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+          填报
+        </a>
+        <a href="create-theme.html?edit=1" class="btn btn--ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+          编辑
+        </a>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ========== Bottom Tab Bar ========== -->
+<nav class="tabbar">
+  <!-- Tab 1: 主题填报 (Active) -->
+  <a href="prototype.html" class="tab tab--active">
+    <span class="tab-dot"></span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="#1E4FCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <line x1="16" y1="13" x2="8" y2="13"/>
+      <line x1="16" y1="17" x2="8" y2="17"/>
+      <polyline points="10 9 9 9 8 9"/>
+    </svg>
+    <span class="tab-label">主题填报</span>
+  </a>
+
+  <!-- Tab 2: 数据报告 -->
+  <a href="#" class="tab">
+    <span class="tab-dot"></span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="20" x2="18" y2="10"/>
+      <line x1="12" y1="20" x2="12" y2="4"/>
+      <line x1="6" y1="20" x2="6" y2="14"/>
+    </svg>
+    <span class="tab-label">数据报告</span>
+  </a>
+
+  <!-- Tab 3: 异常处置 -->
+  <a href="#" class="tab">
+    <span class="tab-dot"></span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    <span class="tab-label">异常处置</span>
+  </a>
+</nav>
+
+<script>
+  // Smooth scroll behavior
+  document.documentElement.style.scrollBehavior = 'smooth';
+
+  // Prevent double-tap zoom on iOS
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', function(e) {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 300) {
+      e.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, { passive: false });
+</script>
+
+</body>
+</html>

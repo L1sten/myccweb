@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>新建主题 - 浙江公安主题报道系统</title>
+<style>
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #F5F7FA;
+    color: #1A1A2E;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  /* ===== Top Navigation Bar ===== */
+  .nav-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #FFFFFF;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    box-shadow: none;
+    border-bottom: 1px solid #E5E7EB;
+  }
+
+  .nav-back {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    transition: background 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .nav-back:active {
+    background: #F0F2F5;
+  }
+
+  .nav-back svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .nav-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1A1A2E;
+    letter-spacing: 0.5px;
+  }
+
+  /* ===== Form Content ===== */
+  .form-content {
+    padding: 20px 16px 32px;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  /* ===== Form Card ===== */
+  .form-card {
+    background: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(13,43,107,0.08);
+    padding: 24px 20px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .form-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0D2B6B, #1E4FCC, #0D2B6B);
+    opacity: 1;
+  }
+
+  /* ===== Form Group ===== */
+  .form-group {
+    position: relative;
+  }
+
+  .form-group + .form-group {
+    margin-top: 28px;
+  }
+
+  .form-label {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 10px;
+    transition: font-weight 0.2s;
+  }
+
+  .form-label .blue-bar {
+    width: 4px;
+    height: 16px;
+    background: linear-gradient(180deg, #0D2B6B, #1E4FCC);
+    border-radius: 2px;
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  .form-group.focused .form-label {
+    font-weight: 700;
+    color: #1A1A2E;
+  }
+
+  /* ===== Text Input ===== */
+  .text-input {
+    width: 100%;
+    height: 70px;
+    background: #F9FAFB;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 0 16px;
+    font-size: 15px;
+    font-family: inherit;
+    color: #1A1A2E;
+    outline: none;
+    transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+  }
+
+  .text-input::placeholder {
+    color: #9CA3AF;
+    font-weight: 400;
+  }
+
+  .text-input:focus {
+    border-color: #1E4FCC;
+    box-shadow: 0 0 0 3px rgba(30,79,204,0.10);
+    background: #FFFFFF;
+  }
+
+  /* ===== Textarea ===== */
+  .text-area {
+    width: 100%;
+    height: 170px;
+    background: #F9FAFB;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 14px;
+    font-family: inherit;
+    color: #1A1A2E;
+    outline: none;
+    resize: none;
+    line-height: 1.6;
+    transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+  }
+
+  .text-area::placeholder {
+    color: #9CA3AF;
+    font-weight: 400;
+  }
+
+  .text-area:focus {
+    border-color: #1E4FCC;
+    box-shadow: 0 0 0 3px rgba(30,79,204,0.10);
+    background: #FFFFFF;
+  }
+
+  /* ===== Upload Area ===== */
+  .upload-area {
+    width: 100%;
+    height: 176px;
+    border: 2px dashed #D1D5DB;
+    border-radius: 12px;
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='375' height='176' fill='none'%3E%3Cpath d='M0 176V80C30 72 60 58 94 50c50-12 80 16 130 8s80-40 130-36c40 3 60 30 80 44 20 14 30 10 40 4v106H0z' fill='%230D2B6B' opacity='0.04'/%3E%3Cpath d='M0 176V110c40-8 70-22 110-20s70 20 110 14 70-28 110-22c30 4 50 20 70 28 20 8 30 4 40-2v68H0z' fill='%230D2B6B' opacity='0.03'/%3E%3C/svg%3E") center/cover no-repeat,
+      linear-gradient(180deg, #F8FAFF 0%, #F9FAFB 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.25s, background 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .upload-area:active,
+  .upload-area.uploading {
+    border-color: #1E4FCC;
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='375' height='176' fill='none'%3E%3Cpath d='M0 176V80C30 72 60 58 94 50c50-12 80 16 130 8s80-40 130-36c40 3 60 30 80 44 20 14 30 10 40 4v106H0z' fill='%230D2B6B' opacity='0.04'/%3E%3Cpath d='M0 176V110c40-8 70-22 110-20s70 20 110 14 70-28 110-22c30 4 50 20 70 28 20 8 30 4 40-2v68H0z' fill='%230D2B6B' opacity='0.03'/%3E%3C/svg%3E") center/cover no-repeat,
+      linear-gradient(180deg, #EEF2FF 0%, #F0F4FF 100%);
+  }
+
+  .upload-icon {
+    width: 44px;
+    height: 32px;
+    margin-bottom: 12px;
+    color: #1E4FCC;
+    transition: transform 0.2s;
+  }
+
+  .upload-area:active .upload-icon {
+    transform: scale(0.92);
+  }
+
+  .upload-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 6px;
+  }
+
+  .upload-hint {
+    font-size: 12px;
+    color: #9CA3AF;
+  }
+
+  .upload-preview {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    display: none;
+  }
+
+  .upload-preview.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .upload-preview::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(13,43,107,0.55), rgba(30,79,204,0.45));
+    z-index: 1;
+  }
+
+  .upload-preview-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .upload-preview-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+
+  .upload-preview-text {
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .upload-preview .re-upload-btn {
+    margin-top: 4px;
+    padding: 6px 18px;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 20px;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: background 0.2s;
+    font-family: inherit;
+  }
+
+  .upload-preview .re-upload-btn:active {
+    background: rgba(255,255,255,0.35);
+  }
+
+  /* ===== Save Button ===== */
+  .save-btn-wrapper {
+    margin-top: 36px;
+    padding: 0 16px;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .save-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 64px;
+    background: linear-gradient(135deg, #0D2B6B, #1E4FCC);
+    border: none;
+    border-radius: 12px;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: inherit;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(13,43,107,0.30);
+    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .save-btn:active {
+    opacity: 0.85;
+    transform: scale(0.985);
+  }
+
+  .save-btn .btn-text {
+    margin-right: 8px;
+  }
+
+  .save-btn .btn-arrow {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.2s;
+  }
+
+  .save-btn:active .btn-arrow {
+    transform: translateX(3px);
+  }
+
+  .save-btn .spinner {
+    display: none;
+    width: 22px;
+    height: 22px;
+    border: 2.5px solid rgba(255,255,255,0.3);
+    border-top-color: #FFFFFF;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 10px;
+  }
+
+  .save-btn.loading .btn-text,
+  .save-btn.loading .btn-arrow {
+    display: none;
+  }
+
+  .save-btn.loading .spinner {
+    display: block;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* ===== Toast ===== */
+  .toast-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .toast-overlay.visible {
+    opacity: 1;
+  }
+
+  .toast-box {
+    background: rgba(13,43,107,0.92);
+    backdrop-filter: blur(8px);
+    border-radius: 14px;
+    padding: 20px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 32px rgba(13,43,107,0.25);
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .toast-overlay.visible .toast-box {
+    transform: scale(1);
+  }
+
+  .toast-check {
+    width: 32px;
+    height: 32px;
+    background: rgba(201,160,78,0.25);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .toast-check svg {
+    width: 18px;
+    height: 18px;
+    color: #C9A04E;
+  }
+
+  .toast-text {
+    color: #FFFFFF;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  /* ===== Decorative bottom spacer ===== */
+  .bottom-spacer {
+    height: 40px;
+  }
+
+  /* ===== Recommend Card ===== */
+  .recommend-item {
+    background: #F9FAFB;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 16px;
+    position: relative;
+    transition: border-color 0.2s;
+    animation: rcSlideIn 0.3s ease;
+  }
+  @keyframes rcSlideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .recommend-item:hover { border-color: #BDD7F7; }
+  .recommend-item-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .recommend-item-num {
+    font-size: 13px; font-weight: 600; color: #1E4FCC;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .recommend-item-num::before {
+    content: ''; display: inline-block; width: 6px; height: 6px;
+    border-radius: 50%; background: #1E4FCC;
+  }
+  .recommend-delete {
+    width: 28px; height: 28px; border: none; background: transparent;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; border-radius: 6px; transition: background 0.15s;
+    color: #9CA3AF;
+  }
+  .recommend-delete:hover { background: #FEE2E2; color: #EF4444; }
+  .recommend-delete:active { background: #FECACA; }
+  .rc-field { margin-bottom: 10px; }
+  .rc-field:last-child { margin-bottom: 0; }
+  .rc-field label {
+    display: block; font-size: 12px; color: #6B7280;
+    margin-bottom: 4px; font-weight: 500;
+  }
+  .rc-field input[type="text"],
+  .rc-field input[type="url"] {
+    width: 100%; height: 40px; border: 1px solid #E5E7EB;
+    border-radius: 8px; padding: 0 12px; font-size: 13px;
+    font-family: inherit; color: #1A1A2E; outline: none;
+    background: #FFFFFF; transition: border-color 0.2s;
+  }
+  .rc-field input:focus {
+    border-color: #1E4FCC; box-shadow: 0 0 0 2px rgba(30,79,204,0.08);
+  }
+  .rc-field input::placeholder { color: #C7CDD5; }
+  .rc-upload {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .rc-upload-area {
+    width: 72px; height: 48px; border: 1.5px dashed #D1D5DB;
+    border-radius: 8px; display: flex; align-items: center;
+    justify-content: center; cursor: pointer; overflow: hidden;
+    background: #FFFFFF; flex-shrink: 0; position: relative;
+    transition: border-color 0.2s;
+  }
+  .rc-upload-area:hover { border-color: #1E4FCC; }
+  .rc-upload-area svg { width: 20px; height: 16px; color: #9CA3AF; }
+  .rc-upload-area img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .rc-upload-hint { font-size: 11px; color: #9CA3AF; line-height: 1.4; }
+  #add-recommend-btn:hover { background: #D6ECFA; }
+  #add-recommend-btn:active { background: #C4E2F6; }
+</style>
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<nav class="nav-bar">
+  <a href="prototype.html" class="nav-back" aria-label="返回">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#1E4FCC" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+  </a>
+  <span class="nav-title">新建主题</span>
+</nav>
+
+<!-- Form Content -->
+<div class="form-content">
+
+  <div class="form-card">
+
+    <!-- Theme Name -->
+    <div class="form-group" id="group-name">
+      <label class="form-label" for="theme-name">
+        <span class="blue-bar"></span>
+        主题名称
+      </label>
+      <input
+        type="text"
+        id="theme-name"
+        class="text-input"
+        value="人民公安从这里走来"
+        placeholder="请输入主题名称"
+        autocomplete="off"
+      >
+    </div>
+
+    <!-- Theme Description -->
+    <div class="form-group" id="group-desc">
+      <label class="form-label" for="theme-desc">
+        <span class="blue-bar"></span>
+        主题描述
+      </label>
+      <textarea
+        id="theme-desc"
+        class="text-area"
+        placeholder="描述该主题的核心精神与报道方向..."
+      ></textarea>
+    </div>
+
+    <!-- Banner Image Upload -->
+    <div class="form-group" id="group-upload">
+      <label class="form-label">
+        <span class="blue-bar"></span>
+        题图上传
+      </label>
+      <div class="upload-area" id="upload-area" role="button" tabindex="0" aria-label="上传题图">
+        <!-- Default state -->
+        <svg class="upload-icon" viewBox="0 0 48 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M24 0c8.84 0 16 7.16 16 16 0 .34-.01.67-.02 1H40c4.42 0 8 3.58 8 8s-3.58 8-8 8H8c-4.42 0-8-3.58-8-8s3.58-8 8-8h.02C8.01 16.67 8 16.34 8 16 8 7.16 15.16 0 24 0z" fill="#1E4FCC" opacity="0.12"/>
+          <path d="M24 20V8m0 0l-4 4m4-4l4 4" stroke="#1E4FCC" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6 28v2a4 4 0 004 4h28a4 4 0 004-4v-2" stroke="#1E4FCC" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="upload-text">点击或拖拽图片到此处上传</span>
+        <span class="upload-hint">1200 x 600px（JPG, PNG, WEBP）</span>
+
+        <!-- Preview overlay -->
+        <div class="upload-preview" id="upload-preview">
+          <div class="upload-preview-content">
+            <div class="upload-preview-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <span class="upload-preview-text">图片已选择</span>
+            <button class="re-upload-btn" id="re-upload-btn" type="button">重新上传</button>
+          </div>
+        </div>
+      </div>
+      <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" style="display:none">
+    </div>
+
+  </div>
+
+  <!-- ===== Recommend Config Section ===== -->
+  <div class="form-card" style="margin-top:16px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="display:inline-block;width:4px;height:18px;background:linear-gradient(180deg,#0D2B6B,#1E4FCC);border-radius:2px;flex-shrink:0;"></span>
+        <span style="font-size:16px;font-weight:600;color:#1A1A2E;">专题推荐配置</span>
+        <span style="font-size:12px;color:#9CA3AF;margin-left:4px;">可选</span>
+      </div>
+      <button type="button" id="add-recommend-btn" style="display:flex;align-items:center;gap:4px;padding:6px 14px;background:#E8F4FD;border:1px solid #BDD7F7;border-radius:8px;color:#1E4FCC;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:background 0.2s;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1E4FCC" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        添加推荐
+      </button>
+    </div>
+    <div id="recommend-list" style="display:flex;flex-direction:column;gap:12px;">
+      <div id="recommend-empty" style="text-align:center;padding:24px 16px;color:#9CA3AF;font-size:14px;">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" stroke-width="1.5" style="margin:0 auto 8px;display:block;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        点击上方按钮添加专题推荐
+      </div>
+    </div>
+  </div>
+
+  <!-- Save Button -->
+  <div class="save-btn-wrapper">
+    <button class="save-btn" id="save-btn" type="button">
+      <div class="spinner"></div>
+      <span class="btn-text">保存并进入列表</span>
+      <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+      </svg>
+    </button>
+  </div>
+
+  <div class="bottom-spacer"></div>
+</div>
+
+<!-- Toast Overlay -->
+<div class="toast-overlay" id="toast-overlay">
+  <div class="toast-box">
+    <div class="toast-check">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </div>
+    <span class="toast-text">主题创建成功</span>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ===== Focus / Blur on form groups =====
+  var inputs = document.querySelectorAll('.text-input, .text-area');
+  inputs.forEach(function(el) {
+    var group = el.closest('.form-group');
+    el.addEventListener('focus', function() {
+      group.classList.add('focused');
+    });
+    el.addEventListener('blur', function() {
+      group.classList.remove('focused');
+    });
+  });
+
+  // ===== Textarea auto-resize =====
+  var textarea = document.getElementById('theme-desc');
+  textarea.addEventListener('input', function() {
+    this.style.height = 'auto';
+    var newHeight = Math.max(170, this.scrollHeight);
+    this.style.height = newHeight + 'px';
+  });
+
+  // ===== Upload Area =====
+  var uploadArea = document.getElementById('upload-area');
+  var uploadPreview = document.getElementById('upload-preview');
+  var fileInput = document.getElementById('file-input');
+  var reUploadBtn = document.getElementById('re-upload-btn');
+  var hasImage = false;
+
+  function simulateUpload() {
+    // Add brief selected visual state
+    uploadArea.classList.add('uploading');
+    setTimeout(function() {
+      uploadArea.classList.remove('uploading');
+      hasImage = true;
+      uploadPreview.classList.add('active');
+    }, 400);
+  }
+
+  uploadArea.addEventListener('click', function(e) {
+    if (hasImage && !e.target.closest('.re-upload-btn')) return;
+    fileInput.click();
+  });
+
+  uploadArea.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (!hasImage) fileInput.click();
+    }
+  });
+
+  fileInput.addEventListener('change', function() {
+    if (this.files && this.files.length > 0) {
+      var file = this.files[0];
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        uploadPreview.style.backgroundImage = 'url(' + e.target.result + ')';
+        simulateUpload();
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  reUploadBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    hasImage = false;
+    uploadPreview.classList.remove('active');
+    uploadPreview.style.backgroundImage = '';
+    fileInput.value = '';
+    fileInput.click();
+  });
+
+  // Drag and drop visual feedback
+  uploadArea.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    uploadArea.classList.add('uploading');
+  });
+  uploadArea.addEventListener('dragleave', function() {
+    uploadArea.classList.remove('uploading');
+  });
+  uploadArea.addEventListener('drop', function(e) {
+    e.preventDefault();
+    uploadArea.classList.remove('uploading');
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      var file = e.dataTransfer.files[0];
+      if (file.type.match(/^image\/(jpeg|png|webp)$/)) {
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+          uploadPreview.style.backgroundImage = 'url(' + ev.target.result + ')';
+          simulateUpload();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  });
+
+  // ===== Recommend Config =====
+  var recommendList = document.getElementById('recommend-list');
+  var recommendEmpty = document.getElementById('recommend-empty');
+  var addRecommendBtn = document.getElementById('add-recommend-btn');
+  var recommendCount = 0;
+
+  function updateEmptyState() {
+    var items = recommendList.querySelectorAll('.recommend-item');
+    recommendEmpty.style.display = items.length === 0 ? 'block' : 'none';
+  }
+
+  function createRecommendItem() {
+    recommendCount++;
+    var num = recommendCount;
+    var item = document.createElement('div');
+    item.className = 'recommend-item';
+    item.innerHTML =
+      '<div class="recommend-item-header">' +
+        '<span class="recommend-item-num">推荐专题 #' + num + '</span>' +
+        '<button type="button" class="recommend-delete" title="删除">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+        '</button>' +
+      '</div>' +
+      '<div class="rc-field">' +
+        '<label>推荐链接 (URL)</label>' +
+        '<input type="url" placeholder="https://example.com/topic" data-rc="url">' +
+      '</div>' +
+      '<div class="rc-field">' +
+        '<label>推荐图</label>' +
+        '<div class="rc-upload">' +
+          '<div class="rc-upload-area" data-rc-upload="' + num + '">' +
+            '<svg viewBox="0 0 20 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 1v9m0-9L6 5m4-4l4 4"/><path d="M1 11v2a2 2 0 002 2h14a2 2 0 002-2v-2"/></svg>' +
+          '</div>' +
+          '<span class="rc-upload-hint">点击上传<br>建议 21:9，2MB 以内</span>' +
+          '<input type="file" accept="image/*" style="display:none" data-rc-file="' + num + '">' +
+        '</div>' +
+      '</div>';
+
+    // Delete handler
+    item.querySelector('.recommend-delete').addEventListener('click', function() {
+      item.style.opacity = '0';
+      item.style.transform = 'translateY(-8px)';
+      item.style.transition = 'opacity 0.2s, transform 0.2s';
+      setTimeout(function() {
+        item.remove();
+        updateEmptyState();
+      }, 200);
+    });
+
+    // Upload handler
+    var uploadArea = item.querySelector('.rc-upload-area');
+    var fileInput = item.querySelector('input[data-rc-file]');
+    uploadArea.addEventListener('click', function() { fileInput.click(); });
+    fileInput.addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+        var file = this.files[0];
+        if (file.size > 2 * 1024 * 1024) {
+          this.value = '';
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var img = document.createElement('img');
+          img.src = e.target.result;
+          img.alt = '推荐图预览';
+          uploadArea.innerHTML = '';
+          uploadArea.appendChild(img);
+        };
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+
+    recommendList.appendChild(item);
+    updateEmptyState();
+
+    // Scroll to new item
+    setTimeout(function() {
+      item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 50);
+  }
+
+  addRecommendBtn.addEventListener('click', createRecommendItem);
+
+  // ===== Save Button =====
+  var saveBtn = document.getElementById('save-btn');
+  var toastOverlay = document.getElementById('toast-overlay');
+
+  saveBtn.addEventListener('click', function() {
+    if (saveBtn.classList.contains('loading')) return;
+    saveBtn.classList.add('loading');
+
+    setTimeout(function() {
+      saveBtn.classList.remove('loading');
+      showToast();
+    }, 1000);
+  });
+
+  function showToast() {
+    toastOverlay.classList.add('visible');
+    setTimeout(function() {
+      toastOverlay.classList.remove('visible');
+      setTimeout(function() {
+        window.location.href = 'prototype.html';
+      }, 350);
+    }, 1600);
+  }
+
+})();
+</script>
+</body>
+</html>
