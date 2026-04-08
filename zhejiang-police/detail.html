@@ -232,6 +232,19 @@
   .card-5 .arrow { margin-left: auto; color: #EC4899; position: relative; z-index: 2; }
   .card-5 .arrow svg { width: 20px; height: 20px; }
 
+  /* ===== Load More ===== */
+  .load-more-btn {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    width: calc(100% - 32px); margin: 0 16px 10px; height: 44px;
+    border: 1.5px solid rgba(30,79,204,0.2); border-radius: 12px;
+    background: rgba(30,79,204,0.04); color: #1E4FCC;
+    font-size: 14px; font-weight: 500; font-family: inherit;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .load-more-btn:active { opacity: 0.7; transform: scale(0.98); }
+  .load-more-btn svg { width: 14px; height: 14px; }
+  .load-more-btn.hidden { display: none; }
+
   /* ===== Footer ===== */
   .footer { text-align: center; padding: 28px 16px 40px; font-size: 14px; color: #6B7280; letter-spacing: 1px; }
 
@@ -295,13 +308,13 @@
       <div class="bar"></div>
       <span class="title">重点稿件列表</span>
     </div>
-    <div class="right">
-      <span>查看全部</span>
-      <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
   </div>
 
   <div class="article-list" id="articleList"></div>
+  <button class="load-more-btn" id="loadMoreBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12l7 7 7-7"/></svg>
+    加载更多
+  </button>
 
   <!-- ===== Recommendation Section ===== -->
   <div class="section-header">
@@ -390,13 +403,27 @@
     ['#0C2D6B','#2558D4'], ['#132D60','#2D5BD6'], ['#0F244D','#1E4FCC'],
     ['#0D2254','#1A44B8']
   ];
+  var PAGE_SIZE = 5;
+  var loaded = 0;
   var listEl = document.getElementById('articleList');
-  var html = '';
-  for (var i = 0; i < articles.length; i++) {
+  var loadMoreBtn = document.getElementById('loadMoreBtn');
+
+  function renderCard(i) {
     var a = articles[i], g = gradients[i];
-    html += '<div class="article-card"><div class="article-thumb"><div class="gradient-bg" style="background:linear-gradient(135deg,' + g[0] + ',' + g[1] + ')"></div><div class="badge">' + (i+1) + '</div></div><div class="article-info"><div class="article-title">' + a.title + '</div><div class="article-meta">' + a.source + ' · ' + a.date + '</div></div></div>';
+    return '<div class="article-card"><div class="article-thumb"><div class="gradient-bg" style="background:linear-gradient(135deg,' + g[0] + ',' + g[1] + ')"></div><div class="badge">' + (i+1) + '</div></div><div class="article-info"><div class="article-title">' + a.title + '</div><div class="article-meta">' + a.source + ' · ' + a.date + '</div></div></div>';
   }
-  listEl.innerHTML = html;
+
+  function loadMore() {
+    var end = Math.min(loaded + PAGE_SIZE, articles.length);
+    var html = '';
+    for (var i = loaded; i < end; i++) { html += renderCard(i); }
+    listEl.insertAdjacentHTML('beforeend', html);
+    loaded = end;
+    if (loaded >= articles.length) { loadMoreBtn.classList.add('hidden'); }
+  }
+
+  loadMore();
+  loadMoreBtn.addEventListener('click', loadMore);
 
   var waveEl = document.getElementById('waveBars');
   var heights = [8,16,10,22,12,28,14,6,18,10,24,8,20,12,16,6,14,10,22,8];
