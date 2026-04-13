@@ -858,37 +858,15 @@
 
 })();
 
-// Intercept links & JS navigation for parent iframe
+// JS navigation helper
 function navigateTo(page) {
-  try {
-    var parentFrame = window.parent.document.getElementById('protoFrame');
-    if (parentFrame) {
-      parentFrame.src = page;
-      window.parent.postMessage({ type: 'navigate', page: page }, '*');
-    } else {
-      window.location.href = page;
-    }
-  } catch(ex) {
-    window.parent.postMessage({ type: 'navigate', page: page }, '*');
-  }
+  window.location.href = page;
 }
-document.addEventListener('click', function(e) {
-  var a = e.target.closest('a[href]');
-  if (a) {
-    var href = a.getAttribute('href');
-    if (href && href !== '#' && !href.startsWith('http')) {
-      e.preventDefault();
-      e.stopPropagation();
-      navigateTo(href);
-    }
-  }
-});
-</script>
-      }, 350);
-    }, 1600);
-  }
 
-})();
+// Notify parent iframe about navigation (for tab sync)
+window.addEventListener('load', function() {
+  try { window.parent.postMessage({ type: 'navigate', page: location.pathname.split('/').pop() }, '*'); } catch(ex) {}
+});
 </script>
 </body>
 </html>

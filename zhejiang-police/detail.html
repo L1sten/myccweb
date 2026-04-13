@@ -136,7 +136,7 @@
     box-shadow: 0 2px 12px rgba(13,43,107,0.08);
     cursor: pointer; transition: transform 0.15s ease;
   }
-  .article-card:active { transform: scale(0.98); }
+  .article-card:active { transform: scale(0.99); }
   .article-thumb {
     position: relative; width: 112px; height: 76px; border-radius: 8px;
     flex-shrink: 0; overflow: hidden;
@@ -497,6 +497,7 @@ confirmOverlay.addEventListener('click', function(e) { if (e.target === confirmO
 
   // Swipe logic
   var currentSwiped = null;
+  var swipeTarget = null;
   var startX = 0, startY = 0, dragging = false;
 
   function resetSwipe() {
@@ -507,6 +508,8 @@ confirmOverlay.addEventListener('click', function(e) { if (e.target === confirmO
     var items = listEl.querySelectorAll('.article-swipe-inner');
     for (var i = 0; i < items.length; i++) {
       var el = items[i];
+      if (el.dataset.bound) continue; // Avoid duplicate bindings
+      el.dataset.bound = '1';
       // Touch events
       el.addEventListener('touchstart', onTouchStart, { passive: true });
       el.addEventListener('touchmove', onTouchMove, { passive: false });
@@ -514,57 +517,65 @@ confirmOverlay.addEventListener('click', function(e) { if (e.target === confirmO
       // Mouse events for desktop
       el.addEventListener('mousedown', onMouseDown);
       var delZone = el.parentElement.querySelector('.article-delete-zone');
-      if (delZone) delZone.addEventListener('click', onDeleteClick);
+      if (delZone) {
+        delZone.dataset.bound = '1';
+        delZone.addEventListener('click', onDeleteClick);
+      }
     }
   }
 
   function onTouchStart(e) {
+    var el = e.currentTarget;
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
     dragging = true;
-    if (currentSwiped && currentSwiped !== this) resetSwipe();
+    swipeTarget = el;
+    if (currentSwiped && currentSwiped !== el) resetSwipe();
   }
 
   function onTouchMove(e) {
-    if (!dragging) return;
+    if (!dragging || !swipeTarget) return;
     var dx = e.touches[0].clientX - startX;
     var dy = e.touches[0].clientY - startY;
     if (Math.abs(dx) > Math.abs(dy) && dx < -20) {
       e.preventDefault();
       resetSwipe();
-      this.classList.add('swiped');
-      currentSwiped = this;
+      swipeTarget.classList.add('swiped');
+      currentSwiped = swipeTarget;
     } else if (dx > 20) {
-      this.classList.remove('swiped');
-      if (currentSwiped === this) currentSwiped = null;
+      swipeTarget.classList.remove('swiped');
+      if (currentSwiped === swipeTarget) currentSwiped = null;
     }
   }
 
-  function onTouchEnd() { dragging = false; }
+  function onTouchEnd() { dragging = false; swipeTarget = null; }
 
   // Mouse events for desktop
   function onMouseDown(e) {
     if (e.button !== 0) return;
+    var el = e.currentTarget;
     startX = e.clientX;
     startY = e.clientY;
     dragging = true;
-    if (currentSwiped && currentSwiped !== this) resetSwipe();
-    var self = this;
+    swipeTarget = el;
+    if (currentSwiped && currentSwiped !== el) resetSwipe();
+    e.preventDefault(); // Prevent text selection during drag
     function onMM(e2) {
-      if (!dragging) return;
+      if (!dragging || !swipeTarget) return;
       var dx = e2.clientX - startX;
       var dy = e2.clientY - startY;
       if (Math.abs(dx) > Math.abs(dy) && dx < -20) {
         resetSwipe();
-        self.classList.add('swiped');
-        currentSwiped = self;
+        swipeTarget.classList.add('swiped');
+        currentSwiped = swipeTarget;
       } else if (dx > 20) {
-        self.classList.remove('swiped');
-        if (currentSwiped === self) currentSwiped = null;
+        swipeTarget.classList.remove('swiped');
+        if (currentSwiped === swipeTarget) currentSwiped = null;
       }
     }
     function onMU() {
       dragging = false;
+      swipeTarget = null;
       document.removeEventListener('mousemove', onMM);
       document.removeEventListener('mouseup', onMU);
     }
@@ -595,27 +606,9 @@ confirmOverlay.addEventListener('click', function(e) { if (e.target === confirmO
   waveEl.innerHTML = wh;
 })();
 
-// Intercept links to notify parent iframe
-document.addEventListener('click', function(e) {
-  var a = e.target.closest('a[href]');
-  if (a) {
-    var href = a.getAttribute('href');
-    if (href && href !== '#' && !href.startsWith('http')) {
-      e.preventDefault();
-      e.stopPropagation();
-      try {
-        var parentFrame = window.parent.document.getElementById('protoFrame');
-        if (parentFrame) {
-          parentFrame.src = href;
-          window.parent.postMessage({ type: 'navigate', page: href }, '*');
-        } else {
-          window.location.href = href;
-        }
-      } catch(ex) {
-        window.parent.postMessage({ type: 'navigate', page: href }, '*');
-      }
-    }
-  }
+// Notify parent iframe about navigation (for tab sync)
+window.addEventListener('load', function() {
+  try { window.parent.postMessage({ type: 'navigate', page: location.pathname.split('/').pop() }, '*'); } catch(ex) {}
 });
 </script>
 </body>

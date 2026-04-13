@@ -599,7 +599,7 @@
 <!-- ========== Bottom Tab Bar ========== -->
 <nav class="tabbar">
   <!-- Tab 1: 主题填报 (Active) -->
-  <a href="prototype.html" class="tab tab--active">
+  <a href="index.html" class="tab tab--active">
     <span class="tab-dot"></span>
     <svg viewBox="0 0 24 24" fill="none" stroke="#1E4FCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -684,28 +684,9 @@
     lastTouchEnd = now;
   }, { passive: false });
 
-  // Intercept links to notify parent iframe
-  document.addEventListener('click', function(e) {
-    var a = e.target.closest('a[href]');
-    if (a) {
-      var href = a.getAttribute('href');
-      if (href && href !== '#' && !href.startsWith('http')) {
-        e.preventDefault();
-        e.stopPropagation();
-        try {
-          var parentFrame = window.parent.document.getElementById('protoFrame');
-          if (parentFrame) {
-            parentFrame.src = href;
-            window.parent.postMessage({ type: 'navigate', page: href }, '*');
-          } else {
-            window.location.href = href;
-          }
-        } catch(ex) {
-          // Cross-origin fallback
-          window.parent.postMessage({ type: 'navigate', page: href }, '*');
-        }
-      }
-    }
+  // Notify parent iframe about navigation (for tab sync)
+  window.addEventListener('load', function() {
+    try { window.parent.postMessage({ type: 'navigate', page: location.pathname.split('/').pop() }, '*'); } catch(ex) {}
   });
 </script>
 

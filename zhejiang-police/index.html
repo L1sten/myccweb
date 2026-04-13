@@ -256,16 +256,25 @@ tabs.forEach(function(tab) {
   });
 });
 
-// Listen for navigation messages from iframe
+// Listen for navigation from iframe (postMessage + onload fallback)
 window.addEventListener('message', function(e) {
   if (e.data && e.data.type === 'navigate') {
     var page = e.data.page;
-    iframe.src = page;
     // Sync active tab
     tabs.forEach(function(t) {
       t.classList.toggle('active', t.dataset.page === page);
     });
   }
+});
+
+// Also detect iframe navigation via onload (most reliable)
+iframe.addEventListener('load', function() {
+  try {
+    var page = iframe.contentWindow.location.pathname.split('/').pop();
+    tabs.forEach(function(t) {
+      t.classList.toggle('active', t.dataset.page === page);
+    });
+  } catch(ex) {}
 });
 
 // ===== Markdown to HTML =====
