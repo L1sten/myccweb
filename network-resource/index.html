@@ -888,71 +888,6 @@
             margin-top: 2px;
         }
 
-        /* ========== Keyword Tags ========== */
-        .keyword-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            min-height: 40px;
-            padding: 12px;
-            border: 1px dashed var(--border);
-            border-radius: var(--radius);
-            background: var(--muted);
-        }
-
-        .keyword-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 13px;
-            background: var(--background);
-            color: var(--foreground);
-            border: 1px solid var(--border);
-            transition: all 0.15s;
-        }
-
-        .keyword-tag:hover {
-            border-color: var(--destructive);
-        }
-
-        .keyword-tag .remove {
-            cursor: pointer;
-            font-size: 14px;
-            line-height: 1;
-            color: var(--muted-foreground);
-            margin-left: 2px;
-            transition: color 0.15s;
-        }
-
-        .keyword-tag .remove:hover {
-            color: var(--destructive);
-        }
-
-        .keyword-input-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .keyword-input-row .input {
-            flex: 1;
-        }
-
-        .keyword-count {
-            font-size: 12px;
-            color: var(--muted-foreground);
-            margin-top: 8px;
-        }
-
-        .keyword-empty {
-            font-size: 13px;
-            color: var(--muted-foreground);
-            text-align: center;
-            padding: 16px 0;
-        }
-
         /* ========== Tooltip ========== */
         .tooltip-wrapper {
             position: relative;
@@ -1301,6 +1236,47 @@
             background: #fafafa;
         }
 
+        /* ========== Table Checkbox ========== */
+        .table-checkbox {
+            width: 16px; height: 16px; border: 2px solid var(--input);
+            border-radius: 4px; cursor: pointer; display: inline-flex;
+            align-items: center; justify-content: center; transition: all 0.15s;
+            background: var(--background); flex-shrink: 0;
+        }
+        .table-checkbox.checked { background: var(--brand); border-color: var(--brand); }
+        .table-checkbox.checked::after {
+            content: ''; width: 8px; height: 5px;
+            border-left: 2px solid white; border-bottom: 2px solid white;
+            transform: rotate(-45deg); margin-top: -1px;
+        }
+        .status-enabled { color: #16a34a; font-weight: 500; }
+        .status-disabled { color: var(--muted-foreground); font-weight: 500; }
+        .td-actions { display: flex; align-items: center; gap: 4px; }
+        .td-org { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        /* ========== Keyword Tags ========== */
+        .keyword-tags {
+            display: flex; flex-wrap: wrap; gap: 8px; min-height: 40px;
+            padding: 12px; border: 1px dashed var(--border);
+            border-radius: var(--radius); background: var(--muted);
+        }
+        .keyword-tag {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 4px 10px; border-radius: 6px; font-size: 13px;
+            background: var(--background); color: var(--foreground);
+            border: 1px solid var(--border); transition: all 0.15s;
+        }
+        .keyword-tag:hover { border-color: var(--destructive); }
+        .keyword-tag .remove {
+            cursor: pointer; font-size: 14px; line-height: 1;
+            color: var(--muted-foreground); margin-left: 2px; transition: color 0.15s;
+        }
+        .keyword-tag .remove:hover { color: var(--destructive); }
+        .keyword-input-row { display: flex; gap: 8px; margin-bottom: 12px; }
+        .keyword-input-row .input { flex: 1; }
+        .keyword-count { font-size: 12px; color: var(--muted-foreground); margin-top: 8px; }
+        .keyword-empty { font-size: 13px; color: var(--muted-foreground); text-align: center; padding: 16px 0; }
+
         /* ========== Responsive ========== */
         @media (max-width: 768px) {
             .sidebar {
@@ -1335,13 +1311,13 @@
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-section">
-                <a class="sidebar-item" href="#" onclick="switchPage('tenant')">
+                <a class="sidebar-item" href="#" onclick="switchPage('tenant', this); return false;">
                     <span class="icon">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>
                     </span>
                     租户管理
                 </a>
-                <a class="sidebar-item active" href="#" onclick="switchPage('resource')">
+                <a class="sidebar-item active" href="#" onclick="switchPage('resource', this); return false;">
                     <span class="icon">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                     </span>
@@ -1352,6 +1328,82 @@
 
         <!-- Main Content -->
         <main class="main-content">
+
+        <!-- ==================== Page: 租户管理 ==================== -->
+        <div class="page-view" id="pageTenant" style="display:none">
+            <div class="page-container">
+                <div class="page-header">
+                    <div class="page-header-left">
+                        <h2>租户管理</h2>
+                        <p>管理租户邮箱账号，配置入库内容筛选关键词</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openTenantAddModal()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                        新建
+                    </button>
+                </div>
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <button class="btn btn-secondary btn-sm" onclick="batchToggle('enabled')">启用</button>
+                            <button class="btn btn-secondary btn-sm" onclick="batchToggle('disabled')">停用</button>
+                            <button class="btn btn-secondary btn-sm" onclick="batchDelete()" style="color:var(--destructive)">删除</button>
+                        </div>
+                    </div>
+                    <div class="toolbar-right">
+                        <div style="display:flex;align-items:center;gap:12px">
+                            <select class="select" id="tenantStatusFilter" onchange="renderTenantTable()">
+                                <option value="">全部状态</option>
+                                <option value="enabled">已启用</option>
+                                <option value="disabled">已停用</option>
+                            </select>
+                            <input type="text" class="input input-search" placeholder="请输入关键字搜索" id="tenantSearchInput" oninput="renderTenantTable()">
+                        </div>
+                    </div>
+                </div>
+                <div class="table-card">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width:40px;text-align:center">
+                                        <div class="table-checkbox" id="tenantSelectAll" onclick="toggleTenantSelectAll()"></div>
+                                    </th>
+                                    <th>机构联系邮箱</th>
+                                    <th>管理员邮箱</th>
+                                    <th>机构名称</th>
+                                    <th>创建时间</th>
+                                    <th>失效时间</th>
+                                    <th>状态</th>
+                                    <th style="width:140px">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tenantTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="pagination-bar">
+                        <div class="pagination-info" id="tenantPaginationInfo"></div>
+                        <div class="pagination-controls">
+                            <select class="page-size-select">
+                                <option>10 条/页</option>
+                                <option>20 条/页</option>
+                                <option>50 条/页</option>
+                            </select>
+                            <button class="page-btn" disabled>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+                            </button>
+                            <button class="page-btn active">1</button>
+                            <button class="page-btn">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== Page: 网络资源管理 ==================== -->
+        <div class="page-view" id="pageResource">
             <div class="main-split">
             <div class="page-container">
                 <!-- Page Header -->
@@ -1360,16 +1412,10 @@
                         <h2>网络资源管理</h2>
                         <p>管理互联网采集渠道，配置渠道账号并分配至租户使用</p>
                     </div>
-                    <div style="display:flex;gap:8px">
-                        <button class="btn btn-primary" onclick="openAddModal()">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-                            新建渠道
-                        </button>
-                        <button class="btn btn-secondary" onclick="openKeywordModal()">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12.5c1.6-3.2 5-5.5 8.5-5.5s6.9 2.3 8.5 5.5c-1.6 3.2-5 5.5-8.5 5.5s-6.9-2.3-8.5-5.5"/><circle cx="12" cy="12" r="2"/></svg>
-                            关键词管理
-                        </button>
-                    </div>
+                    <button class="btn btn-primary" onclick="openAddModal()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                        新建渠道
+                    </button>
                 </div>
 
                 <!-- Toolbar -->
@@ -1535,13 +1581,61 @@
         </div>
     </div>
 
+    <!-- ========== Modal: Add/Edit Tenant ========== -->
+    <div class="modal-overlay" id="tenantModal">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <div>
+                    <h3 id="tenantModalTitle">新建租户</h3>
+                    <p id="tenantModalDesc">添加新的租户邮箱账号</p>
+                </div>
+                <button class="modal-close" onclick="closeModal('tenantModal')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">机构名称<span class="required">*</span></label>
+                    <input type="text" class="input" style="width:100%" placeholder="请输入机构名称" id="tOrgName">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">机构联系邮箱<span class="required">*</span></label>
+                        <input type="text" class="input" style="width:100%" placeholder="请输入机构联系邮箱" id="tOrgEmail">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">管理员邮箱<span class="required">*</span></label>
+                        <input type="text" class="input" style="width:100%" placeholder="请输入管理员邮箱" id="tAdminEmail">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">失效时间</label>
+                        <input type="datetime-local" class="input" style="width:100%" id="tExpireTime">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">状态</label>
+                        <select class="select" style="width:100%" id="tStatus">
+                            <option value="enabled">已启用</option>
+                            <option value="disabled">已停用</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('tenantModal')">取消</button>
+                <button class="btn btn-primary" onclick="saveTenant()">确定</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ========== Modal: Keyword Management ========== -->
     <div class="modal-overlay" id="keywordModal">
         <div class="modal modal-lg">
             <div class="modal-header">
                 <div>
                     <h3>关键词管理</h3>
-                    <p>维护入库内容筛选关键词，系统将根据关键词对采集内容进行过滤</p>
+                    <p id="keywordModalDesc">维护入库内容筛选关键词</p>
                 </div>
                 <button class="modal-close" onclick="closeModal('keywordModal')">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
@@ -1557,6 +1651,28 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('keywordModal')">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== Modal: Tenant Delete Confirm ========== -->
+    <div class="modal-overlay" id="tenantDeleteModal">
+        <div class="modal" style="width:420px">
+            <div class="modal-header">
+                <div>
+                    <h3>确认删除</h3>
+                    <p>此操作不可撤销，确定要删除所选租户吗？</p>
+                </div>
+                <button class="modal-close" onclick="closeModal('tenantDeleteModal')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="color:var(--muted-foreground);font-size:13px">删除后，该租户关联的所有渠道分配和关键词配置将一并清除，请确认。</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('tenantDeleteModal')">取消</button>
+                <button class="btn btn-destructive" onclick="confirmTenantDelete()">确认删除</button>
             </div>
         </div>
     </div>
@@ -1581,14 +1697,14 @@
         };
 
         const tenants = [
-            { id: 't1', name: '浙江日报报业集团', desc: '省级综合性媒体集团', createTime: '2025-01-10 08:00:00' },
-            { id: 't2', name: '杭州文广集团', desc: '市级全媒体集团', createTime: '2025-02-15 09:30:00' },
-            { id: 't3', name: '宁波日报报业集团', desc: '市级报业集团', createTime: '2025-03-20 10:00:00' },
-            { id: 't4', name: '温州日报报业集团', desc: '市级报业集团', createTime: '2025-04-05 11:00:00' },
-            { id: 't5', name: '嘉兴日报报业集团', desc: '市级报业集团', createTime: '2025-05-12 14:00:00' },
-            { id: 't6', name: '湖州日报报业集团', desc: '市级报业集团', createTime: '2025-06-18 09:00:00' },
-            { id: 't7', name: '绍兴日报报业集团', desc: '市级报业集团', createTime: '2025-07-22 16:00:00' },
-            { id: 't8', name: '金华日报报业集团', desc: '市级报业集团', createTime: '2025-08-30 13:00:00' },
+            { id: 't1', name: '浙江日报报业集团', desc: '省级综合性媒体集团', orgEmail: 'zjrb@163.com', adminEmail: 'zjrb@163.com', createTime: '2026-03-15 10:00:00', expireTime: '2027-04-01 00:00:00', status: 'enabled', keywords: ['突发', '灾情', '应急', '权威发布'] },
+            { id: 't2', name: '杭州文广集团', desc: '市级全媒体集团', orgEmail: 'hangzhou@163.com', adminEmail: 'hangzhou@163.com', createTime: '2026-03-20 09:30:00', expireTime: '2027-04-30 00:00:00', status: 'enabled', keywords: ['杭州', '关注'] },
+            { id: 't3', name: '宁波日报报业集团', desc: '市级报业集团', orgEmail: 'ningborb@163.com', adminEmail: 'ningborb@163.com', createTime: '2026-03-10 08:00:00', expireTime: '2027-03-31 00:00:00', status: 'enabled', keywords: ['宁波', '通报'] },
+            { id: 't4', name: '温州日报报业集团', desc: '市级报业集团', orgEmail: 'wenzhou@163.com', adminEmail: 'wenzhou@163.com', createTime: '2026-03-05 14:20:00', expireTime: '2027-03-15 00:00:00', status: 'enabled', keywords: ['温州', '速报'] },
+            { id: 't5', name: '嘉兴日报报业集团', desc: '市级报业集团', orgEmail: 'jiaxing@163.com', adminEmail: 'jiaxing@163.com', createTime: '2026-02-28 16:00:00', expireTime: '2027-03-01 00:00:00', status: 'enabled', keywords: ['嘉兴', '关注'] },
+            { id: 't6', name: '湖州日报报业集团', desc: '市级报业集团', orgEmail: 'huzhou@163.com', adminEmail: 'huzhou@163.com', createTime: '2026-02-20 09:00:00', expireTime: '2027-02-28 00:00:00', status: 'disabled', keywords: [] },
+            { id: 't7', name: '绍兴日报报业集团', desc: '市级报业集团', orgEmail: 'shaoxing@163.com', adminEmail: 'shaoxing@163.com', createTime: '2026-02-15 13:00:00', expireTime: '2027-02-15 00:00:00', status: 'enabled', keywords: ['绍兴', '速报'] },
+            { id: 't8', name: '金华日报报业集团', desc: '市级报业集团', orgEmail: 'jinhua@163.com', adminEmail: 'jinhua@163.com', createTime: '2026-02-10 11:00:00', expireTime: '2027-02-10 00:00:00', status: 'enabled', keywords: ['金华'] },
         ];
 
         let channels = [
@@ -1690,15 +1806,203 @@
             }).join('');
         }
 
-        // ========== Sidebar ==========
-        function switchPage(page) {
-            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
-            event.target.closest('.sidebar-item').classList.add('active');
+        // ========== Sidebar / Page Switch ==========
+        function switchPage(page, el) {
+            document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+            if (el) el.classList.add('active');
+            document.getElementById('pageTenant').style.display = page === 'tenant' ? '' : 'none';
+            document.getElementById('pageResource').style.display = page === 'resource' ? '' : 'none';
+            if (page === 'tenant') renderTenantTable();
         }
 
         // ========== Search ==========
         function handleSearch() {
             renderTable();
+        }
+
+        // ================================================================
+        //                    TENANT MANAGEMENT
+        // ================================================================
+        let tenantSelectedIds = new Set();
+        let editingTenantId = null;
+        let keywordTenantId = null;
+        let deletingTenantIds = [];
+
+        function renderTenantTable() {
+            const keyword = document.getElementById('tenantSearchInput').value.toLowerCase();
+            const statusVal = document.getElementById('tenantStatusFilter').value;
+
+            let filtered = tenants.filter(t => {
+                if (statusVal && t.status !== statusVal) return false;
+                if (keyword) {
+                    const s = [t.name, t.orgEmail || '', t.adminEmail || ''].join(' ').toLowerCase();
+                    if (!s.includes(keyword)) return false;
+                }
+                return true;
+            });
+            filtered.sort((a, b) => b.createTime.localeCompare(a.createTime));
+
+            const tbody = document.getElementById('tenantTableBody');
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                    <h4>暂无数据</h4><p>没有找到匹配的租户，请调整筛选条件或新建租户</p></div></td></tr>`;
+                document.getElementById('tenantPaginationInfo').textContent = '共 0 条';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(t => {
+                const checked = tenantSelectedIds.has(t.id);
+                const statusHtml = t.status === 'enabled'
+                    ? '<span class="status-enabled">已启用</span>'
+                    : '<span class="status-disabled">已停用</span>';
+                const orgEmail = t.orgEmail || '';
+                const adminEmail = t.adminEmail || '';
+                const expireTime = t.expireTime || '';
+                return `<tr>
+                    <td style="text-align:center"><div class="table-checkbox ${checked?'checked':''}" onclick="toggleTenantSelect('${t.id}')"></div></td>
+                    <td>${orgEmail}</td>
+                    <td>${adminEmail}</td>
+                    <td><span class="td-org" title="${t.name}">${t.name}</span></td>
+                    <td style="font-size:13px;color:var(--muted-foreground)">${t.createTime}</td>
+                    <td style="font-size:13px;color:var(--muted-foreground)">${expireTime}</td>
+                    <td>${statusHtml}</td>
+                    <td><div class="td-actions">
+                        <button class="btn-link" onclick="openTenantEditModal('${t.id}')">编辑</button>
+                        <button class="btn-link" onclick="openKeywordModal('${t.id}')">关键词管理</button>
+                    </div></td>
+                </tr>`;
+            }).join('');
+
+            document.getElementById('tenantPaginationInfo').textContent = `显示 1-${filtered.length} 条，共 ${filtered.length} 条`;
+            updateTenantSelectAll();
+        }
+
+        function toggleTenantSelect(id) {
+            if (tenantSelectedIds.has(id)) tenantSelectedIds.delete(id); else tenantSelectedIds.add(id);
+            renderTenantTable();
+        }
+        function toggleTenantSelectAll() {
+            const keyword = document.getElementById('tenantSearchInput').value.toLowerCase();
+            const statusVal = document.getElementById('tenantStatusFilter').value;
+            const visible = tenants.filter(t => {
+                if (statusVal && t.status !== statusVal) return false;
+                if (keyword) { const s = [t.name, t.orgEmail||'', t.adminEmail||''].join(' ').toLowerCase(); if (!s.includes(keyword)) return false; }
+                return true;
+            });
+            const allSel = visible.length > 0 && visible.every(t => tenantSelectedIds.has(t.id));
+            if (allSel) visible.forEach(t => tenantSelectedIds.delete(t.id)); else visible.forEach(t => tenantSelectedIds.add(t.id));
+            renderTenantTable();
+        }
+        function updateTenantSelectAll() {
+            const keyword = document.getElementById('tenantSearchInput').value.toLowerCase();
+            const statusVal = document.getElementById('tenantStatusFilter').value;
+            const visible = tenants.filter(t => {
+                if (statusVal && t.status !== statusVal) return false;
+                if (keyword) { const s = [t.name, t.orgEmail||'', t.adminEmail||''].join(' ').toLowerCase(); if (!s.includes(keyword)) return false; }
+                return true;
+            });
+            const el = document.getElementById('tenantSelectAll');
+            if (visible.length > 0 && visible.every(t => tenantSelectedIds.has(t.id))) el.classList.add('checked'); else el.classList.remove('checked');
+        }
+
+        // Tenant Add/Edit
+        function openTenantAddModal() {
+            editingTenantId = null;
+            document.getElementById('tenantModalTitle').textContent = '新建租户';
+            document.getElementById('tenantModalDesc').textContent = '添加新的租户邮箱账号';
+            document.getElementById('tOrgName').value = '';
+            document.getElementById('tOrgEmail').value = '';
+            document.getElementById('tAdminEmail').value = '';
+            document.getElementById('tExpireTime').value = '';
+            document.getElementById('tStatus').value = 'enabled';
+            openModal('tenantModal');
+        }
+        function openTenantEditModal(id) {
+            const t = tenants.find(x => x.id === id); if (!t) return;
+            editingTenantId = id;
+            document.getElementById('tenantModalTitle').textContent = '编辑租户';
+            document.getElementById('tenantModalDesc').textContent = '修改租户信息';
+            document.getElementById('tOrgName').value = t.name;
+            document.getElementById('tOrgEmail').value = t.orgEmail || '';
+            document.getElementById('tAdminEmail').value = t.adminEmail || '';
+            document.getElementById('tExpireTime').value = (t.expireTime || '').replace(' ', 'T').substring(0, 16);
+            document.getElementById('tStatus').value = t.status;
+            openModal('tenantModal');
+        }
+        function saveTenant() {
+            const orgName = document.getElementById('tOrgName').value.trim();
+            const orgEmail = document.getElementById('tOrgEmail').value.trim();
+            const adminEmail = document.getElementById('tAdminEmail').value.trim();
+            const expireTime = document.getElementById('tExpireTime').value;
+            const status = document.getElementById('tStatus').value;
+            if (!orgName || !orgEmail || !adminEmail) { showToast('请填写必填项', 'error'); return; }
+            if (editingTenantId) {
+                const t = tenants.find(x => x.id === editingTenantId);
+                if (t) { t.name = orgName; t.orgEmail = orgEmail; t.adminEmail = adminEmail; t.expireTime = expireTime ? expireTime.replace('T',' ')+':00' : ''; t.status = status; }
+                showToast('租户更新成功', 'success');
+            } else {
+                const now = new Date(); const pad = n => String(n).padStart(2,'0');
+                const ts = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+                tenants.unshift({ id: 't'+Date.now(), name: orgName, desc: '', orgEmail, adminEmail, createTime: ts, expireTime: expireTime ? expireTime.replace('T',' ')+':00' : '', status, keywords: [] });
+                showToast('租户创建成功', 'success');
+            }
+            closeModal('tenantModal'); renderTenantTable();
+        }
+
+        // Batch ops
+        function batchToggle(status) {
+            if (tenantSelectedIds.size === 0) { showToast('请先选择租户', 'error'); return; }
+            tenants.forEach(t => { if (tenantSelectedIds.has(t.id)) t.status = status; });
+            showToast(`已${status==='enabled'?'启用':'停用'} ${tenantSelectedIds.size} 个租户`, 'success');
+            tenantSelectedIds.clear(); renderTenantTable();
+        }
+        function batchDelete() {
+            if (tenantSelectedIds.size === 0) { showToast('请先选择租户', 'error'); return; }
+            deletingTenantIds = [...tenantSelectedIds]; openModal('tenantDeleteModal');
+        }
+        function confirmTenantDelete() {
+            tenants = tenants.filter(t => !deletingTenantIds.includes(t.id));
+            deletingTenantIds.forEach(id => tenantSelectedIds.delete(id));
+            deletingTenantIds = []; closeModal('tenantDeleteModal'); renderTenantTable();
+            showToast('租户已删除', 'success');
+        }
+
+        // Keyword Management
+        function openKeywordModal(id) {
+            keywordTenantId = id;
+            const t = tenants.find(x => x.id === id); if (!t) return;
+            document.getElementById('keywordModalDesc').textContent = `为「${t.name}」配置入库内容筛选关键词`;
+            if (!t.keywords) t.keywords = [];
+            renderKeywords(); openModal('keywordModal');
+            setTimeout(() => document.getElementById('keywordInput').focus(), 200);
+        }
+        function renderKeywords() {
+            const t = tenants.find(x => x.id === keywordTenantId); if (!t) return;
+            const container = document.getElementById('keywordTags');
+            const count = document.getElementById('keywordCount');
+            if (t.keywords.length === 0) {
+                container.innerHTML = '<div class="keyword-empty">暂无关键词，请添加</div>';
+            } else {
+                container.innerHTML = t.keywords.map((kw, i) =>
+                    `<span class="keyword-tag">${kw}<span class="remove" onclick="removeKeyword(${i})">&times;</span></span>`
+                ).join('');
+            }
+            count.textContent = `共 ${t.keywords.length} 个关键词`;
+        }
+        function addKeyword() {
+            const input = document.getElementById('keywordInput');
+            const val = input.value.trim();
+            if (!val) { showToast('请输入关键词', 'error'); return; }
+            const t = tenants.find(x => x.id === keywordTenantId); if (!t) return;
+            if (t.keywords.includes(val)) { showToast('关键词已存在', 'error'); return; }
+            t.keywords.push(val); input.value = ''; renderKeywords();
+            showToast('关键词添加成功', 'success');
+        }
+        function removeKeyword(index) {
+            const t = tenants.find(x => x.id === keywordTenantId); if (!t) return;
+            t.keywords.splice(index, 1); renderKeywords();
+            showToast('关键词已删除', 'success');
         }
 
         // ========== Dropdown ==========
@@ -1852,54 +2156,6 @@
                 renderTable();
                 showToast('已移除租户分配', 'success');
             }
-        }
-
-        // ========== Keyword Management ==========
-        let keywords = [
-            '突发', '灾情', '应急', '权威发布', '辟谣',
-            '关注', '通报', '重要通知', '紧急', '速报'
-        ];
-
-        function openKeywordModal() {
-            renderKeywords();
-            openModal('keywordModal');
-            setTimeout(() => document.getElementById('keywordInput').focus(), 200);
-        }
-
-        function renderKeywords() {
-            const container = document.getElementById('keywordTags');
-            const count = document.getElementById('keywordCount');
-            if (keywords.length === 0) {
-                container.innerHTML = '<div class="keyword-empty">暂无关键词，请添加</div>';
-            } else {
-                container.innerHTML = keywords.map((kw, i) =>
-                    `<span class="keyword-tag">${kw}<span class="remove" onclick="removeKeyword(${i})">&times;</span></span>`
-                ).join('');
-            }
-            count.textContent = `共 ${keywords.length} 个关键词`;
-        }
-
-        function addKeyword() {
-            const input = document.getElementById('keywordInput');
-            const val = input.value.trim();
-            if (!val) {
-                showToast('请输入关键词', 'error');
-                return;
-            }
-            if (keywords.includes(val)) {
-                showToast('关键词已存在', 'error');
-                return;
-            }
-            keywords.push(val);
-            input.value = '';
-            renderKeywords();
-            showToast('关键词添加成功', 'success');
-        }
-
-        function removeKeyword(index) {
-            keywords.splice(index, 1);
-            renderKeywords();
-            showToast('关键词已删除', 'success');
         }
 
         // ========== Delete ==========
@@ -2286,89 +2542,174 @@
 
 ---
 
-### 2.8 关键词管理
+---
 
-#### 2.8.1 功能描述
+## 三、租户管理模块
 
-维护入库内容的筛选关键词列表，系统将根据关键词对采集入库的内容进行过滤匹配，仅包含关键词的内容才会被保留入库。
+### 3.1 租户列表
 
-#### 2.8.2 触发方式
+#### 3.1.1 功能描述
 
-点击页面右上角"新建渠道"按钮旁边的"关键词管理"按钮，打开关键词管理弹窗。
+以列表形式展示所有租户信息，支持搜索筛选、批量操作和分页浏览。
 
-#### 2.8.3 弹窗布局
+#### 3.1.2 列表字段规则
+
+**序号列**
+- 显示内容：全选复选框 + 序号
+- 全选复选框：点击可全选/取消全选当前页所有可见租户
+- 行复选框：勾选单个租户，用于批量操作
+
+**机构联系邮箱**
+- 显示内容：租户的联系邮箱地址
+
+**管理员邮箱**
+- 显示内容：租户管理员的邮箱地址
+
+**机构名称**
+- 显示内容：租户所属机构全称
+- 超长文本自动省略，鼠标悬停显示完整名称
+
+**创建时间**
+- 显示内容：租户创建时间，格式为"YYYY-MM-DD HH:mm:ss"
+- 取数规则：新建租户时系统自动生成
+
+**失效时间**
+- 显示内容：租户账号的失效时间
+- 未设置时显示为空
+
+**状态**
+- 显示内容："已启用"（绿色）或"已停用"（灰色）
+- 取数规则：根据租户 status 字段映射
+
+**操作列**
+- "编辑"：打开编辑租户弹窗
+- "关键词管理"：打开关键词管理弹窗
+
+#### 3.1.3 排序规则
+
+- 默认按创建时间倒序排列
+
+#### 3.1.4 筛选条件
+
+**状态筛选**
+- 控件类型：下拉选择框
+- 默认值："全部状态"
+- 可选值：全部状态、已启用、已停用
+
+**关键字搜索**
+- 占位提示："请输入关键字搜索"
+- 匹配范围：机构名称、机构联系邮箱、管理员邮箱
+- 匹配方式：不区分大小写，支持包含匹配
+- 触发时机：输入时实时触发
+
+### 3.2 新建租户
+
+#### 3.2.1 触发方式
+
+点击页面右上角"新建"按钮。
+
+#### 3.2.2 表单字段
+
+**机构名称（必填）**
+- 控件类型：单行文本输入框
+- 校验规则：必填，提交前自动去除首尾空格
+
+**机构联系邮箱（必填）**
+- 控件类型：单行文本输入框
+- 校验规则：必填，提交前自动去除首尾空格
+
+**管理员邮箱（必填）**
+- 控件类型：单行文本输入框
+- 校验规则：必填，提交前自动去除首尾空格
+
+**失效时间（选填）**
+- 控件类型：日期时间选择器
+
+**状态**
+- 控件类型：下拉选择框
+- 可选值：已启用（默认）、已停用
+
+### 3.3 编辑租户
+
+- 在操作列点击"编辑"，打开编辑弹窗
+- 自动回填当前租户全部信息
+- 编辑不影响已分配的渠道关系和关键词配置
+
+### 3.4 批量操作
+
+- 需先勾选至少一个租户
+- "启用"按钮：将选中租户状态改为已启用
+- "停用"按钮：将选中租户状态改为已停用
+- "删除"按钮：弹出删除确认弹窗，确认后删除所选租户
+
+### 3.5 关键词管理
+
+#### 3.5.1 功能描述
+
+为每个租户独立维护入库内容的筛选关键词列表，系统将根据关键词对采集入库的内容进行过滤匹配。
+
+#### 3.5.2 触发方式
+
+在租户列表操作列中点击"关键词管理"按钮。
+
+#### 3.5.3 弹窗布局
 
 - 弹窗标题："关键词管理"
-- 弹窗副标题："维护入库内容筛选关键词，系统将根据关键词对采集内容进行过滤"
+- 弹窗副标题：动态显示"为「{机构名称}」配置入库内容筛选关键词"
 - 弹窗内容区：
-  - 顶部：关键词输入行，包含输入框和"添加"按钮
-  - 中部：关键词标签列表，以标签形式展示所有已添加的关键词
+  - 顶部：关键词输入行（输入框 + "添加"按钮）
+  - 中部：关键词标签列表
   - 底部：关键词数量统计
 
-#### 2.8.4 添加关键词
+#### 3.5.4 添加关键词
 
 - 输入框占位提示："输入新关键词，按回车或点击添加"
-- 添加方式：输入关键词后，按回车键或点击"添加"按钮
-- 校验规则：
-  - 关键词不能为空，为空时弹出错误提示"请输入关键词"
-  - 关键词不能重复，已存在时弹出错误提示"关键词已存在"
-  - 添加前自动去除首尾空格
-- 添加成功后：输入框清空，关键词列表即时刷新，弹出成功提示"关键词添加成功"
+- 添加方式：按回车键或点击"添加"按钮
+- 校验规则：不能为空、不能重复，添加前去除首尾空格
+- 添加成功后：输入框清空，列表即时刷新，弹出成功提示
 
-#### 2.8.5 删除关键词
+#### 3.5.5 删除关键词
 
-- 每个关键词标签右侧显示关闭按钮（×），点击可删除该关键词
-- 删除后即时生效，列表自动刷新
-- 弹出成功提示"关键词已删除"
-- 此操作无需二次确认
+- 每个标签右侧显示关闭按钮（×），点击即删除
+- 无需二次确认，即时生效
 
-#### 2.8.6 空状态
+#### 3.5.6 空状态
 
-- 当关键词列表为空时，显示占位提示："暂无关键词，请添加"
-
-#### 2.8.7 关键词数量统计
-
-- 在标签列表下方显示当前关键词总数，格式为"共 N 个关键词"
-
-#### 2.8.8 弹窗操作
-
-- 底部按钮：
-  - "关闭"按钮：关闭弹窗
-- 关键词的增删操作即时生效，无需额外保存
+- 关键词列表为空时显示："暂无关键词，请添加"
 
 ---
 
-## 三、全局交互规则
+## 四、全局交互规则
 
-### 3.1 操作反馈
+### 4.1 操作反馈
 
-- 所有涉及数据变更的操作（新建、编辑、分配租户、移除租户、删除、关键词增删）成功后，均通过页面右上角的轻提示（Toast）给出操作结果反馈
+- 所有涉及数据变更的操作成功后，均通过页面右上角的轻提示（Toast）给出操作结果反馈
 - 成功提示自动消失，无需手动关闭
 - 错误提示同样自动消失，提示文案为具体的错误原因
 
-### 3.2 弹窗通用行为
+### 4.2 弹窗通用行为
 
 - 弹窗打开时，背景遮罩层覆盖页面，防止误操作
 - 点击弹窗右上角关闭按钮可关闭弹窗
 - 弹窗内容区超出可视高度时支持内部滚动
 
-### 3.3 侧边栏导航
+### 4.3 侧边栏导航
 
-- 当前页面在侧边栏中高亮显示
-- 侧边栏包含两个同级功能入口，均为一级菜单：
+- 侧边栏包含两个同级功能入口，点击可切换页面：
   - 租户管理
-  - 网络资源管理（当前页面，高亮）
+  - 网络资源管理
+- 当前页面在侧边栏中高亮显示
 
-### 3.4 权限说明
+### 4.4 权限说明
 
 - 本模块仅面向超级管理员角色，不涉及租户级用户
-- 超级管理员拥有渠道的全部增删改查权限和租户分配权限
+- 超级管理员拥有全部增删改查权限
 
 ---
 
-## 四、数据字典
+## 五、数据字典
 
-### 4.1 渠道（Channel）
+### 5.1 渠道（Channel）
 
 | 字段 | 类型 | 必填 | 说明 |
 |------|------|------|------|
@@ -2380,7 +2721,7 @@
 | remark | 字符串 | 否 | 采集备注，渠道用途说明 |
 | createTime | 时间戳 | 系统生成 | 渠道创建时间 |
 
-### 4.2 渠道类型枚举
+### 5.2 渠道类型枚举
 
 | 类型值 | 中文名称 |
 |--------|----------|
@@ -2396,13 +2737,19 @@
 | baijia | 百家号 |
 | qie | 企鹅号 |
 
-### 4.3 租户（Tenant）
+### 5.3 租户（Tenant）
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| id | 字符串 | 租户唯一标识 |
-| name | 字符串 | 租户名称 |
-| desc | 字符串 | 租户描述 |
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| id | 字符串 | 系统生成 | 租户唯一标识 |
+| name | 字符串 | 是 | 机构名称 |
+| desc | 字符串 | 否 | 租户描述 |
+| orgEmail | 字符串 | 是 | 机构联系邮箱 |
+| adminEmail | 字符串 | 是 | 管理员邮箱 |
+| createTime | 时间戳 | 系统生成 | 创建时间 |
+| expireTime | 时间戳 | 否 | 失效时间 |
+| status | 枚举 | 是 | 状态：enabled / disabled |
+| keywords | 数组 | 否 | 入库内容筛选关键词列表 |
 `;
 
         // ========== Init PRD ==========
