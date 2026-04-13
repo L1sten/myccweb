@@ -888,6 +888,71 @@
             margin-top: 2px;
         }
 
+        /* ========== Keyword Tags ========== */
+        .keyword-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 40px;
+            padding: 12px;
+            border: 1px dashed var(--border);
+            border-radius: var(--radius);
+            background: var(--muted);
+        }
+
+        .keyword-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            background: var(--background);
+            color: var(--foreground);
+            border: 1px solid var(--border);
+            transition: all 0.15s;
+        }
+
+        .keyword-tag:hover {
+            border-color: var(--destructive);
+        }
+
+        .keyword-tag .remove {
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+            color: var(--muted-foreground);
+            margin-left: 2px;
+            transition: color 0.15s;
+        }
+
+        .keyword-tag .remove:hover {
+            color: var(--destructive);
+        }
+
+        .keyword-input-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .keyword-input-row .input {
+            flex: 1;
+        }
+
+        .keyword-count {
+            font-size: 12px;
+            color: var(--muted-foreground);
+            margin-top: 8px;
+        }
+
+        .keyword-empty {
+            font-size: 13px;
+            color: var(--muted-foreground);
+            text-align: center;
+            padding: 16px 0;
+        }
+
         /* ========== Tooltip ========== */
         .tooltip-wrapper {
             position: relative;
@@ -1295,10 +1360,16 @@
                         <h2>网络资源管理</h2>
                         <p>管理互联网采集渠道，配置渠道账号并分配至租户使用</p>
                     </div>
-                    <button class="btn btn-primary" onclick="openAddModal()">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-                        新建渠道
-                    </button>
+                    <div style="display:flex;gap:8px">
+                        <button class="btn btn-primary" onclick="openAddModal()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                            新建渠道
+                        </button>
+                        <button class="btn btn-secondary" onclick="openKeywordModal()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12.5c1.6-3.2 5-5.5 8.5-5.5s6.9 2.3 8.5 5.5c-1.6 3.2-5 5.5-8.5 5.5s-6.9-2.3-8.5-5.5"/><circle cx="12" cy="12" r="2"/></svg>
+                            关键词管理
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Toolbar -->
@@ -1460,6 +1531,32 @@
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('deleteModal')">取消</button>
                 <button class="btn btn-destructive" onclick="confirmDelete()">确认删除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== Modal: Keyword Management ========== -->
+    <div class="modal-overlay" id="keywordModal">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <div>
+                    <h3>关键词管理</h3>
+                    <p>维护入库内容筛选关键词，系统将根据关键词对采集内容进行过滤</p>
+                </div>
+                <button class="modal-close" onclick="closeModal('keywordModal')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="keyword-input-row">
+                    <input type="text" class="input" placeholder="输入新关键词，按回车或点击添加" id="keywordInput" onkeydown="if(event.key==='Enter')addKeyword()">
+                    <button class="btn btn-primary" onclick="addKeyword()">添加</button>
+                </div>
+                <div class="keyword-tags" id="keywordTags"></div>
+                <div class="keyword-count" id="keywordCount"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('keywordModal')">关闭</button>
             </div>
         </div>
     </div>
@@ -1757,6 +1854,54 @@
             }
         }
 
+        // ========== Keyword Management ==========
+        let keywords = [
+            '突发', '灾情', '应急', '权威发布', '辟谣',
+            '关注', '通报', '重要通知', '紧急', '速报'
+        ];
+
+        function openKeywordModal() {
+            renderKeywords();
+            openModal('keywordModal');
+            setTimeout(() => document.getElementById('keywordInput').focus(), 200);
+        }
+
+        function renderKeywords() {
+            const container = document.getElementById('keywordTags');
+            const count = document.getElementById('keywordCount');
+            if (keywords.length === 0) {
+                container.innerHTML = '<div class="keyword-empty">暂无关键词，请添加</div>';
+            } else {
+                container.innerHTML = keywords.map((kw, i) =>
+                    `<span class="keyword-tag">${kw}<span class="remove" onclick="removeKeyword(${i})">&times;</span></span>`
+                ).join('');
+            }
+            count.textContent = `共 ${keywords.length} 个关键词`;
+        }
+
+        function addKeyword() {
+            const input = document.getElementById('keywordInput');
+            const val = input.value.trim();
+            if (!val) {
+                showToast('请输入关键词', 'error');
+                return;
+            }
+            if (keywords.includes(val)) {
+                showToast('关键词已存在', 'error');
+                return;
+            }
+            keywords.push(val);
+            input.value = '';
+            renderKeywords();
+            showToast('关键词添加成功', 'success');
+        }
+
+        function removeKeyword(index) {
+            keywords.splice(index, 1);
+            renderKeywords();
+            showToast('关键词已删除', 'success');
+        }
+
         // ========== Delete ==========
         function openDeleteModal(id) {
             closeAllDropdowns();
@@ -1924,7 +2069,7 @@
 
 #### 2.2.1 功能描述
 
-提供关键字搜索和渠道类型筛选能力，支持按账号名称、账号ID进行模糊匹配筛选（支持拼音首字母、拼音全拼、中英文混合模糊匹配），并可通过下拉框按渠道类型过滤。
+提供关键字搜索和渠道类型筛选能力，支持按账号名称、账号ID进行模糊匹配筛选，并可通过下拉框按渠道类型过滤。
 
 #### 2.2.2 筛选条件
 
@@ -1935,7 +2080,7 @@
 - 匹配范围：
   - 账号名称（模糊匹配）
   - 账号ID（模糊匹配）
-- 匹配方式：不区分大小写，支持拼音首字母匹配、拼音全拼匹配、中英文混合模糊匹配
+- 匹配方式：不区分大小写，支持包含匹配
 - 触发时机：输入时实时触发筛选，无需点击搜索按钮
 - 结果联动：搜索结果同步更新分页信息和列表数据
 
@@ -2141,11 +2286,63 @@
 
 ---
 
+### 2.8 关键词管理
+
+#### 2.8.1 功能描述
+
+维护入库内容的筛选关键词列表，系统将根据关键词对采集入库的内容进行过滤匹配，仅包含关键词的内容才会被保留入库。
+
+#### 2.8.2 触发方式
+
+点击页面右上角"新建渠道"按钮旁边的"关键词管理"按钮，打开关键词管理弹窗。
+
+#### 2.8.3 弹窗布局
+
+- 弹窗标题："关键词管理"
+- 弹窗副标题："维护入库内容筛选关键词，系统将根据关键词对采集内容进行过滤"
+- 弹窗内容区：
+  - 顶部：关键词输入行，包含输入框和"添加"按钮
+  - 中部：关键词标签列表，以标签形式展示所有已添加的关键词
+  - 底部：关键词数量统计
+
+#### 2.8.4 添加关键词
+
+- 输入框占位提示："输入新关键词，按回车或点击添加"
+- 添加方式：输入关键词后，按回车键或点击"添加"按钮
+- 校验规则：
+  - 关键词不能为空，为空时弹出错误提示"请输入关键词"
+  - 关键词不能重复，已存在时弹出错误提示"关键词已存在"
+  - 添加前自动去除首尾空格
+- 添加成功后：输入框清空，关键词列表即时刷新，弹出成功提示"关键词添加成功"
+
+#### 2.8.5 删除关键词
+
+- 每个关键词标签右侧显示关闭按钮（×），点击可删除该关键词
+- 删除后即时生效，列表自动刷新
+- 弹出成功提示"关键词已删除"
+- 此操作无需二次确认
+
+#### 2.8.6 空状态
+
+- 当关键词列表为空时，显示占位提示："暂无关键词，请添加"
+
+#### 2.8.7 关键词数量统计
+
+- 在标签列表下方显示当前关键词总数，格式为"共 N 个关键词"
+
+#### 2.8.8 弹窗操作
+
+- 底部按钮：
+  - "关闭"按钮：关闭弹窗
+- 关键词的增删操作即时生效，无需额外保存
+
+---
+
 ## 三、全局交互规则
 
 ### 3.1 操作反馈
 
-- 所有涉及数据变更的操作（新建、编辑、分配租户、移除租户、删除）成功后，均通过页面右上角的轻提示（Toast）给出操作结果反馈
+- 所有涉及数据变更的操作（新建、编辑、分配租户、移除租户、删除、关键词增删）成功后，均通过页面右上角的轻提示（Toast）给出操作结果反馈
 - 成功提示自动消失，无需手动关闭
 - 错误提示同样自动消失，提示文案为具体的错误原因
 
