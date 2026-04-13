@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>舆情报送与管理系统</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+<style>
+:root{
+  --primary:#0052d9;--primary-hover:#1a6ff0;--primary-bg:#e8f0fe;
+  --orange:#ff7d00;--orange-bg:#fff7e8;
+  --green:#00a870;--green-bg:#e8f8f0;
+  --red:#f53f3f;--red-bg:#ffece8;
+  --text-primary:#1d2129;--text-secondary:#4e5969;--text-tertiary:#86909c;--text-quaternary:#c9cdd4;
+  --border:#e5e7eb;--border-light:#f2f3f5;--bg-page:#f5f7fa;--bg-card:#fff;
+  --shadow-md:0 4px 12px rgba(0,0,0,.08);
+  --radius-sm:6px;--radius-md:10px;--radius-lg:14px;
+  --transition:all .2s cubic-bezier(.645,.045,.355,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg-page);color:var(--text-primary);-webkit-font-smoothing:antialiased}
+
+/* ===== Login Page ===== */
+.login-page{display:flex;height:100vh;width:100vw;position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0052d9 0%,#1a6ff0 50%,#4096ff 100%)}
+.login-left{flex:1;display:flex;flex-direction:column;justify-content:center;padding:80px;color:#fff}
+.login-left h1{font-size:32px;font-weight:700;margin-bottom:16px}
+.login-left p{font-size:16px;opacity:.85;line-height:1.8;max-width:400px}
+.login-left .login-features{margin-top:40px;display:flex;flex-direction:column;gap:12px}
+.login-left .login-feat{display:flex;align-items:center;gap:12px;font-size:14px;opacity:.9}
+.login-left .login-feat i{font-size:20px;opacity:.8}
+.login-right{width:480px;display:flex;align-items:center;justify-content:center;background:#fff}
+.login-card{width:360px}
+.login-card h2{font-size:22px;font-weight:700;margin-bottom:8px}
+.login-card .login-sub{font-size:13px;color:var(--text-tertiary);margin-bottom:32px}
+.login-dingbtn{width:100%;padding:14px;border:2px solid var(--primary);border-radius:var(--radius-md);font-size:15px;font-weight:600;color:var(--primary);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:var(--transition);margin-bottom:16px;font-family:inherit}
+.login-dingbtn:hover{background:var(--primary-bg)}
+.login-dingbtn i{font-size:22px}
+.login-dingbtn.full{background:var(--primary);color:#fff;border-color:var(--primary)}
+.login-dingbtn.full:hover{background:var(--primary-hover)}
+.login-divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--text-quaternary);font-size:12px}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border-light)}
+.login-role-select{display:flex;flex-direction:column;gap:8px}
+.login-role-btn{padding:12px 16px;border:1px solid var(--border-light);border-radius:var(--radius-md);cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:12px;font-family:inherit;background:#fff;text-align:left}
+.login-role-btn:hover{border-color:var(--primary);background:var(--primary-bg)}
+.login-role-btn.active{border-color:var(--primary);background:var(--primary-bg)}
+.login-role-btn .role-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.login-role-btn .role-name{font-size:14px;font-weight:600;color:var(--text-primary)}
+.login-role-btn .role-desc{font-size:11px;color:var(--text-tertiary);margin-top:2px}
+
+/* ===== App ===== */
+.app{display:flex;height:100vh}
+
+/* Sidebar */
+.sidebar{width:240px;background:var(--bg-card);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-header{height:64px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;padding:0 20px}
+.sidebar-logo{width:36px;height:36px;background:var(--primary);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0}
+.sidebar-title{font-weight:600;font-size:15px;white-space:nowrap}
+.sidebar-nav{flex:1;padding:0 12px;overflow-y:auto}
+.nav-label{font-size:11px;font-weight:500;color:var(--text-quaternary);letter-spacing:1px;padding:16px 12px 4px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:0 12px;border-radius:var(--radius-md);cursor:pointer;transition:var(--transition);margin-bottom:2px}
+.nav-item:hover{background:var(--bg-page)}
+.nav-item.active{background:var(--primary)}
+.nav-item .nav-icon{width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.nav-item .nav-icon i{font-size:18px;color:var(--text-secondary)}
+.nav-item.active .nav-icon i{color:#fff}
+.nav-item .nav-text{padding:8px 0}
+.nav-item .nav-title{font-size:14px;font-weight:400;color:var(--text-secondary);line-height:21px}
+.nav-item .nav-subtitle{font-size:10px;color:var(--text-tertiary);line-height:15px;opacity:.7}
+.nav-item.active .nav-title,.nav-item.active .nav-subtitle{color:#fff;font-weight:500}
+.nav-section{padding-top:17px;border-top:1px solid var(--border-light);margin:0 12px}
+.sidebar-footer{height:69px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;padding:0 16px 0 20px}
+.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#fff;flex-shrink:0}
+.avatar-blue{background:var(--primary)}.avatar-green{background:var(--green)}
+.user-info{display:flex;flex-direction:column;min-width:0}
+.user-name{font-size:13px;font-weight:500;line-height:20px}
+.user-org{font-size:11px;color:var(--text-tertiary);line-height:17px}
+
+/* Main */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{height:56px;background:var(--bg-card);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-title{font-size:17px;font-weight:600}
+.topbar-tag{background:var(--primary-bg);color:var(--primary);font-size:11px;font-weight:500;padding:3px 8px;border-radius:999px}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.topbar-avatar{width:28px;height:28px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:#fff}
+.topbar-username{font-size:13px;font-weight:500}
+.topbar-role{font-size:11px;color:var(--text-tertiary);background:var(--border-light);padding:2px 8px;border-radius:999px}
+.topbar-logout{font-size:16px;color:var(--text-tertiary);cursor:pointer;margin-left:4px}.topbar-logout:hover{color:var(--red)}
+
+/* Pages */
+.main-split{flex:1;display:flex;overflow:hidden}
+.page-container{flex:1;min-width:0;overflow-y:auto;padding:40px 24px}
+.page{display:none}.page.active{display:block}
+
+/* Summary */
+.page-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
+.page-header-left .page-heading{font-size:18px;font-weight:600;margin-bottom:2px}
+.page-header-left .page-desc{font-size:13px;color:var(--text-tertiary)}
+.page-header-actions{display:flex;gap:8px;align-items:center}
+.btn-use{background:var(--text-quaternary);color:#fff;border:none;padding:10px 20px;border-radius:var(--radius-md);font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:8px;transition:var(--transition);font-family:inherit}
+.btn-use.enabled{background:var(--primary)}.btn-use.enabled:hover{background:var(--primary-hover)}
+.summary-stats{display:flex;gap:12px;margin-bottom:12px}
+.stat-card{flex:1;background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-md);padding:14px 16px;display:flex;align-items:center;gap:12px;transition:var(--transition)}
+.stat-card:hover{border-color:var(--border);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.stat-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.stat-icon.blue{background:var(--primary-bg);color:var(--primary)}
+.stat-icon.orange{background:var(--orange-bg);color:var(--orange)}
+.stat-icon.green{background:var(--green-bg);color:var(--green)}
+.stat-icon.red{background:var(--red-bg);color:var(--red)}
+.stat-info{display:flex;flex-direction:column}
+.stat-num{font-size:20px;font-weight:700;line-height:1.2}
+.stat-label{font-size:11px;color:var(--text-tertiary);margin-top:2px}
+.search-bar{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:14px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.search-input-wrap{flex:1;min-width:180px;position:relative}
+.search-input-wrap i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-quaternary);font-size:16px}
+.search-input{width:100%;border:1px solid var(--border);border-radius:var(--radius-md);padding:9px 16px 9px 40px;font-size:13px;outline:none;font-family:inherit;color:var(--text-primary)}
+.search-input::placeholder{color:rgba(29,33,41,.5)}.search-input:focus{border-color:var(--primary)}
+.filter-select{border:1px solid var(--border);border-radius:var(--radius-md);padding:9px 12px;font-size:13px;outline:none;background:#fff;font-family:inherit;min-width:110px;cursor:pointer;color:var(--text-secondary)}
+.filter-date{border:1px solid var(--border);border-radius:var(--radius-md);padding:8px 10px;font-size:12px;outline:none;background:#fff;font-family:inherit;color:var(--text-secondary);width:130px}
+.filter-date:focus{border-color:var(--primary)}
+.filter-sep{font-size:12px;color:var(--text-quaternary);padding:0 2px}
+.action-bar{display:flex;align-items:center;gap:12px;padding:0 4px;margin-bottom:8px}
+.select-all-btn{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:500;color:var(--text-secondary);cursor:pointer;background:none;border:none;font-family:inherit}
+.list-count{font-size:11px;color:var(--text-quaternary)}
+.yq-used{font-size:10px;padding:2px 6px;border-radius:4px;white-space:nowrap}
+.yq-used-yes{background:var(--green-bg);color:var(--green)}
+.yq-used-no{background:var(--border-light);color:var(--text-quaternary)}
+
+/* Yuqing Cards */
+.yuqing-list{display:flex;flex-direction:column;gap:8px}
+.yuqing-card{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:16px;display:flex;align-items:flex-start;gap:16px;transition:var(--transition);cursor:pointer}
+.yuqing-card:hover{box-shadow:var(--shadow-md);border-color:var(--border)}
+.yuqing-card.selected{border-color:var(--primary);background:var(--primary-bg)}
+.yq-check{width:18px;height:18px;border:2px solid var(--border);border-radius:50%;cursor:pointer;flex-shrink:0;margin-top:16px;transition:var(--transition);display:flex;align-items:center;justify-content:center}
+.yq-check.checked{background:var(--primary);border-color:var(--primary)}
+.yq-check.checked::after{content:'\2713';color:#fff;font-size:11px;font-weight:700}
+.yq-body{flex:1;min-width:0}
+.yq-meta{display:flex;align-items:center;gap:8px}
+.yq-id{font-size:11px;font-weight:500;color:var(--primary)}
+.yq-tag{font-size:10px;font-weight:500;padding:3px 6px;border-radius:4px;white-space:nowrap}
+.yq-tag-local{background:var(--primary-bg);color:var(--primary)}
+.yq-tag-external{background:var(--orange-bg);color:var(--orange)}
+.yq-location{display:flex;align-items:center;gap:2px;font-size:10px;color:var(--text-tertiary)}
+.yq-location i{font-size:12px}
+.yq-title{font-size:14px;font-weight:500;margin:6px 0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.yq-footer{display:flex;align-items:center;gap:16px}
+.yq-source,.yq-time{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-tertiary)}
+.yq-source i,.yq-time i{font-size:12px}
+.yq-time{color:var(--text-quaternary)}
+.yq-more{width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-top:16px;transition:var(--transition)}
+.yq-more:hover{background:var(--bg-page)}.yq-more i{font-size:16px;color:var(--text-tertiary)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 20px;border-radius:var(--radius-md);font-size:13px;font-weight:500;cursor:pointer;border:1px solid transparent;transition:var(--transition);font-family:inherit}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-hover)}
+.btn-success{background:var(--green);color:#fff}.btn-success:hover{opacity:.9}
+.btn-outline{background:#fff;border-color:var(--border);color:var(--text-secondary)}.btn-outline:hover{background:var(--bg-page)}
+.btn-ghost{background:transparent;color:var(--text-secondary)}.btn-ghost:hover{background:var(--bg-page)}
+.btn-sm{padding:5px 12px;font-size:12px}
+
+/* Form */
+.report-item-card{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:24px;max-width:800px;margin-bottom:12px}
+.report-item-card .item-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.report-item-card .item-number{font-size:14px;font-weight:600}
+.form-row{display:flex;gap:16px;margin-bottom:16px}
+.form-group{flex:1;display:flex;flex-direction:column;gap:6px}
+.form-group label{font-size:13px;font-weight:500;color:var(--text-secondary)}
+.form-group label .req{color:var(--red);margin-left:2px}
+.form-control{border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 14px;font-size:13px;outline:none;font-family:inherit;color:var(--text-primary);transition:border-color .2s}
+.form-control:focus{border-color:var(--primary)}
+textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
+.form-control.error{border-color:var(--red)}
+.form-actions{display:flex;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid var(--border-light)}
+
+/* Detail */
+.detail-card{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:32px;max-width:900px}
+.detail-meta{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.detail-title{font-size:20px;font-weight:600;margin-bottom:16px}
+.detail-section{margin-bottom:24px}
+.detail-section h3{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text-secondary)}
+.detail-field{display:flex;margin-bottom:8px}
+.detail-label{width:100px;font-size:13px;color:var(--text-tertiary);flex-shrink:0}
+.detail-value{font-size:13px;color:var(--text-primary)}
+.detail-content{font-size:14px;line-height:1.8;color:var(--text-secondary);background:var(--bg-page);padding:16px;border-radius:var(--radius-md)}
+
+/* Doc Preview */
+.doc-preview{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:48px 56px;max-width:900px;line-height:2}
+.doc-preview .doc-header{text-align:center;margin-bottom:32px;padding-bottom:24px;border-bottom:2px solid var(--text-primary)}
+.doc-preview .doc-title{font-size:22px;font-weight:700;letter-spacing:2px}
+.doc-preview .doc-date{font-size:14px;color:var(--text-tertiary);margin-top:8px}
+.doc-preview .doc-section{margin-bottom:24px}
+.doc-preview .doc-section-title{font-size:15px;font-weight:700;margin-bottom:8px}
+.doc-preview .doc-item{font-size:14px;color:var(--text-secondary);margin-bottom:4px;text-indent:2em}
+.doc-preview .doc-item-title{font-weight:600;color:var(--text-primary)}
+
+/* Edit Layout */
+.edit-layout{display:flex;gap:24px;height:calc(100vh - 56px - 140px)}
+.edit-main{flex:1;overflow-y:auto;padding-right:4px}
+.edit-sidebar{width:300px;flex-shrink:0;overflow-y:auto;background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:20px;height:fit-content;max-height:100%;position:sticky;top:0;box-shadow:var(--shadow-md)}
+.edit-sidebar h4{font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text-secondary)}
+.preview-item{font-size:12px;color:var(--text-secondary);padding:6px 0;border-bottom:1px solid var(--border-light);line-height:1.6}
+.preview-item .pi-title{color:var(--text-primary);font-weight:500}
+.edit-item-card{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:20px;margin-bottom:12px;transition:var(--transition)}
+.edit-item-card:hover{border-color:var(--border);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.edit-item-card .ei-header{display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border-light)}
+.edit-item-card .ei-field{margin-bottom:10px}
+.edit-item-card .ei-label{font-size:12px;font-weight:500;color:var(--text-tertiary);margin-bottom:4px;display:flex;align-items:center;gap:4px}
+.edit-item-card textarea{width:100%;border:1px solid var(--border-light);border-radius:var(--radius-md);padding:8px 12px;font-size:13px;font-family:inherit;outline:none;resize:vertical;min-height:60px;line-height:1.6;color:var(--text-secondary);transition:border-color .2s}
+.edit-item-card textarea:focus{border-color:var(--primary)}
+.edit-item-card .ei-title-input{width:100%;border:none;font-size:14px;font-weight:500;outline:none;padding:4px 0;border-bottom:1px solid var(--border-light);transition:border-color .2s}
+.edit-item-card .ei-title-input:focus{border-bottom-color:var(--primary)}
+.edit-toolbar{display:flex;gap:8px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);margin-bottom:20px}
+.edit-toolbar .spacer{flex:1}
+.edit-stats{display:inline-flex;gap:10px}
+.edit-stat-tag{font-size:12px;padding:4px 12px;border-radius:var(--radius-sm);font-weight:500}
+.edit-section-title{font-size:14px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.edit-section-title::before{content:'';width:3px;height:16px;background:var(--primary);border-radius:2px}
+
+/* Empty */
+.empty-state{display:flex;flex-direction:column;align-items:center;padding:80px 20px;color:var(--text-tertiary)}
+.empty-state i{font-size:48px;margin-bottom:16px;color:var(--text-quaternary)}
+
+/* Toast */
+.toast-container{position:fixed;top:20px;right:20px;z-index:99999;display:flex;flex-direction:column;gap:8px}
+.toast{padding:12px 20px;border-radius:var(--radius-md);font-size:13px;font-weight:500;color:#fff;box-shadow:var(--shadow-md);animation:slideIn .3s ease;display:flex;align-items:center;gap:8px}
+.toast-success{background:var(--green)}.toast-error{background:var(--red)}.toast-info{background:var(--primary)}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.modal{background:#fff;border-radius:var(--radius-lg);width:560px;max-width:90vw;box-shadow:0 12px 32px rgba(0,0,0,.15);max-height:80vh;display:flex;flex-direction:column}
+.modal-header{padding:20px 24px 16px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between}
+.modal-header h3{font-size:16px;font-weight:600}
+.modal-close{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;font-size:18px;color:var(--text-tertiary)}.modal-close:hover{background:var(--bg-page)}
+.modal-body{padding:24px;overflow-y:auto;flex:1}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border-light);display:flex;justify-content:flex-end;gap:8px}
+
+/* Manage */
+.report-list{display:flex;flex-direction:column;gap:12px}
+.report-card{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:20px;display:flex;align-items:center;gap:16px;transition:var(--transition);cursor:pointer}
+.report-card:hover{box-shadow:var(--shadow-md);border-color:var(--border)}
+.report-body{flex:1;min-width:0}
+.report-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.report-id{font-size:12px;font-weight:500;color:var(--primary)}
+.status-tag{font-size:10px;font-weight:500;padding:3px 8px;border-radius:4px}
+.status-draft{background:var(--border-light);color:var(--text-tertiary)}
+.status-published{background:var(--green-bg);color:var(--green)}
+.report-title{font-size:14px;font-weight:500;margin-bottom:4px}
+.report-info{display:flex;gap:16px;font-size:12px;color:var(--text-tertiary)}
+.report-actions{display:flex;gap:8px}
+
+/* Admin Tables */
+.admin-card{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:24px}
+.admin-table{width:100%;border-collapse:collapse}
+.admin-table th{text-align:left;padding:12px 16px;font-size:12px;font-weight:600;color:var(--text-tertiary);background:var(--bg-page);border-bottom:1px solid var(--border-light)}
+.admin-table td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--border-light)}
+.admin-table tr:hover td{background:var(--bg-page)}
+.role-tag{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--primary-bg);color:var(--primary)}
+.role-tag.admin{background:var(--orange-bg);color:var(--orange)}
+
+/* Role Management */
+.role-layout{display:flex;gap:0;border:1px solid var(--border-light);border-radius:var(--radius-lg);overflow:hidden;min-height:520px}
+.role-sidebar{width:240px;border-right:1px solid var(--border-light);display:flex;flex-direction:column;background:var(--bg-page)}
+.role-sidebar-header{padding:16px;border-bottom:1px solid var(--border-light)}
+.role-sidebar-title{font-size:14px;font-weight:600;margin-bottom:12px}
+.role-sidebar-search{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;outline:none;font-family:inherit;color:var(--text-primary)}
+.role-sidebar-search:focus{border-color:var(--primary)}
+.role-list{flex:1;overflow-y:auto;padding:4px 0}
+.role-list-item{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;cursor:pointer;transition:var(--transition);font-size:13px}
+.role-list-item:hover{background:rgba(0,0,0,.02)}
+.role-list-item.active{background:var(--primary-bg);color:var(--primary);font-weight:500}
+.role-list-item .role-del{font-size:14px;color:var(--text-quaternary);cursor:pointer;opacity:0;transition:var(--transition)}
+.role-list-item:hover .role-del{opacity:1}
+.role-list-item .role-del:hover{color:var(--red)}
+.role-main{flex:1;display:flex;flex-direction:column;background:var(--bg-card)}
+.role-tabs{display:flex;border-bottom:1px solid var(--border-light);padding:0 24px}
+.role-tab{padding:14px 20px;font-size:13px;font-weight:500;color:var(--text-tertiary);cursor:pointer;border-bottom:2px solid transparent;transition:var(--transition)}
+.role-tab:hover{color:var(--text-primary)}
+.role-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.role-tab-body{flex:1;overflow-y:auto;padding:24px}
+.perm-tree{list-style:none;padding-left:0}
+.perm-tree ul{list-style:none;padding-left:24px}
+.perm-node{margin-bottom:2px}
+.perm-node-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition);font-size:13px}
+.perm-node-row:hover{background:var(--bg-page)}
+.perm-node-row.parent{font-weight:500}
+.perm-node-row.leaf{color:var(--text-secondary)}
+.perm-cb{width:16px;height:16px;border:2px solid var(--border);border-radius:3px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+.perm-cb.checked{background:var(--primary);border-color:var(--primary)}
+.perm-cb.checked::after{content:'\2713';color:#fff;font-size:10px;font-weight:700}
+.perm-cb.partial{border-color:var(--primary)}
+.perm-cb.partial::after{content:'';width:8px;height:2px;background:var(--primary);border-radius:1px}
+.perm-save-bar{padding:12px 24px;border-top:1px solid var(--border-light);display:flex;justify-content:flex-end}
+.toggle-wrap{display:flex;align-items:center;gap:8px;cursor:pointer}
+.toggle{width:36px;height:20px;border-radius:10px;background:var(--text-quaternary);position:relative;transition:var(--transition);flex-shrink:0;cursor:pointer}
+.toggle.on{background:var(--green)}
+.toggle::after{content:'';width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:var(--transition);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on::after{left:18px}
+.role-edit-form{max-width:400px}
+.role-edit-form .form-group{margin-bottom:16px}
+.role-user-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border-light)}
+.role-user-item:last-child{border-bottom:none}
+
+/* PRD Panel */
+.prd-panel{width:460px;flex-shrink:0;display:flex;border-left:1px solid var(--border)}
+.prd-toc{width:180px;border-right:1px solid var(--border);overflow-y:auto;background:#fafafa}
+.prd-toc-title{padding:16px 16px 8px;font-size:12px;font-weight:600;color:var(--text-quaternary);letter-spacing:.5px}
+.prd-toc-item{display:block;padding:6px 16px;font-size:13px;cursor:pointer;border-left:2px solid transparent;transition:var(--transition);color:var(--text-secondary);text-decoration:none}
+.prd-toc-item:hover{color:var(--primary);background:rgba(0,0,0,.02)}
+.prd-toc-item.active{color:var(--primary);background:rgba(0,0,0,.03);border-left-color:var(--primary);font-weight:500}
+.prd-toc-item.sub{padding-left:28px;font-size:12px}
+.prd-content{flex:1;overflow-y:auto;padding:24px}
+.prd-body h1{font-size:22px;font-weight:700;margin:0 0 8px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.prd-body h2{font-size:17px;font-weight:600;margin:28px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.prd-body h3{font-size:14px;font-weight:600;margin:20px 0 8px}
+.prd-body h4{font-size:13px;font-weight:600;margin:16px 0 6px;color:var(--text-secondary)}
+.prd-body p{font-size:13px;line-height:1.8;margin-bottom:10px;color:var(--text-secondary)}
+.prd-body ul,.prd-body ol{font-size:13px;line-height:1.8;margin-bottom:10px;padding-left:24px;color:var(--text-secondary)}
+.prd-body li{margin-bottom:4px}
+.prd-body strong{color:var(--text-primary);font-weight:600}
+.prd-body hr{border:none;border-top:1px solid var(--border);margin:20px 0}
+</style>
+</head>
+<body>
+<!-- ===== Login Page ===== -->
+<div class="login-page" id="loginPage">
+  <div class="login-left">
+    <h1>舆情报送与管理系统</h1>
+    <p>面向各级宣传部门的轻量化舆情信息报送与报告管理平台</p>
+    <div class="login-features">
+      <div class="login-feat"><i class="ri-send-plane-line"></i>地市一键上报舆情信息</div>
+      <div class="login-feat"><i class="ri-list-check-2"></i>省级汇总查看与筛选</div>
+      <div class="login-feat"><i class="ri-file-text-line"></i>报告一键生成与发布</div>
+      <div class="login-feat"><i class="ri-shield-check-line"></i>对接浙政钉统一身份认证</div>
+    </div>
+  </div>
+  <div class="login-right">
+    <div class="login-card">
+      <h2>系统登录</h2>
+      <div class="login-sub">通过浙政钉扫码登录系统</div>
+      <button class="login-dingbtn full" onclick="loginWithDing()"><i class="ri-qr-code-line"></i>浙政钉扫码登录</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== App ===== -->
+<div class="app" id="appContainer" style="display:none">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo"><i class="ri-government-line"></i></div>
+      <div class="sidebar-title">舆情报送与管理系统</div>
+    </div>
+    <nav class="sidebar-nav" id="sidebarNav"></nav>
+    <div class="sidebar-footer">
+      <div class="avatar avatar-blue" id="footerAvatar">张</div>
+      <div class="user-info">
+        <div class="user-name" id="footerName">张伟</div>
+        <div class="user-org" id="footerOrg">省委宣传部</div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="topbar-title" id="topbarTitle">舆情汇总</span>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-avatar" id="topAvatar">张</div>
+        <span class="topbar-username" id="topName">张伟</span>
+        <span class="topbar-role" id="topRole">舆情处</span>
+        <i class="ri-logout-box-r-line topbar-logout" onclick="doLogout()" title="退出登录"></i>
+      </div>
+    </header>
+    <div class="main-split">
+      <div class="page-container" id="pageContainer"></div>
+      <div class="prd-panel" id="prdPanel">
+        <div class="prd-toc" id="prdToc"></div>
+        <div class="prd-content prd-body" id="prdContent"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header"><h3 id="modalTitle"></h3><div class="modal-close" onclick="closeModal()"><i class="ri-close-line"></i></div></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer" id="modalFooter"></div>
+  </div>
+</div>
+<div class="toast-container" id="toastContainer"></div>
+<script>
+/* ===== Auth & Roles ===== */
+const loginUser={org:'省委宣传部'};
+
+function loginWithDing(){
+  showToast('info','浙政钉扫码登录中...');
+  setTimeout(()=>{
+    document.getElementById('loginPage').style.display='none';
+    document.getElementById('appContainer').style.display='flex';
+    buildSidebar();updateUserUI();navigate('summary');
+  },800);
+}
+function doLogout(){
+  selectedIds.clear();editingReport=null;
+  document.getElementById('appContainer').style.display='none';
+  document.getElementById('loginPage').style.display='flex';
+}
+function updateUserUI(){
+  const u={avatar:'张',user:'张伟',org:'省委宣传部',label:'舆情处'};
+  ['footerAvatar','topAvatar'].forEach(id=>{document.getElementById(id).textContent=u.avatar});
+  ['footerName','topName'].forEach(id=>{document.getElementById(id).textContent=u.user});
+  document.getElementById('footerOrg').textContent=u.org;
+  document.getElementById('topRole').textContent=u.label;
+}
+
+/* ===== Sidebar ===== */
+function buildSidebar(){
+  const nav=document.getElementById('sidebarNav');
+  const items=[
+    {id:'summary',icon:'ri-list-check-2',title:'舆情汇总'},
+    {id:'manage',icon:'ri-file-text-line',title:'报告管理'}
+  ];
+  const sys=[
+    {id:'users',icon:'ri-user-settings-line',title:'用户管理'},
+    {id:'roles',icon:'ri-shield-star-line',title:'角色管理'}
+  ];
+  let html='<div class="nav-label">核心功能</div>';
+  items.forEach(item=>{
+    html+='<div class="nav-item" data-page="'+item.id+'" onclick="navigate(\''+item.id+'\')">'
+      +'<span class="nav-icon"><i class="'+item.icon+'"></i></span>'
+      +'<div class="nav-text"><div class="nav-title">'+item.title+'</div></div></div>';
+  });
+  html+='<div class="nav-section"><div class="nav-label" style="padding-left:0">系统管理</div>';
+  sys.forEach(item=>{
+    html+='<div class="nav-item" data-page="'+item.id+'" onclick="navigate(\''+item.id+'\')">'
+      +'<span class="nav-icon"><i class="'+item.icon+'"></i></span>'
+      +'<div class="nav-text"><div class="nav-title">'+item.title+'</div></div></div>';
+  });
+  html+='</div>';
+  nav.innerHTML=html;
+}
+
+/* ===== Data ===== */
+const yuqingData=[
+  {id:'YQ-20260326-007',type:'外省镜鉴',region:'江苏/南京',title:'江苏某地拆迁补偿标准争议引发集中讨论',source:'省网信办（外省监测）',time:'2026-03-26 11:20',summary:'近日，江苏省某地因城市更新项目引发的拆迁补偿标准争议在网络上持续发酵。部分居民认为补偿标准偏低，通过社交媒体表达诉求。',severity:'较大',reporter:'省网信办'},
+  {id:'YQ-20260326-006',type:'外省镜鉴',region:'山西/太原',title:'"山西某高校教师评优争议"登上微博热搜榜',source:'省网信办（外省监测）',time:'2026-03-26 11:00',summary:'山西省某高校教师评优过程中疑似存在不公平现象，相关话题登上微博热搜。',severity:'一般',reporter:'省网信办'},
+  {id:'YQ-20260326-005',type:'本省',region:'浙江/温州',title:'喜临门温州工厂用工待遇问题引关注',source:'温州市宣传部',time:'2026-03-26 10:30',summary:'有网友在社交平台发布喜临门温州工厂员工待遇相关帖文，反映加班费计算方式和社保缴纳基数等问题。',severity:'较大',reporter:'温州市宣传部'},
+  {id:'YQ-20260326-004',type:'本省',region:'浙江/宁波',title:'某网络平台涉嫌虚假宣传问题曝光',source:'宁波市宣传部',time:'2026-03-26 10:00',summary:'宁波市市场监管局接到多名消费者举报，称某知名电商平台上的本地商户涉嫌虚假宣传。',severity:'较大',reporter:'宁波市宣传部'},
+  {id:'YQ-20260326-003',type:'本省',region:'浙江/杭州',title:'某知名品牌杭州门店服务纠纷网络发酵',source:'杭州市宣传部',time:'2026-03-26 09:40',summary:'消费者在某国际知名品牌杭州门店购物时遭遇服务纠纷，相关视频被上传至社交平台后迅速传播。',severity:'一般',reporter:'杭州市宣传部'},
+  {id:'YQ-20260326-002',type:'本省',region:'浙江/绍兴',title:'绍兴文理学院课程调整引发学生讨论',source:'绍兴市宣传部',time:'2026-03-26 09:15',summary:'绍兴文理学院近日发布课程调整通知，部分专业课程设置有较大变动，引发在校学生热议。',severity:'一般',reporter:'绍兴市宣传部'},
+  {id:'YQ-20260326-001',type:'本省',region:'浙江/台州',title:'台州市某化工企业安全事故引发周边群众关注',source:'台州市宣传部',time:'2026-03-26 08:30',summary:'台州市某化工企业发生安全事故，造成一定环境影响。周边居民通过社交媒体传播现场图片和视频。',severity:'重大',reporter:'台州市宣传部'}
+];
+const regionUnitMap={'浙江/杭州':'杭州市宣传部','浙江/宁波':'宁波市宣传部','浙江/温州':'温州市宣传部','浙江/绍兴':'绍兴市宣传部','浙江/台州':'台州市宣传部'};
+let reportData=[
+  {id:'BG-20260410-001',title:'2026年4月10日舆情信息专报',status:'draft',time:'2026-04-10 09:00',items:[...yuqingData.slice(0,5)]},
+  {id:'BG-20260409-001',title:'2026年4月9日舆情信息专报',status:'published',time:'2026-04-09 17:00',items:[...yuqingData.slice(2,7)]}
+];
+const adminUsers=[
+  {id:1,name:'张伟',org:'省委宣传部',role:'舆情处人员',status:'正常',ding:'张伟'},
+  {id:2,name:'李明',org:'杭州市宣传部',role:'地市人员',status:'正常',ding:'李明'},
+  {id:3,name:'王芳',org:'宁波市宣传部',role:'地市人员',status:'正常',ding:'王芳'},
+  {id:4,name:'赵强',org:'温州市宣传部',role:'地市人员',status:'正常',ding:'赵强'},
+  {id:5,name:'王超',org:'省委宣传部',role:'系统管理员',status:'正常',ding:'王超'},
+  {id:6,name:'陈静',org:'绍兴市宣传部',role:'地市人员',status:'停用',ding:'陈静'}
+];
+const permTree=[
+  {id:'p1',label:'舆情汇总',children:[
+    {id:'p1-1',label:'查看本单位舆情'},
+    {id:'p1-2',label:'查看全部舆情'},
+    {id:'p1-3',label:'录用至报告'}
+  ]},
+  {id:'p2',label:'舆情上报',children:[
+    {id:'p2-1',label:'上报舆情信息'}
+  ]},
+  {id:'p3',label:'报告管理',children:[
+    {id:'p3-1',label:'查看报告列表'},
+    {id:'p3-2',label:'新建报告'},
+    {id:'p3-3',label:'编辑报告'},
+    {id:'p3-4',label:'删除报告'},
+    {id:'p3-5',label:'预览报告'},
+    {id:'p3-6',label:'发布报告'}
+  ]},
+  {id:'p4',label:'系统管理',children:[
+    {id:'p4-1',label:'用户管理'},
+    {id:'p4-2',label:'角色管理'}
+  ]}
+];
+const adminRoles=[
+  {id:'r1',name:'地市人员',desc:'各地市宣传部工作人员',perms:['p1-1','p2-1']},
+  {id:'r2',name:'舆情处人员',desc:'省委宣传部舆情处工作人员',perms:['p1-2','p1-3','p2-1','p3-1','p3-2','p3-3','p3-5','p3-6']},
+  {id:'r3',name:'系统管理员',desc:'系统运维管理员',perms:['p1-2','p1-3','p2-1','p3-1','p3-2','p3-3','p3-4','p3-5','p3-6','p4-1','p4-2']}
+];
+let activeRoleId='r1';
+
+let selectedIds=new Set();
+let currentPage='summary';
+let reportItemCount=0;
+let editingReport=null;
+
+/* ===== Router ===== */
+function navigate(page,param){
+  currentPage=page;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const navEl=document.querySelector('.nav-item[data-page="'+page+'"]');
+  if(navEl)navEl.classList.add('active');
+  const titles={summary:'舆情汇总',report:'舆情上报',manage:'报告管理',detail:'舆情详情',preview:'报告预览',edit:'报告编辑',users:'用户管理',roles:'角色管理'};
+  document.getElementById('topbarTitle').textContent=titles[page]||'';
+  const pc=document.getElementById('pageContainer');
+  pc.scrollTop=0;
+  const renderers={summary:renderSummaryPage,report:renderReportPage,manage:renderManagePage,detail:()=>renderDetailPage(param),preview:()=>renderPreviewPage(param),edit:()=>renderEditPage(param),users:renderUsersPage,roles:renderRolesPage};
+  if(renderers[page])renderers[page]();
+}
+
+/* ===== Page Renderers ===== */
+function isUsedInReport(yqId){return reportData.some(r=>r.items.some(i=>i.id===yqId))}
+function getUsedIds(){const s=new Set();reportData.forEach(r=>r.items.forEach(i=>s.add(i.id)));return s}
+
+function renderSummaryPage(){
+  const pc=document.getElementById('pageContainer');
+  pc.innerHTML=
+    '<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">舆情汇总</div></div>'
+    +'<div class="page-header-actions">'
+    +'<button class="btn btn-primary" onclick="navigate(\'report\')"><i class="ri-send-plane-line"></i>舆情上报</button>'
+    +'<button class="btn-use" id="btnUse" onclick="handleUseToReport()"><i class="ri-file-add-line"></i>录用至报告</button>'
+    +'</div></div>'
+    +'<div class="summary-stats" id="summaryStats"></div>'
+    +'<div class="search-bar"><div class="search-input-wrap"><i class="ri-search-line"></i><input class="search-input" id="searchInput" placeholder="搜索标题、地域、单位、内容..." oninput="filterList()"></div>'
+    +'<input type="date" class="filter-date" id="filterDateStart" onchange="filterList()">'
+    +'<span class="filter-sep">至</span>'
+    +'<input type="date" class="filter-date" id="filterDateEnd" onchange="filterList()">'
+    +'<select class="filter-select" id="filterSource" onchange="filterList()"><option value="">全部来源</option><option value="本省">本省</option><option value="外省镜鉴">外省镜鉴</option></select>'
+    +'<select class="filter-select" id="filterUnit" onchange="filterList()"><option value="">全部单位</option><option value="省级">省级</option><option value="地市">地市</option><option value="专班">专班</option></select>'
+    +'<select class="filter-select" id="filterUsed" onchange="filterList()"><option value="">录用状态</option><option value="yes">已录用</option><option value="no">未录用</option></select>'
+    +'<select class="filter-select" id="filterRegion" onchange="filterList()"><option value="">全部地域</option><option>浙江/杭州</option><option>浙江/宁波</option><option>浙江/温州</option><option>浙江/绍兴</option><option>浙江/台州</option></select></div>'
+    +'<div class="action-bar"><button class="select-all-btn" onclick="toggleSelectAll()"><i class="ri-checkbox-blank-circle-line" id="selectAllIcon"></i>全选</button><span class="list-count" id="listCount"></span></div>'
+    +'<div class="yuqing-list" id="yuqingList"></div></div>';
+  filterList();
+}
+
+function filterList(){
+  const kw=(document.getElementById('searchInput')||{}).value;const kwStr=kw?kw.toLowerCase():'';
+  const dateStart=(document.getElementById('filterDateStart')||{}).value||'';
+  const dateEnd=(document.getElementById('filterDateEnd')||{}).value||'';
+  const typeF=(document.getElementById('filterSource')||{}).value||'';
+  const unitF=(document.getElementById('filterUnit')||{}).value||'';
+  const usedF=(document.getElementById('filterUsed')||{}).value||'';
+  const regionF=(document.getElementById('filterRegion')||{}).value||'';
+  const usedIds=getUsedIds();
+  let data=yuqingData;
+  data=data.filter(item=>{
+    if(typeF&&item.type!==typeF)return false;
+    if(regionF&&item.region!==regionF)return false;
+    if(unitF){
+      if(unitF==='省级'&&!item.reporter.includes('省委')&&!item.reporter.includes('省网信'))return false;
+      if(unitF==='地市'&&!item.reporter.includes('市宣传部'))return false;
+      if(unitF==='专班'&&!item.reporter.includes('专班')&&!item.reporter.includes('网信'))return false;
+    }
+    if(dateStart){const d=item.time.slice(0,10);if(d<dateStart)return false}
+    if(dateEnd){const d=item.time.slice(0,10);if(d>dateEnd)return false}
+    if(usedF==='yes'&&!usedIds.has(item.id))return false;
+    if(usedF==='no'&&usedIds.has(item.id))return false;
+    if(kwStr){const hay=(item.title+item.region+item.source+item.summary).toLowerCase();if(!hay.includes(kwStr))return false}
+    return true;
+  });
+  updateStats(data);
+  renderList(data,usedIds);
+}
+
+function updateStats(data){
+  const total=data.length;
+  const local=data.filter(i=>i.type==='本省').length;
+  const external=data.filter(i=>i.type==='外省镜鉴').length;
+  const usedIds=getUsedIds();
+  const used=data.filter(i=>usedIds.has(i.id)).length;
+  const el=document.getElementById('summaryStats');if(!el)return;
+  el.innerHTML=
+    '<div class="stat-card"><div class="stat-icon blue"><i class="ri-file-list-3-line"></i></div><div class="stat-info"><div class="stat-num">'+total+'</div><div class="stat-label">上报总数</div></div></div>'
+    +'<div class="stat-card"><div class="stat-icon orange"><i class="ri-check-double-line"></i></div><div class="stat-info"><div class="stat-num">'+used+'</div><div class="stat-label">已录用</div></div></div>'
+    +'<div class="stat-card"><div class="stat-icon blue"><i class="ri-map-pin-line"></i></div><div class="stat-info"><div class="stat-num">'+local+'</div><div class="stat-label">本省</div></div></div>'
+    +'<div class="stat-card"><div class="stat-icon green"><i class="ri-compass-3-line"></i></div><div class="stat-info"><div class="stat-num">'+external+'</div><div class="stat-label">外省镜鉴</div></div></div>';
+}
+
+function renderList(data,usedIds){
+  const list=document.getElementById('yuqingList');if(!list)return;
+  if(!data.length){list.innerHTML='<div class="empty-state"><i class="ri-inbox-line"></i><p>未找到匹配的舆情信息</p></div>';document.getElementById('listCount').textContent='共 0 条';return}
+  const uid=usedIds||getUsedIds();
+  list.innerHTML=data.map(item=>{
+    const checked=selectedIds.has(item.id);
+    const tagCls=item.type==='本省'?'yq-tag-local':'yq-tag-external';
+    const used=uid.has(item.id);
+    return '<div class="yuqing-card '+(checked?'selected':'')+'">'
+      +'<div class="yq-check '+(checked?'checked':'')+'" onclick="event.stopPropagation();toggleCheck(\''+item.id+'\')"></div>'
+      +'<div class="yq-body" onclick="navigate(\'detail\',\''+item.id+'\')">'
+        +'<div class="yq-meta"><span class="yq-id">'+item.id+'</span><span class="yq-tag '+tagCls+'">'+item.type+'</span><span class="yq-location"><i class="ri-map-pin-2-line"></i>'+item.region+'</span><span class="yq-used '+(used?'yq-used-yes':'yq-used-no')+'">'+(used?'已录用':'未录用')+'</span></div>'
+        +'<div class="yq-title">'+item.title+'</div>'
+        +'<div class="yq-footer"><span class="yq-source"><i class="ri-building-line"></i>'+item.source+'</span><span class="yq-time"><i class="ri-time-line"></i>'+item.time+'</span></div></div></div>';
+  }).join('');
+  document.getElementById('listCount').textContent='共 '+data.length+' 条';
+}
+
+function toggleCheck(id){if(selectedIds.has(id))selectedIds.delete(id);else selectedIds.add(id);document.getElementById('btnUse').classList.toggle('enabled',selectedIds.size>0);filterList()}
+function toggleSelectAll(){const vis=getVisibleIds();if(selectedIds.size===vis.length&&vis.length>0)selectedIds.clear();else vis.forEach(id=>selectedIds.add(id));document.getElementById('btnUse').classList.toggle('enabled',selectedIds.size>0);filterList()}
+function getVisibleIds(){const kw=(document.getElementById('searchInput')||{}).value;const kwStr=kw?kw.toLowerCase():'';const dateStart=(document.getElementById('filterDateStart')||{}).value||'';const dateEnd=(document.getElementById('filterDateEnd')||{}).value||'';const typeF=(document.getElementById('filterSource')||{}).value||'';const unitF=(document.getElementById('filterUnit')||{}).value||'';const usedF=(document.getElementById('filterUsed')||{}).value||'';const regionF=(document.getElementById('filterRegion')||{}).value||'';const usedIds=getUsedIds();return yuqingData.filter(i=>{if(typeF&&i.type!==typeF)return false;if(regionF&&i.region!==regionF)return false;if(unitF){if(unitF==='省级'&&!i.reporter.includes('省委')&&!i.reporter.includes('省网信'))return false;if(unitF==='地市'&&!i.reporter.includes('市宣传部'))return false;if(unitF==='专班'&&!i.reporter.includes('专班')&&!i.reporter.includes('网信'))return false}if(dateStart){const d=i.time.slice(0,10);if(d<dateStart)return false}if(dateEnd){const d=i.time.slice(0,10);if(d>dateEnd)return false}if(usedF==='yes'&&!usedIds.has(i.id))return false;if(usedF==='no'&&usedIds.has(i.id))return false;if(kwStr){const h=(i.title+i.region+i.source+i.summary).toLowerCase();if(!h.includes(kwStr))return false}return true}).map(i=>i.id)}
+
+/* ===== Detail ===== */
+function renderDetailPage(id){
+  const item=yuqingData.find(d=>d.id===id);if(!item)return;
+  const tagCls=item.type==='本省'?'yq-tag-local':'yq-tag-external';
+  document.getElementById('pageContainer').innerHTML='<div class="page active"><div style="margin-bottom:16px"><button class="btn btn-ghost" onclick="navigate(\'summary\')"><i class="ri-arrow-left-line"></i> 返回列表</button></div>'
+    +'<div class="detail-card"><div class="detail-meta"><span class="yq-id">'+item.id+'</span><span class="yq-tag '+tagCls+'">'+item.type+'</span><span class="yq-location"><i class="ri-map-pin-2-line"></i>'+item.region+'</span></div>'
+    +'<div class="detail-title">'+item.title+'</div>'
+    +'<div class="detail-section"><h3>舆情内容</h3><div class="detail-content">'+item.summary+'</div></div>'
+    +'<div class="detail-section"><h3>基本信息</h3>'
+      +'<div class="detail-field"><span class="detail-label">严重程度</span><span class="detail-value">'+item.severity+'</span></div>'
+      +'<div class="detail-field"><span class="detail-label">上报单位</span><span class="detail-value">'+item.source+'</span></div>'
+      +'<div class="detail-field"><span class="detail-label">上报时间</span><span class="detail-value">'+item.time+'</span></div></div>'
+    +'<div style="display:flex;gap:8px;margin-top:20px">'
+      +'<button class="btn btn-primary" onclick="handleUseSingle(\''+item.id+'\')"><i class="ri-file-add-line"></i>录用至报告</button>'
+      +'<button class="btn btn-outline" onclick="navigate(\'summary\')"><i class="ri-arrow-left-line"></i>返回列表</button></div></div></div>';
+}
+
+/* ===== Report Form ===== */
+function renderReportPage(){reportItemCount=0;document.getElementById('pageContainer').innerHTML='<div class="page active"><div class="page-header"><div class="page-header-left"><div style="display:flex;align-items:center;gap:12px"><button class="btn btn-ghost" onclick="navigate(\'summary\')"><i class="ri-arrow-left-line"></i>返回</button><div class="page-heading">舆情上报</div></div></div><div style="font-size:13px;color:var(--text-tertiary)" id="reportFormCount">共 1 条</div></div><div id="reportFormList"></div><div style="margin-top:12px;max-width:800px"><button class="btn btn-outline" onclick="addReportItem()"><i class="ri-add-line"></i>添加一条舆情</button></div><div class="form-actions" style="max-width:800px;margin-top:20px"><button class="btn btn-outline" onclick="resetReportForm()"><i class="ri-refresh-line"></i>重置</button><button class="btn btn-primary" id="btnSubmitReport" onclick="submitAllReportItems()"><i class="ri-send-plane-line"></i>提交上报（1 条）</button></div></div>';addReportItem()}
+
+function addReportItem(){
+  reportItemCount++;const n=reportItemCount;const c=document.getElementById('reportFormList');
+  const card=document.createElement('div');card.className='report-item-card';card.id='rptItem-'+n;
+  card.innerHTML='<div class="item-header"><span class="item-number">第 '+n+' 条舆情</span>'+(n>1?'<button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="removeReportItem('+n+')"><i class="ri-close-line"></i></button>':'')+'</div>'
+    +'<div class="form-row"><div class="form-group"><label>上报时间<span class="req">*</span></label><input class="form-control" type="datetime-local" data-field="time"></div>'
+    +'<div class="form-group"><label>舆情地域<span class="req">*</span></label><select class="form-control" data-field="region" onchange="autoFillUnit(this,'+n+')"><option value="">请选择</option><option>浙江/杭州</option><option>浙江/宁波</option><option>浙江/温州</option><option>浙江/绍兴</option><option>浙江/台州</option></select></div></div>'
+    +'<div class="form-row"><div class="form-group"><label>报送单位</label><input class="form-control" data-field="unit" id="rptUnit-'+n+'" value="'+loginUser.org+'" style="background:#fafafa"></div></div>'
+    +'<div class="form-row"><div class="form-group" style="flex:none;width:100%"><label>标题<span class="req">*</span></label><input class="form-control" data-field="title" placeholder="请输入舆情标题"></div></div>'
+    +'<div class="form-row"><div class="form-group" style="flex:none;width:100%"><label>内容<span class="req">*</span></label><textarea class="form-control" data-field="content" rows="3" placeholder="请详细描述舆情事件经过、传播情况、影响范围等..."></textarea></div></div>'
+    +'<div class="form-row"><div class="form-group" style="flex:none;width:100%"><label>建议意见</label><textarea class="form-control" data-field="suggestion" rows="2" placeholder="建议xx部门加强关注..."></textarea></div></div>'
+    +'<div class="form-row"><div class="form-group" style="flex:none;width:100%"><label>处置方式</label><textarea class="form-control" data-field="handling" rows="2" placeholder="指导妥善处理..."></textarea></div></div>';
+  c.appendChild(card);updateFormCount();
+}
+function autoFillUnit(sel,n){document.getElementById('rptUnit-'+n).value=regionUnitMap[sel.value]||loginUser.org}
+function removeReportItem(n){const c=document.getElementById('rptItem-'+n);if(c){c.style.opacity='0';c.style.transition='all .3s';setTimeout(()=>{c.remove();updateFormCount()},300)}}
+function updateFormCount(){const c=document.querySelectorAll('#reportFormList .report-item-card').length;document.getElementById('reportFormCount').textContent='共 '+c+' 条';document.getElementById('btnSubmitReport').innerHTML='<i class="ri-send-plane-line"></i>提交上报（'+c+' 条）'}
+function resetReportForm(){document.getElementById('reportFormList').innerHTML='';reportItemCount=0;addReportItem()}
+function submitAllReportItems(){const cards=document.querySelectorAll('#reportFormList .report-item-card');if(!cards.length){showToast('error','请至少填写一条');return}let valid=true;cards.forEach(card=>{card.querySelectorAll('[data-field]').forEach(el=>{if(el.closest('.form-group').querySelector('.req')&&!el.value.trim()){el.classList.add('error');valid=false}else el.classList.remove('error')})});if(!valid){showToast('error','请完善必填项');return}showToast('success','成功上报 '+cards.length+' 条舆情');setTimeout(()=>navigate('summary'),800)}
+
+/* ===== Use to Report ===== */
+function handleUseToReport(){if(selectedIds.size===0)return;const opts=reportData.filter(r=>r.status==='draft').map(r=>'<label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--border-light);border-radius:var(--radius-md);cursor:pointer;margin-bottom:8px"><input type="radio" name="rptChoice" value="'+r.id+'" style="accent-color:var(--primary)"><div><div style="font-size:13px;font-weight:500">'+r.title+'</div><div style="font-size:11px;color:var(--text-tertiary)">'+r.id+'</div></div></label>').join('');showModal('选择目标报告',opts||'<p style="color:var(--text-tertiary)">暂无草稿报告，请新建报告</p>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmUseToReport()">确认录用</button>')}
+function handleUseSingle(id){selectedIds.clear();selectedIds.add(id);handleUseToReport()}
+function confirmUseToReport(){const ch=document.querySelector('input[name="rptChoice"]:checked');if(!ch){showToast('error','请选择报告');return}const r=reportData.find(x=>x.id===ch.value);if(r){yuqingData.filter(d=>selectedIds.has(d.id)).forEach(item=>{if(!r.items.find(i=>i.id===item.id))r.items.push(item)})}closeModal();showToast('success','已录用 '+selectedIds.size+' 条');const rid=ch.value;selectedIds.clear();document.getElementById('btnUse').classList.remove('enabled');setTimeout(()=>navigate('edit',rid),500)}
+
+/* ===== Manage ===== */
+function renderManagePage(){const pc=document.getElementById('pageContainer');pc.innerHTML='<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">报告管理</div></div><button class="btn btn-primary" onclick="createNewReport()"><i class="ri-add-line"></i>新建报告</button></div><div class="report-list" id="reportList"></div></div>';renderManageList()}
+function renderManageList(){const list=document.getElementById('reportList');if(!list)return;list.innerHTML=reportData.map(r=>{const sm={draft:['草稿','status-draft'],published:['已发布','status-published']};const[l,c]=sm[r.status]||['',''];return'<div class="report-card" onclick="navigate(\'preview\',\''+r.id+'\')"><div class="report-body"><div class="report-meta"><span class="report-id">'+r.id+'</span><span class="status-tag '+c+'">'+l+'</span></div><div class="report-title">'+r.title+'</div><div class="report-info"><span><i class="ri-time-line"></i> '+r.time+'</span><span><i class="ri-file-list-3-line"></i> '+r.items.length+' 条</span></div></div><div class="report-actions" onclick="event.stopPropagation()">'+(r.status==='draft'?'<button class="btn btn-primary btn-sm" onclick="navigate(\'edit\',\''+r.id+'\')"><i class="ri-edit-line"></i>编辑</button><button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="deleteReport(\''+r.id+'\')"><i class="ri-delete-bin-line"></i></button>':'')+'<button class="btn btn-outline btn-sm" onclick="navigate(\'preview\',\''+r.id+'\')"><i class="ri-eye-line"></i>预览</button></div></div>'}).join('')}
+function createNewReport(){const id='BG-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(reportData.length+1).padStart(3,'0');const d=new Date();const r={id,title:d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日舆情信息专报',status:'draft',time:d.toISOString().slice(0,16).replace('T',' '),items:[]};reportData.unshift(r);renderManageList();navigate('edit',id);setTimeout(()=>openSelectFromSummary(),100)}
+function deleteReport(id){showModal('确认删除','<p style="font-size:14px;color:var(--text-secondary)">确定删除该报告？</p>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" style="background:var(--red)" onclick="reportData.splice(reportData.findIndex(r=>r.id===\''+id+'\'),1);closeModal();showToast(\'success\',\'已删除\');renderManageList()">确认</button>')}
+
+/* ===== Preview ===== */
+function renderPreviewPage(reportId){const report=reportData.find(r=>r.id===reportId);if(!report)return;const li=report.items.filter(i=>i.type==='本省'),ei=report.items.filter(i=>i.type==='外省镜鉴');
+document.getElementById('pageContainer').innerHTML='<div class="page active"><div style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center"><button class="btn btn-ghost" onclick="navigate(\'manage\')"><i class="ri-arrow-left-line"></i> 返回</button><div style="display:flex;gap:8px">'+(report.status==='draft'?'<button class="btn btn-primary btn-sm" onclick="navigate(\'edit\',\''+report.id+'\')"><i class="ri-edit-line"></i>编辑</button>':'')+'<button class="btn btn-outline btn-sm" onclick="exportWord(\''+report.id+'\')"><i class="ri-download-line"></i>导出 Word</button></div></div>'
++'<div class="doc-preview"><div class="doc-header"><div class="doc-title">'+report.title+'</div><div class="doc-date">'+report.time+'</div></div>'
++'<div class="doc-section"><div class="doc-section-title">【内容提要】</div>'+li.map((it,i)=>'<div class="doc-item"><span class="doc-item-title">'+(i+1)+'. '+it.title+'</span>：'+it.summary.slice(0,60)+'...</div>').join('')+'</div>'
++li.map((it,i)=>'<div class="doc-section" style="margin-bottom:20px"><div class="doc-section-title">'+(i+1)+'、'+it.title+'</div><div class="doc-item">'+it.summary+'</div><div class="doc-item" style="color:var(--text-tertiary);font-size:12px;margin-top:4px">（'+it.source+' | '+it.time+'）</div></div>').join('')
++(ei.length?'<div class="doc-section"><div class="doc-section-title">【外省舆情镜鉴】</div>'+ei.map((it,i)=>'<div class="doc-item"><span class="doc-item-title">'+(i+1)+'. '+it.title+'</span>：'+it.summary.slice(0,80)+'...</div>').join('')+'</div>':'')
++'</div></div>'}
+
+function exportWord(reportId){
+  const report=reportData.find(r=>r.id===reportId);if(!report)return;
+  const li=report.items.filter(i=>i.type==='本省'),ei=report.items.filter(i=>i.type==='外省镜鉴');
+  let body='<h1 style="text-align:center;font-family:方正小标宋,FangSong,serif">'+report.title+'</h1>';
+  body+='<p style="text-align:center;color:#666;font-size:12pt">'+report.time+'</p><hr>';
+  body+='<h2 style="font-family:黑体,SimHei,sans-serif">【内容提要】</h2>';
+  li.forEach((it,i)=>{body+='<p style="text-indent:2em"><b>'+(i+1)+'. '+it.title+'</b>：'+it.summary.slice(0,60)+'...</p>'});
+  li.forEach((it,i)=>{
+    body+='<h2 style="font-family:黑体,SimHei,sans-serif">'+(i+1)+'、'+it.title+'</h2>';
+    body+='<p style="text-indent:2em">'+it.summary+'</p>';
+    body+='<p style="color:#999;font-size:10pt;text-indent:2em">（'+it.source+' | '+it.time+'）</p>';
+  });
+  if(ei.length){
+    body+='<h2 style="font-family:黑体,SimHei,sans-serif">【外省舆情镜鉴】</h2>';
+    ei.forEach((it,i)=>{body+='<p style="text-indent:2em"><b>'+(i+1)+'. '+it.title+'</b>：'+it.summary.slice(0,80)+'...</p>'});
+  }
+  const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]--><style>@page{size:A4;margin:2.54cm}body{font-family:仿宋,FangSong,serif;font-size:14pt;line-height:28pt}h1{font-size:22pt;margin-bottom:12pt}h2{font-size:16pt;margin-top:16pt;margin-bottom:8pt}p{margin:4pt 0}</style></head><body>'+body+'</body></html>';
+  const blob=new Blob(['\ufeff'+html],{type:'application/msword'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=report.title+'.doc';a.click();URL.revokeObjectURL(a.href);
+  showToast('success','Word 文档已导出');
+}
+function renderEditPage(reportId){const report=reportData.find(r=>r.id===reportId);if(!report)return;editingReport=report;const li=report.items.filter(i=>i.type==='本省'),ei=report.items.filter(i=>i.type==='外省镜鉴');
+document.getElementById('pageContainer').innerHTML='<div class="page active"><div style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:12px"><button class="btn btn-ghost" onclick="navigate(\'manage\')"><i class="ri-arrow-left-line"></i>返回</button><div style="font-size:18px;font-weight:600">'+(report.items.length?'编辑报告':'新建报告')+'</div></div><div class="edit-stats"><span class="edit-stat-tag" style="background:var(--primary-bg);color:var(--primary)">本省 '+li.length+'</span><span class="edit-stat-tag" style="background:var(--orange-bg);color:var(--orange)">外省 '+ei.length+'</span></div></div>'
++'<div class="edit-toolbar"><button class="btn btn-outline btn-sm" onclick="openSelectFromSummary()"><i class="ri-add-line"></i>选取舆情</button><button class="btn btn-outline btn-sm" onclick="saveReportEdit()"><i class="ri-save-line"></i>保存草稿</button><div class="spacer"></div><button class="btn btn-primary btn-sm" onclick="previewFromEdit()"><i class="ri-eye-line"></i>预览</button><button class="btn btn-success btn-sm" onclick="publishReport()"><i class="ri-send-plane-line"></i>发布</button></div>'
++'<div class="edit-layout"><div class="edit-main">'
++'<div style="display:flex;gap:16px;margin-bottom:20px"><div class="form-group" style="flex:2"><label>报告标题<span class="req">*</span></label><input class="form-control" id="editTitle" value="'+report.title+'" oninput="updateEditPreview()"></div><div class="form-group" style="flex:1"><label>报告日期</label><input class="form-control" type="date" id="editDate" value="'+report.time.slice(0,10)+'"></div></div>'
++(li.length?'<div class="edit-section-title">本省舆情（'+li.length+'）</div>'+li.map((it,i)=>editItemHTML(it,i)).join(''):'')
++(ei.length?'<div class="edit-section-title" style="margin-top:20px">外省舆情镜鉴（'+ei.length+'）</div>'+ei.map((it,i)=>editItemHTML(it,i)).join(''):'')
++'</div><div class="edit-sidebar" id="editSidebar">'+buildEditSidebar(report)+'</div></div></div>'}
+
+function editItemHTML(item,i){const tc=item.type==='本省'?'yq-tag-local':'yq-tag-external';return'<div class="edit-item-card" data-item-id="'+item.id+'"><div class="ei-header"><span style="font-size:12px;font-weight:600;color:var(--text-quaternary)">'+(i+1)+'</span><span class="yq-id">'+item.id+'</span><span class="yq-tag '+tc+'">'+item.type+'</span><button class="btn btn-ghost btn-sm" style="color:var(--red);margin-left:auto" onclick="removeEditItem(\''+item.id+'\')"><i class="ri-delete-bin-line"></i></button></div><div class="ei-body"><div class="ei-field"><input class="ei-title-input" value="'+item.title+'" data-edit-title="'+item.id+'" oninput="updateEditPreview()"></div><div class="ei-field"><div class="ei-label"><i class="ri-file-text-line"></i>正文内容</div><textarea data-edit-content="'+item.id+'" oninput="updateEditPreview()">'+item.summary+'</textarea></div><div class="ei-field"><div class="ei-label"><i class="ri-lightbulb-line"></i>建议意见</div><textarea data-edit-suggestion="'+item.id+'" placeholder="建议xx部门加强关注..."></textarea></div></div></div>'}
+
+function removeEditItem(id){if(!editingReport)return;editingReport.items=editingReport.items.filter(i=>i.id!==id);renderEditPage(editingReport.id)}
+function buildEditSidebar(r){const li=r.items.filter(i=>i.type==='本省'),ei=r.items.filter(i=>i.type==='外省镜鉴');let h='<h4>【内容提要】预览</h4>';li.forEach((it,i)=>{h+='<div class="preview-item"><span class="pi-title">'+(i+1)+'. '+it.title+'</span></div>'});if(ei.length){h+='<h4 style="margin-top:16px">【外省舆情镜鉴】</h4>';ei.forEach((it,i)=>{h+='<div class="preview-item"><span class="pi-title">'+(i+1)+'. '+it.title+'</span></div>'})}return h}
+function updateEditPreview(){if(!editingReport)return;const t=document.getElementById('editTitle');if(t)editingReport.title=t.value;editingReport.items.forEach(item=>{const te=document.querySelector('[data-edit-title="'+item.id+'"]');if(te)item.title=te.value;const ce=document.querySelector('[data-edit-content="'+item.id+'"]');if(ce)item.summary=ce.value});const sb=document.getElementById('editSidebar');if(sb)sb.innerHTML=buildEditSidebar(editingReport)}
+function saveReportEdit(){if(!editingReport)return;const t=document.getElementById('editTitle');if(t)editingReport.title=t.value;showToast('success','草稿已保存')}
+function publishReport(){if(!editingReport)return;const t=document.getElementById('editTitle');if(!t||!t.value.trim()){showToast('error','请填写标题');return}editingReport.title=t.value;editingReport.status='published';showToast('success','报告已发布');setTimeout(()=>{renderManageList();navigate('manage')},600)}
+function previewFromEdit(){if(!editingReport)return;saveReportEdit();navigate('preview',editingReport.id)}
+function openSelectFromSummary(){if(!editingReport)return;const eids=new Set(editingReport.items.map(i=>i.id));const avail=yuqingData.filter(i=>!eids.has(i.id));const opts=avail.map(item=>{const tc=item.type==='本省'?'yq-tag-local':'yq-tag-external';return'<label style="display:flex;align-items:flex-start;gap:10px;padding:10px;border:1px solid var(--border-light);border-radius:var(--radius-md);cursor:pointer;margin-bottom:8px"><input type="checkbox" value="'+item.id+'" style="accent-color:var(--primary);margin-top:4px"><div><div style="display:flex;gap:6px;margin-bottom:4px"><span class="yq-tag '+tc+'">'+item.type+'</span><span class="yq-location"><i class="ri-map-pin-2-line"></i>'+item.region+'</span></div><div style="font-size:13px;font-weight:500">'+item.title+'</div></div></label>'}).join('');showModal('选取舆情',opts||'<p style="color:var(--text-tertiary)">所有舆情已收录</p>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmSelectFromSummary()">确认</button>')}
+function confirmSelectFromSummary(){const ch=document.querySelectorAll('#modalBody input[type=checkbox]:checked');if(!ch.length){showToast('error','请选择');return}if(editingReport){ch.forEach(cb=>{const it=yuqingData.find(d=>d.id===cb.value);if(it&&!editingReport.items.find(i=>i.id===it.id))editingReport.items.push(it)})}closeModal();showToast('success','已添加 '+ch.length+' 条');renderEditPage(editingReport.id)}
+
+/* ===== Admin Pages ===== */
+function renderUsersPage(){
+  document.getElementById('pageContainer').innerHTML='<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">用户管理</div></div><button class="btn btn-primary" onclick="showAddUserModal()"><i class="ri-add-line"></i>新增用户</button></div><div class="admin-card"><table class="admin-table"><thead><tr><th>姓名</th><th>所属单位</th><th>角色</th><th>浙政钉账号</th><th>状态</th><th>操作</th></tr></thead><tbody id="userTableBody"></tbody></table></div></div>';
+  renderUserRows();
+}
+function renderUserRows(){
+  const tb=document.getElementById('userTableBody');if(!tb)return;
+  tb.innerHTML=adminUsers.map(u=>'<tr><td style="font-weight:500">'+u.name+'</td><td>'+u.org+'</td><td><select class="form-control" style="padding:4px 8px;font-size:12px;min-width:auto;width:auto" onchange="changeUserRole('+u.id+',this.value)">'+adminRoles.map(r=>'<option value="'+r.id+'"'+(u.role===r.name?' selected':'')+'>'+r.name+'</option>').join('')+'</select></td><td>'+u.ding+'</td><td><div class="toggle-wrap" onclick="toggleUserStatus('+u.id+')"><div class="toggle'+(u.status==='正常'?' on':'')+'"></div><span style="font-size:12px;color:'+(u.status==='正常'?'var(--green)':'var(--text-quaternary)')+'">'+u.status+'</span></div></td><td><button class="btn btn-outline btn-sm" onclick="showEditUserModal('+u.id+')"><i class="ri-edit-line"></i></button></td></tr>').join('');
+}
+function changeUserRole(uid,rid){
+  const u=adminUsers.find(x=>x.id===uid);const r=adminRoles.find(x=>x.id===rid);
+  if(u&&r){u.role=r.name;showToast('success','已将 '+u.name+' 的角色切换为 '+r.name)}
+}
+function toggleUserStatus(uid){
+  const u=adminUsers.find(x=>x.id===uid);if(!u)return;
+  u.status=u.status==='正常'?'停用':'正常';
+  showToast('success',u.name+' 已'+(u.status==='正常'?'启用':'停用'));
+  renderUserRows();
+}
+function showAddUserModal(){
+  const body='<div style="display:flex;flex-direction:column;gap:12px">'
+    +'<div class="form-group"><label>姓名</label><input class="form-control" id="newUserName" placeholder="请输入姓名"></div>'
+    +'<div class="form-group"><label>所属单位</label><select class="form-control" id="newUserOrg"><option>省委宣传部</option><option>杭州市宣传部</option><option>宁波市宣传部</option><option>温州市宣传部</option><option>绍兴市宣传部</option><option>台州市宣传部</option></select></div>'
+    +'<div class="form-group"><label>角色</label><select class="form-control" id="newUserRole">'+adminRoles.map(r=>'<option value="'+r.id+'">'+r.name+'</option>').join('')+'</select></div>'
+    +'<div class="form-group"><label>浙政钉账号</label><input class="form-control" id="newUserDing" placeholder="请输入浙政钉账号"></div></div>';
+  showModal('新增用户',body,'<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmAddUser()">确定</button>');
+}
+function confirmAddUser(){
+  const n=document.getElementById('newUserName').value.trim();
+  const o=document.getElementById('newUserOrg').value;
+  const rid=document.getElementById('newUserRole').value;
+  const d=document.getElementById('newUserDing').value.trim();
+  if(!n||!d){showToast('error','请填写完整信息');return}
+  const r=adminRoles.find(x=>x.id===rid);
+  adminUsers.push({id:Date.now(),name:n,org:o,role:r?r.name:'地市人员',status:'正常',ding:d});
+  closeModal();showToast('success','用户 '+n+' 已添加');renderUsersPage();
+}
+function showEditUserModal(uid){
+  const u=adminUsers.find(x=>x.id===uid);if(!u)return;
+  const body='<div style="display:flex;flex-direction:column;gap:12px">'
+    +'<div class="form-group"><label>姓名</label><input class="form-control" id="editUserName" value="'+u.name+'"></div>'
+    +'<div class="form-group"><label>所属单位</label><select class="form-control" id="editUserOrg">'+['省委宣传部','杭州市宣传部','宁波市宣传部','温州市宣传部','绍兴市宣传部','台州市宣传部'].map(o=>'<option'+(o===u.org?' selected':'')+'>'+o+'</option>').join('')+'</select></div>'
+    +'<div class="form-group"><label>角色</label><select class="form-control" id="editUserRole">'+adminRoles.map(r=>'<option value="'+r.id+'"'+(u.role===r.name?' selected':'')+'>'+r.name+'</option>').join('')+'</select></div>'
+    +'<div class="form-group"><label>浙政钉账号</label><input class="form-control" id="editUserDing" value="'+u.ding+'"></div></div>';
+  showModal('编辑用户',body,'<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmEditUser('+uid+')">保存</button>');
+}
+function confirmEditUser(uid){
+  const u=adminUsers.find(x=>x.id===uid);if(!u)return;
+  u.name=document.getElementById('editUserName').value.trim()||u.name;
+  u.org=document.getElementById('editUserOrg').value;
+  const rid=document.getElementById('editUserRole').value;
+  const r=adminRoles.find(x=>x.id===rid);if(r)u.role=r.name;
+  u.ding=document.getElementById('editUserDing').value.trim()||u.ding;
+  closeModal();showToast('success','用户信息已更新');renderUsersPage();
+}
+
+/* ===== Role Management ===== */
+function renderRolesPage(){
+  document.getElementById('pageContainer').innerHTML='<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">角色管理</div></div></div><div class="role-layout"><div class="role-sidebar"><div class="role-sidebar-header"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div class="role-sidebar-title">角色列表</div><button class="btn btn-primary btn-sm" onclick="showAddRoleModal()"><i class="ri-add-line"></i>新增</button></div><input class="role-sidebar-search" placeholder="搜索角色..." oninput="filterRoleList(this.value)"></div><div class="role-list" id="roleList"></div></div><div class="role-main"><div class="role-tabs"><div class="role-tab active" onclick="switchRoleTab(0,this)">角色编辑</div><div class="role-tab" onclick="switchRoleTab(1,this)">功能权限分配</div><div class="role-tab" onclick="switchRoleTab(2,this)">用户管理</div></div><div class="role-tab-body" id="roleTabBody"></div></div></div></div>';
+  renderRoleList();switchRoleTab(0,document.querySelector('.role-tab'));
+}
+function renderRoleList(){
+  const list=document.getElementById('roleList');if(!list)return;
+  list.innerHTML=adminRoles.map(r=>'<div class="role-list-item'+(r.id===activeRoleId?' active':'')+'" onclick="selectRole(\''+r.id+'\')"><span>'+r.name+'</span><i class="ri-delete-bin-line role-del" onclick="event.stopPropagation();deleteRole(\''+r.id+'\')"></i></div>').join('');
+}
+function filterRoleList(kw){
+  const list=document.getElementById('roleList');if(!list)return;
+  const k=kw.toLowerCase();
+  list.innerHTML=adminRoles.filter(r=>r.name.toLowerCase().includes(k)||r.desc.toLowerCase().includes(k)).map(r=>'<div class="role-list-item'+(r.id===activeRoleId?' active':'')+'" onclick="selectRole(\''+r.id+'\')"><span>'+r.name+'</span><i class="ri-delete-bin-line role-del" onclick="event.stopPropagation();deleteRole(\''+r.id+'\')"></i></div>').join('');
+}
+function selectRole(id){activeRoleId=id;renderRoleList();switchRoleTab(currentRoleTab,document.querySelector('.role-tab.active'))}
+function deleteRole(id){
+  if(adminRoles.length<=1){showToast('error','至少保留一个角色');return}
+  showModal('确认删除','<p style="font-size:14px;color:var(--text-secondary)">确定删除角色"'+adminRoles.find(r=>r.id===id).name+'"？</p>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" style="background:var(--red)" onclick="confirmDeleteRole(\''+id+'\')">确认</button>');
+}
+function confirmDeleteRole(id){
+  adminRoles.splice(adminRoles.findIndex(r=>r.id===id),1);
+  if(activeRoleId===id)activeRoleId=adminRoles[0].id;
+  closeModal();showToast('success','角色已删除');renderRolesPage();
+}
+function showAddRoleModal(){
+  showModal('新增角色','<div class="form-group"><label>角色名称</label><input class="form-control" id="newRoleName" placeholder="请输入角色名称"></div><div class="form-group" style="margin-top:12px"><label>角色描述</label><input class="form-control" id="newRoleDesc" placeholder="请输入角色描述"></div>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmAddRole()">确定</button>');
+}
+function confirmAddRole(){
+  const n=document.getElementById('newRoleName').value.trim();
+  const d=document.getElementById('newRoleDesc').value.trim();
+  if(!n){showToast('error','请输入角色名称');return}
+  adminRoles.push({id:'r'+Date.now(),name:n,desc:d||n,perms:[]});
+  closeModal();showToast('success','角色已添加');activeRoleId=adminRoles[adminRoles.length-1].id;renderRolesPage();
+}
+let currentRoleTab=0;
+function switchRoleTab(idx,tabEl){
+  currentRoleTab=idx;
+  document.querySelectorAll('.role-tab').forEach(t=>t.classList.remove('active'));
+  if(tabEl)tabEl.classList.add('active');
+  const role=adminRoles.find(r=>r.id===activeRoleId);if(!role)return;
+  const body=document.getElementById('roleTabBody');
+  if(idx===0){
+    body.innerHTML='<div class="role-edit-form"><div class="form-group"><label>角色名称</label><input class="form-control" id="editRoleName" value="'+role.name+'" oninput="updateRoleField(\'name\',this.value)"></div><div class="form-group"><label>角色描述</label><input class="form-control" id="editRoleDesc" value="'+role.desc+'" oninput="updateRoleField(\'desc\',this.value)"></div></div>';
+  }else if(idx===1){
+    let html='<ul class="perm-tree">';
+    permTree.forEach(node=>{
+      const checked=role.perms;
+      const childrenChecked=node.children.map(c=>checked.includes(c.id));
+      const allChecked=childrenChecked.every(Boolean);
+      const someChecked=childrenChecked.some(Boolean);
+      const parentCls=allChecked?'checked':someChecked?'partial':'';
+      html+='<li class="perm-node"><div class="perm-node-row parent" onclick="togglePermParent(\''+node.id+'\')"><div class="perm-cb '+parentCls+'"></div><span>'+node.label+'</span></div><ul>';
+      node.children.forEach(child=>{
+        const cChecked=checked.includes(child.id);
+        html+='<li class="perm-node"><div class="perm-node-row leaf" onclick="togglePermChild(\''+child.id+'\')"><div class="perm-cb '+(cChecked?'checked':'')+'"></div><span>'+child.label+'</span></div></li>';
+      });
+      html+='</ul></li>';
+    });
+    html+='</ul><div class="perm-save-bar"><button class="btn btn-primary" onclick="showToast(\'success\',\'权限已保存\')"><i class="ri-save-line"></i>保存</button></div>';
+    body.innerHTML=html;
+  }else if(idx===2){
+    const users=adminUsers.filter(u=>u.role===role.name);
+    if(!users.length){body.innerHTML='<div class="empty-state" style="padding:40px"><i class="ri-user-line"></i><p>暂无用户属于该角色</p></div>';return}
+    body.innerHTML=users.map(u=>'<div class="role-user-item"><div style="display:flex;align-items:center;gap:12px"><div class="avatar avatar-blue" style="width:28px;height:28px;font-size:11px">'+u.name.charAt(0)+'</div><div><div style="font-size:13px;font-weight:500">'+u.name+'</div><div style="font-size:11px;color:var(--text-tertiary)">'+u.org+'</div></div></div><div style="display:flex;align-items:center;gap:8px"><span style="font-size:12px;color:'+(u.status==='正常'?'var(--green)':'var(--text-quaternary)')+'">'+u.status+'</span></div></div>').join('');
+  }
+}
+function updateRoleField(field,val){
+  const role=adminRoles.find(r=>r.id===activeRoleId);if(role){role[field]=val;renderRoleList()}
+}
+function togglePermParent(nodeId){
+  const role=adminRoles.find(r=>r.id===activeRoleId);if(!role)return;
+  const node=permTree.find(n=>n.id===nodeId);if(!node)return;
+  const childIds=node.children.map(c=>c.id);
+  const allChecked=childIds.every(id=>role.perms.includes(id));
+  if(allChecked){role.perms=role.perms.filter(p=>!childIds.includes(p))}
+  else{childIds.forEach(id=>{if(!role.perms.includes(id))role.perms.push(id)})}
+  switchRoleTab(1,document.querySelector('.role-tab.active'));
+}
+function togglePermChild(permId){
+  const role=adminRoles.find(r=>r.id===activeRoleId);if(!role)return;
+  const idx=role.perms.indexOf(permId);
+  if(idx>=0)role.perms.splice(idx,1);else role.perms.push(permId);
+  switchRoleTab(1,document.querySelector('.role-tab.active'));
+}
+
+/* ===== Toast & Modal ===== */
+function showToast(type,msg){const c=document.getElementById('toastContainer');const icons={success:'ri-check-line',error:'ri-close-circle-line',info:'ri-information-line'};const t=document.createElement('div');t.className='toast toast-'+type;t.innerHTML='<i class="'+(icons[type]||'ri-information-line')+'"></i>'+msg;c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(50px)';t.style.transition='all .3s';setTimeout(()=>t.remove(),300)},2500)}
+function showModal(title,body,footer){document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=body;document.getElementById('modalFooter').innerHTML=footer;document.getElementById('modalOverlay').classList.add('show')}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show')}
+
+/* ===== PRD ===== */
+async function loadPRD(){let md='';try{const r=await fetch('PRD.md');if(r.ok)md=await r.text()}catch(e){}if(!md)md=window.__PRD__||'';if(md){document.getElementById('prdContent').innerHTML=renderMD(md);buildToc()}else document.getElementById('prdContent').innerHTML='<p style="color:var(--text-tertiary)">PRD 加载失败</p>'}
+function renderMD(md){let h=md.replace(/^####\s+(.+)$/gm,'<h4>$1</h4>').replace(/^###\s+(.+)$/gm,'<h3>$1</h3>').replace(/^##\s+(.+)$/gm,'<h2>$1</h2>').replace(/^#\s+(.+)$/gm,'<h1>$1</h1>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/^>\s+(.+)$/gm,'<blockquote style="border-left:3px solid var(--primary);padding:4px 12px;margin:8px 0;color:var(--text-tertiary);font-size:12px">$1</blockquote>').replace(/^---$/gm,'<hr>').replace(/^- (.+)$/gm,'<li>$1</li>').replace(/^(\d+)\.\s+(.+)$/gm,'<li>$2</li>');h=h.replace(/(<li>.*<\/li>\n?)+/g,m=>'<ul>'+m+'</ul>');h=h.replace(/<\/blockquote>\n*<blockquote[^>]*>/g,'<br>');h=h.replace(/<!--[\s\S]*?-->/g,'');return h}
+function buildToc(){const c=document.getElementById('prdContent');const t=document.getElementById('prdToc');const hs=c.querySelectorAll('h1,h2,h3,h4');t.innerHTML='<div class="prd-toc-title">目录</div>';hs.forEach((h,i)=>{h.id='ph-'+i;const a=document.createElement('a');const depth={H1:'',H2:'',H3:' sub',H4:' sub'};a.className='prd-toc-item'+(depth[h.tagName]||'');a.textContent=h.textContent;a.href='#ph-'+i;a.onclick=e=>{e.preventDefault();h.scrollIntoView({behavior:'smooth',block:'start'})};t.appendChild(a)})}
+
+window.__PRD__=document.currentScript?.getAttribute('data-prd')||`
+# 舆情报送与管理系统 产品需求文档
+
+> 版本：v2.0 | 日期：2026-04-10
+> 原型文件：index.html
+
+---
+
+## 1. 产品概述
+
+### 1.1 产品背景
+
+省级宣传部门需要一套轻量化的舆情信息报送与管理工具，用于收集各地市上报的舆情事件、汇总查看、并编写舆情专报上报领导。本系统为简版，聚焦核心报送流程，去除数据分析、趋势预警等高级功能，降低使用门槛。
+
+系统整体对接浙政钉平台，实现统一身份认证、组织架构同步与消息推送。
+
+### 1.2 产品目标
+
+- 为各地市宣传部提供统一的舆情上报入口，规范报送流程
+- 为舆情处提供舆情汇总查看、批量录用至报告的快捷操作
+- 提供轻量的报告编写、预览与发布能力
+- 通过浙政钉实现组织内统一登录与权限管控
+
+### 1.3 用户角色与权限
+
+系统定义三种用户角色，权限严格区分：
+
+- **地市人员**
+  - 所属组织：各地市宣传部（如杭州市宣传部、温州市宣传部等）
+  - 核心权限：上报本地舆情信息
+  - 数据可见范围：仅可查看本单位上报的舆情记录
+  - 可用功能模块：舆情汇总（限本单位数据）、舆情上报
+  - 不可用功能：报告管理、录用至报告、系统管理
+
+- **舆情处人员**
+  - 所属组织：省委宣传部舆情处
+  - 核心权限：舆情汇总管理与报告编写
+  - 数据可见范围：全部地市上报舆情 + 外省镜鉴舆情
+  - 可用功能模块：舆情汇总（全部数据）、报告管理（含录用、编辑、预览、发布）
+  - 不可用功能：系统管理
+
+- **系统管理员**
+  - 所属组织：省委宣传部
+  - 核心权限：系统运维与权限配置
+  - 数据可见范围：全部
+  - 可用功能模块：全部功能 + 系统管理（用户管理、角色管理）
+
+---
+
+## 2. 登录认证
+
+### 2.1 登录方式
+
+系统提供以下登录方式：
+
+1. **浙政钉扫码登录**（生产模式）
+   - 用户打开系统后显示浙政钉登录页
+   - 使用浙政钉 App 扫描二维码完成身份认证
+   - 系统自动从浙政钉获取用户姓名、所属单位、职务等信息
+   - 根据用户在系统中的角色配置，自动进入对应权限的主界面
+
+2. **角色选择快速登录**（演示/测试模式）
+   - 提供三种角色按钮：地市人员、舆情处人员、系统管理员
+   - 点击后以预设演示账号直接进入系统
+
+### 2.2 登录页信息展示
+
+- 左侧展示系统名称、功能简介、核心特性列表
+- 右侧为登录操作区域
+
+### 2.3 登录后初始化
+
+- 自动填充用户信息至侧边栏底部和顶部导航栏
+- 根据角色动态构建侧边栏导航菜单
+- 默认进入"舆情汇总"页面
+
+### 2.4 退出登录
+
+- 顶部导航栏右侧提供退出按钮
+- 点击后清除当前会话，返回登录页
+
+---
+
+## 3. 全局导航
+
+### 3.1 侧边栏结构
+
+侧边栏采用统一的导航结构，各菜单项的可见性根据用户角色通过配置控制：
+
+- **顶部 Logo 区**
+  - 系统名称"舆情报送与管理系统"，配蓝色圆角图标
+
+- **核心功能分组**
+  - 舆情汇总：所有角色可见。地市人员仅可查看本单位上报数据，舆情处和管理员可查看全部数据并使用录用功能
+  - 报告管理：仅舆情处和管理员可见。地市人员无此入口
+
+- **系统管理分组**（仅管理员可见）
+  - 用户管理
+  - 角色管理
+
+> 舆情上报功能通过舆情汇总页右上角按钮进入，不在侧边栏中单独展示。原型演示中默认展示全部菜单，实际系统根据用户角色动态控制菜单项的显示与隐藏。
+
+- **底部用户信息区**
+  - 头像（取姓名首字，蓝色圆形背景）
+  - 姓名
+  - 所属单位
+
+### 3.2 顶部导航栏
+
+- **左侧**
+  - 当前页面标题，随页面切换动态更新
+  - 系统标识标签（蓝色浅底药丸形）
+
+- **右侧**
+  - 用户头像（姓名首字）
+  - 用户姓名
+  - 角色标签（如"地市"、"舆情处"、"管理员"）
+  - 退出登录图标按钮
+
+---
+
+## 4. 舆情汇总
+
+### 4.1 功能说明
+
+查看系统中已上报的舆情信息列表。根据用户角色不同，数据范围和操作权限有显著差异：
+
+- 地市人员：仅展示本单位上报的舆情记录，无录用功能
+- 舆情处/管理员：展示全部上报舆情，支持多选后批量录用至报告
+
+### 4.2 统计概览
+
+页面标题下方展示统计卡片，实时反映当前筛选结果：
+
+1. **上报总数**：当前筛选结果中的舆情总条数，蓝色图标
+2. **已录用**：已被录用至任意报告的舆情条数，橙色图标
+3. **本省**：来源为"本省"的舆情条数，蓝色图标
+4. **外省镜鉴**：来源为"外省镜鉴"的舆情条数，绿色图标
+
+> 统计数据随筛选条件变化实时更新。
+
+### 4.3 搜索与筛选
+
+#### 4.3.1 搜索框
+
+- 占位文字："搜索标题、地域、单位、内容..."
+- 支持按以下字段进行模糊搜索：舆情标题、地域、上报单位、内容摘要
+- 输入后实时过滤列表，无需手动触发搜索
+- 清空搜索框恢复全部数据
+
+#### 4.3.2 时间范围筛选
+
+- 两个日期选择器，组成"起始日期 至 结束日期"的范围筛选
+- 选择后按舆情的上报日期进行过滤，仅显示范围内的舆情
+- 可单独设置起始或结束，另一端不限
+
+#### 4.3.3 来源类型筛选
+
+- 下拉选择框，选项：
+  - 全部来源（默认）
+  - 本省
+  - 外省镜鉴
+- 选择后立即过滤列表
+
+#### 4.3.4 单位类型筛选
+
+- 下拉选择框，选项：
+  - 全部单位（默认）
+  - 省级：筛选上报单位包含"省委""省网信"的舆情
+  - 地市：筛选上报单位包含"市宣传部"的舆情
+  - 专班：筛选上报单位包含"专班""网信"的舆情
+- 选择后立即过滤列表
+
+#### 4.3.5 录用状态筛选
+
+- 下拉选择框，选项：
+  - 录用状态（默认，不限）
+  - 已录用：仅显示已被录用至任意报告的舆情
+  - 未录用：仅显示尚未被任何报告收录的舆情
+- 选择后立即过滤列表
+
+#### 4.3.6 地域筛选
+
+- 下拉选择框，选项：
+  - 全部地域（默认）
+  - 各地市列表（浙江/杭州、浙江/宁波、浙江/温州、浙江/绍兴、浙江/台州等）
+- 选择后立即过滤列表
+
+#### 4.3.7 筛选组合规则
+
+- 搜索关键词、时间范围、来源类型、单位类型、录用状态、地域六个筛选条件可同时生效，取交集
+- 所有筛选条件变化后实时更新列表和统计数据
+
+### 4.4 操作栏
+
+- **全选按钮**（仅舆情处/管理员可见）
+  - 点击后勾选当前筛选结果中的所有舆情
+  - 再次点击取消全选
+  - 仅对当前可见列表生效，不包含被筛选条件隐藏的条目
+
+- **信息计数**
+  - 显示当前筛选结果的总条数，格式："共 N 条上报信息"
+  - 随筛选条件变化实时更新
+
+### 4.5 舆情列表
+
+#### 4.5.1 列表项展示字段
+
+每条舆情以卡片形式展示，从左到右包含：
+
+1. **勾选框**（仅舆情处/管理员可见）
+   - 圆形复选框，点击切换选中/取消
+   - 选中后卡片左侧出现蓝色边框，背景变为浅蓝色
+
+2. **舆情元信息行**
+   - 舆情编号：系统自动生成，格式 YQ-YYYYMMDD-NNN，蓝色文字
+   - 来源类型标签：
+     - 本省：蓝色浅底标签
+     - 外省镜鉴：橙色浅底标签
+   - 地域：格式"省/市"，配地理位置图标
+   - 录用状态标签：
+     - 已录用：绿色浅底标签
+     - 未录用：灰色浅底标签
+
+3. **舆情标题**
+   - 单行显示，超出部分省略号
+   - 点击可进入舆情详情页
+
+4. **底部信息行**
+   - 上报单位：配建筑图标
+   - 上报时间：格式 YYYY-MM-DD HH:mm，配时钟图标
+
+#### 4.5.2 列表排序
+
+- 默认按上报时间倒序排列（最新在上）
+
+#### 4.5.3 空状态
+
+- 无数据时展示"未找到匹配的舆情信息"提示
+- 配大号图标辅助说明
+
+### 4.6 录用至报告交互流程
+
+> 仅舆情处和管理员可操作
+
+1. 勾选一条或多条舆情（通过列表勾选框或全选按钮）
+2. "录用至报告"按钮从灰色变为蓝色可点击态
+3. 点击后弹出报告选择弹窗
+4. 弹窗展示所有状态为"草稿"的报告列表，每项显示报告标题和编号
+5. 用户选择目标报告后点击"确认录用"
+6. 系统将选中舆情添加到目标报告的舆情列表中（已存在的不会重复添加）
+7. 弹窗关闭，显示成功提示
+8. 自动跳转至该报告的编辑页面
+
+---
+
+## 5. 舆情上报
+
+### 5.1 功能说明
+
+地市人员通过此页面上报本地舆情信息。支持一次填写多条舆情，批量提交。
+
+> 舆情处和管理员也可使用此功能（通过汇总页右上角按钮进入）。
+
+### 5.2 多条上报机制
+
+- 页面默认展示 1 条舆情填写表单
+- 点击"添加一条舆情"按钮可在下方新增一条空白表单
+- 每条舆情为独立的表单卡片，卡片标题显示"第 N 条舆情"
+- 第 1 条舆情不显示移除按钮，第 2 条及以后每条右上角显示移除按钮
+- 点击移除按钮后，该卡片以滑出动画消失
+- 页面右上角实时显示当前表单总数："共 N 条"
+- 底部提交按钮同步显示条数："提交上报（N 条）"
+
+### 5.3 单条表单字段
+
+每条舆情表单包含以下字段：
+
+1. **上报时间**
+   - 必填
+   - 日期时间选择器，精确到分钟
+
+2. **舆情地域**
+   - 必填
+   - 下拉选择，选项为行政区划列表（如浙江/杭州、浙江/宁波等）
+   - 选择后自动触发"报送单位"字段的填充
+
+3. **报送单位**
+   - 非必填（系统自动填充）
+   - 取数规则：根据选择的"舆情地域"，自动匹配对应的地市宣传部名称
+   - 若地域未匹配到预设映射，则默认取当前登录用户的所属单位
+   - 字段为只读状态，用户不可手动修改
+
+4. **标题**
+   - 必填
+   - 文本输入框
+   - 占位文字："请输入舆情标题"
+
+5. **内容**
+   - 必填
+   - 多行文本输入框
+   - 占位文字："请详细描述舆情事件经过、传播情况、影响范围等..."
+
+6. **建议意见**
+   - 选填
+   - 多行文本输入框
+   - 占位文字："建议xx部门加强关注..."
+
+7. **处置方式**
+   - 选填
+   - 多行文本输入框
+   - 占位文字："指导妥善处理..."
+
+### 5.4 操作按钮
+
+位于所有表单卡片下方：
+
+1. **添加一条舆情**
+   - 轮廓样式按钮，带加号图标
+   - 点击后在最下方新增一条空白表单
+
+2. **重置**
+   - 轮廓样式按钮，带刷新图标
+   - 点击后清空所有已填写的表单卡片
+   - 恢复为仅 1 条空白表单的初始状态
+
+3. **提交上报（N 条）**
+   - 主按钮样式，带发送图标
+   - N 随当前表单数量动态变化
+   - 点击后执行校验：
+     - 逐一检查所有表单中的必填字段（上报时间、地域、标题、内容）
+     - 未填写的必填字段边框变红
+     - 校验不通过时弹出错误提示，指明需完善第几条表单
+   - 校验通过后：
+     - 弹出成功提示，显示实际上报条数
+     - 延迟后自动跳转回舆情汇总页
+
+---
+
+## 6. 舆情详情
+
+### 6.1 功能说明
+
+点击舆情列表中的标题，进入该条舆情的完整信息展示页。
+
+### 6.2 页面顶部
+
+- "返回列表"按钮，点击回到舆情汇总页
+
+### 6.3 信息展示
+
+**元信息行**
+- 舆情编号（蓝色文字）
+- 来源类型标签（本省/外省镜鉴，颜色区分）
+- 地域（配图标）
+
+**舆情标题**
+- 大号加粗显示
+
+**舆情内容区**
+- "舆情内容"小标题
+- 完整摘要内容，灰色背景区域展示
+
+**基本信息区**
+- 严重程度：显示字段值
+- 上报单位：显示字段值
+- 上报时间：显示字段值
+
+### 6.4 操作按钮
+
+- **"录用至报告"按钮**（仅舆情处/管理员可见）
+  - 蓝色主按钮
+  - 点击后触发录用流程（自动勾选当前这一条，弹出报告选择弹窗）
+
+- **"返回列表"按钮**
+  - 轮廓样式，带左箭头图标
+
+---
+
+## 7. 报告管理
+
+### 7.1 功能说明
+
+舆情处和管理员在此编写、预览和管理舆情报告。报告由多条舆情信息按【内容提要】+ 正文 +【外省舆情镜鉴】的结构组合而成。
+
+> 地市人员无此模块入口。
+
+### 7.2 报告列表
+
+#### 7.2.1 页面标题区
+
+- 标题"报告管理"
+- 副标题"编写与管理舆情报告"
+- 右侧"新建报告"按钮（蓝色主按钮）
+
+#### 7.2.2 报告卡片展示字段
+
+每条报告以卡片形式展示：
+
+- **报告编号**：系统自动生成，格式 BG-YYYYMMDD-NNN，蓝色文字
+- **报告状态标签**：
+  - 草稿：灰色标签
+  - 已发布：绿色标签
+- **报告标题**
+- **底部信息**：
+  - 创建时间
+  - 包含舆情条数
+
+#### 7.2.3 操作按钮显示规则
+
+根据报告状态显示不同的按钮组合：
+
+- **草稿状态**
+  - "编辑"按钮（蓝色小按钮）：进入报告编辑页
+  - "预览"按钮（轮廓小按钮）：进入报告预览页
+  - 删除按钮（红色图标按钮）：删除报告（需二次确认）
+
+- **已发布状态**
+  - "预览"按钮（轮廓小按钮）：进入报告预览页
+
+#### 7.2.4 新建报告
+
+- 点击"新建报告"按钮
+- 系统自动生成报告编号
+- 报告标题默认取当前日期，格式："YYYY年M月D日舆情信息专报"
+- 状态默认为"草稿"
+- 创建后立即进入报告编辑页
+
+### 7.3 报告预览
+
+#### 7.3.1 入口
+
+- 点击报告管理列表中的报告卡片（任意状态）
+- 点击报告卡片上的"预览"按钮
+- 从报告编辑页点击"预览"按钮
+
+#### 7.3.2 页面布局
+
+- 顶部操作栏：
+  - 左侧"返回"按钮
+  - 右侧按钮组根据报告状态不同：
+    - 草稿：显示"编辑"按钮 + "导出 Word"按钮
+    - 已发布：显示"导出 Word"按钮
+
+#### 7.3.3 预览内容格式（公文格式）
+
+预览以正式公文样式展示，结构如下：
+
+1. **标题区**
+   - 居中显示报告标题（大号加粗，字间距加大）
+   - 下方显示报告日期
+   - 底部双横线分隔
+
+2. **【内容提要】**
+   - 列出所有"本省"类型舆情的序号 + 标题 + 摘要前 60 字
+
+3. **正文**
+   - 每条"本省"舆情独立一段：
+     - 序号 + 标题（加粗）
+     - 完整摘要内容
+     - 来源和时间（灰色小字）
+
+4. **【外省舆情镜鉴】**
+   - 列出所有"外省镜鉴"类型舆情的序号 + 标题 + 摘要前 80 字
+   - 若无外省舆情则不显示此板块
+
+### 7.4 报告编辑
+
+#### 7.4.1 入口
+
+- 草稿报告的"编辑"按钮
+- 新建报告后自动进入
+- 从舆情汇总页录用舆情后自动跳转
+
+#### 7.4.2 页面布局
+
+页面分为左右两栏：
+
+**左栏 — 编辑区**
+
+顶部操作按钮栏（工具条样式，左对齐操作按钮 + 右对齐发布按钮）：
+- 左侧："选取舆情"按钮（轮廓样式）：弹出舆情选择弹窗
+- 左侧："保存草稿"按钮（轮廓样式）：保存当前编辑内容
+- 右侧："预览"按钮（蓝色主按钮）：跳转预览页
+- 右侧："发布"按钮（绿色主按钮）：发布报告
+
+顶部标题栏：
+- 左侧："返回"按钮 + 报告编辑状态标题
+- 右侧：统计标签（"本省 N" + "外省 N"）
+
+基本信息区：
+- **报告标题**（必填）：文本输入框，默认取自动生成的日期标题
+- **报告日期**：日期选择器
+
+统计标签：
+- "本省: N"（蓝色浅底标签）：统计当前报告中本省舆情条数
+- "外省: N"（橙色浅底标签）：统计当前外省镜鉴条数
+
+舆情列表分为两个区块（每个区块标题带蓝色竖线装饰）：
+
+- **本省舆情（N）**
+  - 每条舆情以可编辑卡片形式展示
+  - 卡片头部：序号 + 编号 + 来源类型标签 + 删除按钮（红色图标）
+  - 卡片内容：
+    - 标题输入框：可直接修改标题文字
+    - "正文内容"文本区：可直接修改正文，默认取舆情摘要
+    - "建议意见"文本区：可填写建议
+
+- **外省舆情镜鉴（N）**
+  - 结构与本省舆情相同
+  - 无外省舆情时不显示此区块
+
+**右栏 — 实时预览面板**
+
+- **【内容提要】预览**：实时展示所有本省舆情的序号 + 标题
+- **【外省舆情镜鉴】预览**：实时展示所有外省舆情的序号 + 标题
+
+> 右侧预览随左侧编辑内容实时更新。
+
+#### 7.4.3 编辑交互
+
+- **修改标题**：在卡片中的标题输入框直接编辑，右侧预览面板同步更新
+- **修改正文**：在"正文内容"文本区直接编辑
+- **删除舆情**：点击卡片右上角的删除按钮，该条目从报告中移除，列表和预览同步更新
+- **添加舆情**：
+  1. 点击"选取舆情"按钮
+  2. 弹窗展示当前未收录到本报告的所有舆情列表
+  3. 每条展示来源类型标签、地域、标题
+  4. 支持多选（复选框）
+  5. 点击"确认"后，选中舆情添加到报告的舆情列表中
+  6. 已存在的舆情不会重复添加
+
+#### 7.4.4 保存与发布
+
+- **保存草稿**
+  - 将当前编辑内容保存，状态保持"草稿"
+  - 弹出成功提示
+
+- **发布**
+  - 校验报告标题是否为空，为空则提示错误
+  - 校验通过后，报告状态变为"已发布"
+  - 弹出成功提示
+  - 自动跳转回报告管理列表
+
+- **预览**
+  - 先自动保存草稿
+  - 跳转至公文格式预览页
+
+---
+
+## 8. 系统管理
+
+> 仅系统管理员可访问此模块。
+
+### 8.1 用户管理
+
+#### 8.1.1 功能说明
+
+管理系统中的用户账号，每个用户与浙政钉账号关联。支持角色分配与状态管理。
+
+#### 8.1.2 页面标题区
+
+- 标题"用户管理"
+- 副标题"管理与浙政钉对接的系统用户，支持角色分配与状态管理"
+- 右侧"新增用户"按钮
+
+#### 8.1.3 用户列表
+
+以表格形式展示所有用户，列字段如下：
+
+1. **姓名**
+   - 取值：浙政钉同步的用户真实姓名
+
+2. **所属单位**
+   - 取值：浙政钉同步的组织架构信息
+   - 格式：XX市宣传部 / 省委宣传部
+
+3. **角色**
+   - 取值：系统中配置的角色名称
+   - 交互方式：下拉选择框，选项从角色管理模块同步
+   - 切换后立即生效，显示成功提示
+
+4. **浙政钉账号**
+   - 取值：浙政钉的用户标识
+
+5. **状态**
+   - 取值：正常 / 停用
+   - 交互方式：滑动开关，点击切换启用/停用
+   - 切换后立即生效，显示成功提示
+   - 显示规则：启用显示绿色圆点+绿色文字"正常"，停用显示灰色圆点+灰色文字"停用"
+
+6. **操作**
+   - "编辑"按钮：弹出编辑弹窗，修改用户姓名、所属单位、角色、浙政钉账号
+
+#### 8.1.4 新增用户
+
+- 点击"新增用户"按钮弹出弹窗
+- 填写字段：姓名、所属单位（下拉选择）、角色（下拉选择）、浙政钉账号
+- 校验规则：姓名和浙政钉账号为必填
+- 确认后用户添加到列表，状态默认为"正常"
+
+### 8.2 角色管理
+
+#### 8.2.1 功能说明
+
+查看和配置系统角色及其功能权限。系统预置三种角色，每种角色对应不同的功能权限范围。支持新增自定义角色、删除角色、编辑角色信息、分配功能权限。
+
+#### 8.2.2 页面布局
+
+页面采用左右分栏布局：
+
+**左栏 — 角色列表（240px 固定宽度）**
+
+- 顶部区域：
+  - 标题"角色列表"
+  - "新增"按钮（蓝色小按钮）
+  - 搜索框：支持按角色名称和描述模糊搜索
+- 角色列表：
+  - 每项显示角色名称
+  - 鼠标悬停时右侧显示删除按钮（红色图标）
+  - 当前选中项蓝色背景高亮
+  - 点击切换右侧内容
+
+**右栏 — 角色详情（自适应宽度）**
+
+通过顶部标签页切换三个视图：
+
+1. **角色编辑**标签页
+   - 角色名称：文本输入框，修改后左侧列表实时同步
+   - 角色描述：文本输入框
+
+2. **功能权限分配**标签页
+   - 以树形结构展示系统功能模块及子权限
+   - 每个节点前有复选框
+   - 父节点勾选：子节点全部勾选
+   - 子节点全部勾选：父节点自动勾选
+   - 子节点部分勾选：父节点显示半选状态（横线图标）
+   - 底部"保存"按钮
+   - 权限树结构：
+     - 舆情汇总：查看本单位舆情、查看全部舆情、录用至报告
+     - 舆情上报：上报舆情信息
+     - 报告管理：查看报告列表、新建报告、编辑报告、删除报告、预览报告、发布报告
+     - 系统管理：用户管理、角色管理
+
+3. **用户管理**标签页
+   - 展示当前角色下的所有用户列表
+   - 每项显示：头像（姓名首字）、姓名、所属单位、状态
+   - 无用户时展示空状态提示
+
+#### 8.2.3 新增角色
+
+- 点击左栏"新增"按钮弹出弹窗
+- 填写角色名称（必填）和角色描述
+- 确认后角色添加到列表，权限默认为空
+
+#### 8.2.4 删除角色
+
+- 鼠标悬停角色项时显示删除按钮
+- 点击后弹出确认弹窗
+- 系统至少保留一个角色，不可全部删除
+
+#### 8.2.5 预置角色权限配置
+
+1. **地市人员**
+   - 描述：各地市宣传部工作人员
+   - 权限：查看本单位舆情、上报舆情信息
+
+2. **舆情处人员**
+   - 描述：省委宣传部舆情处工作人员
+   - 权限：查看全部舆情、录用至报告、上报舆情信息、查看报告列表、新建报告、编辑报告、预览报告、发布报告
+
+3. **系统管理员**
+   - 描述：系统运维管理员
+   - 权限：全部功能权限
+
+---
+
+## 9. 浙政钉对接
+
+### 9.1 统一身份认证
+
+- 登录页提供浙政钉扫码登录入口
+- 用户使用浙政钉 App 扫码后，系统自动完成身份验证
+- 首次登录的用户自动创建系统账号，默认角色为"地市人员"
+
+### 9.2 组织架构同步
+
+- 定期从浙政钉同步组织架构信息
+- 用户所属单位字段自动取浙政钉中的部门信息
+- 用户姓名自动取浙政钉中的真实姓名
+
+### 9.3 信息自动填充
+
+- 登录后用户信息自动填充至系统各处（侧边栏、顶部导航栏）
+- 上报表单中"报送单位"字段根据地域选择自动匹配对应单位
+
+### 9.4 消息通知
+
+- 舆情上报成功后，可配置浙政钉消息通知至相关人员
+- 报告发布后，可配置浙政钉消息通知至相关领导
+
+---
+
+## 10. 全局交互规则
+
+### 10.1 消息提示
+
+- **操作成功**：顶部绿色轻提示，显示成功图标和操作结果文字，2.5 秒后自动消失
+- **操作失败**：顶部红色轻提示，显示错误图标和原因文字，2.5 秒后自动消失
+- **信息提示**：顶部蓝色轻提示，用于功能开发中等提示场景
+
+### 10.2 确认弹窗
+
+- 用于不可逆操作的二次确认（如删除报告）
+- 包含标题、说明文字、"取消"和"确认"两个按钮
+- 点击遮罩层可关闭弹窗
+- 操作按钮右对齐，确认按钮在右侧
+
+### 10.3 页面切换
+
+- 侧边栏导航点击切换页面，当前激活项以蓝色背景高亮
+- 顶部导航栏标题随页面切换同步更新
+- 页面内容区滚动位置自动回到顶部
+
+---
+
+## 11. 版本规划
+
+### v2.0（当前）
+
+- 浙政钉扫码登录与统一认证
+- 三级角色权限体系（地市人员、舆情处、管理员）
+- 舆情上报（多条）、汇总查看（按角色过滤）
+- 报告编辑（含实时预览）、公文格式预览、发布
+- 用户管理、角色管理
+- 录用至报告（含自动跳转编辑页）
+- 报告导出 Word 文档
+
+### v2.1（规划中）
+
+- 舆情通知提醒（浙政钉消息推送）
+- 报告导出 PDF
+- 数据统计看板
+- 批量导入舆情
+`;
+
+/* ===== Init ===== */
+loadPRD();
+</script>
+</body>
+</html>

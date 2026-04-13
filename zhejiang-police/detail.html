@@ -110,12 +110,29 @@
   }
   .section-header .right svg { width: 14px; height: 14px; }
 
+  /* ===== Article Swipe Wrapper ===== */
+  .article-swipe {
+    position: relative; margin-bottom: 10px; overflow: hidden; border-radius: 12px;
+  }
+  .article-delete-zone {
+    position: absolute; top: 0; right: 0; bottom: 0; width: 80px;
+    background: #EF4444; border-radius: 0 12px 12px 0;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  .article-delete-zone:active { background: #DC2626; }
+  .article-swipe-inner {
+    position: relative; z-index: 2;
+    transition: transform 0.25s ease;
+  }
+  .article-swipe-inner.swiped { transform: translateX(-80px); }
+
   /* ===== Article List ===== */
   .article-list { padding: 0 16px; }
   .article-card {
     display: flex; align-items: flex-start; gap: 12px;
     background: #FFFFFF; border-radius: 12px; padding: 12px;
-    margin-bottom: 10px; min-height: 101px;
+    min-height: 101px;
     box-shadow: 0 2px 12px rgba(13,43,107,0.08);
     cursor: pointer; transition: transform 0.15s ease;
   }
@@ -231,6 +248,30 @@
   .card-5 .circle-2 { position: absolute; bottom: -16px; left: 40px; width: 40px; height: 40px; border-radius: 50%; background: rgba(236,72,153,0.05); pointer-events: none; }
   .card-5 .arrow { margin-left: auto; color: #EC4899; position: relative; z-index: 2; }
   .card-5 .arrow svg { width: 20px; height: 20px; }
+
+  /* ===== Confirm Dialog ===== */
+  .confirm-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4); z-index: 1000;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .confirm-overlay.show { opacity: 1; }
+  .confirm-box {
+    width: 280px; background: #fff; border-radius: 14px; overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  }
+  .confirm-body { padding: 24px 20px 16px; text-align: center; }
+  .confirm-body h3 { font-size: 17px; font-weight: 700; color: #1A1A2E; margin-bottom: 8px; }
+  .confirm-body p { font-size: 14px; color: #6B7280; line-height: 1.5; }
+  .confirm-actions { display: flex; border-top: 1px solid #E5E7EB; }
+  .confirm-actions button {
+    flex: 1; padding: 14px 0; border: none; background: none;
+    font-size: 16px; font-weight: 500; font-family: inherit; cursor: pointer;
+  }
+  .confirm-actions button:active { background: #F3F4F6; }
+  .confirm-cancel { color: #6B7280; }
+  .confirm-ok { color: #EF4444; font-weight: 600; border-left: 1px solid #E5E7EB; }
 
   /* ===== Load More ===== */
   .load-more-btn {
@@ -383,7 +424,38 @@
   <div class="footer">浙江省公安厅融媒体中心</div>
 </div>
 
+<!-- Confirm Dialog -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-body">
+      <h3>确认删除</h3>
+      <p>删除后不可恢复，确定要删除该稿件吗？</p>
+    </div>
+    <div class="confirm-actions">
+      <button class="confirm-cancel" onclick="closeConfirm()">取消</button>
+      <button class="confirm-ok" onclick="doDelete()">删除</button>
+    </div>
+  </div>
+</div>
+
 <script>
+var pendingDeleteEl = null;
+var confirmOverlay = document.getElementById('confirmOverlay');
+
+function closeConfirm() { confirmOverlay.classList.remove('show'); pendingDeleteEl = null; }
+function doDelete() {
+  if (pendingDeleteEl) {
+    pendingDeleteEl.style.transition = 'opacity 0.3s, max-height 0.3s, margin 0.3s, padding 0.3s';
+    pendingDeleteEl.style.opacity = '0';
+    pendingDeleteEl.style.maxHeight = '0';
+    pendingDeleteEl.style.marginBottom = '0';
+    pendingDeleteEl.style.overflow = 'hidden';
+    setTimeout(function() { pendingDeleteEl.remove(); pendingDeleteEl = null; }, 300);
+  }
+  confirmOverlay.classList.remove('show');
+}
+confirmOverlay.addEventListener('click', function(e) { if (e.target === confirmOverlay) closeConfirm(); });
+
 (function() {
   var articles = [
     { title: "台州三门'三大警务'奏响蓝色海洋交响曲，护航海洋经济高质量发展", source: "人民网", date: "2026/1/4 10:34:19" },
@@ -410,7 +482,7 @@
 
   function renderCard(i) {
     var a = articles[i], g = gradients[i];
-    return '<div class="article-card"><div class="article-thumb"><div class="gradient-bg" style="background:linear-gradient(135deg,' + g[0] + ',' + g[1] + ')"></div><div class="badge">' + (i+1) + '</div></div><div class="article-info"><div class="article-title">' + a.title + '</div><div class="article-meta">' + a.source + ' · ' + a.date + '</div></div></div>';
+    return '<div class="article-swipe"><div class="article-delete-zone">删除</div><div class="article-swipe-inner" data-idx="' + i + '"><div class="article-card"><div class="article-thumb"><div class="gradient-bg" style="background:linear-gradient(135deg,' + g[0] + ',' + g[1] + ')"></div><div class="badge">' + (i+1) + '</div></div><div class="article-info"><div class="article-title">' + a.title + '</div><div class="article-meta">' + a.source + ' · ' + a.date + '</div></div></div></div></div>';
   }
 
   function loadMore() {
@@ -420,7 +492,63 @@
     listEl.insertAdjacentHTML('beforeend', html);
     loaded = end;
     if (loaded >= articles.length) { loadMoreBtn.classList.add('hidden'); }
+    bindSwipe();
   }
+
+  // Swipe logic
+  var currentSwiped = null;
+  var startX = 0, startY = 0, dragging = false;
+
+  function resetSwipe() {
+    if (currentSwiped) { currentSwiped.classList.remove('swiped'); currentSwiped = null; }
+  }
+
+  function bindSwipe() {
+    var items = listEl.querySelectorAll('.article-swipe-inner');
+    for (var i = 0; i < items.length; i++) {
+      var el = items[i];
+      el.addEventListener('touchstart', onTouchStart, { passive: true });
+      el.addEventListener('touchmove', onTouchMove, { passive: false });
+      el.addEventListener('touchend', onTouchEnd);
+      var delZone = el.parentElement.querySelector('.article-delete-zone');
+      if (delZone) delZone.addEventListener('click', onDeleteClick);
+    }
+  }
+
+  function onTouchStart(e) {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    dragging = true;
+    if (currentSwiped && currentSwiped !== this) resetSwipe();
+  }
+
+  function onTouchMove(e) {
+    if (!dragging) return;
+    var dx = e.touches[0].clientX - startX;
+    var dy = e.touches[0].clientY - startY;
+    if (Math.abs(dx) > Math.abs(dy) && dx < -20) {
+      e.preventDefault();
+      resetSwipe();
+      this.classList.add('swiped');
+      currentSwiped = this;
+    } else if (dx > 20) {
+      this.classList.remove('swiped');
+      if (currentSwiped === this) currentSwiped = null;
+    }
+  }
+
+  function onTouchEnd() { dragging = false; }
+
+  function onDeleteClick(e) {
+    var swipe = e.target.closest('.article-swipe');
+    pendingDeleteEl = swipe;
+    confirmOverlay.classList.add('show');
+  }
+
+  // Tap outside to reset
+  document.addEventListener('touchstart', function(e) {
+    if (currentSwiped && !e.target.closest('.article-swipe')) resetSwipe();
+  }, { passive: true });
 
   loadMore();
   loadMoreBtn.addEventListener('click', loadMore);

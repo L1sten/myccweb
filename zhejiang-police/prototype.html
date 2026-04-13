@@ -150,6 +150,7 @@
     overflow: hidden;
   }
 
+
   .card-banner--active {
     background: linear-gradient(135deg, #0D2B6B 0%, #1E4FCC 50%, #2D5BD6 100%);
   }
@@ -362,7 +363,41 @@
     font-weight: 600;
   }
 
-  /* ========== Utility ========== */
+  /* ========== Card Delete Button ========== */
+  .card-delete {
+    position: absolute; top: 10px; right: 10px; z-index: 10;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(0,0,0,0.25); backdrop-filter: blur(4px);
+    border: none; outline: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.2s, background 0.2s;
+  }
+  .card-delete:active { opacity: 0.6; background: rgba(0,0,0,0.4); }
+  .card-delete svg { width: 14px; height: 14px; }
+
+  /* ========== Confirm Dialog ========== */
+  .confirm-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4); z-index: 1000;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .confirm-overlay.show { opacity: 1; }
+  .confirm-box {
+    width: 280px; background: #fff; border-radius: 14px; overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  }
+  .confirm-body { padding: 24px 20px 16px; text-align: center; }
+  .confirm-body h3 { font-size: 17px; font-weight: 700; color: #1A1A2E; margin-bottom: 8px; }
+  .confirm-body p { font-size: 14px; color: #6B7280; line-height: 1.5; }
+  .confirm-actions { display: flex; border-top: 1px solid #E5E7EB; }
+  .confirm-actions button {
+    flex: 1; padding: 14px 0; border: none; background: none;
+    font-size: 16px; font-weight: 500; font-family: inherit; cursor: pointer;
+  }
+  .confirm-actions button:active { background: #F3F4F6; }
+  .confirm-cancel { color: #6B7280; }
+  .confirm-ok { color: #EF4444; font-weight: 600; border-left: 1px solid #E5E7EB; }
   .safe-bottom {
     height: env(safe-area-inset-bottom, 0);
   }
@@ -437,6 +472,9 @@
       <div class="shimmer-star" style="top:45px;left:280px;animation-delay:1s;"></div>
       <div class="shimmer-star" style="top:35px;left:160px;animation-delay:2s;"></div>
 
+      <button class="card-delete" aria-label="删除主题" onclick="confirmDelete(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
     <div class="card-info">
       <h2 class="card-title">人民公安从这里走来</h2>
@@ -476,6 +514,9 @@
         <path d="M-10,180 L-10,145 Q45,120 85,140 Q125,155 165,125 Q205,100 245,130 Q285,150 325,120 Q355,105 385,130 L385,180 Z" fill="white" fill-opacity="0.06"/>
         <path d="M0,165 Q60,155 120,162 Q180,170 240,158 Q300,150 375,160 L375,180 L0,180 Z" fill="white" fill-opacity="0.03"/>
       </svg>
+      <button class="card-delete" aria-label="删除主题" onclick="confirmDelete(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
     <div class="card-info">
       <h2 class="card-title">铸牢中华民族共同体意识</h2>
@@ -519,6 +560,9 @@
       </svg>
       <div class="shimmer-star" style="top:30px;left:300px;animation-delay:0.5s;"></div>
       <div class="shimmer-star" style="top:50px;left:80px;animation-delay:1.5s;"></div>
+      <button class="card-delete" aria-label="删除主题" onclick="confirmDelete(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
     <div class="card-info">
       <h2 class="card-title">数字赋能智慧警务建设</h2>
@@ -590,17 +634,53 @@
   </a>
 </nav>
 
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-body">
+      <h3>确认删除</h3>
+      <p>删除后不可恢复，确定要删除该主题吗？</p>
+    </div>
+    <div class="confirm-actions">
+      <button class="confirm-cancel" onclick="closeConfirm()">取消</button>
+      <button class="confirm-ok" onclick="doDelete()">删除</button>
+    </div>
+  </div>
+</div>
+
 <script>
-  // Smooth scroll behavior
   document.documentElement.style.scrollBehavior = 'smooth';
 
-  // Prevent double-tap zoom on iOS
-  let lastTouchEnd = 0;
-  document.addEventListener('touchend', function(e) {
-    const now = Date.now();
-    if (now - lastTouchEnd <= 300) {
-      e.preventDefault();
+  var pendingDeleteCard = null;
+  var overlay = document.getElementById('confirmOverlay');
+
+  function confirmDelete(btn) {
+    event.stopPropagation();
+    event.preventDefault();
+    pendingDeleteCard = btn.closest('.card');
+    overlay.classList.add('show');
+  }
+
+  function closeConfirm() {
+    overlay.classList.remove('show');
+    pendingDeleteCard = null;
+  }
+
+  function doDelete() {
+    if (pendingDeleteCard) {
+      pendingDeleteCard.style.transition = 'opacity 0.3s, transform 0.3s';
+      pendingDeleteCard.style.opacity = '0';
+      pendingDeleteCard.style.transform = 'scale(0.95)';
+      setTimeout(function() { pendingDeleteCard.remove(); pendingDeleteCard = null; }, 300);
     }
+    overlay.classList.remove('show');
+  }
+
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) closeConfirm(); });
+
+  var lastTouchEnd = 0;
+  document.addEventListener('touchend', function(e) {
+    var now = Date.now();
+    if (now - lastTouchEnd <= 300) e.preventDefault();
     lastTouchEnd = now;
   }, { passive: false });
 </script>

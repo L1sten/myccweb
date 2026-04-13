@@ -134,6 +134,12 @@
     color: #1A1A2E;
   }
 
+  .form-label .required {
+    color: #EF4444;
+    margin-left: 2px;
+    font-weight: 700;
+  }
+
   /* ===== Text Input ===== */
   .text-input {
     width: 100%;
@@ -538,7 +544,7 @@
     <div class="form-group" id="group-name">
       <label class="form-label" for="theme-name">
         <span class="blue-bar"></span>
-        主题名称
+        主题名称<span class="required">*</span>
       </label>
       <input
         type="text"
@@ -567,7 +573,7 @@
     <div class="form-group" id="group-upload">
       <label class="form-label">
         <span class="blue-bar"></span>
-        题图上传
+        题图上传<span class="required">*</span>
       </label>
       <div class="upload-area" id="upload-area" role="button" tabindex="0" aria-label="上传题图">
         <!-- Default state -->
@@ -767,11 +773,11 @@
         '</button>' +
       '</div>' +
       '<div class="rc-field">' +
-        '<label>推荐链接 (URL)</label>' +
+        '<label>推荐链接 (URL)<span class="required">*</span></label>' +
         '<input type="url" placeholder="https://example.com/topic" data-rc="url">' +
       '</div>' +
       '<div class="rc-field">' +
-        '<label>推荐图</label>' +
+        '<label>推荐图<span class="required">*</span></label>' +
         '<div class="rc-upload">' +
           '<div class="rc-upload-area" data-rc-upload="' + num + '">' +
             '<svg viewBox="0 0 20 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 1v9m0-9L6 5m4-4l4 4"/><path d="M1 11v2a2 2 0 002 2h14a2 2 0 002-2v-2"/></svg>' +
