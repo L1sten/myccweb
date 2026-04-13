@@ -507,9 +507,12 @@ confirmOverlay.addEventListener('click', function(e) { if (e.target === confirmO
     var items = listEl.querySelectorAll('.article-swipe-inner');
     for (var i = 0; i < items.length; i++) {
       var el = items[i];
+      // Touch events
       el.addEventListener('touchstart', onTouchStart, { passive: true });
       el.addEventListener('touchmove', onTouchMove, { passive: false });
       el.addEventListener('touchend', onTouchEnd);
+      // Mouse events for desktop
+      el.addEventListener('mousedown', onMouseDown);
       var delZone = el.parentElement.querySelector('.article-delete-zone');
       if (delZone) delZone.addEventListener('click', onDeleteClick);
     }
@@ -538,6 +541,36 @@ confirmOverlay.addEventListener('click', function(e) { if (e.target === confirmO
   }
 
   function onTouchEnd() { dragging = false; }
+
+  // Mouse events for desktop
+  function onMouseDown(e) {
+    if (e.button !== 0) return;
+    startX = e.clientX;
+    startY = e.clientY;
+    dragging = true;
+    if (currentSwiped && currentSwiped !== this) resetSwipe();
+    var self = this;
+    function onMM(e2) {
+      if (!dragging) return;
+      var dx = e2.clientX - startX;
+      var dy = e2.clientY - startY;
+      if (Math.abs(dx) > Math.abs(dy) && dx < -20) {
+        resetSwipe();
+        self.classList.add('swiped');
+        currentSwiped = self;
+      } else if (dx > 20) {
+        self.classList.remove('swiped');
+        if (currentSwiped === self) currentSwiped = null;
+      }
+    }
+    function onMU() {
+      dragging = false;
+      document.removeEventListener('mousemove', onMM);
+      document.removeEventListener('mouseup', onMU);
+    }
+    document.addEventListener('mousemove', onMM);
+    document.addEventListener('mouseup', onMU);
+  }
 
   function onDeleteClick(e) {
     var swipe = e.target.closest('.article-swipe');
@@ -569,10 +602,17 @@ document.addEventListener('click', function(e) {
     var href = a.getAttribute('href');
     if (href && href !== '#' && !href.startsWith('http')) {
       e.preventDefault();
-      if (window.parent !== window) {
+      e.stopPropagation();
+      try {
+        var parentFrame = window.parent.document.getElementById('protoFrame');
+        if (parentFrame) {
+          parentFrame.src = href;
+          window.parent.postMessage({ type: 'navigate', page: href }, '*');
+        } else {
+          window.location.href = href;
+        }
+      } catch(ex) {
         window.parent.postMessage({ type: 'navigate', page: href }, '*');
-      } else {
-        window.location.href = href;
       }
     }
   }

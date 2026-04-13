@@ -851,7 +851,7 @@
     setTimeout(function() {
       toastOverlay.classList.remove('visible');
       setTimeout(function() {
-        navigateTo('index.html');
+        navigateTo('prototype.html');
       }, 350);
     }, 1600);
   }
@@ -860,10 +860,16 @@
 
 // Intercept links & JS navigation for parent iframe
 function navigateTo(page) {
-  if (window.parent !== window) {
+  try {
+    var parentFrame = window.parent.document.getElementById('protoFrame');
+    if (parentFrame) {
+      parentFrame.src = page;
+      window.parent.postMessage({ type: 'navigate', page: page }, '*');
+    } else {
+      window.location.href = page;
+    }
+  } catch(ex) {
     window.parent.postMessage({ type: 'navigate', page: page }, '*');
-  } else {
-    window.location.href = page;
   }
 }
 document.addEventListener('click', function(e) {
@@ -872,6 +878,7 @@ document.addEventListener('click', function(e) {
     var href = a.getAttribute('href');
     if (href && href !== '#' && !href.startsWith('http')) {
       e.preventDefault();
+      e.stopPropagation();
       navigateTo(href);
     }
   }

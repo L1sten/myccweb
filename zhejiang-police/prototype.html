@@ -691,10 +691,18 @@
       var href = a.getAttribute('href');
       if (href && href !== '#' && !href.startsWith('http')) {
         e.preventDefault();
-        if (window.parent !== window) {
+        e.stopPropagation();
+        try {
+          var parentFrame = window.parent.document.getElementById('protoFrame');
+          if (parentFrame) {
+            parentFrame.src = href;
+            window.parent.postMessage({ type: 'navigate', page: href }, '*');
+          } else {
+            window.location.href = href;
+          }
+        } catch(ex) {
+          // Cross-origin fallback
           window.parent.postMessage({ type: 'navigate', page: href }, '*');
-        } else {
-          window.location.href = href;
         }
       }
     }
