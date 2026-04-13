@@ -274,7 +274,7 @@
     title.classList.remove('error');
     titleErr.classList.remove('show');
     showToast('稿件提交成功');
-    setTimeout(() => { window.location.href = 'prototype.html'; }, 1800);
+    setTimeout(() => { navigateTo('prototype.html'); }, 1800);
   }
 
   // Remove error on input
@@ -290,6 +290,31 @@
     if (now - lastTouchEnd <= 300) e.preventDefault();
     lastTouchEnd = now;
   }, { passive: false });
+
+// Intercept links to notify parent iframe
+document.addEventListener('click', function(e) {
+  var a = e.target.closest('a[href]');
+  if (a) {
+    var href = a.getAttribute('href');
+    if (href && href !== '#' && !href.startsWith('http')) {
+      e.preventDefault();
+      if (window.parent !== window) {
+        window.parent.postMessage({ type: 'navigate', page: href }, '*');
+      } else {
+        window.location.href = href;
+      }
+    }
+  }
+});
+
+// Also intercept window.location.href assignments
+function navigateTo(page) {
+  if (window.parent !== window) {
+    window.parent.postMessage({ type: 'navigate', page: page }, '*');
+  } else {
+    window.location.href = page;
+  }
+}
 </script>
 </body>
 </html>

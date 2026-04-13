@@ -561,6 +561,22 @@ confirmOverlay.addEventListener('click', function(e) { if (e.target === confirmO
   }
   waveEl.innerHTML = wh;
 })();
+
+// Intercept links to notify parent iframe
+document.addEventListener('click', function(e) {
+  var a = e.target.closest('a[href]');
+  if (a) {
+    var href = a.getAttribute('href');
+    if (href && href !== '#' && !href.startsWith('http')) {
+      e.preventDefault();
+      if (window.parent !== window) {
+        window.parent.postMessage({ type: 'navigate', page: href }, '*');
+      } else {
+        window.location.href = href;
+      }
+    }
+  }
+});
 </script>
 </body>
 </html>
