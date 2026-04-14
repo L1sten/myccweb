@@ -316,7 +316,11 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 .role-user-item:last-child{border-bottom:none}
 
 /* PRD Panel */
-.prd-panel{width:460px;flex-shrink:0;display:flex;border-left:1px solid var(--border)}
+.prd-panel{width:460px;flex-shrink:0;display:flex;border-left:1px solid var(--border);transition:width .3s,opacity .3s}
+.prd-panel.collapsed{width:0;opacity:0;overflow:hidden;border:none}
+.prd-toggle{position:fixed;top:68px;right:14px;z-index:400;display:flex;align-items:center;gap:4px;padding:5px 12px;background:#fff;border:1px solid var(--border-light);border-radius:14px;font-size:12px;color:var(--text-secondary);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.08);transition:all .2s;white-space:nowrap;font-family:inherit}
+.prd-toggle:hover{border-color:var(--primary-light);color:var(--primary)}
+.prd-toggle .toggle-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
 .prd-toc{width:180px;border-right:1px solid var(--border);overflow-y:auto;background:#fafafa;padding:14px 0}
 .prd-toc-title{padding:0 16px 10px;font-size:13px;font-weight:600;color:var(--text);border-bottom:1px solid var(--border);margin-bottom:6px}
 .prd-toc-item{display:block;padding:5px 16px;font-size:12px;cursor:pointer;border-left:2px solid transparent;transition:var(--transition);color:var(--text-secondary);text-decoration:none;line-height:1.5}
@@ -388,6 +392,7 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
   </div>
 </div>
 
+<button class="prd-toggle" id="prdToggle" onclick="togglePrdPanel()"><span class="toggle-dot"></span> PRD</button>
 <div class="vs-btn" id="vsBtn" onclick="event.stopPropagation();toggleVsMenu()"></div>
 <div class="vs-menu" id="vsMenu"></div>
 
@@ -902,6 +907,7 @@ function closeModal(){document.getElementById('modalOverlay').classList.remove('
 
 /* ===== PRD ===== */
 async function loadPRD(){let md='';try{const r=await fetch('PRD.md');if(r.ok)md=await r.text()}catch(e){}if(!md)md=window.__PRD__||'';if(md){document.getElementById('prdContent').innerHTML=renderMD(md);buildToc()}else document.getElementById('prdContent').innerHTML='<p style="color:var(--text-tertiary)">PRD 加载失败</p>'}
+function togglePrdPanel(){const p=document.getElementById('prdPanel');const t=document.getElementById('prdToggle');const dot=t.querySelector('.toggle-dot');p.classList.toggle('collapsed');if(p.classList.contains('collapsed')){dot.style.background='#aaa'}else{dot.style.background='var(--green)'}}
 function renderMD(md){let h=md.replace(/^####\s+(.+)$/gm,'<h4>$1</h4>').replace(/^###\s+(.+)$/gm,'<h3>$1</h3>').replace(/^##\s+(.+)$/gm,'<h2>$1</h2>').replace(/^#\s+(.+)$/gm,'<h1>$1</h1>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/^>\s+(.+)$/gm,'<blockquote>$1</blockquote>').replace(/^---$/gm,'<hr>').replace(/^- (.+)$/gm,'<li class="ul-item">$1</li>').replace(/^(\d+)\.\s+(.+)$/gm,'<li class="ol-item">$2</li>');h=h.replace(/(<li class="ul-item">.*<\/li>\n?)+/g,m=>'<ul>'+m.replace(/ class="ul-item"/g,'')+'</ul>');h=h.replace(/(<li class="ol-item">.*<\/li>\n?)+/g,m=>'<ol>'+m.replace(/ class="ol-item"/g,'')+'</ol>');h=h.replace(/<\/blockquote>\n*<blockquote>/g,'<br>');h=h.replace(/<!--[\s\S]*?-->/g,'');return h}
 function buildToc(){const c=document.getElementById('prdContent');const t=document.getElementById('prdToc');const hs=c.querySelectorAll('h1,h2,h3,h4');t.innerHTML='<div class="prd-toc-title">PRD 目录</div>';hs.forEach((h,i)=>{h.id='ph-'+i;const a=document.createElement('a');const depth={H1:'',H2:'',H3:' sub',H4:' sub'};a.className='prd-toc-item'+(depth[h.tagName]||'');a.textContent=h.textContent;a.href='#ph-'+i;a.onclick=e=>{e.preventDefault();h.scrollIntoView({behavior:'smooth',block:'start'})};t.appendChild(a)})}
 
