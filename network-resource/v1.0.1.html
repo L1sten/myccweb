@@ -1738,7 +1738,7 @@
 
     <script>
         // ========== Version ==========
-        const CURRENT_VERSION = 'latest';
+        const CURRENT_VERSION = 'v1.0.1';
         const VERSION_HISTORY = [
             { version: 'v1.0.2', file: 'v1.0.2.html', date: '2026-04-14', desc: '关键词管理迁移至租户管理 + 版本管理系统' },
             { version: 'v1.0.1', file: 'v1.0.1.html', date: '2026-04-13', desc: '初始版本' },
@@ -2087,7 +2087,7 @@
             if (!val) { showToast('请输入关键词', 'error'); return; }
             const t = tenants.find(x => x.id === keywordTenantId); if (!t) return;
             if (t.keywords.includes(val)) { showToast('关键词已存在', 'error'); return; }
-            t.keywords.unshift(val); input.value = ''; renderKeywords();
+            t.keywords.push(val); input.value = ''; renderKeywords();
             showToast('关键词添加成功', 'success');
         }
         function removeKeyword(index) {
@@ -2660,8 +2660,7 @@
 
 - 输入框占位提示："输入新关键词，按回车或点击添加"
 - 添加方式：按回车键或点击"添加"按钮
-- 校验规则：不能为空、不能重复（重复时弹出错误提示"关键词已存在"），添加前去除首尾空格
-- 添加位置：新关键词插入列表首位
+- 校验规则：不能为空、不能重复，添加前去除首尾空格
 - 添加成功后：输入框清空，列表即时刷新，弹出成功提示
 
 #### 3.1.5 删除关键词
