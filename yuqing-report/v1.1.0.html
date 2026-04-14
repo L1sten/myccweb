@@ -1664,7 +1664,7 @@ window.__PRD__=document.currentScript?.getAttribute('data-prd')||`
 `;
 
 /* ===== Init ===== */
-const CURRENT_VERSION='latest';
+const CURRENT_VERSION='v1.1.0';
 const VERSION_HISTORY=[{version:'v1.1.0',file:'v1.1.0.html',date:'2026-04-14',desc:'舆情分类打标、权限树更新、筛选增强'}];
 loadPRD();renderVersionSwitcher();
 function renderVersionSwitcher(){const btn=document.getElementById('vsBtn');if(!btn)return;const isLatest=CURRENT_VERSION==='latest';btn.innerHTML='<span class="vs-dot '+(isLatest?'latest':'history')+'"></span>'+(isLatest?'v1.1.0 (最新)':CURRENT_VERSION)+'<i class="ri-arrow-down-s-line" style="font-size:14px"></i>';const menu=document.getElementById('vsMenu');menu.innerHTML=VERSION_HISTORY.map(v=>'<div class="vs-menu-item '+(CURRENT_VERSION===v.version||CURRENT_VERSION==='latest'&&VERSION_HISTORY[0].version===v.version?'active':'')+'" onclick="window.location.href=\''+v.file+'\'"><span class="vs-dot '+(v.version===VERSION_HISTORY[0].version?'latest':'history')+'"></span>'+v.version+'<span style="color:var(--text-quaternary);margin-left:auto">'+v.date+'</span></div>').join('')}
