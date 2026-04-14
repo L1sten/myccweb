@@ -77,7 +77,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'PingFang SC','Microso
 .user-org{font-size:11px;color:var(--text-tertiary);line-height:17px}
 
 /* Main */
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 .topbar{height:56px;background:var(--bg-card);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
 .topbar-left{display:flex;align-items:center;gap:12px}
 .topbar-title{font-size:17px;font-weight:600}
@@ -89,7 +88,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'PingFang SC','Microso
 .topbar-logout{font-size:16px;color:var(--text-tertiary);cursor:pointer;margin-left:4px}.topbar-logout:hover{color:var(--red)}
 
 /* Pages */
-.main-split{flex:1;display:flex;overflow:hidden}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
 .page-container{flex:1;min-width:0;overflow-y:auto;padding:40px 24px}
 .page{display:none}.page.active{display:block}
 
@@ -380,13 +379,12 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
         <i class="ri-logout-box-r-line topbar-logout" onclick="doLogout()" title="退出登录"></i>
       </div>
     </header>
-    <div class="main-split">
-      <div class="page-container" id="pageContainer"></div>
-      <div class="prd-panel" id="prdPanel">
-        <div class="prd-toc" id="prdToc"></div>
-        <div class="prd-content" id="prdContent"></div>
-      </div>
-    </div>
+    <div class="page-container" id="pageContainer"></div>
+  </div>
+
+  <div class="prd-panel" id="prdPanel">
+    <div class="prd-toc" id="prdToc"></div>
+    <div class="prd-content" id="prdContent"></div>
   </div>
 </div>
 
