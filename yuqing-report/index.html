@@ -226,11 +226,11 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 /* Toast */
 .toast-container{position:fixed;top:20px;right:20px;z-index:99999;display:flex;flex-direction:column;gap:8px}
 /* Version Switcher */
-.vs-btn{position:fixed;top:72px;right:24px;z-index:9999;display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;background:#fff;border:1px solid var(--border);cursor:pointer;font-size:12px;font-weight:500;color:var(--text-secondary);box-shadow:var(--shadow-md);transition:var(--transition);font-family:inherit}
+.vs-btn{position:relative;display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;background:#fff;border:1px solid var(--border);cursor:pointer;font-size:12px;font-weight:500;color:var(--text-secondary);box-shadow:var(--shadow-md);transition:var(--transition);font-family:inherit}
 .vs-btn:hover{border-color:var(--primary);color:var(--primary)}
 .vs-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .vs-dot.latest{background:var(--green)}.vs-dot.history{background:var(--text-quaternary)}
-.vs-menu{position:absolute;top:100%;right:0;margin-top:6px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-md);min-width:180px;display:none;overflow:hidden}
+.vs-menu{position:absolute;top:100%;right:0;margin-top:6px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-md);min-width:180px;display:none;overflow:hidden;z-index:401}
 .vs-menu.show{display:block}
 .vs-menu-item{display:flex;align-items:center;gap:8px;padding:8px 14px;font-size:12px;cursor:pointer;transition:var(--transition);color:var(--text-secondary)}
 .vs-menu-item:hover{background:var(--bg-page)}
@@ -318,7 +318,8 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 /* PRD Panel */
 .prd-panel{width:460px;flex-shrink:0;display:flex;border-left:1px solid var(--border);transition:width .3s,opacity .3s}
 .prd-panel.collapsed{width:0;opacity:0;overflow:hidden;border:none}
-.prd-toggle{position:fixed;top:68px;right:14px;z-index:400;display:flex;align-items:center;gap:4px;padding:5px 12px;background:#fff;border:1px solid var(--border-light);border-radius:14px;font-size:12px;color:var(--text-secondary);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.08);transition:all .2s;white-space:nowrap;font-family:inherit}
+.top-controls{position:fixed;top:68px;right:14px;z-index:400;display:flex;align-items:center;gap:8px}
+.prd-toggle{display:flex;align-items:center;gap:4px;padding:5px 12px;background:#fff;border:1px solid var(--border-light);border-radius:14px;font-size:12px;color:var(--text-secondary);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.08);transition:all .2s;white-space:nowrap;font-family:inherit}
 .prd-toggle:hover{border-color:var(--primary-light);color:var(--primary)}
 .prd-toggle .toggle-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
 .prd-toc{width:180px;border-right:1px solid var(--border);overflow-y:auto;background:#fafafa;padding:14px 0}
@@ -392,9 +393,11 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
   </div>
 </div>
 
-<button class="prd-toggle" id="prdToggle" onclick="togglePrdPanel()"><span class="toggle-dot"></span> PRD</button>
-<div class="vs-btn" id="vsBtn" onclick="event.stopPropagation();toggleVsMenu()"></div>
-<div class="vs-menu" id="vsMenu"></div>
+<div class="top-controls">
+  <button class="prd-toggle" id="prdToggle" onclick="togglePrdPanel()"><span class="toggle-dot"></span> PRD</button>
+  <div class="vs-btn" id="vsBtn" onclick="event.stopPropagation();toggleVsMenu()"></div>
+  <div class="vs-menu" id="vsMenu"></div>
+</div>
 
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
   <div class="modal" onclick="event.stopPropagation()">
