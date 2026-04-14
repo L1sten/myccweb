@@ -319,21 +319,24 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 /* PRD Panel */
 .prd-panel{width:460px;flex-shrink:0;display:flex;border-left:1px solid var(--border)}
 .prd-toc{width:180px;border-right:1px solid var(--border);overflow-y:auto;background:#fafafa}
-.prd-toc-title{padding:16px 16px 8px;font-size:12px;font-weight:600;color:var(--text-quaternary);letter-spacing:.5px}
-.prd-toc-item{display:block;padding:6px 16px;font-size:13px;cursor:pointer;border-left:2px solid transparent;transition:var(--transition);color:var(--text-secondary);text-decoration:none}
+.prd-toc-title{padding:16px 16px 8px;font-size:11px;font-weight:600;color:var(--text-quaternary);letter-spacing:.5px}
+.prd-toc-item{display:block;padding:5px 16px;font-size:12px;cursor:pointer;border-left:2px solid transparent;transition:var(--transition);color:var(--text-secondary);text-decoration:none;line-height:1.5}
 .prd-toc-item:hover{color:var(--primary);background:rgba(0,0,0,.02)}
 .prd-toc-item.active{color:var(--primary);background:rgba(0,0,0,.03);border-left-color:var(--primary);font-weight:500}
-.prd-toc-item.sub{padding-left:28px;font-size:12px}
-.prd-content{flex:1;overflow-y:auto;padding:24px}
-.prd-body h1{font-size:22px;font-weight:700;margin:0 0 8px;padding-bottom:12px;border-bottom:1px solid var(--border)}
-.prd-body h2{font-size:17px;font-weight:600;margin:28px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
-.prd-body h3{font-size:14px;font-weight:600;margin:20px 0 8px}
-.prd-body h4{font-size:13px;font-weight:600;margin:16px 0 6px;color:var(--text-secondary)}
-.prd-body p{font-size:13px;line-height:1.8;margin-bottom:10px;color:var(--text-secondary)}
-.prd-body ul,.prd-body ol{font-size:13px;line-height:1.8;margin-bottom:10px;padding-left:24px;color:var(--text-secondary)}
-.prd-body li{margin-bottom:4px}
+.prd-toc-item.sub{padding-left:28px;font-size:11px}
+.prd-content{flex:1;overflow-y:auto;padding:24px 20px}
+.prd-body h1{font-size:18px;font-weight:700;margin:0 0 6px;padding-bottom:10px;border-bottom:1px solid var(--border);color:var(--text-primary)}
+.prd-body h2{font-size:15px;font-weight:600;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border-light);color:var(--text-primary)}
+.prd-body h3{font-size:13px;font-weight:600;margin:16px 0 6px;color:var(--text-primary)}
+.prd-body h4{font-size:12.5px;font-weight:600;margin:12px 0 4px;color:var(--text-secondary)}
+.prd-body p{font-size:12px;line-height:1.8;margin-bottom:8px;color:var(--text-secondary)}
+.prd-body ul{font-size:12px;line-height:1.8;margin-bottom:8px;padding-left:20px;color:var(--text-secondary);list-style:disc}
+.prd-body ol{font-size:12px;line-height:1.8;margin-bottom:8px;padding-left:20px;color:var(--text-secondary)}
+.prd-body ol li{margin-bottom:3px;padding-left:2px}
+.prd-body ul li{margin-bottom:3px}
 .prd-body strong{color:var(--text-primary);font-weight:600}
-.prd-body hr{border:none;border-top:1px solid var(--border);margin:20px 0}
+.prd-body hr{border:none;border-top:1px solid var(--border-light);margin:16px 0}
+.prd-body blockquote{border-left:3px solid var(--primary);padding:4px 12px;margin:8px 0;color:var(--text-tertiary);font-size:12px;background:var(--bg-page);border-radius:0 var(--radius-sm) var(--radius-sm) 0}
 </style>
 </head>
 <body>
@@ -852,8 +855,9 @@ function switchRoleTab(idx,tabEl){
     body.innerHTML=html;
   }else if(idx===2){
     const users=adminUsers.filter(u=>u.role===role.name);
-    if(!users.length){body.innerHTML='<div class="empty-state" style="padding:40px"><i class="ri-user-line"></i><p>暂无用户属于该角色</p></div>';return}
-    body.innerHTML=users.map(u=>'<div class="role-user-item"><div style="display:flex;align-items:center;gap:12px"><div class="avatar avatar-blue" style="width:28px;height:28px;font-size:11px">'+u.name.charAt(0)+'</div><div><div style="font-size:13px;font-weight:500">'+u.name+'</div><div style="font-size:11px;color:var(--text-tertiary)">'+u.org+'</div></div></div><div style="display:flex;align-items:center;gap:8px"><span style="font-size:12px;color:'+(u.status==='正常'?'var(--green)':'var(--text-quaternary)')+'">'+u.status+'</span></div></div>').join('');
+    if(!users.length){body.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><div style="display:flex;gap:8px"><button class="btn btn-primary btn-sm" onclick="showAddRoleUserModal(\''+role.id+'\')"><i class="ri-user-add-line"></i>添加用户</button></div></div><div class="empty-state" style="padding:40px"><i class="ri-user-line"></i><p>暂无用户属于该角色</p></div>';return}
+    body.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><div style="display:flex;gap:8px"><button class="btn btn-primary btn-sm" onclick="showAddRoleUserModal(\''+role.id+'\')"><i class="ri-user-add-line"></i>添加用户</button><button class="btn btn-outline btn-sm" id="btnRemoveRoleUser" style="display:none" onclick="removeRoleUsers(\''+role.id+'\')"><i class="ri-user-minus-line"></i>移除用户</button></div><div style="position:relative"><i class="ri-search-line" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-quaternary);font-size:14px"></i><input style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 12px 6px 32px;font-size:12px;outline:none;width:180px;font-family:inherit" placeholder="搜索用户..." oninput="filterRoleUsers(this.value,\''+role.id+'\')"></div></div><div id="roleUserTable"></div>';
+    renderRoleUserTable(users,role.id);
   }
 }
 function updateRoleField(field,val){
@@ -875,6 +879,26 @@ function togglePermChild(permId){
   switchRoleTab(1,document.querySelector('.role-tab.active'));
 }
 
+/* ===== Role User Management ===== */
+let selectedRoleUserIds=new Set();
+function renderRoleUserTable(users,roleId){
+  const el=document.getElementById('roleUserTable');if(!el)return;
+  selectedRoleUserIds.clear();
+  if(!users.length){el.innerHTML='<div class="empty-state" style="padding:30px"><i class="ri-user-line"></i><p>无匹配用户</p></div>';updateRemoveBtn();return}
+  el.innerHTML='<table class="admin-table" style="margin-bottom:12px"><thead><tr><th style="width:40px"><div class="yq-check" style="width:16px;height:16px;margin:0 auto" onclick="toggleAllRoleUsers('+JSON.stringify(users.map(u=>u.id))+')"></div></th><th>姓名</th><th>所属单位</th><th>浙政钉账号</th><th>状态</th><th style="width:60px">操作</th></tr></thead><tbody>'+users.map(u=>'<tr><td style="text-align:center"><div class="yq-check" style="width:16px;height:16px;margin:0 auto" id="ruc-'+u.id+'" onclick="toggleRoleUserCheck('+u.id+')"></div></td><td style="font-weight:500">'+u.name+'</td><td>'+u.org+'</td><td>'+u.ding+'</td><td><span style="font-size:11px;padding:2px 8px;border-radius:999px;'+(u.status==='正常'?'background:var(--green-bg);color:var(--green)':'background:var(--orange-bg);color:var(--orange)')+'">'+(u.status==='正常'?'已开通':'已停用')+'</span></td><td><a style="font-size:12px;color:var(--primary);cursor:pointer" onclick="removeSingleRoleUser('+u.id+',\''+roleId+'\')">移除</a></td></tr>').join('')+'</tbody></table><div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0"><span style="font-size:11px;color:var(--text-quaternary)">共 '+users.length+' 条</span></div>';
+  updateRemoveBtn();
+}
+function updateRemoveBtn(){const btn=document.getElementById('btnRemoveRoleUser');if(btn)btn.style.display=selectedRoleUserIds.size>0?'inline-flex':'none'}
+function toggleRoleUserCheck(uid){if(selectedRoleUserIds.has(uid))selectedRoleUserIds.delete(uid);else selectedRoleUserIds.add(uid);const cb=document.getElementById('ruc-'+uid);if(cb)cb.classList.toggle('checked',selectedRoleUserIds.has(uid));updateRemoveBtn()}
+function toggleAllRoleUsers(ids){const all=ids.every(id=>selectedRoleUserIds.has(id));if(all)ids.forEach(id=>selectedRoleUserIds.delete(id));else ids.forEach(id=>selectedRoleUserIds.add(id));ids.forEach(id=>{const cb=document.getElementById('ruc-'+id);if(cb)cb.classList.toggle('checked',selectedRoleUserIds.has(id))});updateRemoveBtn()}
+function filterRoleUsers(kw,roleId){const role=adminRoles.find(r=>r.id===roleId);if(!role)return;const k=kw.toLowerCase();const users=adminUsers.filter(u=>u.role===role.name&&(u.name.toLowerCase().includes(k)||u.org.toLowerCase().includes(k)||u.ding.toLowerCase().includes(k)));renderRoleUserTable(users,roleId)}
+function removeSingleRoleUser(uid,roleId){const u=adminUsers.find(x=>x.id===uid);const role=adminRoles.find(r=>r.id===roleId);if(!u||!role)return;showModal('确认移除','<p style="font-size:14px;color:var(--text-secondary)">确定将 "'+u.name+'" 从 "'+role.name+'" 角色中移除？</p>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" style="background:var(--red)" onclick="confirmRemoveSingleRoleUser('+uid+',\''+roleId+'\')">确认</button>')}
+function confirmRemoveSingleRoleUser(uid,roleId){const u=adminUsers.find(x=>x.id===uid);if(u)u.role='';closeModal();showToast('success','已移除');selectedRoleUserIds.clear();switchRoleTab(2,document.querySelectorAll('.role-tab')[2])}
+function removeRoleUsers(roleId){if(selectedRoleUserIds.size===0)return;const role=adminRoles.find(r=>r.id===roleId);showModal('确认移除','<p style="font-size:14px;color:var(--text-secondary)">确定将选中的 '+selectedRoleUserIds.size+' 个用户从 "'+role.name+'" 角色中移除？</p>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" style="background:var(--red)" onclick="confirmRemoveRoleUsers(\''+roleId+'\')">确认</button>')}
+function confirmRemoveRoleUsers(roleId){adminUsers.filter(u=>selectedRoleUserIds.has(u.id)).forEach(u=>u.role='');closeModal();showToast('success','已移除 '+selectedRoleUserIds.size+' 个用户');selectedRoleUserIds.clear();switchRoleTab(2,document.querySelectorAll('.role-tab')[2])}
+function showAddRoleUserModal(roleId){const role=adminRoles.find(r=>r.id===roleId);if(!role)return;const avail=adminUsers.filter(u=>u.role!==role.name);if(!avail.length){showToast('info','所有用户已属于该角色');return}const opts=avail.map(u=>'<label style="display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--border-light);border-radius:var(--radius-md);cursor:pointer;margin-bottom:6px"><input type="checkbox" value="'+u.id+'" style="accent-color:var(--primary)"><div><span style="font-size:13px;font-weight:500">'+u.name+'</span><span style="font-size:11px;color:var(--text-tertiary);margin-left:8px">'+u.org+'</span></div></label>').join('');showModal('添加用户至 "'+role.name+'"','<div style="display:flex;flex-direction:column;gap:4px">'+opts+'</div>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmAddRoleUsers(\''+roleId+'\')">确认添加</button>')}
+function confirmAddRoleUsers(roleId){const role=adminRoles.find(r=>r.id===roleId);if(!role)return;const ch=document.querySelectorAll('#modalBody input[type=checkbox]:checked');if(!ch.length){showToast('error','请选择用户');return}ch.forEach(cb=>{const u=adminUsers.find(x=>x.id===parseInt(cb.value));if(u)u.role=role.name});closeModal();showToast('success','已添加 '+ch.length+' 个用户');switchRoleTab(2,document.querySelectorAll('.role-tab')[2])}
+
 /* ===== Toast & Modal ===== */
 function showToast(type,msg){const c=document.getElementById('toastContainer');const icons={success:'ri-check-line',error:'ri-close-circle-line',info:'ri-information-line'};const t=document.createElement('div');t.className='toast toast-'+type;t.innerHTML='<i class="'+(icons[type]||'ri-information-line')+'"></i>'+msg;c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(50px)';t.style.transition='all .3s';setTimeout(()=>t.remove(),300)},2500)}
 function showModal(title,body,footer){document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=body;document.getElementById('modalFooter').innerHTML=footer;document.getElementById('modalOverlay').classList.add('show')}
@@ -882,7 +906,7 @@ function closeModal(){document.getElementById('modalOverlay').classList.remove('
 
 /* ===== PRD ===== */
 async function loadPRD(){let md='';try{const r=await fetch('PRD.md');if(r.ok)md=await r.text()}catch(e){}if(!md)md=window.__PRD__||'';if(md){document.getElementById('prdContent').innerHTML=renderMD(md);buildToc()}else document.getElementById('prdContent').innerHTML='<p style="color:var(--text-tertiary)">PRD 加载失败</p>'}
-function renderMD(md){let h=md.replace(/^####\s+(.+)$/gm,'<h4>$1</h4>').replace(/^###\s+(.+)$/gm,'<h3>$1</h3>').replace(/^##\s+(.+)$/gm,'<h2>$1</h2>').replace(/^#\s+(.+)$/gm,'<h1>$1</h1>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/^>\s+(.+)$/gm,'<blockquote style="border-left:3px solid var(--primary);padding:4px 12px;margin:8px 0;color:var(--text-tertiary);font-size:12px">$1</blockquote>').replace(/^---$/gm,'<hr>').replace(/^- (.+)$/gm,'<li>$1</li>').replace(/^(\d+)\.\s+(.+)$/gm,'<li>$2</li>');h=h.replace(/(<li>.*<\/li>\n?)+/g,m=>'<ul>'+m+'</ul>');h=h.replace(/<\/blockquote>\n*<blockquote[^>]*>/g,'<br>');h=h.replace(/<!--[\s\S]*?-->/g,'');return h}
+function renderMD(md){let h=md.replace(/^####\s+(.+)$/gm,'<h4>$1</h4>').replace(/^###\s+(.+)$/gm,'<h3>$1</h3>').replace(/^##\s+(.+)$/gm,'<h2>$1</h2>').replace(/^#\s+(.+)$/gm,'<h1>$1</h1>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/^>\s+(.+)$/gm,'<blockquote>$1</blockquote>').replace(/^---$/gm,'<hr>').replace(/^- (.+)$/gm,'<li class="ul-item">$1</li>').replace(/^(\d+)\.\s+(.+)$/gm,'<li class="ol-item">$2</li>');h=h.replace(/(<li class="ul-item">.*<\/li>\n?)+/g,m=>'<ul>'+m.replace(/ class="ul-item"/g,'')+'</ul>');h=h.replace(/(<li class="ol-item">.*<\/li>\n?)+/g,m=>'<ol>'+m.replace(/ class="ol-item"/g,'')+'</ol>');h=h.replace(/<\/blockquote>\n*<blockquote>/g,'<br>');h=h.replace(/<!--[\s\S]*?-->/g,'');return h}
 function buildToc(){const c=document.getElementById('prdContent');const t=document.getElementById('prdToc');const hs=c.querySelectorAll('h1,h2,h3,h4');t.innerHTML='<div class="prd-toc-title">目录</div>';hs.forEach((h,i)=>{h.id='ph-'+i;const a=document.createElement('a');const depth={H1:'',H2:'',H3:' sub',H4:' sub'};a.className='prd-toc-item'+(depth[h.tagName]||'');a.textContent=h.textContent;a.href='#ph-'+i;a.onclick=e=>{e.preventDefault();h.scrollIntoView({behavior:'smooth',block:'start'})};t.appendChild(a)})}
 
 window.__PRD__=document.currentScript?.getAttribute('data-prd')||`
@@ -1552,8 +1576,18 @@ window.__PRD__=document.currentScript?.getAttribute('data-prd')||`
      - 系统管理：用户管理、角色管理
 
 3. **用户管理**标签页
-   - 展示当前角色下的所有用户列表
-   - 每项显示：头像（姓名首字）、姓名、所属单位、状态
+   - 顶部操作区：
+     - 左侧："添加用户"按钮（蓝色小按钮）：弹出弹窗，多选未属于当前角色的用户，确认后加入当前角色
+     - 左侧："移除用户"按钮（轮廓小按钮）：勾选用户后出现，点击后弹出确认弹窗，批量移除选中用户
+     - 右侧：搜索框，支持按姓名、所属单位、浙政钉账号模糊搜索
+   - 用户列表以表格形式展示，列字段：
+     - 勾选框：支持单选和全选，选中后"移除用户"按钮出现
+     - 姓名
+     - 所属单位
+     - 浙政钉账号
+     - 状态标签：已开通（绿色）、已停用（橙色）
+     - 操作："移除"链接，点击弹出确认弹窗后移除单个用户
+   - 底部显示用户总数
    - 无用户时展示空状态提示
 
 #### 8.2.3 新增角色
@@ -1631,36 +1665,6 @@ window.__PRD__=document.currentScript?.getAttribute('data-prd')||`
 - 顶部导航栏标题随页面切换同步更新
 - 页面内容区滚动位置自动回到顶部
 
----
-
-## 11. 版本规划
-
-### v1.0.1
-
-- 浙政钉扫码登录与统一认证
-- 三级角色权限体系（地市人员、舆情处、管理员）
-- 舆情上报（多条）、汇总查看（按角色过滤）
-- 报告编辑（含实时预览）、公文格式预览、发布
-- 用户管理、角色管理
-- 录用至报告（含自动跳转编辑页）
-- 报告导出 Word 文档
-
-### v1.1.0（当前）
-
-- 地域信息统一为地市名称（杭州、宁波等 11 地市）
-- 舆情汇总增加统计概览（上报总数、已录用、本省、外省）
-- 舆情汇总增加时间范围、单位类型、录用状态筛选
-- 舆情分类打标功能（刑事案件、治安事件、交通事故、执法不当及违纪违法、非正常死亡或失踪、其他）
-- 角色管理重构为左右分栏布局（角色列表 + 功能权限树）
-- 用户管理支持角色分配和启停用
-- 登录页去除演示模式，仅保留浙政钉扫码
-
-### v1.2.0（规划中）
-
-- 舆情通知提醒（浙政钉消息推送）
-- 报告导出 PDF
-- 数据统计看板
-- 批量导入舆情
 `;
 
 /* ===== Init ===== */
