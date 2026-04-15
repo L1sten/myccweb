@@ -246,6 +246,16 @@ select.form-ctrl:focus { border-color:var(--primary); }
 .topic-actions .info strong { color:var(--primary); }
 .gen-step.pending { color:var(--orange); }
 .gen-step.pending .gen-icon { background:#fef3e2; color:var(--orange); }
+.gen-step.loading .gen-icon { background:var(--primary-bg); color:var(--primary); animation:pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:.4; } }
+.loading-panel { background:var(--white); border:1px solid var(--border-light); border-radius:var(--radius); padding:40px; text-align:center; margin-bottom:16px; }
+.loading-panel .loading-title { font-size:15px; font-weight:600; color:var(--text); margin-bottom:8px; }
+.loading-panel .loading-desc { font-size:13px; color:var(--text-secondary); margin-bottom:20px; }
+.loading-panel .loading-bar { width:260px; height:4px; background:var(--border-light); border-radius:2px; margin:0 auto 12px; overflow:hidden; }
+.loading-panel .loading-bar-fill { height:100%; background:var(--primary); border-radius:2px; animation:loadBar 3s ease-in-out infinite; }
+@keyframes loadBar { 0%{ width:0; } 50%{ width:70%; } 100%{ width:95%; } }
+.loading-panel .loading-hint { font-size:12px; color:var(--text-secondary); }
+.gen-step.loading .gen-dot { display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--primary); animation:pulse 1s ease-in-out infinite; margin-left:4px; }
 
 /* ===== Split Layout ===== */
 .app-split { display:flex; height:100vh; overflow:hidden; }
@@ -487,7 +497,7 @@ select.form-ctrl:focus { border-color:var(--primary); }
       </div>
       <div class="config-footer">
         <button class="btn" onclick="showToast('配置已保存')">保存配置</button>
-        <button class="btn btn-primary" onclick="switchPage('page3a')">立即生成 &rarr;</button>
+        <button class="btn btn-primary" onclick="switchPage('page3a');simulateDataPrep()">立即生成 &rarr;</button>
       </div>
     </div>
   </div>
@@ -507,15 +517,26 @@ select.form-ctrl:focus { border-color:var(--primary); }
     </div>
 
     <!-- 生成进度 -->
-    <div class="gen-progress" style="margin-bottom:20px">
-      <div class="gen-step done"><div class="gen-icon">&#x2713;</div><div>数据准备</div></div>
-      <span class="gen-arrow">&#x2192;</span>
-      <div class="gen-step done"><div class="gen-icon">&#x2713;</div><div>智能分析</div></div>
-      <span class="gen-arrow">&#x2192;</span>
-      <div class="gen-step pending" style="font-weight:600"><div class="gen-icon">&#x270E;</div><div>主题确认</div></div>
+    <div class="gen-progress" style="margin-bottom:20px" id="confirmProgress">
+      <div class="gen-step loading" id="stepData"><div class="gen-icon"><span class="gen-dot"></span></div><div>数据准备</div></div>
+      <span class="gen-arrow" style="color:#ccc">&#x2192;</span>
+      <div class="gen-step" style="color:#bbb" id="stepAnalysis"><div class="gen-icon" style="background:#f0f2f5;color:#bbb">&#x25CF;</div><div>智能分析</div></div>
+      <span class="gen-arrow" style="color:#ccc">&#x2192;</span>
+      <div class="gen-step" style="color:#bbb"><div class="gen-icon" style="background:#f0f2f5;color:#bbb">&#x25CF;</div><div>主题确认</div></div>
       <span class="gen-arrow" style="color:#ccc">&#x2192;</span>
       <div class="gen-step" style="color:#bbb"><div class="gen-icon" style="background:#f0f2f5;color:#bbb">&#x25CF;</div><div>内容生成</div></div>
     </div>
+
+    <!-- 加载提示面板 -->
+    <div class="loading-panel" id="loadingPanel">
+      <div class="loading-title" id="loadingTitle">正在从监测方案拉取数据并进行聚合分析…</div>
+      <div class="loading-desc" id="loadingDesc">系统正在对 60,201 条舆情信息进行统计聚合、事件聚类和领域分类</div>
+      <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+      <div class="loading-hint" id="loadingHint">预计需要 1-3 分钟，请耐心等待</div>
+    </div>
+
+    <!-- 主题确认内容区（加载完成后显示） -->
+    <div id="topicContent" style="display:none">
 
     <!-- 步骤1: 热点事件 -->
     <div class="topic-step">
@@ -661,10 +682,11 @@ select.form-ctrl:focus { border-color:var(--primary); }
         <div class="info">已选 <strong>1</strong> 个主题</div>
         <div style="display:flex;gap:8px">
           <button class="btn" onclick="switchPage('page2')">返回修改配置</button>
-          <button class="btn btn-primary" onclick="switchPage('page3')">确认并生成报告 &rarr;</button>
+          <button class="btn btn-primary" onclick="startGenerate()">确认并生成报告 &rarr;</button>
         </div>
       </div>
     </div>
+    </div><!-- end topicContent -->
   </div>
 </div>
 
@@ -675,22 +697,32 @@ select.form-ctrl:focus { border-color:var(--primary); }
       <a class="btn btn-sm" onclick="switchPage('page1')" style="cursor:pointer">&larr; 返回列表</a>
       <h3>2026第8期江苏交通运输网络舆情监测（总第184期）</h3>
     </div>
-    <div class="preview-header-right">
-      <button class="btn" onclick="showToast('正在重新生成...')">重新生成</button>
+    <div class="preview-header-right" id="previewActions" style="display:none">
+      <button class="btn" onclick="startGenerate()">重新生成</button>
       <button class="btn" onclick="showToast('正在导出 Word 文档...')">导出 Word</button>
       <button class="btn" onclick="showToast('正在导出 PDF...')">导出 PDF</button>
     </div>
   </div>
-  <div class="gen-progress">
+  <div class="gen-progress" id="genProgressPreview">
     <div class="gen-step done"><div class="gen-icon">&#x2713;</div><div>数据准备</div></div>
     <span class="gen-arrow">&#x2192;</span>
     <div class="gen-step done"><div class="gen-icon">&#x2713;</div><div>智能分析</div></div>
     <span class="gen-arrow">&#x2192;</span>
     <div class="gen-step done"><div class="gen-icon">&#x2713;</div><div>主题确认</div></div>
     <span class="gen-arrow">&#x2192;</span>
-    <div class="gen-step done"><div class="gen-icon">&#x2713;</div><div>内容生成</div></div>
+    <div class="gen-step loading" id="stepGen"><div class="gen-icon"><span class="gen-dot"></span></div><div>内容生成</div></div>
   </div>
-  <div class="preview-layout">
+
+  <!-- 内容生成加载面板 -->
+  <div class="loading-panel" id="genLoadingPanel">
+    <div class="loading-title">AI 正在生成报告内容，预计需要几分钟，请耐心等待…</div>
+    <div class="loading-desc" id="genLoadingDesc">正在生成：舆情概述</div>
+    <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+    <div class="loading-hint" id="genLoadingHint">舆情概述已完成 → 正在生成热点事件分析…</div>
+  </div>
+
+  <!-- 报告文档（生成完成后显示） -->
+  <div class="preview-layout" id="reportPreview" style="display:none">
     <div class="preview-doc-wrap">
       <div class="preview-doc">
         <div class="doc-cover">
@@ -1008,6 +1040,96 @@ function selectSingleTopic(el, group) {
   var actions = parent.parentElement.querySelector('.topic-actions .info');
   if (actions) actions.innerHTML = '已选 <strong>1</strong> 个主题';
 }
+
+/* ===== Loading Simulation ===== */
+function simulateDataPrep() {
+  // Called when page3a is first shown
+  var loadingPanel = document.getElementById('loadingPanel');
+  var topicContent = document.getElementById('topicContent');
+  var stepData = document.getElementById('stepData');
+  var stepAnalysis = document.getElementById('stepAnalysis');
+
+  loadingPanel.style.display = '';
+  topicContent.style.display = 'none';
+
+  // Phase 1: Data preparation (2s)
+  document.getElementById('loadingTitle').textContent = '正在从监测方案拉取数据并进行聚合分析…';
+  document.getElementById('loadingDesc').textContent = '系统正在对 60,201 条舆情信息进行统计聚合、事件聚类和领域分类';
+  document.getElementById('loadingHint').textContent = '预计需要 1-3 分钟，请耐心等待';
+
+  setTimeout(function() {
+    // Data prep done
+    stepData.className = 'gen-step done';
+    stepData.innerHTML = '<div class="gen-icon">&#x2713;</div><div>数据准备</div>';
+    stepData.nextElementSibling.style.color = 'var(--green)';
+
+    // Phase 2: Intelligent analysis (2s)
+    stepAnalysis.className = 'gen-step loading';
+    stepAnalysis.innerHTML = '<div class="gen-icon"><span class="gen-dot"></span></div><div>智能分析</div>';
+
+    document.getElementById('loadingTitle').textContent = '正在进行热度评分、敏感筛选和主题推荐…';
+    document.getElementById('loadingDesc').textContent = 'AI 正在对聚类事件进行排序，筛选热点和敏感事件，生成候选主题';
+    document.getElementById('loadingHint').textContent = '正在分析事件关联性和热度趋势';
+
+    setTimeout(function() {
+      // Analysis done
+      stepAnalysis.className = 'gen-step done';
+      stepAnalysis.innerHTML = '<div class="gen-icon">&#x2713;</div><div>智能分析</div>';
+      stepAnalysis.nextElementSibling.style.color = 'var(--green)';
+
+      // Show topic content
+      loadingPanel.style.display = 'none';
+      topicContent.style.display = '';
+    }, 2500);
+  }, 2500);
+}
+
+function startGenerate() {
+  // Called when user clicks "确认并生成报告"
+  switchPage('page3');
+
+  // Reset preview page loading state
+  var genProgress = document.getElementById('genProgressPreview');
+  var stepGen = document.getElementById('stepGen');
+  stepGen.className = 'gen-step loading';
+  stepGen.innerHTML = '<div class="gen-icon"><span class="gen-dot"></span></div><div>内容生成</div>';
+
+  document.getElementById('genLoadingPanel').style.display = '';
+  document.getElementById('reportPreview').style.display = 'none';
+  document.getElementById('previewActions').style.display = 'none';
+
+  // Simulate chapter-by-chapter generation
+  var chapters = ['舆情概述', '热点事件舆情分析', '敏感信息舆情分析', '重点关注', '全国行业资讯'];
+  var desc = document.getElementById('genLoadingDesc');
+  var hint = document.getElementById('genLoadingHint');
+  var completed = [];
+
+  var idx = 0;
+  function nextChapter() {
+    if (idx >= chapters.length) {
+      // All done
+      stepGen.className = 'gen-step done';
+      stepGen.innerHTML = '<div class="gen-icon">&#x2713;</div><div>内容生成</div>';
+      document.getElementById('genLoadingPanel').style.display = 'none';
+      document.getElementById('reportPreview').style.display = '';
+      document.getElementById('previewActions').style.display = '';
+      return;
+    }
+    desc.textContent = '正在生成：' + chapters[idx];
+    if (completed.length > 0) {
+      hint.textContent = completed.join('、') + ' 已完成 → 正在生成 ' + chapters[idx] + '…';
+    } else {
+      hint.textContent = '正在生成 ' + chapters[idx] + '…';
+    }
+    setTimeout(function() {
+      completed.push(chapters[idx]);
+      idx++;
+      nextChapter();
+    }, 1500);
+  }
+  nextChapter();
+}
+
 function showToast(msg){
   var t=document.createElement('div');
   t.className='toast';
