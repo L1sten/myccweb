@@ -552,6 +552,7 @@
         class="text-input"
         value="人民公安从这里走来"
         placeholder="请输入主题名称"
+        maxlength="20"
         autocomplete="off"
       >
     </div>
@@ -566,6 +567,7 @@
         id="theme-desc"
         class="text-area"
         placeholder="描述该主题的核心精神与报道方向..."
+        maxlength="200"
       ></textarea>
     </div>
 
@@ -582,8 +584,8 @@
           <path d="M24 20V8m0 0l-4 4m4-4l4 4" stroke="#1E4FCC" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M6 28v2a4 4 0 004 4h28a4 4 0 004-4v-2" stroke="#1E4FCC" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span class="upload-text">点击或拖拽图片到此处上传</span>
-        <span class="upload-hint">1200 x 600px（JPG, PNG, WEBP）</span>
+        <span class="upload-text">点击上传图片</span>
+        <span class="upload-hint">不大于2M，支持 jpg、png</span>
 
         <!-- Preview overlay -->
         <div class="upload-preview" id="upload-preview">
@@ -782,7 +784,7 @@
           '<div class="rc-upload-area" data-rc-upload="' + num + '">' +
             '<svg viewBox="0 0 20 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 1v9m0-9L6 5m4-4l4 4"/><path d="M1 11v2a2 2 0 002 2h14a2 2 0 002-2v-2"/></svg>' +
           '</div>' +
-          '<span class="rc-upload-hint">点击上传<br>建议 21:9，2MB 以内</span>' +
+          '<span class="rc-upload-hint">点击上传图片<br>不大于2M，支持 jpg、png</span>' +
           '<input type="file" accept="image/*" style="display:none" data-rc-file="' + num + '">' +
         '</div>' +
       '</div>';
