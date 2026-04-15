@@ -583,9 +583,11 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 #### 4.3.6 地域筛选
 
-- 下拉选择框，选项：
-  - 全部地域（默认）
-  - 各地市列表（浙江/杭州、浙江/宁波、浙江/温州、浙江/绍兴、浙江/台州、浙江/嘉兴、浙江/湖州、浙江/金华、浙江/衢州、浙江/丽水、浙江/舟山）
+- 二级级联控件（省→市），精确到市
+- 第一级：省份下拉，含"全部省份"选项，支持全国所有省级行政区
+- 第二级：城市下拉，默认隐藏，选择省份后动态显示对应地级市列表，含"全部城市"选项
+- 仅选省份：筛选该省份下所有地市的舆情
+- 选省份+城市：精确筛选该城市的舆情
 - 选择后立即过滤列表
 
 #### 4.3.7 舆情分类筛选
@@ -710,7 +712,9 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 2. **舆情地域**
    - 必填
-   - 下拉选择，选项为行政区划列表（如杭州、宁波等）
+   - 二级级联控件（省→市），精确到市
+   - 第一级：省份下拉，支持全国所有省级行政区
+   - 第二级：城市下拉，默认禁用，选择省份后动态启用并填充对应地级市
    - 选择后自动触发"报送单位"字段的填充
 
 3. **报送单位**
@@ -1273,7 +1277,37 @@ const yuqingData=[
 ];
 const regionUnitMap={'浙江/杭州':'杭州市宣传部','浙江/宁波':'宁波市宣传部','浙江/温州':'温州市宣传部','浙江/绍兴':'绍兴市宣传部','浙江/台州':'台州市宣传部','浙江/嘉兴':'嘉兴市宣传部','浙江/湖州':'湖州市宣传部','浙江/金华':'金华市宣传部','浙江/衢州':'衢州市宣传部','浙江/丽水':'丽水市宣传部','浙江/舟山':'舟山市宣传部'};
 const yqCategories=['刑事案件','治安事件','交通事故','执法不当及违纪违法','非正常死亡或失踪','其他'];
-const allRegions=['浙江/杭州','浙江/宁波','浙江/温州','浙江/绍兴','浙江/台州','浙江/嘉兴','浙江/湖州','浙江/金华','浙江/衢州','浙江/丽水','浙江/舟山'];
+const provinceCityData=[
+  {name:'北京',cities:['北京']},{name:'天津',cities:['天津']},{name:'河北',cities:['石家庄','唐山','秦皇岛','邯郸','邢台','保定','张家口','承德','沧州','廊坊','衡水']},
+  {name:'山西',cities:['太原','大同','阳泉','长治','晋城','朔州','晋中','运城','忻州','临汾','吕梁']},
+  {name:'内蒙古',cities:['呼和浩特','包头','乌海','赤峰','通辽','鄂尔多斯','呼伦贝尔','巴彦淖尔','乌兰察布']},
+  {name:'辽宁',cities:['沈阳','大连','鞍山','抚顺','本溪','丹东','锦州','营口','阜新','辽阳','盘锦','铁岭','朝阳','葫芦岛']},
+  {name:'吉林',cities:['长春','吉林','四平','辽源','通化','白山','松原','白城']},
+  {name:'黑龙江',cities:['哈尔滨','齐齐哈尔','鸡西','鹤岗','双鸭山','大庆','伊春','佳木斯','七台河','牡丹江','黑河','绥化']},
+  {name:'上海',cities:['上海']},{name:'江苏',cities:['南京','无锡','徐州','常州','苏州','南通','连云港','淮安','盐城','扬州','镇江','泰州','宿迁']},
+  {name:'浙江',cities:['杭州','宁波','温州','嘉兴','湖州','绍兴','金华','衢州','舟山','台州','丽水']},
+  {name:'安徽',cities:['合肥','芜湖','蚌埠','淮南','马鞍山','淮北','铜陵','安庆','黄山','滁州','阜阳','宿州','六安','亳州','池州','宣城']},
+  {name:'福建',cities:['福州','厦门','莆田','三明','泉州','漳州','南平','龙岩','宁德']},
+  {name:'江西',cities:['南昌','景德镇','萍乡','九江','新余','鹰潭','赣州','吉安','宜春','抚州','上饶']},
+  {name:'山东',cities:['济南','青岛','淄博','枣庄','东营','烟台','潍坊','济宁','泰安','威海','日照','临沂','德州','聊城','滨州','菏泽']},
+  {name:'河南',cities:['郑州','开封','洛阳','平顶山','安阳','鹤壁','新乡','焦作','濮阳','许昌','漯河','三门峡','南阳','商丘','信阳','周口','驻马店']},
+  {name:'湖北',cities:['武汉','黄石','十堰','宜昌','襄阳','鄂州','荆门','孝感','荆州','黄冈','咸宁','随州']},
+  {name:'湖南',cities:['长沙','株洲','湘潭','衡阳','邵阳','岳阳','常德','张家界','益阳','郴州','永州','怀化','娄底']},
+  {name:'广东',cities:['广州','韶关','深圳','珠海','汕头','佛山','江门','湛江','茂名','肇庆','惠州','梅州','汕尾','河源','阳江','清远','东莞','中山','潮州','揭阳','云浮']},
+  {name:'广西',cities:['南宁','柳州','桂林','梧州','北海','防城港','钦州','贵港','玉林','百色','贺州','河池','来宾','崇左']},
+  {name:'海南',cities:['海口','三亚','三沙','儋州']},
+  {name:'重庆',cities:['重庆']},{name:'四川',cities:['成都','自贡','攀枝花','泸州','德阳','绵阳','广元','遂宁','内江','乐山','南充','眉山','宜宾','广安','达州','雅安','巴中','资阳']},
+  {name:'贵州',cities:['贵阳','六盘水','遵义','安顺','毕节','铜仁']},
+  {name:'云南',cities:['昆明','曲靖','玉溪','保山','昭通','丽江','普洱','临沧']},
+  {name:'西藏',cities:['拉萨','日喀则','昌都','林芝','山南','那曲']},
+  {name:'陕西',cities:['西安','铜川','宝鸡','咸阳','渭南','延安','汉中','榆林','安康','商洛']},
+  {name:'甘肃',cities:['兰州','嘉峪关','金昌','白银','天水','武威','张掖','平凉','酒泉','庆阳','定西','陇南']},
+  {name:'青海',cities:['西宁','海东']},
+  {name:'宁夏',cities:['银川','石嘴山','吴忠','固原','中卫']},
+  {name:'新疆',cities:['乌鲁木齐','克拉玛依','吐鲁番','哈密']},
+  {name:'台湾',cities:['台北','高雄','台中','台南','新北','桃园']},
+  {name:'香港',cities:['香港']},{name:'澳门',cities:['澳门']}
+];
 let reportData=[
   {id:'BG-20260410-001',title:'2026年4月10日舆情信息专报',status:'draft',time:'2026-04-10 09:00',items:[...yuqingData.slice(0,5)]},
   {id:'BG-20260409-001',title:'2026年4月9日舆情信息专报',status:'published',time:'2026-04-09 17:00',items:[...yuqingData.slice(2,7)]}
@@ -1469,7 +1503,8 @@ function renderSummaryPage(){
     +'<select class="filter-select" id="filterSource" onchange="filterList()"><option value="">全部来源</option><option value="本省">本省</option><option value="外省镜鉴">外省镜鉴</option></select>'
     +'<select class="filter-select" id="filterUnit" onchange="filterList()"><option value="">全部单位</option><option value="省级">省级</option><option value="地市">地市</option></select>'
     +'<select class="filter-select" id="filterUsed" onchange="filterList()"><option value="">录用状态</option><option value="yes">已录用</option><option value="no">未录用</option></select>'
-    +'<select class="filter-select" id="filterRegion" onchange="filterList()"><option value="">全部地域</option>'+allRegions.map(r=>'<option>'+r+'</option>').join('')+'</select>'
+    +'<select class="filter-select" id="filterProv" onchange="onFilterProvChange()"><option value="">全部省份</option>'+provinceCityData.map(p=>'<option value="'+p.name+'">'+p.name+'</option>').join('')+'</select>'
+    +'<select class="filter-select" id="filterCity" onchange="filterList()" style="display:none"><option value="">全部城市</option></select>'
 	    +'<select class="filter-select" id="filterCategory" onchange="filterList()"><option value="">全部分类</option>'+yqCategories.map(c=>'<option>'+c+'</option>').join('')+'</select></div>'
     +'<div class="action-bar"><button class="select-all-btn" onclick="toggleSelectAll()"><i class="ri-checkbox-blank-circle-line" id="selectAllIcon"></i>全选</button><span class="list-count" id="listCount"></span></div>'
     +'<div class="yuqing-list" id="yuqingList"></div></div>';
@@ -1483,13 +1518,14 @@ function filterList(){
   const typeF=(document.getElementById('filterSource')||{}).value||'';
   const unitF=(document.getElementById('filterUnit')||{}).value||'';
   const usedF=(document.getElementById('filterUsed')||{}).value||'';
-  const regionF=(document.getElementById('filterRegion')||{}).value||'';
+  const provF=(document.getElementById('filterProv')||{}).value||'';
+  const cityF=(document.getElementById('filterCity')||{}).value||'';
   const catF=(document.getElementById('filterCategory')||{}).value||'';
   const usedIds=getUsedIds();
   let data=yuqingData;
   data=data.filter(item=>{
     if(typeF&&item.type!==typeF)return false;
-    if(regionF&&item.region!==regionF)return false;
+    if(provF){if(cityF){if(item.region!==provF+'/'+cityF)return false}else{if(!item.region.startsWith(provF+'/'))return false}}
     if(catF&&item.category!==catF)return false;
     if(unitF){
       if(unitF==='省级'&&!item.reporter.includes('省委')&&!item.reporter.includes('省网信'))return false;
@@ -1554,7 +1590,7 @@ function confirmTag(yqId){
 
 function toggleCheck(id){if(selectedIds.has(id))selectedIds.delete(id);else selectedIds.add(id);document.getElementById('btnUse').classList.toggle('enabled',selectedIds.size>0);filterList()}
 function toggleSelectAll(){const vis=getVisibleIds();if(selectedIds.size===vis.length&&vis.length>0)selectedIds.clear();else vis.forEach(id=>selectedIds.add(id));document.getElementById('btnUse').classList.toggle('enabled',selectedIds.size>0);filterList()}
-function getVisibleIds(){const kw=(document.getElementById('searchInput')||{}).value;const kwStr=kw?kw.toLowerCase():'';const dateStart=(document.getElementById('filterDateStart')||{}).value||'';const dateEnd=(document.getElementById('filterDateEnd')||{}).value||'';const typeF=(document.getElementById('filterSource')||{}).value||'';const unitF=(document.getElementById('filterUnit')||{}).value||'';const usedF=(document.getElementById('filterUsed')||{}).value||'';const regionF=(document.getElementById('filterRegion')||{}).value||'';const catF=(document.getElementById('filterCategory')||{}).value||'';const usedIds=getUsedIds();return yuqingData.filter(i=>{if(typeF&&i.type!==typeF)return false;if(regionF&&i.region!==regionF)return false;if(catF&&i.category!==catF)return false;if(unitF){if(unitF==='省级'&&!i.reporter.includes('省委')&&!i.reporter.includes('省网信'))return false;if(unitF==='地市'&&!i.reporter.includes('市宣传部'))return false}if(dateStart){const d=i.time.slice(0,10);if(d<dateStart)return false}if(dateEnd){const d=i.time.slice(0,10);if(d>dateEnd)return false}if(usedF==='yes'&&!usedIds.has(i.id))return false;if(usedF==='no'&&usedIds.has(i.id))return false;if(kwStr){const h=(i.title+i.region+i.source+i.summary).toLowerCase();if(!h.includes(kwStr))return false}return true}).map(i=>i.id)}
+function getVisibleIds(){const kw=(document.getElementById('searchInput')||{}).value;const kwStr=kw?kw.toLowerCase():'';const dateStart=(document.getElementById('filterDateStart')||{}).value||'';const dateEnd=(document.getElementById('filterDateEnd')||{}).value||'';const typeF=(document.getElementById('filterSource')||{}).value||'';const unitF=(document.getElementById('filterUnit')||{}).value||'';const usedF=(document.getElementById('filterUsed')||{}).value||'';const provF=(document.getElementById('filterProv')||{}).value||'';const cityF=(document.getElementById('filterCity')||{}).value||'';const catF=(document.getElementById('filterCategory')||{}).value||'';const usedIds=getUsedIds();return yuqingData.filter(i=>{if(typeF&&i.type!==typeF)return false;if(provF){if(cityF){if(i.region!==provF+'/'+cityF)return false}else{if(!i.region.startsWith(provF+'/'))return false}}if(catF&&i.category!==catF)return false;if(unitF){if(unitF==='省级'&&!i.reporter.includes('省委')&&!i.reporter.includes('省网信'))return false;if(unitF==='地市'&&!i.reporter.includes('市宣传部'))return false}if(dateStart){const d=i.time.slice(0,10);if(d<dateStart)return false}if(dateEnd){const d=i.time.slice(0,10);if(d>dateEnd)return false}if(usedF==='yes'&&!usedIds.has(i.id))return false;if(usedF==='no'&&usedIds.has(i.id))return false;if(kwStr){const h=(i.title+i.region+i.source+i.summary).toLowerCase();if(!h.includes(kwStr))return false}return true}).map(i=>i.id)}
 
 /* ===== Detail ===== */
 function renderDetailPage(id){
@@ -1581,7 +1617,7 @@ function addReportItem(){
   const card=document.createElement('div');card.className='report-item-card';card.id='rptItem-'+n;
   card.innerHTML='<div class="item-header"><span class="item-number">第 '+n+' 条舆情</span>'+(n>1?'<button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="removeReportItem('+n+')"><i class="ri-close-line"></i></button>':'')+'</div>'
     +'<div class="form-row"><div class="form-group"><label>上报时间<span class="req">*</span></label><input class="form-control" type="datetime-local" data-field="time"></div>'
-    +'<div class="form-group"><label>舆情地域<span class="req">*</span></label><select class="form-control" data-field="region" onchange="autoFillUnit(this,'+n+')"><option value="">请选择</option>'+allRegions.map(r=>'<option>'+r+'</option>').join('')+'</select></div></div>'
+    +'<div class="form-group"><label>舆情地域<span class="req">*</span></label><div style="display:flex;gap:8px"><select class="form-control" id="rptProv-'+n+'" onchange="onReportProvChange('+n+')" style="flex:1"><option value="">请选择省份</option>'+provinceCityData.map(p=>'<option value="'+p.name+'">'+p.name+'</option>').join('')+'</select><select class="form-control" id="rptCity-'+n+'" onchange="onReportCityChange('+n+')" style="flex:1" disabled><option value="">请先选省份</option></select></div></div></div>'
     +'<div class="form-row"><div class="form-group"><label>报送单位</label><input class="form-control" data-field="unit" id="rptUnit-'+n+'" value="'+loginUser.org+'" style="background:#fafafa"></div></div>'
     +'<div class="form-row"><div class="form-group" style="flex:none;width:100%"><label>标题<span class="req">*</span></label><input class="form-control" data-field="title" placeholder="请输入舆情标题"></div></div>'
     +'<div class="form-row"><div class="form-group" style="flex:none;width:100%"><label>内容<span class="req">*</span></label><textarea class="form-control" data-field="content" rows="3" placeholder="请详细描述舆情事件经过、传播情况、影响范围等..."></textarea></div></div>'
@@ -1589,11 +1625,14 @@ function addReportItem(){
     +'<div class="form-row"><div class="form-group" style="flex:none;width:100%"><label>处置方式</label><textarea class="form-control" data-field="handling" rows="2" placeholder="指导妥善处理..."></textarea></div></div>';
   c.appendChild(card);updateFormCount();
 }
-function autoFillUnit(sel,n){document.getElementById('rptUnit-'+n).value=regionUnitMap[sel.value]||loginUser.org}
+function autoFillUnit(n){const prov=document.getElementById('rptProv-'+n);const city=document.getElementById('rptCity-'+n);const val=(prov&&city&&prov.value&&city.value)?prov.value+'/'+city.value:'';document.getElementById('rptUnit-'+n).value=regionUnitMap[val]||loginUser.org}
+function onReportProvChange(n){const provSel=document.getElementById('rptProv-'+n);const citySel=document.getElementById('rptCity-'+n);citySel.innerHTML='<option value="">请选择城市</option>';citySel.disabled=false;if(provSel.value){const prov=provinceCityData.find(p=>p.name===provSel.value);if(prov){prov.cities.forEach(c=>{citySel.innerHTML+='<option value="'+c+'">'+c+'</option>'})}}autoFillUnit(n)}
+function onReportCityChange(n){autoFillUnit(n)}
+function onFilterProvChange(){const provSel=document.getElementById('filterProv');const citySel=document.getElementById('filterCity');citySel.innerHTML='<option value="">全部城市</option>';if(provSel.value){citySel.style.display='';const prov=provinceCityData.find(p=>p.name===provSel.value);if(prov){prov.cities.forEach(c=>{citySel.innerHTML+='<option value="'+c+'">'+c+'</option>'})}}else{citySel.style.display='none'}citySel.value='';filterList()}
 function removeReportItem(n){const c=document.getElementById('rptItem-'+n);if(c){c.style.opacity='0';c.style.transition='all .3s';setTimeout(()=>{c.remove();updateFormCount()},300)}}
 function updateFormCount(){const c=document.querySelectorAll('#reportFormList .report-item-card').length;document.getElementById('reportFormCount').textContent='共 '+c+' 条';document.getElementById('btnSubmitReport').innerHTML='<i class="ri-send-plane-line"></i>提交上报（'+c+' 条）'}
 function resetReportForm(){document.getElementById('reportFormList').innerHTML='';reportItemCount=0;addReportItem()}
-function submitAllReportItems(){const cards=document.querySelectorAll('#reportFormList .report-item-card');if(!cards.length){showToast('error','请至少填写一条');return}let valid=true;cards.forEach(card=>{card.querySelectorAll('[data-field]').forEach(el=>{if(el.closest('.form-group').querySelector('.req')&&!el.value.trim()){el.classList.add('error');valid=false}else el.classList.remove('error')})});if(!valid){showToast('error','请完善必填项');return}showToast('success','成功上报 '+cards.length+' 条舆情');setTimeout(()=>navigate('summary'),800)}
+function submitAllReportItems(){const cards=document.querySelectorAll('#reportFormList .report-item-card');if(!cards.length){showToast('error','请至少填写一条');return}let valid=true;cards.forEach(card=>{card.querySelectorAll('[data-field]').forEach(el=>{if(el.closest('.form-group').querySelector('.req')&&!el.value.trim()){el.classList.add('error');valid=false}else el.classList.remove('error')});const n=card.id.replace('rptItem-','');const prov=document.getElementById('rptProv-'+n);const city=document.getElementById('rptCity-'+n);if(prov&&!prov.value){prov.classList.add('error');valid=false}else if(prov)prov.classList.remove('error');if(city&&!city.value){city.classList.add('error');valid=false}else if(city)city.classList.remove('error')});if(!valid){showToast('error','请完善必填项');return}showToast('success','成功上报 '+cards.length+' 条舆情');setTimeout(()=>navigate('summary'),800)}
 
 /* ===== Use to Report ===== */
 function handleUseToReport(){if(selectedIds.size===0)return;const drafts=reportData.filter(r=>r.status==='draft');if(!drafts.length){showModal('选择目标报告','<div style="text-align:center;padding:20px 0"><i class="ri-file-add-line" style="font-size:36px;color:var(--text-quaternary);display:block;margin-bottom:12px"></i><p style="font-size:14px;color:var(--text-secondary);margin-bottom:4px">暂无草稿报告</p><p style="font-size:12px;color:var(--text-tertiary)">将自动创建新报告并录用选中舆情</p></div>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="useToNewReport()"><i class="ri-add-line"></i>新建报告并录用</button>');return}const opts=drafts.map(r=>'<label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--border-light);border-radius:var(--radius-md);cursor:pointer;margin-bottom:8px"><input type="radio" name="rptChoice" value="'+r.id+'" style="accent-color:var(--primary)"><div><div style="font-size:13px;font-weight:500">'+r.title+'</div><div style="font-size:11px;color:var(--text-tertiary)">'+r.id+'</div></div></label>').join('');showModal('选择目标报告',opts,'<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmUseToReport()">确认录用</button>')}
@@ -2082,9 +2121,11 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`
 
 #### 4.3.6 地域筛选
 
-- 下拉选择框，选项：
-  - 全部地域（默认）
-  - 各地市列表（浙江/杭州、浙江/宁波、浙江/温州、浙江/绍兴、浙江/台州、浙江/嘉兴、浙江/湖州、浙江/金华、浙江/衢州、浙江/丽水、浙江/舟山）
+- 二级级联控件（省→市），精确到市
+- 第一级：省份下拉，含"全部省份"选项，支持全国所有省级行政区
+- 第二级：城市下拉，默认隐藏，选择省份后动态显示对应地级市列表，含"全部城市"选项
+- 仅选省份：筛选该省份下所有地市的舆情
+- 选省份+城市：精确筛选该城市的舆情
 - 选择后立即过滤列表
 
 #### 4.3.7 舆情分类筛选
@@ -2209,7 +2250,9 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`
 
 2. **舆情地域**
    - 必填
-   - 下拉选择，选项为行政区划列表（如杭州、宁波等）
+   - 二级级联控件（省→市），精确到市
+   - 第一级：省份下拉，支持全国所有省级行政区
+   - 第二级：城市下拉，默认禁用，选择省份后动态启用并填充对应地级市
    - 选择后自动触发"报送单位"字段的填充
 
 3. **报送单位**
