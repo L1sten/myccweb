@@ -504,7 +504,7 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 - **顶部 Logo 区**
   - 系统名称"舆情报送与管理系统"，配蓝色圆角图标
 
-- **核心功能分组**
+- **功能菜单**
   - 舆情汇总：所有角色可见。地市人员仅可查看本单位上报数据，舆情处和管理员可查看全部数据并使用录用功能
   - 报告管理：仅舆情处和管理员可见。地市人员无此入口
 
@@ -578,7 +578,6 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
   - 全部单位（默认）
   - 省级：筛选上报单位包含"省委""省网信"的舆情
   - 地市：筛选上报单位包含"市宣传部"的舆情
-  - 专班：筛选上报单位包含"专班""网信"的舆情
 - 选择后立即过滤列表
 
 #### 4.3.5 录用状态筛选
@@ -593,7 +592,7 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 - 下拉选择框，选项：
   - 全部地域（默认）
-  - 各地市列表（杭州、宁波、温州、绍兴、台州、嘉兴、湖州、金华、衢州、丽水、舟山）
+  - 各地市列表（浙江/杭州、浙江/宁波、浙江/温州、浙江/绍兴、浙江/台州、浙江/嘉兴、浙江/湖州、浙江/金华、浙江/衢州、浙江/丽水、浙江/舟山）
 - 选择后立即过滤列表
 
 #### 4.3.7 舆情分类筛选
@@ -1017,28 +1016,25 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
    - 格式：XX市宣传部 / 省委宣传部
 
 3. **角色**
-   - 取值：系统中配置的角色名称
-   - 交互方式：下拉选择框，选项从角色管理模块同步
-   - 切换后立即生效，显示成功提示
+   - 取值：用户被分配的多个角色名称，以分号（；）分隔展示
 
-4. **浙政钉账号**
-   - 取值：浙政钉的用户标识
-
-5. **状态**
+4. **状态**
    - 取值：正常 / 停用
    - 交互方式：滑动开关，点击切换启用/停用
    - 切换后立即生效，显示成功提示
    - 显示规则：启用显示绿色圆点+绿色文字"正常"，停用显示灰色圆点+灰色文字"停用"
 
-6. **操作**
-   - "编辑"按钮：弹出编辑弹窗，修改用户姓名、所属单位、角色、浙政钉账号
+5. **操作**
+   - "编辑"按钮：弹出编辑弹窗，修改用户所属单位和角色分配
 
 #### 8.1.4 新增用户
 
 - 点击"新增用户"按钮弹出弹窗
-- 填写字段：姓名、所属单位（下拉选择）、角色（下拉选择）、浙政钉账号
-- 校验规则：姓名和浙政钉账号为必填
+- 弹窗展示组织树中的可选用户列表（按省分组，仅展示未在系统中创建账号的人员），以单选方式选择
+- 角色分配区域支持多选（复选框），可同时分配多个角色
+- 校验规则：必须选择一个用户且至少分配一个角色
 - 确认后用户添加到列表，状态默认为"正常"
+- 若选择的用户已在系统中存在，则为其追加角色
 
 ### 8.2 角色管理
 
@@ -1087,12 +1083,11 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
    - 顶部操作区：
      - "添加用户"按钮：弹出弹窗，多选未属于当前角色的用户，确认后加入当前角色
      - "移除用户"按钮：勾选用户后出现，点击后弹出确认弹窗，批量移除选中用户
-     - 搜索框，支持按姓名、所属单位、浙政钉账号模糊搜索
+     - 搜索框，支持按姓名、所属单位模糊搜索
    - 用户列表以表格形式展示，列字段：
      - 勾选框：支持单选和全选
      - 姓名
      - 所属单位
-     - 浙政钉账号
      - 状态标签：已开通、已停用
      - 操作："移除"链接
    - 底部显示用户总数
@@ -1133,14 +1128,10 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 #### 8.3.2 页面标题区
 
 - 标题"部门管理"
-- 副标题"浙政钉组织架构同步，不可编辑"
 
 #### 8.3.3 统计概览
 
-页面顶部展示两个统计卡片：
-
-1. **部门总数**：所有末级部门（县级/处级）的数量
-2. **人员总数**：全部门下所有人员的数量
+无统计概览卡片。
 
 #### 8.3.4 组织树展示
 
@@ -1258,7 +1249,7 @@ function buildSidebar(){
     {id:'users',icon:'ri-user-settings-line',title:'用户管理'},
     {id:'roles',icon:'ri-shield-star-line',title:'角色管理'}
   ];
-  let html='<div class="nav-label">核心功能</div>';
+  let html='';
   items.forEach(item=>{
     html+='<div class="nav-item" data-page="'+item.id+'" onclick="navigate(\''+item.id+'\')">'
       +'<span class="nav-icon"><i class="'+item.icon+'"></i></span>'
@@ -1278,26 +1269,26 @@ function buildSidebar(){
 const yuqingData=[
   {id:'YQ-20260326-007',type:'外省镜鉴',region:'江苏/南京',title:'江苏某地拆迁补偿标准争议引发集中讨论',source:'省网信办（外省监测）',time:'2026-03-26 11:20',summary:'近日，江苏省某地因城市更新项目引发的拆迁补偿标准争议在网络上持续发酵。部分居民认为补偿标准偏低，通过社交媒体表达诉求。',severity:'较大',reporter:'省网信办'},
   {id:'YQ-20260326-006',type:'外省镜鉴',region:'山西/太原',title:'"山西某高校教师评优争议"登上微博热搜榜',source:'省网信办（外省监测）',time:'2026-03-26 11:00',summary:'山西省某高校教师评优过程中疑似存在不公平现象，相关话题登上微博热搜。',severity:'一般',reporter:'省网信办'},
-  {id:'YQ-20260326-005',type:'本省',region:'温州',category:'',title:'喜临门温州工厂用工待遇问题引关注',source:'温州市宣传部',time:'2026-03-26 10:30',summary:'有网友在社交平台发布喜临门温州工厂员工待遇相关帖文，反映加班费计算方式和社保缴纳基数等问题。',severity:'较大',reporter:'温州市宣传部'},
-  {id:'YQ-20260326-004',type:'本省',region:'宁波',category:'',title:'某网络平台涉嫌虚假宣传问题曝光',source:'宁波市宣传部',time:'2026-03-26 10:00',summary:'宁波市市场监管局接到多名消费者举报，称某知名电商平台上的本地商户涉嫌虚假宣传。',severity:'较大',reporter:'宁波市宣传部'},
-  {id:'YQ-20260326-003',type:'本省',region:'杭州',category:'',title:'某知名品牌杭州门店服务纠纷网络发酵',source:'杭州市宣传部',time:'2026-03-26 09:40',summary:'消费者在某国际知名品牌杭州门店购物时遭遇服务纠纷，相关视频被上传至社交平台后迅速传播。',severity:'一般',reporter:'杭州市宣传部'},
-  {id:'YQ-20260326-002',type:'本省',region:'绍兴',category:'',title:'绍兴文理学院课程调整引发学生讨论',source:'绍兴市宣传部',time:'2026-03-26 09:15',summary:'绍兴文理学院近日发布课程调整通知，部分专业课程设置有较大变动，引发在校学生热议。',severity:'一般',reporter:'绍兴市宣传部'},
-  {id:'YQ-20260326-001',type:'本省',region:'台州',category:'治安事件',title:'台州市某化工企业安全事故引发周边群众关注',source:'台州市宣传部',time:'2026-03-26 08:30',summary:'台州市某化工企业发生安全事故，造成一定环境影响。周边居民通过社交媒体传播现场图片和视频。',severity:'重大',reporter:'台州市宣传部'}
+  {id:'YQ-20260326-005',type:'本省',region:'浙江/温州',category:'',title:'喜临门温州工厂用工待遇问题引关注',source:'温州市宣传部',time:'2026-03-26 10:30',summary:'有网友在社交平台发布喜临门温州工厂员工待遇相关帖文，反映加班费计算方式和社保缴纳基数等问题。',severity:'较大',reporter:'温州市宣传部'},
+  {id:'YQ-20260326-004',type:'本省',region:'浙江/宁波',category:'',title:'某网络平台涉嫌虚假宣传问题曝光',source:'宁波市宣传部',time:'2026-03-26 10:00',summary:'宁波市市场监管局接到多名消费者举报，称某知名电商平台上的本地商户涉嫌虚假宣传。',severity:'较大',reporter:'宁波市宣传部'},
+  {id:'YQ-20260326-003',type:'本省',region:'浙江/杭州',category:'',title:'某知名品牌杭州门店服务纠纷网络发酵',source:'杭州市宣传部',time:'2026-03-26 09:40',summary:'消费者在某国际知名品牌杭州门店购物时遭遇服务纠纷，相关视频被上传至社交平台后迅速传播。',severity:'一般',reporter:'杭州市宣传部'},
+  {id:'YQ-20260326-002',type:'本省',region:'浙江/绍兴',category:'',title:'绍兴文理学院课程调整引发学生讨论',source:'绍兴市宣传部',time:'2026-03-26 09:15',summary:'绍兴文理学院近日发布课程调整通知，部分专业课程设置有较大变动，引发在校学生热议。',severity:'一般',reporter:'绍兴市宣传部'},
+  {id:'YQ-20260326-001',type:'本省',region:'浙江/台州',category:'治安事件',title:'台州市某化工企业安全事故引发周边群众关注',source:'台州市宣传部',time:'2026-03-26 08:30',summary:'台州市某化工企业发生安全事故，造成一定环境影响。周边居民通过社交媒体传播现场图片和视频。',severity:'重大',reporter:'台州市宣传部'}
 ];
-const regionUnitMap={'杭州':'杭州市宣传部','宁波':'宁波市宣传部','温州':'温州市宣传部','绍兴':'绍兴市宣传部','台州':'台州市宣传部','嘉兴':'嘉兴市宣传部','湖州':'湖州市宣传部','金华':'金华市宣传部','衢州':'衢州市宣传部','丽水':'丽水市宣传部','舟山':'舟山市宣传部'};
+const regionUnitMap={'浙江/杭州':'杭州市宣传部','浙江/宁波':'宁波市宣传部','浙江/温州':'温州市宣传部','浙江/绍兴':'绍兴市宣传部','浙江/台州':'台州市宣传部','浙江/嘉兴':'嘉兴市宣传部','浙江/湖州':'湖州市宣传部','浙江/金华':'金华市宣传部','浙江/衢州':'衢州市宣传部','浙江/丽水':'丽水市宣传部','浙江/舟山':'舟山市宣传部'};
 const yqCategories=['刑事案件','治安事件','交通事故','执法不当及违纪违法','非正常死亡或失踪','其他'];
-const allRegions=['杭州','宁波','温州','绍兴','台州','嘉兴','湖州','金华','衢州','丽水','舟山'];
+const allRegions=['浙江/杭州','浙江/宁波','浙江/温州','浙江/绍兴','浙江/台州','浙江/嘉兴','浙江/湖州','浙江/金华','浙江/衢州','浙江/丽水','浙江/舟山'];
 let reportData=[
   {id:'BG-20260410-001',title:'2026年4月10日舆情信息专报',status:'draft',time:'2026-04-10 09:00',items:[...yuqingData.slice(0,5)]},
   {id:'BG-20260409-001',title:'2026年4月9日舆情信息专报',status:'published',time:'2026-04-09 17:00',items:[...yuqingData.slice(2,7)]}
 ];
 const adminUsers=[
-  {id:1,name:'张伟',org:'省委宣传部',role:'舆情处人员',status:'正常',ding:'张伟'},
-  {id:2,name:'李明',org:'杭州市宣传部',role:'地市人员',status:'正常',ding:'李明'},
-  {id:3,name:'王芳',org:'宁波市宣传部',role:'地市人员',status:'正常',ding:'王芳'},
-  {id:4,name:'赵强',org:'温州市宣传部',role:'地市人员',status:'正常',ding:'赵强'},
-  {id:5,name:'王超',org:'省委宣传部',role:'系统管理员',status:'正常',ding:'王超'},
-  {id:6,name:'陈静',org:'绍兴市宣传部',role:'地市人员',status:'停用',ding:'陈静'}
+  {id:1,name:'张伟',org:'省委宣传部',roles:['舆情处人员'],status:'正常'},
+  {id:2,name:'李明',org:'杭州市宣传部',roles:['地市人员'],status:'正常'},
+  {id:3,name:'王芳',org:'宁波市宣传部',roles:['地市人员'],status:'正常'},
+  {id:4,name:'赵强',org:'温州市宣传部',roles:['地市人员'],status:'正常'},
+  {id:5,name:'王超',org:'省委宣传部',roles:['系统管理员'],status:'正常'},
+  {id:6,name:'陈静',org:'绍兴市宣传部',roles:['地市人员'],status:'停用'}
 ];
 const permTree=[
   {id:'p1',label:'舆情汇总',children:[
@@ -1480,7 +1471,7 @@ function renderSummaryPage(){
     +'<span class="filter-sep">至</span>'
     +'<input type="date" class="filter-date" id="filterDateEnd" onchange="filterList()">'
     +'<select class="filter-select" id="filterSource" onchange="filterList()"><option value="">全部来源</option><option value="本省">本省</option><option value="外省镜鉴">外省镜鉴</option></select>'
-    +'<select class="filter-select" id="filterUnit" onchange="filterList()"><option value="">全部单位</option><option value="省级">省级</option><option value="地市">地市</option><option value="专班">专班</option></select>'
+    +'<select class="filter-select" id="filterUnit" onchange="filterList()"><option value="">全部单位</option><option value="省级">省级</option><option value="地市">地市</option></select>'
     +'<select class="filter-select" id="filterUsed" onchange="filterList()"><option value="">录用状态</option><option value="yes">已录用</option><option value="no">未录用</option></select>'
     +'<select class="filter-select" id="filterRegion" onchange="filterList()"><option value="">全部地域</option>'+allRegions.map(r=>'<option>'+r+'</option>').join('')+'</select>'
 	    +'<select class="filter-select" id="filterCategory" onchange="filterList()"><option value="">全部分类</option>'+yqCategories.map(c=>'<option>'+c+'</option>').join('')+'</select></div>'
@@ -1507,7 +1498,6 @@ function filterList(){
     if(unitF){
       if(unitF==='省级'&&!item.reporter.includes('省委')&&!item.reporter.includes('省网信'))return false;
       if(unitF==='地市'&&!item.reporter.includes('市宣传部'))return false;
-      if(unitF==='专班'&&!item.reporter.includes('专班')&&!item.reporter.includes('网信'))return false;
     }
     if(dateStart){const d=item.time.slice(0,10);if(d<dateStart)return false}
     if(dateEnd){const d=item.time.slice(0,10);if(d>dateEnd)return false}
@@ -1568,7 +1558,7 @@ function confirmTag(yqId){
 
 function toggleCheck(id){if(selectedIds.has(id))selectedIds.delete(id);else selectedIds.add(id);document.getElementById('btnUse').classList.toggle('enabled',selectedIds.size>0);filterList()}
 function toggleSelectAll(){const vis=getVisibleIds();if(selectedIds.size===vis.length&&vis.length>0)selectedIds.clear();else vis.forEach(id=>selectedIds.add(id));document.getElementById('btnUse').classList.toggle('enabled',selectedIds.size>0);filterList()}
-function getVisibleIds(){const kw=(document.getElementById('searchInput')||{}).value;const kwStr=kw?kw.toLowerCase():'';const dateStart=(document.getElementById('filterDateStart')||{}).value||'';const dateEnd=(document.getElementById('filterDateEnd')||{}).value||'';const typeF=(document.getElementById('filterSource')||{}).value||'';const unitF=(document.getElementById('filterUnit')||{}).value||'';const usedF=(document.getElementById('filterUsed')||{}).value||'';const regionF=(document.getElementById('filterRegion')||{}).value||'';const catF=(document.getElementById('filterCategory')||{}).value||'';const usedIds=getUsedIds();return yuqingData.filter(i=>{if(typeF&&i.type!==typeF)return false;if(regionF&&i.region!==regionF)return false;if(catF&&i.category!==catF)return false;if(unitF){if(unitF==='省级'&&!i.reporter.includes('省委')&&!i.reporter.includes('省网信'))return false;if(unitF==='地市'&&!i.reporter.includes('市宣传部'))return false;if(unitF==='专班'&&!i.reporter.includes('专班')&&!i.reporter.includes('网信'))return false}if(dateStart){const d=i.time.slice(0,10);if(d<dateStart)return false}if(dateEnd){const d=i.time.slice(0,10);if(d>dateEnd)return false}if(usedF==='yes'&&!usedIds.has(i.id))return false;if(usedF==='no'&&usedIds.has(i.id))return false;if(kwStr){const h=(i.title+i.region+i.source+i.summary).toLowerCase();if(!h.includes(kwStr))return false}return true}).map(i=>i.id)}
+function getVisibleIds(){const kw=(document.getElementById('searchInput')||{}).value;const kwStr=kw?kw.toLowerCase():'';const dateStart=(document.getElementById('filterDateStart')||{}).value||'';const dateEnd=(document.getElementById('filterDateEnd')||{}).value||'';const typeF=(document.getElementById('filterSource')||{}).value||'';const unitF=(document.getElementById('filterUnit')||{}).value||'';const usedF=(document.getElementById('filterUsed')||{}).value||'';const regionF=(document.getElementById('filterRegion')||{}).value||'';const catF=(document.getElementById('filterCategory')||{}).value||'';const usedIds=getUsedIds();return yuqingData.filter(i=>{if(typeF&&i.type!==typeF)return false;if(regionF&&i.region!==regionF)return false;if(catF&&i.category!==catF)return false;if(unitF){if(unitF==='省级'&&!i.reporter.includes('省委')&&!i.reporter.includes('省网信'))return false;if(unitF==='地市'&&!i.reporter.includes('市宣传部'))return false}if(dateStart){const d=i.time.slice(0,10);if(d<dateStart)return false}if(dateEnd){const d=i.time.slice(0,10);if(d>dateEnd)return false}if(usedF==='yes'&&!usedIds.has(i.id))return false;if(usedF==='no'&&usedIds.has(i.id))return false;if(kwStr){const h=(i.title+i.region+i.source+i.summary).toLowerCase();if(!h.includes(kwStr))return false}return true}).map(i=>i.id)}
 
 /* ===== Detail ===== */
 function renderDetailPage(id){
@@ -1675,10 +1665,7 @@ function confirmSelectFromSummary(){const ch=document.querySelectorAll('#modalBo
 /* ===== Admin Pages ===== */
 function renderDepartmentsPage(){
   const pc=document.getElementById('pageContainer');
-  const totalUsers=countDeptUsers(departmentData);
-  const totalDepts=getDeptLeaves(departmentData).length;
-  let html='<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">部门管理</div><div class="page-desc">浙政钉组织架构同步，不可编辑</div></div></div>';
-  html+='<div style="display:flex;gap:12px;margin-bottom:16px"><div class="stat-card" style="flex:none;width:160px"><div class="stat-icon blue"><i class="ri-building-2-line"></i></div><div class="stat-info"><div class="stat-num">'+totalDepts+'</div><div class="stat-label">部门总数</div></div></div><div class="stat-card" style="flex:none;width:160px"><div class="stat-icon green"><i class="ri-group-line"></i></div><div class="stat-info"><div class="stat-num">'+totalUsers+'</div><div class="stat-label">人员总数</div></div></div></div>';
+  let html='<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">部门管理</div></div></div>';
   html+='<div class="admin-card" id="deptTreeContainer"></div>';
   html+='</div>';
   pc.innerHTML=html;
@@ -1725,16 +1712,12 @@ function buildDeptTreeHTML(nodes,depth){
   return html;
 }
 function renderUsersPage(){
-  document.getElementById('pageContainer').innerHTML='<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">用户管理</div></div><button class="btn btn-primary" onclick="showAddUserModal()"><i class="ri-add-line"></i>新增用户</button></div><div class="admin-card"><table class="admin-table"><thead><tr><th>姓名</th><th>所属单位</th><th>角色</th><th>浙政钉账号</th><th>状态</th><th>操作</th></tr></thead><tbody id="userTableBody"></tbody></table></div></div>';
+  document.getElementById('pageContainer').innerHTML='<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">用户管理</div></div><button class="btn btn-primary" onclick="showAddUserModal()"><i class="ri-add-line"></i>新增用户</button></div><div class="admin-card"><table class="admin-table"><thead><tr><th>姓名</th><th>所属单位</th><th>角色</th><th>状态</th><th>操作</th></tr></thead><tbody id="userTableBody"></tbody></table></div></div>';
   renderUserRows();
 }
 function renderUserRows(){
   const tb=document.getElementById('userTableBody');if(!tb)return;
-  tb.innerHTML=adminUsers.map(u=>'<tr><td style="font-weight:500">'+u.name+'</td><td>'+u.org+'</td><td><select class="form-control" style="padding:4px 8px;font-size:12px;min-width:auto;width:auto" onchange="changeUserRole('+u.id+',this.value)">'+adminRoles.map(r=>'<option value="'+r.id+'"'+(u.role===r.name?' selected':'')+'>'+r.name+'</option>').join('')+'</select></td><td>'+u.ding+'</td><td><div class="toggle-wrap" onclick="toggleUserStatus('+u.id+')"><div class="toggle'+(u.status==='正常'?' on':'')+'"></div><span style="font-size:12px;color:'+(u.status==='正常'?'var(--green)':'var(--text-quaternary)')+'">'+u.status+'</span></div></td><td><button class="btn btn-outline btn-sm" onclick="showEditUserModal('+u.id+')"><i class="ri-edit-line"></i></button></td></tr>').join('');
-}
-function changeUserRole(uid,rid){
-  const u=adminUsers.find(x=>x.id===uid);const r=adminRoles.find(x=>x.id===rid);
-  if(u&&r){u.role=r.name;showToast('success','已将 '+u.name+' 的角色切换为 '+r.name)}
+  tb.innerHTML=adminUsers.map(u=>'<tr><td style="font-weight:500">'+u.name+'</td><td>'+u.org+'</td><td>'+(u.roles||[]).join('；')+'</td><td><div class="toggle-wrap" onclick="toggleUserStatus('+u.id+')"><div class="toggle'+(u.status==='正常'?' on':'')+'"></div><span style="font-size:12px;color:'+(u.status==='正常'?'var(--green)':'var(--text-quaternary)')+'">'+u.status+'</span></div></td><td><button class="btn btn-outline btn-sm" onclick="showEditUserModal('+u.id+')"><i class="ri-edit-line"></i></button></td></tr>').join('');
 }
 function toggleUserStatus(uid){
   const u=adminUsers.find(x=>x.id===uid);if(!u)return;
@@ -1743,41 +1726,56 @@ function toggleUserStatus(uid){
   renderUserRows();
 }
 function showAddUserModal(){
-  const leaves=getDeptLeaves(departmentData);
-  const body='<div style="display:flex;flex-direction:column;gap:12px">'
-    +'<div class="form-group"><label>姓名</label><input class="form-control" id="newUserName" placeholder="请输入姓名"></div>'
-    +'<div class="form-group"><label>所属单位</label><select class="form-control" id="newUserOrg">'+leaves.map(d=>{const path=getDeptPath(departmentData,d.id);const label=path?path.join(' / '):d.name;return'<option value="'+d.name+'">'+label+'</option>'}).join('')+'</select></div>'
-    +'<div class="form-group"><label>角色</label><select class="form-control" id="newUserRole">'+adminRoles.map(r=>'<option value="'+r.id+'">'+r.name+'</option>').join('')+'</select></div>'
-    +'<div class="form-group"><label>浙政钉账号</label><input class="form-control" id="newUserDing" placeholder="请输入浙政钉账号"></div></div>';
+  const allTreeUsers=getAllDeptUsers(departmentData);
+  const existingDings=new Set(adminUsers.map(u=>u.name));
+  const avail=allTreeUsers.filter(u=>!existingDings.has(u.name));
+  let userOpts='';
+  departmentData.forEach(prov=>{
+    const provUsers=getAllDeptUsers(prov.children||[]).filter(u=>!existingDings.has(u.name));
+    if(!provUsers.length)return;
+    userOpts+='<div style="margin-bottom:8px"><div style="font-size:11px;font-weight:600;color:var(--text-tertiary);padding:4px 0 6px;text-transform:uppercase;letter-spacing:0.5px">'+prov.name+'</div>';
+    provUsers.forEach(u=>{
+      const path=getDeptPath(departmentData,u.deptId);
+      const pathStr=path?path.slice(0,-1).join(' / '):'';
+      userOpts+='<label style="display:flex;align-items:center;gap:10px;padding:6px 12px;border:1px solid var(--border-light);border-radius:var(--radius-md);cursor:pointer;margin-bottom:4px"><input type="radio" name="addUserPick" value="'+u.name+'" data-org="'+u.deptName+'" style="accent-color:var(--primary)"><div style="display:flex;align-items:center;gap:8px"><span style="width:22px;height:22px;border-radius:50%;background:var(--primary-bg);color:var(--primary);display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:500">'+u.name.charAt(0)+'</span><div><span style="font-size:13px;font-weight:500">'+u.name+'</span><span style="font-size:11px;color:var(--text-tertiary);margin-left:6px">'+pathStr+'</span></div></div></label>';
+    });
+    userOpts+='</div>';
+  });
+  const roleOpts=adminRoles.map(r=>'<label style="display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer"><input type="checkbox" value="'+r.id+'" data-role-name="'+r.name+'" class="add-user-role-cb" style="accent-color:var(--primary)"><span style="font-size:13px">'+r.name+'</span></label>').join('');
+  const body='<div style="display:flex;flex-direction:column;gap:16px">'
+    +'<div><div style="font-size:13px;font-weight:500;margin-bottom:8px">选择用户</div><div style="max-height:260px;overflow-y:auto;border:1px solid var(--border-light);border-radius:var(--radius-md);padding:8px">'+(userOpts||'<div style="font-size:12px;color:var(--text-tertiary);padding:12px;text-align:center">暂无可添加用户</div>')+'</div></div>'
+    +'<div><div style="font-size:13px;font-weight:500;margin-bottom:8px">分配角色（可多选）</div><div style="border:1px solid var(--border-light);border-radius:var(--radius-md);padding:8px">'+roleOpts+'</div></div></div>';
   showModal('新增用户',body,'<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmAddUser()">确定</button>');
 }
 function confirmAddUser(){
-  const n=document.getElementById('newUserName').value.trim();
-  const o=document.getElementById('newUserOrg').value;
-  const rid=document.getElementById('newUserRole').value;
-  const d=document.getElementById('newUserDing').value.trim();
-  if(!n||!d){showToast('error','请填写完整信息');return}
-  const r=adminRoles.find(x=>x.id===rid);
-  adminUsers.push({id:Date.now(),name:n,org:o,role:r?r.name:'地市人员',status:'正常',ding:d});
-  closeModal();showToast('success','用户 '+n+' 已添加');renderUsersPage();
+  const ch=document.querySelector('input[name="addUserPick"]:checked');
+  if(!ch){showToast('error','请选择用户');return}
+  const roleCbs=document.querySelectorAll('.add-user-role-cb:checked');
+  const roles=Array.from(roleCbs).map(cb=>cb.getAttribute('data-role-name'));
+  if(!roles.length){showToast('error','请至少分配一个角色');return}
+  const name=ch.value;const org=ch.getAttribute('data-org');
+  const existing=adminUsers.find(u=>u.name===name);
+  if(existing){roles.forEach(r=>{if(!existing.roles.includes(r))existing.roles.push(r)})}
+  else{adminUsers.push({id:Date.now(),name:name,org:org,roles:roles,status:'正常'})}
+  closeModal();showToast('success','用户 '+name+' 已添加');renderUsersPage();
 }
 function showEditUserModal(uid){
   const u=adminUsers.find(x=>x.id===uid);if(!u)return;
   const leaves=getDeptLeaves(departmentData);
+  const roleOpts=adminRoles.map(r=>'<label style="display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer"><input type="checkbox" value="'+r.id+'" data-role-name="'+r.name+'" class="edit-user-role-cb"'+(u.roles&&u.roles.includes(r.name)?' checked':'')+' style="accent-color:var(--primary)"><span style="font-size:13px">'+r.name+'</span></label>').join('');
   const body='<div style="display:flex;flex-direction:column;gap:12px">'
     +'<div class="form-group"><label>姓名</label><input class="form-control" id="editUserName" value="'+u.name+'"></div>'
     +'<div class="form-group"><label>所属单位</label><select class="form-control" id="editUserOrg">'+leaves.map(d=>{const path=getDeptPath(departmentData,d.id);const label=path?path.join(' / '):d.name;return'<option value="'+d.name+'"'+(d.name===u.org?' selected':'')+'>'+label+'</option>'}).join('')+'</select></div>'
-    +'<div class="form-group"><label>角色</label><select class="form-control" id="editUserRole">'+adminRoles.map(r=>'<option value="'+r.id+'"'+(u.role===r.name?' selected':'')+'>'+r.name+'</option>').join('')+'</select></div>'
-    +'<div class="form-group"><label>浙政钉账号</label><input class="form-control" id="editUserDing" value="'+u.ding+'"></div></div>';
+    +'<div class="form-group"><label>角色（可多选）</label><div style="border:1px solid var(--border-light);border-radius:var(--radius-md);padding:8px">'+roleOpts+'</div></div></div>';
   showModal('编辑用户',body,'<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmEditUser('+uid+')">保存</button>');
 }
 function confirmEditUser(uid){
   const u=adminUsers.find(x=>x.id===uid);if(!u)return;
   u.name=document.getElementById('editUserName').value.trim()||u.name;
   u.org=document.getElementById('editUserOrg').value;
-  const rid=document.getElementById('editUserRole').value;
-  const r=adminRoles.find(x=>x.id===rid);if(r)u.role=r.name;
-  u.ding=document.getElementById('editUserDing').value.trim()||u.ding;
+  const roleCbs=document.querySelectorAll('.edit-user-role-cb:checked');
+  u.roles=Array.from(roleCbs).map(cb=>cb.getAttribute('data-role-name'));
+  if(!u.roles.length)u.roles=['地市人员'];
   closeModal();showToast('success','用户信息已更新');renderUsersPage();
 }
 
@@ -1842,7 +1840,7 @@ function switchRoleTab(idx,tabEl){
     html+='</ul><div class="perm-save-bar"><button class="btn btn-primary" onclick="showToast(\'success\',\'权限已保存\')"><i class="ri-save-line"></i>保存</button></div>';
     body.innerHTML=html;
   }else if(idx===2){
-    const users=adminUsers.filter(u=>u.role===role.name);
+    const users=adminUsers.filter(u=>u.roles&&u.roles.includes(role.name));
     if(!users.length){body.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><div style="display:flex;gap:8px"><button class="btn btn-primary btn-sm" onclick="showAddRoleUserModal(\''+role.id+'\')"><i class="ri-user-add-line"></i>添加用户</button></div></div><div class="empty-state" style="padding:40px"><i class="ri-user-line"></i><p>暂无用户属于该角色</p></div>';return}
     body.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><div style="display:flex;gap:8px"><button class="btn btn-primary btn-sm" onclick="showAddRoleUserModal(\''+role.id+'\')"><i class="ri-user-add-line"></i>添加用户</button><button class="btn btn-outline btn-sm" id="btnRemoveRoleUser" style="display:none" onclick="removeRoleUsers(\''+role.id+'\')"><i class="ri-user-minus-line"></i>移除用户</button></div><div style="position:relative"><i class="ri-search-line" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-quaternary);font-size:14px"></i><input style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 12px 6px 32px;font-size:12px;outline:none;width:180px;font-family:inherit" placeholder="搜索用户..." oninput="filterRoleUsers(this.value,\''+role.id+'\')"></div></div><div id="roleUserTable"></div>';
     renderRoleUserTable(users,role.id);
@@ -1873,39 +1871,38 @@ function renderRoleUserTable(users,roleId){
   const el=document.getElementById('roleUserTable');if(!el)return;
   selectedRoleUserIds.clear();
   if(!users.length){el.innerHTML='<div class="empty-state" style="padding:30px"><i class="ri-user-line"></i><p>无匹配用户</p></div>';updateRemoveBtn();return}
-  el.innerHTML='<table class="admin-table" style="margin-bottom:12px"><thead><tr><th style="width:40px"><div class="yq-check" style="width:16px;height:16px;margin:0 auto" onclick="toggleAllRoleUsers('+JSON.stringify(users.map(u=>u.id))+')"></div></th><th>姓名</th><th>所属单位</th><th>浙政钉账号</th><th>状态</th><th style="width:60px">操作</th></tr></thead><tbody>'+users.map(u=>'<tr><td style="text-align:center"><div class="yq-check" style="width:16px;height:16px;margin:0 auto" id="ruc-'+u.id+'" onclick="toggleRoleUserCheck('+u.id+')"></div></td><td style="font-weight:500">'+u.name+'</td><td>'+u.org+'</td><td>'+u.ding+'</td><td><span style="font-size:11px;padding:2px 8px;border-radius:999px;'+(u.status==='正常'?'background:var(--green-bg);color:var(--green)':'background:var(--orange-bg);color:var(--orange)')+'">'+(u.status==='正常'?'已开通':'已停用')+'</span></td><td><a style="font-size:12px;color:var(--primary);cursor:pointer" onclick="removeSingleRoleUser('+u.id+',\''+roleId+'\')">移除</a></td></tr>').join('')+'</tbody></table><div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0"><span style="font-size:11px;color:var(--text-quaternary)">共 '+users.length+' 条</span></div>';
+  el.innerHTML='<table class="admin-table" style="margin-bottom:12px"><thead><tr><th style="width:40px"><div class="yq-check" style="width:16px;height:16px;margin:0 auto" onclick="toggleAllRoleUsers('+JSON.stringify(users.map(u=>u.id))+')"></div></th><th>姓名</th><th>所属单位</th><th>状态</th><th style="width:60px">操作</th></tr></thead><tbody>'+users.map(u=>'<tr><td style="text-align:center"><div class="yq-check" style="width:16px;height:16px;margin:0 auto" id="ruc-'+u.id+'" onclick="toggleRoleUserCheck('+u.id+')"></div></td><td style="font-weight:500">'+u.name+'</td><td>'+u.org+'</td><td><span style="font-size:11px;padding:2px 8px;border-radius:999px;'+(u.status==='正常'?'background:var(--green-bg);color:var(--green)':'background:var(--orange-bg);color:var(--orange)')+'">'+(u.status==='正常'?'已开通':'已停用')+'</span></td><td><a style="font-size:12px;color:var(--primary);cursor:pointer" onclick="removeSingleRoleUser('+u.id+',\''+roleId+'\')">移除</a></td></tr>').join('')+'</tbody></table><div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0"><span style="font-size:11px;color:var(--text-quaternary)">共 '+users.length+' 条</span></div>';
   updateRemoveBtn();
 }
 function updateRemoveBtn(){const btn=document.getElementById('btnRemoveRoleUser');if(btn)btn.style.display=selectedRoleUserIds.size>0?'inline-flex':'none'}
 function toggleRoleUserCheck(uid){if(selectedRoleUserIds.has(uid))selectedRoleUserIds.delete(uid);else selectedRoleUserIds.add(uid);const cb=document.getElementById('ruc-'+uid);if(cb)cb.classList.toggle('checked',selectedRoleUserIds.has(uid));updateRemoveBtn()}
 function toggleAllRoleUsers(ids){const all=ids.every(id=>selectedRoleUserIds.has(id));if(all)ids.forEach(id=>selectedRoleUserIds.delete(id));else ids.forEach(id=>selectedRoleUserIds.add(id));ids.forEach(id=>{const cb=document.getElementById('ruc-'+id);if(cb)cb.classList.toggle('checked',selectedRoleUserIds.has(id))});updateRemoveBtn()}
-function filterRoleUsers(kw,roleId){const role=adminRoles.find(r=>r.id===roleId);if(!role)return;const k=kw.toLowerCase();const users=adminUsers.filter(u=>u.role===role.name&&(u.name.toLowerCase().includes(k)||u.org.toLowerCase().includes(k)||u.ding.toLowerCase().includes(k)));renderRoleUserTable(users,roleId)}
+function filterRoleUsers(kw,roleId){const role=adminRoles.find(r=>r.id===roleId);if(!role)return;const k=kw.toLowerCase();const users=adminUsers.filter(u=>u.roles&&u.roles.includes(role.name)&&(u.name.toLowerCase().includes(k)||u.org.toLowerCase().includes(k)));renderRoleUserTable(users,roleId)}
 function removeSingleRoleUser(uid,roleId){const u=adminUsers.find(x=>x.id===uid);const role=adminRoles.find(r=>r.id===roleId);if(!u||!role)return;showModal('确认移除','<p style="font-size:14px;color:var(--text-secondary)">确定将 "'+u.name+'" 从 "'+role.name+'" 角色中移除？</p>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" style="background:var(--red)" onclick="confirmRemoveSingleRoleUser('+uid+',\''+roleId+'\')">确认</button>')}
-function confirmRemoveSingleRoleUser(uid,roleId){const u=adminUsers.find(x=>x.id===uid);if(u)u.role='';closeModal();showToast('success','已移除');selectedRoleUserIds.clear();switchRoleTab(2,document.querySelectorAll('.role-tab')[2])}
+function confirmRemoveSingleRoleUser(uid,roleId){const u=adminUsers.find(x=>x.id===uid);const role=adminRoles.find(r=>r.id===roleId);if(u&&role)u.roles=(u.roles||[]).filter(r=>r!==role.name);closeModal();showToast('success','已移除');selectedRoleUserIds.clear();switchRoleTab(2,document.querySelectorAll('.role-tab')[2])}
 function removeRoleUsers(roleId){if(selectedRoleUserIds.size===0)return;const role=adminRoles.find(r=>r.id===roleId);showModal('确认移除','<p style="font-size:14px;color:var(--text-secondary)">确定将选中的 '+selectedRoleUserIds.size+' 个用户从 "'+role.name+'" 角色中移除？</p>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" style="background:var(--red)" onclick="confirmRemoveRoleUsers(\''+roleId+'\')">确认</button>')}
-function confirmRemoveRoleUsers(roleId){adminUsers.filter(u=>selectedRoleUserIds.has(u.id)).forEach(u=>u.role='');closeModal();showToast('success','已移除 '+selectedRoleUserIds.size+' 个用户');selectedRoleUserIds.clear();switchRoleTab(2,document.querySelectorAll('.role-tab')[2])}
+function confirmRemoveRoleUsers(roleId){const role=adminRoles.find(r=>r.id===roleId);adminUsers.filter(u=>selectedRoleUserIds.has(u.id)).forEach(u=>{if(role)u.roles=(u.roles||[]).filter(r=>r!==role.name)});closeModal();showToast('success','已移除 '+selectedRoleUserIds.size+' 个用户');selectedRoleUserIds.clear();switchRoleTab(2,document.querySelectorAll('.role-tab')[2])}
 function showAddRoleUserModal(roleId){
   const role=adminRoles.find(r=>r.id===roleId);if(!role)return;
   const allTreeUsers=getAllDeptUsers(departmentData);
-  const existingDings=new Set(adminUsers.filter(u=>u.role===role.name).map(u=>u.ding));
-  const avail=allTreeUsers.filter(u=>!existingDings.has(u.ding));
+  const existingNames=new Set(adminUsers.filter(u=>u.roles&&u.roles.includes(role.name)).map(u=>u.name));
+  const avail=allTreeUsers.filter(u=>!existingNames.has(u.name));
   if(!avail.length){showToast('info','所有用户已属于该角色');return}
-  // Group by province/city
   let opts='';
   departmentData.forEach(prov=>{
-    const provUsers=getAllDeptUsers(prov.children||[]).filter(u=>!existingDings.has(u.ding));
+    const provUsers=getAllDeptUsers(prov.children||[]).filter(u=>!existingNames.has(u.name));
     if(!provUsers.length)return;
     opts+='<div style="margin-bottom:8px"><div style="font-size:11px;font-weight:600;color:var(--text-tertiary);padding:4px 0 6px;text-transform:uppercase;letter-spacing:0.5px">'+prov.name+'</div>';
     provUsers.forEach(u=>{
       const path=getDeptPath(departmentData,u.deptId);
       const pathStr=path?path.slice(0,-1).join(' / '):'';
-      opts+='<label style="display:flex;align-items:center;gap:10px;padding:6px 12px;border:1px solid var(--border-light);border-radius:var(--radius-md);cursor:pointer;margin-bottom:4px"><input type="checkbox" value="'+u.ding+'" data-org="'+u.deptName+'" data-name="'+u.name+'" style="accent-color:var(--primary)"><div style="display:flex;align-items:center;gap:8px"><span style="width:22px;height:22px;border-radius:50%;background:var(--primary-bg);color:var(--primary);display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:500">'+u.name.charAt(0)+'</span><div><span style="font-size:13px;font-weight:500">'+u.name+'</span><span style="font-size:11px;color:var(--text-tertiary);margin-left:6px">'+pathStr+'</span></div></div></label>';
+      opts+='<label style="display:flex;align-items:center;gap:10px;padding:6px 12px;border:1px solid var(--border-light);border-radius:var(--radius-md);cursor:pointer;margin-bottom:4px"><input type="checkbox" value="'+u.name+'" data-org="'+u.deptName+'" style="accent-color:var(--primary)"><div style="display:flex;align-items:center;gap:8px"><span style="width:22px;height:22px;border-radius:50%;background:var(--primary-bg);color:var(--primary);display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:500">'+u.name.charAt(0)+'</span><div><span style="font-size:13px;font-weight:500">'+u.name+'</span><span style="font-size:11px;color:var(--text-tertiary);margin-left:6px">'+pathStr+'</span></div></div></label>';
     });
     opts+='</div>';
   });
   showModal('添加用户至 "'+role.name+'"','<div style="max-height:400px;overflow-y:auto">'+opts+'</div>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmAddRoleUsers(\''+roleId+'\')">确认添加</button>');
 }
-function confirmAddRoleUsers(roleId){const role=adminRoles.find(r=>r.id===roleId);if(!role)return;const ch=document.querySelectorAll('#modalBody input[type=checkbox]:checked');if(!ch.length){showToast('error','请选择用户');return}ch.forEach(cb=>{const ding=cb.value;const u=adminUsers.find(x=>x.ding===ding);if(u){u.role=role.name}else{adminUsers.push({id:Date.now()+Math.random(),name:cb.getAttribute('data-name'),org:cb.getAttribute('data-org'),role:role.name,status:'正常',ding:ding})}});closeModal();showToast('success','已添加 '+ch.length+' 个用户');switchRoleTab(2,document.querySelectorAll('.role-tab')[2])}
+function confirmAddRoleUsers(roleId){const role=adminRoles.find(r=>r.id===roleId);if(!role)return;const ch=document.querySelectorAll('#modalBody input[type=checkbox]:checked');if(!ch.length){showToast('error','请选择用户');return}ch.forEach(cb=>{const name=cb.value;const u=adminUsers.find(x=>x.name===name);if(u){if(!u.roles)u.roles=[];if(!u.roles.includes(role.name))u.roles.push(role.name)}else{adminUsers.push({id:Date.now()+Math.random(),name:name,org:cb.getAttribute('data-org'),roles:[role.name],status:'正常'})}});closeModal();showToast('success','已添加 '+ch.length+' 个用户');switchRoleTab(2,document.querySelectorAll('.role-tab')[2])}
 
 /* ===== Toast & Modal ===== */
 function showToast(type,msg){const c=document.getElementById('toastContainer');const icons={success:'ri-check-line',error:'ri-close-circle-line',info:'ri-information-line'};const t=document.createElement('div');t.className='toast toast-'+type;t.innerHTML='<i class="'+(icons[type]||'ri-information-line')+'"></i>'+msg;c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(50px)';t.style.transition='all .3s';setTimeout(()=>t.remove(),300)},2500)}
@@ -2011,7 +2008,7 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`
 - **顶部 Logo 区**
   - 系统名称"舆情报送与管理系统"，配蓝色圆角图标
 
-- **核心功能分组**
+- **功能菜单**
   - 舆情汇总：所有角色可见。地市人员仅可查看本单位上报数据，舆情处和管理员可查看全部数据并使用录用功能
   - 报告管理：仅舆情处和管理员可见。地市人员无此入口
 
@@ -2084,7 +2081,6 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`
   - 全部单位（默认）
   - 省级：筛选上报单位包含"省委""省网信"的舆情
   - 地市：筛选上报单位包含"市宣传部"的舆情
-  - 专班：筛选上报单位包含"专班""网信"的舆情
 - 选择后立即过滤列表
 
 #### 4.3.5 录用状态筛选
@@ -2099,7 +2095,7 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`
 
 - 下拉选择框，选项：
   - 全部地域（默认）
-  - 各地市列表（杭州、宁波、温州、绍兴、台州、嘉兴、湖州、金华、衢州、丽水、舟山）
+  - 各地市列表（浙江/杭州、浙江/宁波、浙江/温州、浙江/绍兴、浙江/台州、浙江/嘉兴、浙江/湖州、浙江/金华、浙江/衢州、浙江/丽水、浙江/舟山）
 - 选择后立即过滤列表
 
 #### 4.3.7 舆情分类筛选
@@ -2518,28 +2514,25 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`
    - 格式：XX市宣传部 / 省委宣传部
 
 3. **角色**
-   - 取值：系统中配置的角色名称
-   - 交互方式：下拉选择框，选项从角色管理模块同步
-   - 切换后立即生效，显示成功提示
+   - 取值：用户被分配的多个角色名称，以分号（；）分隔展示
 
-4. **浙政钉账号**
-   - 取值：浙政钉的用户标识
-
-5. **状态**
+4. **状态**
    - 取值：正常 / 停用
    - 交互方式：滑动开关，点击切换启用/停用
    - 切换后立即生效，显示成功提示
    - 显示规则：启用显示绿色圆点+绿色文字"正常"，停用显示灰色圆点+灰色文字"停用"
 
-6. **操作**
-   - "编辑"按钮：弹出编辑弹窗，修改用户姓名、所属单位、角色、浙政钉账号
+5. **操作**
+   - "编辑"按钮：弹出编辑弹窗，修改用户所属单位和角色分配
 
 #### 8.1.4 新增用户
 
 - 点击"新增用户"按钮弹出弹窗
-- 填写字段：姓名、所属单位（下拉选择）、角色（下拉选择）、浙政钉账号
-- 校验规则：姓名和浙政钉账号为必填
+- 弹窗展示组织树中的可选用户列表（按省分组，仅展示未在系统中创建账号的人员），以单选方式选择
+- 角色分配区域支持多选（复选框），可同时分配多个角色
+- 校验规则：必须选择一个用户且至少分配一个角色
 - 确认后用户添加到列表，状态默认为"正常"
+- 若选择的用户已在系统中存在，则为其追加角色
 
 ### 8.2 角色管理
 
@@ -2588,12 +2581,11 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`
    - 顶部操作区：
      - 左侧："添加用户"按钮（蓝色小按钮）：弹出弹窗，多选未属于当前角色的用户，确认后加入当前角色
      - 左侧："移除用户"按钮（轮廓小按钮）：勾选用户后出现，点击后弹出确认弹窗，批量移除选中用户
-     - 右侧：搜索框，支持按姓名、所属单位、浙政钉账号模糊搜索
+     - 右侧：搜索框，支持按姓名、所属单位模糊搜索
    - 用户列表以表格形式展示，列字段：
      - 勾选框：支持单选和全选，选中后"移除用户"按钮出现
      - 姓名
      - 所属单位
-     - 浙政钉账号
      - 状态标签：已开通（绿色）、已停用（橙色）
      - 操作："移除"链接，点击弹出确认弹窗后移除单个用户
    - 底部显示用户总数
@@ -2680,7 +2672,7 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`
 const CURRENT_VERSION='latest';
 const VERSION_HISTORY=[{version:'v1.1.2',file:'v1.1.2.html',date:'2026-04-15',desc:'部门管理三级组织树、省市县层级、用户/角色弹窗数据源整合'},{version:'v1.1.1',file:'v1.1.1.html',date:'2026-04-15',desc:'部门管理模块、浙政钉组织树、用户数据源整合、PRD规范化'},{version:'v1.1.0',file:'v1.1.0.html',date:'2026-04-14',desc:'舆情分类打标、权限树更新、筛选增强'}];
 loadPRD();renderVersionSwitcher();
-function renderVersionSwitcher(){const btn=document.getElementById('vsBtn');if(!btn)return;const isLatest=CURRENT_VERSION==='latest';const latestVer=VERSION_HISTORY[0].version;btn.innerHTML='<span class="vs-dot '+(isLatest?'latest':'history')+'"></span>'+(isLatest?latestVer+' (最新)':CURRENT_VERSION)+'<i class="ri-arrow-down-s-line" style="font-size:14px"></i>';if(isLatest){btn.onclick=function(e){e.stopPropagation();toggleVsMenu()}}const menu=document.getElementById('vsMenu');let items='';items+='<div class="vs-menu-item'+(isLatest?' active':'')+'" onclick="window.location.href=\'index.html\'" style="border-bottom:1px solid var(--border-light)"><span class="vs-dot latest"></span>'+latestVer+' (最新)<span style="color:var(--text-quaternary);margin-left:auto">'+VERSION_HISTORY[0].date+'</span></div>';items+=VERSION_HISTORY.map(v=>'<div class="vs-menu-item'+(!isLatest&&CURRENT_VERSION===v.version?' active':'')+'" onclick="window.location.href=\''+v.file+'\'"><span class="vs-dot '+(v.version===latestVer?'latest':'history')+'"></span>'+v.version+'<span style="color:var(--text-quaternary);margin-left:auto">'+v.date+'</span></div>').join('');menu.innerHTML=items}
+function renderVersionSwitcher(){const btn=document.getElementById('vsBtn');if(!btn)return;const isLatest=CURRENT_VERSION==='latest';const latestVer=VERSION_HISTORY[0].version;btn.innerHTML='<span class="vs-dot '+(isLatest?'latest':'history')+'"></span>'+(isLatest?latestVer+' (最新)':CURRENT_VERSION)+'<i class="ri-arrow-down-s-line" style="font-size:14px"></i>';btn.onclick=function(e){e.stopPropagation();toggleVsMenu()};const menu=document.getElementById('vsMenu');let items='';items+='<div class="vs-menu-item'+(isLatest?' active':'')+'" onclick="window.location.href=\'index.html\'" style="border-bottom:1px solid var(--border-light)"><span class="vs-dot latest"></span>'+latestVer+' (最新)<span style="color:var(--text-quaternary);margin-left:auto">'+VERSION_HISTORY[0].date+'</span></div>';items+=VERSION_HISTORY.map(v=>'<div class="vs-menu-item'+(!isLatest&&CURRENT_VERSION===v.version?' active':'')+'" onclick="window.location.href=\''+v.file+'\'"><span class="vs-dot '+(v.version===latestVer?'latest':'history')+'"></span>'+v.version+'<span style="color:var(--text-quaternary);margin-left:auto">'+v.date+'</span></div>').join('');menu.innerHTML=items}
 function toggleVsMenu(){document.getElementById('vsMenu').classList.toggle('show')}
 document.addEventListener('click',e=>{const vs=document.getElementById('vsBtn');if(vs&&!vs.contains(e.target))document.getElementById('vsMenu').classList.remove('show')});
 </script>
