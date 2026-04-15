@@ -414,8 +414,8 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 <div class="toast-container" id="toastContainer"></div>
 <textarea id="prdMdSource" style="display:none"># 舆情报送与管理系统 产品需求文档
 
-> 版本：v1.1.0 | 日期：2026-04-14
-> 上一版本：v1.0.1
+> 版本：v1.1.2 | 日期：2026-04-15
+> 上一版本：v1.1.1
 > 原型文件：index.html
 
 ---
@@ -1921,8 +1921,8 @@ function buildToc(){const c=document.getElementById('prdContent');const t=docume
 window.__PRD__=document.getElementById('prdMdSource')?.value||`
 # 舆情报送与管理系统 产品需求文档
 
-> 版本：v1.1.0 | 日期：2026-04-14
-> 上一版本：v1.0.1
+> 版本：v1.1.2 | 日期：2026-04-15
+> 上一版本：v1.1.1
 > 原型文件：index.html
 
 ---
@@ -2680,7 +2680,7 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`
 const CURRENT_VERSION='latest';
 const VERSION_HISTORY=[{version:'v1.1.2',file:'v1.1.2.html',date:'2026-04-15',desc:'部门管理三级组织树、省市县层级、用户/角色弹窗数据源整合'},{version:'v1.1.1',file:'v1.1.1.html',date:'2026-04-15',desc:'部门管理模块、浙政钉组织树、用户数据源整合、PRD规范化'},{version:'v1.1.0',file:'v1.1.0.html',date:'2026-04-14',desc:'舆情分类打标、权限树更新、筛选增强'}];
 loadPRD();renderVersionSwitcher();
-function renderVersionSwitcher(){const btn=document.getElementById('vsBtn');if(!btn)return;const isLatest=CURRENT_VERSION==='latest';btn.innerHTML='<span class="vs-dot '+(isLatest?'latest':'history')+'"></span>'+(isLatest?'v1.1.0 (最新)':CURRENT_VERSION)+'<i class="ri-arrow-down-s-line" style="font-size:14px"></i>';const menu=document.getElementById('vsMenu');menu.innerHTML=VERSION_HISTORY.map(v=>'<div class="vs-menu-item '+(CURRENT_VERSION===v.version||CURRENT_VERSION==='latest'&&VERSION_HISTORY[0].version===v.version?'active':'')+'" onclick="window.location.href=\''+v.file+'\'"><span class="vs-dot '+(v.version===VERSION_HISTORY[0].version?'latest':'history')+'"></span>'+v.version+'<span style="color:var(--text-quaternary);margin-left:auto">'+v.date+'</span></div>').join('')}
+function renderVersionSwitcher(){const btn=document.getElementById('vsBtn');if(!btn)return;const isLatest=CURRENT_VERSION==='latest';const latestVer=VERSION_HISTORY[0].version;btn.innerHTML='<span class="vs-dot '+(isLatest?'latest':'history')+'"></span>'+(isLatest?latestVer+' (最新)':CURRENT_VERSION)+'<i class="ri-arrow-down-s-line" style="font-size:14px"></i>';if(isLatest){btn.onclick=function(e){e.stopPropagation();toggleVsMenu()}}const menu=document.getElementById('vsMenu');let items='';items+='<div class="vs-menu-item'+(isLatest?' active':'')+'" onclick="window.location.href=\'index.html\'" style="border-bottom:1px solid var(--border-light)"><span class="vs-dot latest"></span>'+latestVer+' (最新)<span style="color:var(--text-quaternary);margin-left:auto">'+VERSION_HISTORY[0].date+'</span></div>';items+=VERSION_HISTORY.map(v=>'<div class="vs-menu-item'+(!isLatest&&CURRENT_VERSION===v.version?' active':'')+'" onclick="window.location.href=\''+v.file+'\'"><span class="vs-dot '+(v.version===latestVer?'latest':'history')+'"></span>'+v.version+'<span style="color:var(--text-quaternary);margin-left:auto">'+v.date+'</span></div>').join('');menu.innerHTML=items}
 function toggleVsMenu(){document.getElementById('vsMenu').classList.toggle('show')}
 document.addEventListener('click',e=>{const vs=document.getElementById('vsBtn');if(vs&&!vs.contains(e.target))document.getElementById('vsMenu').classList.remove('show')});
 </script>
