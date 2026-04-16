@@ -52,6 +52,13 @@ input,select,textarea { font-family:var(--font); font-size:14px; outline:none; }
 .nav-item.active { color:var(--white); background:var(--primary); border-left-color:var(--primary-light); }
 .nav-icon { font-size:20px; margin-bottom:4px; width:24px; height:24px; display:flex; align-items:center; justify-content:center; }
 .nav-label { font-size:12px; white-space:nowrap; }
+.nav-flyout { position:absolute; left:100%; top:0; background:#fff; border:1px solid var(--border-light); border-radius:var(--radius); box-shadow:0 4px 12px rgba(0,0,0,.12); min-width:120px; padding:4px 0; display:none; z-index:300; }
+.nav-item:hover .nav-flyout { display:block; }
+.nav-flyout-item { padding:8px 16px; font-size:13px; color:var(--text-secondary); cursor:pointer; white-space:nowrap; transition:all .15s; }
+.nav-flyout-item:hover { background:var(--primary-bg); color:var(--primary); }
+.nav-flyout-item.active { color:var(--primary); font-weight:600; }
+.nav-flyout-item .flyout-ai { display:inline-block; background:var(--blue); color:#fff; font-size:9px; padding:0 3px; border-radius:2px; font-weight:600; line-height:14px; margin-left:4px; vertical-align:middle; }
+.nav-flyout-item.disabled { color:#bbb; cursor:default; pointer-events:none; }
 
 /* Main Layout */
 .main-wrap { margin-top:var(--header-h); margin-left:var(--nav-w); padding:10px; min-height:calc(100vh - var(--header-h)); overflow:visible; }
@@ -79,8 +86,6 @@ input,select,textarea { font-family:var(--font); font-size:14px; outline:none; }
 .tree-child .count { font-size:12px; color:var(--text-secondary); background:#f0f2f5; padding:0 6px; border-radius:10px; min-width:20px; text-align:center; }
 .tree-child.active .count { background:rgba(0,102,166,0.1); color:var(--primary); }
 .ai-badge { display:inline-block; background:var(--blue); color:#fff; font-size:10px; padding:0 4px; border-radius:2px; font-weight:600; line-height:16px; margin-left:4px; vertical-align:middle; }
-.tree-sub-label { padding:8px 14px 3px 20px; font-size:11px; font-weight:600; color:var(--text-secondary); letter-spacing:0.5px; user-select:none; }
-.tree-sub-label + .tree-child { margin-top:0; }
 
 /* Report Content Area */
 .report-content { flex:1; min-width:0; }
@@ -107,19 +112,22 @@ input,select,textarea { font-family:var(--font); font-size:14px; outline:none; }
 .operate-btn:hover { background:var(--primary); }
 .operate-btn + .operate-btn { margin-left:8px; }
 
-/* Report Cards (Block View) */
-.report-cards { display:flex; flex-wrap:wrap; padding:12px; gap:8px; }
-.report-card { width:calc(20% - 8px); min-width:190px; height:155px; background:linear-gradient(135deg,#e8f0fe 0%,#f4f8ff 100%); border:1px solid #c6d4df; border-radius:var(--radius); padding:10px 12px; cursor:pointer; position:relative; transition:border-color 0.2s; display:flex; flex-direction:column; }
-.report-card:hover { border-color:var(--primary-light); box-shadow:0 2px 8px rgba(0,102,166,0.12); }
-.report-card .card-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+/* Report Cards — AI Report Page */
+.report-cards { display:grid; grid-template-columns:repeat(3,1fr); padding:16px; gap:12px; }
+.report-card { background:var(--white); border:1px solid var(--border-light); border-radius:8px; padding:16px; cursor:pointer; position:relative; transition:all 0.2s; display:flex; flex-direction:column; }
+.report-card:hover { border-color:var(--primary); box-shadow:0 4px 16px rgba(0,102,166,0.08); transform:translateY(-1px); }
+.report-card .card-top { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
 .report-card .card-checkbox { accent-color:var(--primary); width:14px; height:14px; }
-.report-card .card-icon { font-size:18px; color:var(--primary); }
-.report-card .card-ai { position:absolute; top:8px; right:8px; }
-.report-card .card-title { font-size:14px; font-weight:500; color:#4a4a4a; text-align:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; display:flex; align-items:center; justify-content:center; }
-.report-card .card-date { font-size:12px; color:var(--text-secondary); text-align:center; margin-bottom:8px; }
-.report-card .card-actions { display:flex; justify-content:center; gap:16px; }
-.card-action-btn { width:32px; height:32px; border-radius:50%; background:#e7ecf2; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.15s; font-size:13px; color:var(--text-secondary); }
-.card-action-btn:hover { background:var(--primary); color:#fff; }
+.report-card .card-icon { width:36px; height:36px; background:var(--primary-bg); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--primary); flex-shrink:0; }
+.report-card .card-ai { position:absolute; top:12px; right:12px; }
+.report-card .card-meta { flex:1; min-width:0; }
+.report-card .card-title { font-size:14px; font-weight:500; color:var(--text); line-height:1.5; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.report-card .card-subtitle { font-size:12px; color:var(--text-secondary); margin-top:2px; }
+.report-card .card-date { font-size:12px; color:var(--text-secondary); margin-bottom:12px; display:flex; align-items:center; gap:4px; }
+.report-card .card-date::before { content:''; display:inline-block; width:4px; height:4px; background:var(--green); border-radius:50%; }
+.report-card .card-actions { display:flex; gap:6px; margin-top:auto; border-top:1px solid var(--border-light); padding-top:10px; }
+.card-action-btn { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border-radius:var(--radius); font-size:12px; color:var(--text-secondary); background:#f5f7fa; cursor:pointer; transition:all 0.15s; border:none; }
+.card-action-btn:hover { background:var(--primary-bg); color:var(--primary); }
 
 /* Select element */
 select.form-ctrl { height:30px; border:1px solid var(--border); border-radius:var(--radius); padding:0 28px 0 10px; font-size:13px; color:var(--text); background:var(--white); appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%237e89a9' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 8px center; }
@@ -310,7 +318,7 @@ select.form-ctrl:focus { border-color:var(--primary); }
 <!-- Header -->
 <div class="header">
   <div class="header-logo">
-    <div class="logo-icon">&#x1F4CA;</div>
+    <div class="logo-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
     <span class="logo-text">互联网舆情态势感知系统</span>
     <span class="logo-sub">NetPubOpSys</span>
   </div>
@@ -325,44 +333,45 @@ select.form-ctrl:focus { border-color:var(--primary); }
 
 <!-- Left Nav -->
 <div class="left-nav">
-  <div class="nav-item" title="舆情监测"><div class="nav-icon">&#x1F4E1;</div><div class="nav-label">舆情监测</div></div>
-  <div class="nav-item" title="海外分析"><div class="nav-icon">&#x1F30F;</div><div class="nav-label">海外分析</div></div>
-  <div class="nav-item" title="预警中心"><div class="nav-icon">&#x26A0;&#xFE0F;</div><div class="nav-label">预警中心</div></div>
-  <div class="nav-item" title="事件分析"><div class="nav-icon">&#x1F4C8;</div><div class="nav-label">事件分析</div></div>
-  <div class="nav-item" title="全网热榜"><div class="nav-icon">&#x1F525;</div><div class="nav-label">全网热榜</div></div>
-  <div class="nav-item active" title="报告中心"><div class="nav-icon">&#x1F4D1;</div><div class="nav-label">报告中心</div></div>
-  <div class="nav-item" title="检索"><div class="nav-icon">&#x1F50D;</div><div class="nav-label">检索</div></div>
-  <div class="nav-item" title="工具箱"><div class="nav-icon">&#x1F527;</div><div class="nav-label">工具箱</div></div>
+  <div class="nav-item" title="舆情监测"><div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="nav-label">舆情监测</div></div>
+  <div class="nav-item" title="海外分析"><div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10 15 15 0 0 1-4-10A15 15 0 0 1 12 2z"/></svg></div><div class="nav-label">海外分析</div></div>
+  <div class="nav-item" title="预警中心"><div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><div class="nav-label">预警中心</div></div>
+  <div class="nav-item" title="事件分析"><div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><div class="nav-label">事件分析</div></div>
+  <div class="nav-item" title="全网热榜"><div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><div class="nav-label">全网热榜</div></div>
+  <div class="nav-item active" title="报告中心">
+    <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><div class="nav-label">报告中心</div>
+    <div class="nav-flyout">
+      <div class="nav-flyout-item disabled" title="非本期范围">舆情报告</div>
+      <div class="nav-flyout-item active" onclick="switchSubPage('ai')">AI报告<span class="flyout-ai">AI</span></div>
+    </div>
+  </div>
+  <div class="nav-item" title="检索"><div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="nav-label">检索</div></div>
+  <div class="nav-item" title="工具箱"><div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div><div class="nav-label">工具箱</div></div>
 </div>
 
 <!-- Main Content -->
 <div class="main-wrap">
 
-<!-- ===== Page 1: 报告中心 ===== -->
-<div id="page1" class="page active">
+<!-- ===== Page 1: 舆情报告 ===== -->
+<div id="page1" class="page">
   <div class="report-layout">
     <!-- Left Tree -->
     <div class="report-tree">
-      <div class="tree-title">报告中心</div>
+      <div class="tree-title">舆情报告</div>
       <div class="tree-search"><input type="text" placeholder="请输入关键词"></div>
       <div class="tree-group">
-        <div class="tree-group-title" onclick="toggleGroup(this)"><span>舆情报告</span><span class="arrow open">&#9654;</span></div>
+        <div class="tree-group-title" onclick="toggleGroup(this)"><span>自动报告</span><span class="arrow open">&#9654;</span></div>
         <div class="tree-children" style="display:block">
-          <div class="tree-sub-label">自动报告</div>
           <div class="tree-child" onclick="selectChild(this)">交通周报 <span class="count">3</span></div>
           <div class="tree-child" onclick="selectChild(this)">日报 <span class="count">12</span></div>
           <div class="tree-child" onclick="selectChild(this)">专题报告 <span class="count">5</span></div>
-          <div class="tree-sub-label">人工报告</div>
-          <div class="tree-child" onclick="selectChild(this)">领导批示件 <span class="count">2</span></div>
-          <div class="tree-child" onclick="selectChild(this)">专报 <span class="count">1</span></div>
         </div>
       </div>
       <div class="tree-group">
-        <div class="tree-group-title" onclick="toggleGroup(this)" style="color:var(--primary)"><span>AI报告<span class="ai-badge">AI</span></span><span class="arrow open" style="color:var(--primary)">&#9654;</span></div>
+        <div class="tree-group-title" onclick="toggleGroup(this)"><span>人工报告</span><span class="arrow open">&#9654;</span></div>
         <div class="tree-children" style="display:block">
-          <div class="tree-child active" onclick="selectChild(this)">交通运输舆情监测 <span class="count">8</span></div>
-          <div class="tree-child" onclick="selectChild(this)">公安舆情监测 <span class="count">3</span></div>
-          <div class="tree-child" onclick="selectChild(this)">法院舆情监测 <span class="count">2</span></div>
+          <div class="tree-child" onclick="selectChild(this)">领导批示件 <span class="count">2</span></div>
+          <div class="tree-child" onclick="selectChild(this)">专报 <span class="count">1</span></div>
         </div>
       </div>
     </div>
@@ -388,64 +397,160 @@ select.form-ctrl:focus { border-color:var(--primary); }
         <!-- Report Cards -->
         <div class="report-cards">
           <div class="report-card" onclick="switchPage('page3')">
-            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><span style="color:var(--primary)">&#x1F4C4;</span></div>
+            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><span style="color:var(--primary)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span></div>
             <div class="card-ai"><span class="ai-badge">AI</span></div>
             <div class="card-title">2026第8期江苏交通运输网络舆情监测（总第184期）</div>
             <div class="card-date">2026-03-06</div>
             <div class="card-actions">
-              <div class="card-action-btn" title="预览" onclick="event.stopPropagation();switchPage('page3')">&#x1F441;</div>
-              <div class="card-action-btn" title="下载" onclick="event.stopPropagation();showToast('正在下载...')">&#x2B07;</div>
-              <div class="card-action-btn" title="删除" onclick="event.stopPropagation();showToast('已删除')">&#x1F5D1;</div>
+              <div class="card-action-btn" title="预览" onclick="event.stopPropagation();switchPage('page3')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+              <div class="card-action-btn" title="下载" onclick="event.stopPropagation();showToast('正在下载...')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+              <div class="card-action-btn" title="删除" onclick="event.stopPropagation();showToast('已删除')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
             </div>
           </div>
           <div class="report-card" onclick="switchPage('page3')">
-            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><span style="color:var(--primary)">&#x1F4C4;</span></div>
+            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><span style="color:var(--primary)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span></div>
             <div class="card-ai"><span class="ai-badge">AI</span></div>
             <div class="card-title">2026第7期江苏交通运输网络舆情监测（总第183期）</div>
             <div class="card-date">2026-02-27</div>
-            <div class="card-actions"><div class="card-action-btn">&#x1F441;</div><div class="card-action-btn">&#x2B07;</div><div class="card-action-btn">&#x1F5D1;</div></div>
+            <div class="card-actions"><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div></div>
           </div>
           <div class="report-card" onclick="switchPage('page3')">
-            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><span style="color:var(--primary)">&#x1F4C4;</span></div>
+            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><span style="color:var(--primary)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span></div>
             <div class="card-ai"><span class="ai-badge">AI</span></div>
             <div class="card-title">2026第6期江苏交通运输网络舆情监测（总第182期）</div>
             <div class="card-date">2026-02-20</div>
-            <div class="card-actions"><div class="card-action-btn">&#x1F441;</div><div class="card-action-btn">&#x2B07;</div><div class="card-action-btn">&#x1F5D1;</div></div>
+            <div class="card-actions"><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div></div>
           </div>
           <div class="report-card" onclick="switchPage('page3')">
-            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><span style="color:var(--primary)">&#x1F4C4;</span></div>
+            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><span style="color:var(--primary)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span></div>
             <div class="card-ai"><span class="ai-badge">AI</span></div>
             <div class="card-title">2026第5期江苏交通运输网络舆情监测（总第181期）</div>
             <div class="card-date">2026-02-13</div>
-            <div class="card-actions"><div class="card-action-btn">&#x1F441;</div><div class="card-action-btn">&#x2B07;</div><div class="card-action-btn">&#x1F5D1;</div></div>
+            <div class="card-actions"><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div></div>
           </div>
           <div class="report-card" onclick="switchPage('page3')">
-            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><span style="color:var(--primary)">&#x1F4C4;</span></div>
+            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><span style="color:var(--primary)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span></div>
             <div class="card-ai"><span class="ai-badge">AI</span></div>
             <div class="card-title">浙江法院系统舆情监测周报（第32期）</div>
             <div class="card-date">2026-03-05</div>
-            <div class="card-actions"><div class="card-action-btn">&#x1F441;</div><div class="card-action-btn">&#x2B07;</div><div class="card-action-btn">&#x1F5D1;</div></div>
+            <div class="card-actions"><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div></div>
           </div>
           <div class="report-card" onclick="switchPage('page3')">
-            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><span style="color:var(--primary)">&#x1F4C4;</span></div>
+            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><span style="color:var(--primary)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span></div>
             <div class="card-ai"><span class="ai-badge">AI</span></div>
             <div class="card-title">山东公安舆情监测周报（第24期）</div>
             <div class="card-date">2026-03-04</div>
-            <div class="card-actions"><div class="card-action-btn">&#x1F441;</div><div class="card-action-btn">&#x2B07;</div><div class="card-action-btn">&#x1F5D1;</div></div>
+            <div class="card-actions"><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div></div>
           </div>
           <div class="report-card" onclick="switchPage('page3')">
-            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><span style="color:var(--primary)">&#x1F4C4;</span></div>
+            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><span style="color:var(--primary)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span></div>
             <div class="card-ai"><span class="ai-badge">AI</span></div>
             <div class="card-title">浙江法院系统舆情监测周报（第31期）</div>
             <div class="card-date">2026-02-26</div>
-            <div class="card-actions"><div class="card-action-btn">&#x1F441;</div><div class="card-action-btn">&#x2B07;</div><div class="card-action-btn">&#x1F5D1;</div></div>
+            <div class="card-actions"><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div></div>
           </div>
           <div class="report-card" onclick="switchPage('page3')">
-            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><span style="color:var(--primary)">&#x1F4C4;</span></div>
+            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><span style="color:var(--primary)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span></div>
             <div class="card-ai"><span class="ai-badge">AI</span></div>
             <div class="card-title">湖北教育系统舆情监测（第14期）</div>
             <div class="card-date">2026-03-03</div>
-            <div class="card-actions"><div class="card-action-btn">&#x1F441;</div><div class="card-action-btn">&#x2B07;</div><div class="card-action-btn">&#x1F5D1;</div></div>
+            <div class="card-actions"><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><div class="card-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div></div>
+          </div>
+        </div>
+        <!-- Pagination -->
+        <div class="pagination">
+          <span style="margin-right:8px">共 8 条</span>
+          <div class="page-btn">&#x2039;</div>
+          <div class="page-btn active">1</div>
+          <div class="page-btn">&#x203A;</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Page 1b: AI报告 ===== -->
+<div id="page1b" class="page active">
+  <div class="report-layout">
+    <!-- Left Tree -->
+    <div class="report-tree">
+      <div class="tree-title">AI 报告 <span class="ai-badge" style="vertical-align:middle;margin-left:4px">AI</span></div>
+      <div class="tree-search"><input type="text" placeholder="搜索模板"></div>
+      <div class="tree-group">
+        <div class="tree-group-title" onclick="toggleGroup(this)" style="color:var(--primary)"><span>报告模板<span class="ai-badge">AI</span></span><span class="arrow open" style="color:var(--primary)">&#9654;</span></div>
+        <div class="tree-children" style="display:block">
+          <div class="tree-child active" onclick="selectChild(this)">交通运输舆情监测 <span class="count">8</span></div>
+          <div class="tree-child" onclick="selectChild(this)">公安舆情监测 <span class="count">3</span></div>
+          <div class="tree-child" onclick="selectChild(this)">法院舆情监测 <span class="count">2</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Content -->
+    <div class="report-content">
+      <div class="content-panel">
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+          <div class="filter-left">
+            <input type="checkbox" style="accent-color:var(--primary)">
+            <select class="form-ctrl"><option selected>时间降序</option><option>时间升序</option></select>
+            <input type="text" class="form-ctrl" placeholder="搜索报告" style="width:160px">
+          </div>
+          <div class="filter-right">
+            <button class="btn btn-primary" onclick="switchPage('page2')"><span style="font-size:15px;line-height:1">+</span> AI 生成</button>
+            <button class="btn btn-sm">下载</button>
+            <button class="btn btn-danger btn-sm">删除</button>
+          </div>
+        </div>
+        <!-- Report Cards -->
+        <div class="report-cards">
+          <div class="report-card" onclick="switchPage('page3')">
+            <div class="card-ai"><span class="ai-badge">AI</span></div>
+            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="card-meta"><div class="card-title">江苏交通运输网络舆情监测</div><div class="card-subtitle">总第184期</div></div></div>
+            <div class="card-date">2026-03-06</div>
+            <div class="card-actions"><span class="card-action-btn" onclick="event.stopPropagation();switchPage('page3')">预览</span><span class="card-action-btn" onclick="event.stopPropagation()">下载</span><span class="card-action-btn" onclick="event.stopPropagation()">删除</span></div>
+          </div>
+          <div class="report-card">
+            <div class="card-ai"><span class="ai-badge">AI</span></div>
+            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="card-meta"><div class="card-title">江苏交通运输网络舆情监测</div><div class="card-subtitle">总第183期</div></div></div>
+            <div class="card-date">2026-02-27</div>
+            <div class="card-actions"><span class="card-action-btn">预览</span><span class="card-action-btn">下载</span><span class="card-action-btn">删除</span></div>
+          </div>
+          <div class="report-card">
+            <div class="card-ai"><span class="ai-badge">AI</span></div>
+            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="card-meta"><div class="card-title">江苏交通运输网络舆情监测</div><div class="card-subtitle">总第182期</div></div></div>
+            <div class="card-date">2026-02-20</div>
+            <div class="card-actions"><span class="card-action-btn">预览</span><span class="card-action-btn">下载</span><span class="card-action-btn">删除</span></div>
+          </div>
+          <div class="report-card">
+            <div class="card-ai"><span class="ai-badge">AI</span></div>
+            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="card-meta"><div class="card-title">江苏交通运输网络舆情监测</div><div class="card-subtitle">总第181期</div></div></div>
+            <div class="card-date">2026-02-13</div>
+            <div class="card-actions"><span class="card-action-btn">预览</span><span class="card-action-btn">下载</span><span class="card-action-btn">删除</span></div>
+          </div>
+          <div class="report-card">
+            <div class="card-ai"><span class="ai-badge">AI</span></div>
+            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="card-meta"><div class="card-title">江苏交通运输网络舆情监测</div><div class="card-subtitle">总第180期</div></div></div>
+            <div class="card-date">2026-02-06</div>
+            <div class="card-actions"><span class="card-action-btn">预览</span><span class="card-action-btn">下载</span><span class="card-action-btn">删除</span></div>
+          </div>
+          <div class="report-card">
+            <div class="card-ai"><span class="ai-badge">AI</span></div>
+            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="card-meta"><div class="card-title">公安舆情监测</div><div class="card-subtitle">总第12期</div></div></div>
+            <div class="card-date">2026-03-05</div>
+            <div class="card-actions"><span class="card-action-btn">预览</span><span class="card-action-btn">下载</span><span class="card-action-btn">删除</span></div>
+          </div>
+          <div class="report-card">
+            <div class="card-ai"><span class="ai-badge">AI</span></div>
+            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="card-meta"><div class="card-title">公安舆情监测</div><div class="card-subtitle">总第11期</div></div></div>
+            <div class="card-date">2026-02-26</div>
+            <div class="card-actions"><span class="card-action-btn">预览</span><span class="card-action-btn">下载</span><span class="card-action-btn">删除</span></div>
+          </div>
+          <div class="report-card">
+            <div class="card-ai"><span class="ai-badge">AI</span></div>
+            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="card-meta"><div class="card-title">法院舆情监测</div><div class="card-subtitle">总第5期</div></div></div>
+            <div class="card-date">2026-03-04</div>
+            <div class="card-actions"><span class="card-action-btn">预览</span><span class="card-action-btn">下载</span><span class="card-action-btn">删除</span></div>
           </div>
         </div>
         <!-- Pagination -->
@@ -463,7 +568,7 @@ select.form-ctrl:focus { border-color:var(--primary); }
 <!-- ===== Page 2: 配置页 ===== -->
 <div id="page2" class="page">
   <div class="config-wrap">
-    <div class="breadcrumb"><a onclick="switchPage('page1')">报告中心</a><span class="sep">&gt;</span><a onclick="switchPage('page1')">AI报告</a><span class="sep">&gt;</span>新建配置</div>
+    <div class="breadcrumb"><a onclick="switchSubPage('ai')">报告中心</a><span class="sep">&gt;</span><a onclick="switchSubPage('ai')">AI报告</a><span class="sep">&gt;</span>新建配置</div>
     <div class="config-panel">
       <div class="config-section">
         <div class="section-title">基本信息</div>
@@ -507,7 +612,7 @@ select.form-ctrl:focus { border-color:var(--primary); }
   <div style="max-width:900px">
     <div class="preview-header">
       <div class="preview-header-left">
-        <a class="btn btn-sm" onclick="switchPage('page1')" style="cursor:pointer">&larr; 返回</a>
+        <a class="btn btn-sm" onclick="switchSubPage('ai')" style="cursor:pointer">&larr; 返回</a>
         <h3>2026第8期 · 候选主题确认</h3>
       </div>
       <div class="preview-header-right">
@@ -693,7 +798,7 @@ select.form-ctrl:focus { border-color:var(--primary); }
 <div id="page3" class="page">
   <div class="preview-header">
     <div class="preview-header-left">
-      <a class="btn btn-sm" onclick="switchPage('page1')" style="cursor:pointer">&larr; 返回列表</a>
+      <a class="btn btn-sm" onclick="switchSubPage('ai')" style="cursor:pointer">&larr; 返回列表</a>
       <h3>2026第8期江苏交通运输网络舆情监测（总第184期）</h3>
     </div>
     <div class="preview-header-right" id="previewActions" style="display:none">
@@ -953,6 +1058,18 @@ function switchPage(id) {
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
 }
+function switchSubPage(type) {
+  // Update flyout active state
+  document.querySelectorAll('.nav-flyout-item').forEach(function(item){ item.classList.remove('active'); });
+  var flyoutItems = document.querySelectorAll('.nav-flyout-item');
+  if (type === 'yuqing') {
+    flyoutItems[0].classList.add('active');
+    switchPage('page1');
+  } else {
+    flyoutItems[1].classList.add('active');
+    switchPage('page1b');
+  }
+}
 function toggleGroup(el) {
   var arrow = el.querySelector('.arrow');
   var children = el.nextElementSibling;
@@ -1165,7 +1282,7 @@ function showToast(msg){
 
 ### 1.4 范围
 
-本功能为现有报告中心的增量能力，在左侧报告树中新增"AI 报告"分组。复用现有报告中心的数据存储、权限体系和文件导出能力，不重建基础设施。
+本功能为现有报告中心的增量能力，在左侧图标导航栏"报告中心"上悬停展开子菜单，提供"舆情报告"和"AI报告"两个独立入口。复用现有报告中心的数据存储、权限体系和文件导出能力，不重建基础设施。
 
 ---
 
@@ -1181,21 +1298,20 @@ function showToast(msg){
 
 ## 三、功能模块详述
 
-### 3.1 AI 报告入口
+### 3.1 报告中心导航
 
-**位置**：报告中心左侧树形菜单，采用二级菜单结构：
+**位置**：系统左侧图标导航栏（80px 宽），"报告中心"图标项。
 
-- **舆情报告**（一级分组）：包含原有"自动报告"和"人工报告"两个子分组，结构和功能不变
-- **AI 报告**（一级分组，与"舆情报告"同级）：带蓝色"AI"标识，独立展示
+**交互方式**：鼠标悬停（hover）到"报告中心"图标时，向右弹出浮层子菜单，展示两个入口：
 
-**菜单结构**：
-- 舆情报告
-  - 自动报告：交通周报、日报、专题报告等
-  - 人工报告：领导批示件、专报等
-- AI 报告（蓝色 AI 角标）
-  - 交通运输舆情监测
-  - 公安舆情监测
-  - 其他已创建的 AI 报告模板
+- **舆情报告**：点击进入原有舆情报告页面，页面布局和功能保持不变（左侧树形菜单含"自动报告""人工报告"分组，右侧报告列表）
+- **AI 报告**（带蓝色"AI"角标）：点击进入 AI 智能报告页面，左侧展示 AI 报告模板树，右侧展示对应模板的报告列表
+
+**导航规则**：
+- 当前所在入口在浮层中以高亮（蓝色加粗）标识
+- "报告中心"图标始终显示为选中状态（蓝色背景）
+- 两个页面各自独立，互不干扰
+- AI 报告页面的面包屑导航、返回按钮均指向 AI 报告入口
 
 **展示规则**：
 - "AI 报告"分组标题显示"AI 报告"文字和蓝色"AI"角标
@@ -1211,8 +1327,8 @@ function showToast(msg){
 
 #### 3.2.1 入口
 
-- 在报告列表页顶部的操作栏中，点击"AI 生成"按钮进入配置页
-- 通过面包屑导航可返回报告中心
+- 在 AI 报告列表页顶部的操作栏中，点击"AI 生成"按钮进入配置页
+- 通过面包屑导航可返回 AI 报告列表
 
 #### 3.2.2 基本信息
 
