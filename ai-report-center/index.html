@@ -79,11 +79,8 @@ input,select,textarea { font-family:var(--font); font-size:14px; outline:none; }
 .tree-child .count { font-size:12px; color:var(--text-secondary); background:#f0f2f5; padding:0 6px; border-radius:10px; min-width:20px; text-align:center; }
 .tree-child.active .count { background:rgba(0,102,166,0.1); color:var(--primary); }
 .ai-badge { display:inline-block; background:var(--blue); color:#fff; font-size:10px; padding:0 4px; border-radius:2px; font-weight:600; line-height:16px; margin-left:4px; vertical-align:middle; }
-.tree-sub-title { padding:5px 14px 5px 20px; font-size:12px; font-weight:600; color:var(--text-secondary); cursor:pointer; display:flex; align-items:center; gap:4px; transition:background 0.15s; }
-.tree-sub-title:hover { background:var(--primary-bg); color:var(--primary); }
-.tree-sub-title .arrow { font-size:9px; color:var(--text-secondary); transition:transform 0.2s; }
-.tree-sub-title .arrow.open { transform:rotate(90deg); }
-.tree-sub-group .tree-child { padding-left:34px; font-size:12.5px; }
+.tree-sub-label { padding:8px 14px 3px 20px; font-size:11px; font-weight:600; color:var(--text-secondary); letter-spacing:0.5px; user-select:none; }
+.tree-sub-label + .tree-child { margin-top:0; }
 
 /* Report Content Area */
 .report-content { flex:1; min-width:0; }
@@ -351,21 +348,13 @@ select.form-ctrl:focus { border-color:var(--primary); }
       <div class="tree-group">
         <div class="tree-group-title" onclick="toggleGroup(this)"><span>舆情报告</span><span class="arrow open">&#9654;</span></div>
         <div class="tree-children" style="display:block">
-          <div class="tree-sub-group">
-            <div class="tree-sub-title" onclick="toggleGroup(this)"><span class="arrow open">&#9654;</span> 自动报告</div>
-            <div class="tree-children" style="display:block">
-              <div class="tree-child" onclick="selectChild(this)">交通周报 <span class="count">3</span></div>
-              <div class="tree-child" onclick="selectChild(this)">日报 <span class="count">12</span></div>
-              <div class="tree-child" onclick="selectChild(this)">专题报告 <span class="count">5</span></div>
-            </div>
-          </div>
-          <div class="tree-sub-group">
-            <div class="tree-sub-title" onclick="toggleGroup(this)"><span class="arrow open">&#9654;</span> 人工报告</div>
-            <div class="tree-children" style="display:block">
-              <div class="tree-child" onclick="selectChild(this)">领导批示件 <span class="count">2</span></div>
-              <div class="tree-child" onclick="selectChild(this)">专报 <span class="count">1</span></div>
-            </div>
-          </div>
+          <div class="tree-sub-label">自动报告</div>
+          <div class="tree-child" onclick="selectChild(this)">交通周报 <span class="count">3</span></div>
+          <div class="tree-child" onclick="selectChild(this)">日报 <span class="count">12</span></div>
+          <div class="tree-child" onclick="selectChild(this)">专题报告 <span class="count">5</span></div>
+          <div class="tree-sub-label">人工报告</div>
+          <div class="tree-child" onclick="selectChild(this)">领导批示件 <span class="count">2</span></div>
+          <div class="tree-child" onclick="selectChild(this)">专报 <span class="count">1</span></div>
         </div>
       </div>
       <div class="tree-group">
