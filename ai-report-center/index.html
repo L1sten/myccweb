@@ -79,6 +79,11 @@ input,select,textarea { font-family:var(--font); font-size:14px; outline:none; }
 .tree-child .count { font-size:12px; color:var(--text-secondary); background:#f0f2f5; padding:0 6px; border-radius:10px; min-width:20px; text-align:center; }
 .tree-child.active .count { background:rgba(0,102,166,0.1); color:var(--primary); }
 .ai-badge { display:inline-block; background:var(--blue); color:#fff; font-size:10px; padding:0 4px; border-radius:2px; font-weight:600; line-height:16px; margin-left:4px; vertical-align:middle; }
+.tree-sub-title { padding:5px 14px 5px 20px; font-size:12px; font-weight:600; color:var(--text-secondary); cursor:pointer; display:flex; align-items:center; gap:4px; transition:background 0.15s; }
+.tree-sub-title:hover { background:var(--primary-bg); color:var(--primary); }
+.tree-sub-title .arrow { font-size:9px; color:var(--text-secondary); transition:transform 0.2s; }
+.tree-sub-title .arrow.open { transform:rotate(90deg); }
+.tree-sub-group .tree-child { padding-left:34px; font-size:12.5px; }
 
 /* Report Content Area */
 .report-content { flex:1; min-width:0; }
@@ -344,18 +349,23 @@ select.form-ctrl:focus { border-color:var(--primary); }
       <div class="tree-title">报告中心</div>
       <div class="tree-search"><input type="text" placeholder="请输入关键词"></div>
       <div class="tree-group">
-        <div class="tree-group-title" onclick="toggleGroup(this)"><span>自动报告</span><span class="arrow open">&#9654;</span></div>
+        <div class="tree-group-title" onclick="toggleGroup(this)"><span>舆情报告</span><span class="arrow open">&#9654;</span></div>
         <div class="tree-children" style="display:block">
-          <div class="tree-child" onclick="selectChild(this)">交通周报 <span class="count">3</span></div>
-          <div class="tree-child" onclick="selectChild(this)">日报 <span class="count">12</span></div>
-          <div class="tree-child" onclick="selectChild(this)">专题报告 <span class="count">5</span></div>
-        </div>
-      </div>
-      <div class="tree-group">
-        <div class="tree-group-title" onclick="toggleGroup(this)"><span>人工报告</span><span class="arrow open">&#9654;</span></div>
-        <div class="tree-children" style="display:block">
-          <div class="tree-child" onclick="selectChild(this)">领导批示件 <span class="count">2</span></div>
-          <div class="tree-child" onclick="selectChild(this)">专报 <span class="count">1</span></div>
+          <div class="tree-sub-group">
+            <div class="tree-sub-title" onclick="toggleGroup(this)"><span class="arrow open">&#9654;</span> 自动报告</div>
+            <div class="tree-children" style="display:block">
+              <div class="tree-child" onclick="selectChild(this)">交通周报 <span class="count">3</span></div>
+              <div class="tree-child" onclick="selectChild(this)">日报 <span class="count">12</span></div>
+              <div class="tree-child" onclick="selectChild(this)">专题报告 <span class="count">5</span></div>
+            </div>
+          </div>
+          <div class="tree-sub-group">
+            <div class="tree-sub-title" onclick="toggleGroup(this)"><span class="arrow open">&#9654;</span> 人工报告</div>
+            <div class="tree-children" style="display:block">
+              <div class="tree-child" onclick="selectChild(this)">领导批示件 <span class="count">2</span></div>
+              <div class="tree-child" onclick="selectChild(this)">专报 <span class="count">1</span></div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="tree-group">
@@ -1184,10 +1194,22 @@ function showToast(msg){
 
 ### 3.1 AI 报告入口
 
-**位置**：报告中心左侧树形菜单，在"自动报告"和"人工报告"分组之后，新增"AI 报告"分组，带蓝色"AI"标识。
+**位置**：报告中心左侧树形菜单，采用二级菜单结构：
+
+- **舆情报告**（一级分组）：包含原有"自动报告"和"人工报告"两个子分组，结构和功能不变
+- **AI 报告**（一级分组，与"舆情报告"同级）：带蓝色"AI"标识，独立展示
+
+**菜单结构**：
+- 舆情报告
+  - 自动报告：交通周报、日报、专题报告等
+  - 人工报告：领导批示件、专报等
+- AI 报告（蓝色 AI 角标）
+  - 交通运输舆情监测
+  - 公安舆情监测
+  - 其他已创建的 AI 报告模板
 
 **展示规则**：
-- 分组标题显示"AI 报告"文字和蓝色"AI"角标
+- "AI 报告"分组标题显示"AI 报告"文字和蓝色"AI"角标
 - 下方列出当前用户已创建的 AI 报告模板名称，每个模板后显示已生成的报告数量
 - 点击某个模板名称，右侧内容区展示该模板下的报告列表
 - 首次进入时若无模板，提示用户创建
