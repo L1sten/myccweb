@@ -123,11 +123,21 @@ input,select,textarea { font-family:var(--font); font-size:14px; outline:none; }
 .report-card .card-meta { flex:1; min-width:0; }
 .report-card .card-title { font-size:14px; font-weight:500; color:var(--text); line-height:1.5; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .report-card .card-subtitle { font-size:12px; color:var(--text-secondary); margin-top:2px; }
-.report-card .card-date { font-size:12px; color:var(--text-secondary); margin-bottom:12px; display:flex; align-items:center; gap:4px; }
-.report-card .card-date::before { content:''; display:inline-block; width:4px; height:4px; background:var(--green); border-radius:50%; }
+.report-card .card-date { font-size:12px; color:var(--text-secondary); margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; }
+.card-status { display:inline-flex; align-items:center; gap:4px; font-size:11px; padding:2px 8px; border-radius:10px; font-weight:500; }
+.card-status::before { content:''; width:5px; height:5px; border-radius:50%; flex-shrink:0; }
+.status-done { background:#e8f8ef; color:var(--green); }
+.status-done::before { background:var(--green); }
+.status-generating { background:var(--primary-bg); color:var(--primary); }
+.status-generating::before { background:var(--primary); animation:pulse 1.5s ease-in-out infinite; }
+.status-failed { background:#fef0ef; color:var(--red); }
+.status-failed::before { background:var(--red); }
 .report-card .card-actions { display:flex; gap:6px; margin-top:auto; border-top:1px solid var(--border-light); padding-top:10px; }
 .card-action-btn { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border-radius:var(--radius); font-size:12px; color:var(--text-secondary); background:#f5f7fa; cursor:pointer; transition:all 0.15s; border:none; }
 .card-action-btn:hover { background:var(--primary-bg); color:var(--primary); }
+.card-action-btn.disabled { opacity:.4; pointer-events:none; }
+.card-action-btn.primary-text { color:var(--primary); }
+.card-action-btn.primary-text:hover { background:var(--primary-bg); }
 
 /* Select element */
 select.form-ctrl { height:30px; border:1px solid var(--border); border-radius:var(--radius); padding:0 28px 0 10px; font-size:13px; color:var(--text); background:var(--white); appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%237e89a9' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 8px center; }
@@ -504,52 +514,60 @@ select.form-ctrl:focus { border-color:var(--primary); }
         </div>
         <!-- Report Cards -->
         <div class="report-cards">
+          <!-- 已完成 -->
           <div class="report-card" onclick="switchPage('page3')">
             <div class="card-ai"><span class="ai-badge">AI</span></div>
             <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="card-meta"><div class="card-title">江苏交通运输网络舆情监测</div><div class="card-subtitle">总第184期</div></div></div>
-            <div class="card-date">2026-03-06</div>
+            <div class="card-date"><span class="card-status status-done">已完成</span><span>2026-03-06</span></div>
             <div class="card-actions"><span class="card-action-btn" onclick="event.stopPropagation();switchPage('page3')">预览</span><span class="card-action-btn" onclick="event.stopPropagation()">下载</span><span class="card-action-btn" onclick="event.stopPropagation()">删除</span></div>
           </div>
-          <div class="report-card">
+          <!-- 已完成 -->
+          <div class="report-card" onclick="switchPage('page3')">
             <div class="card-ai"><span class="ai-badge">AI</span></div>
             <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="card-meta"><div class="card-title">江苏交通运输网络舆情监测</div><div class="card-subtitle">总第183期</div></div></div>
-            <div class="card-date">2026-02-27</div>
-            <div class="card-actions"><span class="card-action-btn">预览</span><span class="card-action-btn">下载</span><span class="card-action-btn">删除</span></div>
+            <div class="card-date"><span class="card-status status-done">已完成</span><span>2026-02-27</span></div>
+            <div class="card-actions"><span class="card-action-btn" onclick="event.stopPropagation();switchPage('page3')">预览</span><span class="card-action-btn" onclick="event.stopPropagation()">下载</span><span class="card-action-btn" onclick="event.stopPropagation()">删除</span></div>
           </div>
+          <!-- 已完成 -->
           <div class="report-card">
             <div class="card-ai"><span class="ai-badge">AI</span></div>
             <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="card-meta"><div class="card-title">江苏交通运输网络舆情监测</div><div class="card-subtitle">总第182期</div></div></div>
-            <div class="card-date">2026-02-20</div>
+            <div class="card-date"><span class="card-status status-done">已完成</span><span>2026-02-20</span></div>
             <div class="card-actions"><span class="card-action-btn">预览</span><span class="card-action-btn">下载</span><span class="card-action-btn">删除</span></div>
           </div>
+          <!-- 生成中 -->
+          <div class="report-card" style="cursor:default">
+            <div class="card-ai"><span class="ai-badge">AI</span></div>
+            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()" disabled><div class="card-icon" style="background:var(--primary-bg);opacity:.7"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="card-meta"><div class="card-title">江苏交通运输网络舆情监测</div><div class="card-subtitle">总第181期</div></div></div>
+            <div class="card-date"><span class="card-status status-generating">生成中</span><span>2026-02-13</span></div>
+            <div class="card-actions"><span class="card-action-btn disabled">预览</span><span class="card-action-btn disabled">下载</span><span class="card-action-btn">删除</span></div>
+          </div>
+          <!-- 生成失败 -->
           <div class="report-card">
             <div class="card-ai"><span class="ai-badge">AI</span></div>
-            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="card-meta"><div class="card-title">江苏交通运输网络舆情监测</div><div class="card-subtitle">总第181期</div></div></div>
-            <div class="card-date">2026-02-13</div>
-            <div class="card-actions"><span class="card-action-btn">预览</span><span class="card-action-btn">下载</span><span class="card-action-btn">删除</span></div>
+            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><div class="card-icon" style="background:#fef0ef;color:var(--red)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="card-meta"><div class="card-title">江苏交通运输网络舆情监测</div><div class="card-subtitle">总第180期</div></div></div>
+            <div class="card-date"><span class="card-status status-failed">生成失败</span><span>2026-02-06</span></div>
+            <div class="card-actions"><span class="card-action-btn primary-text" onclick="event.stopPropagation();showToast('正在重新生成...')">重新生成</span><span class="card-action-btn">删除</span></div>
           </div>
-          <div class="report-card">
-            <div class="card-ai"><span class="ai-badge">AI</span></div>
-            <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="card-meta"><div class="card-title">江苏交通运输网络舆情监测</div><div class="card-subtitle">总第180期</div></div></div>
-            <div class="card-date">2026-02-06</div>
-            <div class="card-actions"><span class="card-action-btn">预览</span><span class="card-action-btn">下载</span><span class="card-action-btn">删除</span></div>
-          </div>
+          <!-- 已完成 -->
           <div class="report-card">
             <div class="card-ai"><span class="ai-badge">AI</span></div>
             <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="card-meta"><div class="card-title">公安舆情监测</div><div class="card-subtitle">总第12期</div></div></div>
-            <div class="card-date">2026-03-05</div>
+            <div class="card-date"><span class="card-status status-done">已完成</span><span>2026-03-05</span></div>
             <div class="card-actions"><span class="card-action-btn">预览</span><span class="card-action-btn">下载</span><span class="card-action-btn">删除</span></div>
           </div>
+          <!-- 已完成 -->
           <div class="report-card">
             <div class="card-ai"><span class="ai-badge">AI</span></div>
             <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="card-meta"><div class="card-title">公安舆情监测</div><div class="card-subtitle">总第11期</div></div></div>
-            <div class="card-date">2026-02-26</div>
+            <div class="card-date"><span class="card-status status-done">已完成</span><span>2026-02-26</span></div>
             <div class="card-actions"><span class="card-action-btn">预览</span><span class="card-action-btn">下载</span><span class="card-action-btn">删除</span></div>
           </div>
+          <!-- 已完成 -->
           <div class="report-card">
             <div class="card-ai"><span class="ai-badge">AI</span></div>
             <div class="card-top"><input type="checkbox" class="card-checkbox" onclick="event.stopPropagation()"><div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="card-meta"><div class="card-title">法院舆情监测</div><div class="card-subtitle">总第5期</div></div></div>
-            <div class="card-date">2026-03-04</div>
+            <div class="card-date"><span class="card-status status-done">已完成</span><span>2026-03-04</span></div>
             <div class="card-actions"><span class="card-action-btn">预览</span><span class="card-action-btn">下载</span><span class="card-action-btn">删除</span></div>
           </div>
         </div>
@@ -718,7 +736,7 @@ select.form-ctrl:focus { border-color:var(--primary); }
           <div class="topic-item-reason">苏州市辟谣平台确认相关帖文为不实信息，所发高速收费站不在苏州市。</div>
           <div class="topic-evidence">
             <span class="evidence-tag" style="color:var(--orange);background:#fef3e2">敏感度 <span class="ev-val" style="color:var(--orange)">中</span></span>
-            <span class="evidence-tag up">传播量 <span class="ev-val">343条</span></span>
+            <span class="evidence-tag up">信息来源 <span class="ev-val">343条</span></span>
             <span class="evidence-tag">来源 <span class="ev-val">九派新闻</span></span>
           </div>
         </div>
@@ -1449,7 +1467,7 @@ function showToast(msg){
 
 **展示内容**：
 - 步骤标题和说明：敏感信息（AI 已按敏感度排序筛选）
-- 每条事件展示：事件标题、AI 推荐理由、证据标签（敏感度等级、传播量、涉及领域、来源媒体）
+- 每条事件展示：事件标题、AI 推荐理由、证据标签（敏感度等级、信息来源、涉及领域、来源媒体）
 - 敏感事件卡片左侧带橙色边线标识
 
 **交互规则**：
@@ -1574,8 +1592,18 @@ function showToast(msg){
 
 **展示规则**：
 - 以卡片网格方式展示已生成的 AI 报告
-- 每张卡片包含：文件图标、AI 角标、报告标题、生成日期、操作按钮（预览/下载/删除）
+- 每张卡片包含：文件图标、AI 角标、报告标题、期号、状态标签、生成日期、操作按钮
 - 默认按时间降序排列
+
+**报告状态**：
+- **已完成**（绿色标签）：报告生成成功，支持预览、下载、删除操作
+- **生成中**（蓝色标签，带脉冲动画）：报告正在生成，预览和下载按钮置灰不可点击，仅可删除
+- **生成失败**（红色标签）：报告生成失败，显示"重新生成"和"删除"按钮，不显示预览和下载
+
+**操作按钮规则**：
+- 已完成：预览 | 下载 | 删除
+- 生成中：预览（禁用）| 下载（禁用）| 删除
+- 生成失败：重新生成 | 删除
 
 **筛选和排序**：
 - 全选复选框：勾选后批量选中当前页所有报告
@@ -1643,14 +1671,14 @@ AI 提供候选主题和素材包，分析师从候选中选择一个作为本�
 
 **所需数据**：
 - 分析师确认后的热点事件列表（每条包含：事件标题、事件描述、涉及领域）
-- 每条事件的传播数据：总篇次、主要转载媒体列表（前 5 家）、首发媒体
+- 每条事件的来源数据：总篇次、主要来源媒体列表（前 5 家）、首发媒体
 - 每条事件的情感分布：正面/中性/负面占比
 - 每条事件的时间线：首发时间、峰值时间、当前趋势（上升/平稳/下降）
 
 **生成要求**：
-- 每个事件独立成段，包含事件概述、传播情况、舆情观点三个部分
+- 每个事件独立成段，包含事件概述、媒体覆盖、舆情观点三个部分
 - 事件概述：用 2-3 句话客观描述事件经过
-- 传播情况：列出主要转载媒体和篇次，说明传播路径
+- 媒体覆盖：列出主要来源媒体和篇次，说明信息来源分布
 - 舆情观点：归纳正反两方主要观点，引用代表性原文（如有）
 - 段落末尾用一句话总结该事件的舆情走向
 
@@ -1658,20 +1686,20 @@ AI 提供候选主题和素材包，分析师从候选中选择一个作为本�
 
 **所需数据**：
 - 分析师确认后的敏感事件列表（每条包含：事件标题、事件描述、涉及领域、敏感度等级）
-- 每条事件的传播数据：总篇次、主要转载媒体列表
+- 每条事件的来源数据：总篇次、主要来源媒体列表
 - 每条事件的情感标签和负面情绪占比
 
 **生成要求**：
 - 开篇一段总述（如有重大敏感舆情需点明，如无则说明"本期未发现重大敏感舆情"）
 - 每个敏感事件独立成段，格式与热点事件一致
-- 敏感事件需特别关注负面情绪的来源和传播路径
+- 敏感事件需特别关注负面情绪的来源和信息覆盖范围
 - 语气克制，客观陈述事实，避免主观定性
 
 ### 5.4 第四章：重点关注（或本期重点关注）
 
 **所需数据**：
 - 分析师选定的 1 个重点选题标题和推荐理由
-- 该选题的关联事件列表（事件标题、描述、传播数据）
+- 该选题的关联事件列表（事件标题、描述、来源数据）
 - 该选题的背景资料（相关政策文件、历史事件、行业趋势数据）
 - 跨领域关联数据（如涉及多个领域，列出各领域的关联点）
 
