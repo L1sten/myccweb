@@ -1,10 +1,35 @@
 (function () {
-  if (sessionStorage.getItem("ccweb_auth") === "1") return;
+  // Root password: myccweb2026
+  // Per-project: mb + project first/last letter + 2026
+  var HASHES = {
+    root: "6f743079bb6c445c48b42820cc8a251af7a6e64dca56712e99d54b9dfb7bbf0d",
+    "ai-report-center":
+      "396b4a65224bbf68a8fe005e35713490aefccfa868106b7edf07949516ba5054",
+    "network-resource":
+      "414fdf50387760864256aa52715b432e71e83e475e718b6bf3190f8f5fe24a9b",
+    hzzl: "ab22830162aee1073065712a63d129af6088fe0189d792d3a986d50add2eafa9",
+    "ai-pm-workflow":
+      "1a0608917baef8188865f1315a96fc28417dfb8ddd1dabf171f5fabf220b88f2",
+    "zhejiang-police":
+      "4cf32614b2488b3e9615748ef1b1592215adc936acef8c661632928194242fdb",
+    "yuqing-report":
+      "dc0f435c887d2e8f1a082cbef3533beda5acf8d53d96a5b1d7fc3b25d0c794ef",
+  };
 
-  var HASH =
-    "6f743079bb6c445c48b42820cc8a251af7a6e64dca56712e99d54b9dfb7bbf0d";
+  var projectKey = "root";
+  var path = location.pathname;
+  for (var key in HASHES) {
+    if (key !== "root" && path.indexOf("/" + key + "/") !== -1) {
+      projectKey = key;
+      break;
+    }
+  }
 
-  // Hide body immediately
+  var authKey = "ccweb_auth_" + projectKey;
+  if (sessionStorage.getItem(authKey) === "1") return;
+
+  var HASH = HASHES[projectKey];
+
   var hideStyle = document.createElement("style");
   hideStyle.textContent = "body{visibility:hidden!important}";
   document.head.appendChild(hideStyle);
@@ -37,7 +62,7 @@
     async function verify() {
       var hash = await sha256(pwdInput.value);
       if (hash === HASH) {
-        sessionStorage.setItem("ccweb_auth", "1");
+        sessionStorage.setItem(authKey, "1");
         gate.remove();
       } else {
         errEl.style.display = "block";
