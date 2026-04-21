@@ -743,15 +743,7 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
    - 多行文本输入框
    - 占位文字："请详细描述舆情事件经过、传播情况、影响范围等..."
 
-6. **建议意见**
-   - 选填
-   - 多行文本输入框
-   - 占位文字："建议xx部门加强关注..."
 
-7. **处置方式**
-   - 选填
-   - 多行文本输入框
-   - 占位文字："指导妥善处理..."
 
 ### 5.4 操作按钮
 
@@ -804,7 +796,6 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 - 完整摘要内容，灰色背景区域展示
 
 **基本信息区**
-- 严重程度：显示字段值
 - 上报单位：显示字段值
 - 上报时间：显示字段值
 
@@ -1267,13 +1258,13 @@ function buildSidebar(){
 
 /* ===== Data ===== */
 const yuqingData=[
-  {id:'YQ-20260326-007',type:'外省镜鉴',region:'江苏/南京',title:'江苏某地拆迁补偿标准争议引发集中讨论',source:'省网信办（外省监测）',time:'2026-03-26 11:20',summary:'近日，江苏省某地因城市更新项目引发的拆迁补偿标准争议在网络上持续发酵。部分居民认为补偿标准偏低，通过社交媒体表达诉求。',severity:'较大',reporter:'省网信办'},
-  {id:'YQ-20260326-006',type:'外省镜鉴',region:'山西/太原',title:'"山西某高校教师评优争议"登上微博热搜榜',source:'省网信办（外省监测）',time:'2026-03-26 11:00',summary:'山西省某高校教师评优过程中疑似存在不公平现象，相关话题登上微博热搜。',severity:'一般',reporter:'省网信办'},
-  {id:'YQ-20260326-005',type:'本省',region:'浙江/温州',category:'',title:'喜临门温州工厂用工待遇问题引关注',source:'温州市宣传部',time:'2026-03-26 10:30',summary:'有网友在社交平台发布喜临门温州工厂员工待遇相关帖文，反映加班费计算方式和社保缴纳基数等问题。',severity:'较大',reporter:'温州市宣传部'},
-  {id:'YQ-20260326-004',type:'本省',region:'浙江/宁波',category:'',title:'某网络平台涉嫌虚假宣传问题曝光',source:'宁波市宣传部',time:'2026-03-26 10:00',summary:'宁波市市场监管局接到多名消费者举报，称某知名电商平台上的本地商户涉嫌虚假宣传。',severity:'较大',reporter:'宁波市宣传部'},
-  {id:'YQ-20260326-003',type:'本省',region:'浙江/杭州',category:'',title:'某知名品牌杭州门店服务纠纷网络发酵',source:'杭州市宣传部',time:'2026-03-26 09:40',summary:'消费者在某国际知名品牌杭州门店购物时遭遇服务纠纷，相关视频被上传至社交平台后迅速传播。',severity:'一般',reporter:'杭州市宣传部'},
-  {id:'YQ-20260326-002',type:'本省',region:'浙江/绍兴',category:'',title:'绍兴文理学院课程调整引发学生讨论',source:'绍兴市宣传部',time:'2026-03-26 09:15',summary:'绍兴文理学院近日发布课程调整通知，部分专业课程设置有较大变动，引发在校学生热议。',severity:'一般',reporter:'绍兴市宣传部'},
-  {id:'YQ-20260326-001',type:'本省',region:'浙江/台州',category:'治安事件',title:'台州市某化工企业安全事故引发周边群众关注',source:'台州市宣传部',time:'2026-03-26 08:30',summary:'台州市某化工企业发生安全事故，造成一定环境影响。周边居民通过社交媒体传播现场图片和视频。',severity:'重大',reporter:'台州市宣传部'}
+  {id:'YQ-20260326-007',type:'外省镜鉴',region:'江苏/南京',title:'江苏某地拆迁补偿标准争议引发集中讨论',source:'省网信办（外省监测）',time:'2026-03-26 11:20',summary:'近日，江苏省某地因城市更新项目引发的拆迁补偿标准争议在网络上持续发酵。部分居民认为补偿标准偏低，通过社交媒体表达诉求。',reporter:'省网信办'},
+  {id:'YQ-20260326-006',type:'外省镜鉴',region:'山西/太原',title:'"山西某高校教师评优争议"登上微博热搜榜',source:'省网信办（外省监测）',time:'2026-03-26 11:00',summary:'山西省某高校教师评优过程中疑似存在不公平现象，相关话题登上微博热搜。',reporter:'省网信办'},
+  {id:'YQ-20260326-005',type:'本省',region:'浙江/温州',category:'',title:'喜临门温州工厂用工待遇问题引关注',source:'温州市宣传部',time:'2026-03-26 10:30',summary:'有网友在社交平台发布喜临门温州工厂员工待遇相关帖文，反映加班费计算方式和社保缴纳基数等问题。',reporter:'温州市宣传部'},
+  {id:'YQ-20260326-004',type:'本省',region:'浙江/宁波',category:'',title:'某网络平台涉嫌虚假宣传问题曝光',source:'宁波市宣传部',time:'2026-03-26 10:00',summary:'宁波市市场监管局接到多名消费者举报，称某知名电商平台上的本地商户涉嫌虚假宣传。',reporter:'宁波市宣传部'},
+  {id:'YQ-20260326-003',type:'本省',region:'浙江/杭州',category:'',title:'某知名品牌杭州门店服务纠纷网络发酵',source:'杭州市宣传部',time:'2026-03-26 09:40',summary:'消费者在某国际知名品牌杭州门店购物时遭遇服务纠纷，相关视频被上传至社交平台后迅速传播。',reporter:'杭州市宣传部'},
+  {id:'YQ-20260326-002',type:'本省',region:'浙江/绍兴',category:'',title:'绍兴文理学院课程调整引发学生讨论',source:'绍兴市宣传部',time:'2026-03-26 09:15',summary:'绍兴文理学院近日发布课程调整通知，部分专业课程设置有较大变动，引发在校学生热议。',reporter:'绍兴市宣传部'},
+  {id:'YQ-20260326-001',type:'本省',region:'浙江/台州',category:'治安事件',title:'台州市某化工企业安全事故引发周边群众关注',source:'台州市宣传部',time:'2026-03-26 08:30',summary:'台州市某化工企业发生安全事故，造成一定环境影响。周边居民通过社交媒体传播现场图片和视频。',reporter:'台州市宣传部'}
 ];
 const regionUnitMap={'浙江/杭州':'杭州市宣传部','浙江/宁波':'宁波市宣传部','浙江/温州':'温州市宣传部','浙江/绍兴':'绍兴市宣传部','浙江/台州':'台州市宣传部','浙江/嘉兴':'嘉兴市宣传部','浙江/湖州':'湖州市宣传部','浙江/金华':'金华市宣传部','浙江/衢州':'衢州市宣传部','浙江/丽水':'丽水市宣传部','浙江/舟山':'舟山市宣传部'};
 const yqCategories=['刑事案件','治安事件','交通事故','执法不当及违纪违法','非正常死亡或失踪','其他'];
@@ -1601,7 +1592,6 @@ function renderDetailPage(id){
     +'<div class="detail-title">'+item.title+'</div>'
     +'<div class="detail-section"><h3>舆情内容</h3><div class="detail-content">'+item.summary+'</div></div>'
     +'<div class="detail-section"><h3>基本信息</h3>'
-      +'<div class="detail-field"><span class="detail-label">严重程度</span><span class="detail-value">'+item.severity+'</span></div>'
       +'<div class="detail-field"><span class="detail-label">上报单位</span><span class="detail-value">'+item.source+'</span></div>'
       +'<div class="detail-field"><span class="detail-label">上报时间</span><span class="detail-value">'+item.time+'</span></div></div>'
     +'<div style="display:flex;gap:8px;margin-top:20px">'
@@ -1621,8 +1611,7 @@ function addReportItem(){
     +'<div class="form-row"><div class="form-group"><label>报送单位</label><input class="form-control" data-field="unit" id="rptUnit-'+n+'" value="'+loginUser.org+'" style="background:#fafafa"></div></div>'
     +'<div class="form-row"><div class="form-group" style="flex:none;width:100%"><label>标题<span class="req">*</span></label><input class="form-control" data-field="title" placeholder="请输入舆情标题"></div></div>'
     +'<div class="form-row"><div class="form-group" style="flex:none;width:100%"><label>内容<span class="req">*</span></label><textarea class="form-control" data-field="content" rows="3" placeholder="请详细描述舆情事件经过、传播情况、影响范围等..."></textarea></div></div>'
-    +'<div class="form-row"><div class="form-group" style="flex:none;width:100%"><label>建议意见</label><textarea class="form-control" data-field="suggestion" rows="2" placeholder="建议xx部门加强关注..."></textarea></div></div>'
-    +'<div class="form-row"><div class="form-group" style="flex:none;width:100%"><label>处置方式</label><textarea class="form-control" data-field="handling" rows="2" placeholder="指导妥善处理..."></textarea></div></div>';
+;
   c.appendChild(card);updateFormCount();
 }
 function autoFillUnit(n){const prov=document.getElementById('rptProv-'+n);const city=document.getElementById('rptCity-'+n);const val=(prov&&city&&prov.value&&city.value)?prov.value+'/'+city.value:'';document.getElementById('rptUnit-'+n).value=regionUnitMap[val]||loginUser.org}
@@ -2281,15 +2270,7 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`
    - 多行文本输入框
    - 占位文字："请详细描述舆情事件经过、传播情况、影响范围等..."
 
-6. **建议意见**
-   - 选填
-   - 多行文本输入框
-   - 占位文字："建议xx部门加强关注..."
 
-7. **处置方式**
-   - 选填
-   - 多行文本输入框
-   - 占位文字："指导妥善处理..."
 
 ### 5.4 操作按钮
 
@@ -2342,7 +2323,6 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`
 - 完整摘要内容，灰色背景区域展示
 
 **基本信息区**
-- 严重程度：显示字段值
 - 上报单位：显示字段值
 - 上报时间：显示字段值
 
