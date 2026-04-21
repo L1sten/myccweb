@@ -1,6 +1,5 @@
 (function () {
-  // Root password: myccweb2026
-  // Per-project: mb + project first/last letter + 2026
+
   var HASHES = {
     root: "6f743079bb6c445c48b42820cc8a251af7a6e64dca56712e99d54b9dfb7bbf0d",
     "ai-report-center":
