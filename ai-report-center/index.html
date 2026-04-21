@@ -623,6 +623,7 @@ select.form-ctrl:focus { border-color:var(--primary); }
         <div class="form-row"><div class="form-label">热点事件数量</div><div class="form-field"><div class="num-input"><button class="num-btn" onclick="numStep(this,-1,1,20)">-</button><input type="number" value="5" min="1" max="20" onchange="numClamp(this,1,20)"><button class="num-btn" onclick="numStep(this,1,1,20)">+</button><span class="num-hint">报告包含的热点事件条数</span></div></div></div>
         <div class="form-row"><div class="form-label">敏感事件数量</div><div class="form-field"><div class="num-input"><button class="num-btn" onclick="numStep(this,-1,1,20)">-</button><input type="number" value="5" min="1" max="20" onchange="numClamp(this,1,20)"><button class="num-btn" onclick="numStep(this,1,1,20)">+</button><span class="num-hint">报告包含的敏感事件条数</span></div></div></div>
         <div class="form-row"><div class="form-label">行业资讯数量</div><div class="form-field"><div class="num-input"><button class="num-btn" onclick="numStep(this,-1,1,20)">-</button><input type="number" value="10" min="1" max="20" onchange="numClamp(this,1,20)"><button class="num-btn" onclick="numStep(this,1,1,20)">+</button><span class="num-hint">报告包含的行业资讯条数</span></div></div></div>
+        <div class="form-row"><div class="form-label">重点关注数量</div><div class="form-field"><div class="num-input"><button class="num-btn" onclick="numStep(this,-1,1,5)">-</button><input type="number" value="3" min="1" max="5" onchange="numClamp(this,1,5)"><button class="num-btn" onclick="numStep(this,1,1,5)">+</button><span class="num-hint">报告包含的重点关注选题数</span></div></div></div>
       </div>
       <div class="config-footer">
         <button class="btn" onclick="switchSubPage('ai')">取消</button>
@@ -1507,6 +1508,12 @@ function showToast(msg){
 - 取值范围：1-20
 - 默认值：10
 - 用途：控制报告中"全国行业资讯"章节的资讯条数
+
+**重点关注数量**
+- 展示规则：数字步进器
+- 取值范围：1-5
+- 默认值：3
+- 用途：控制报告中"本期重点关注"章节的选题条数
 
 #### 3.2.5 操作按钮
 
