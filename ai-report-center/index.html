@@ -515,7 +515,7 @@ select.form-ctrl:focus { border-color:var(--primary); }
           </div>
           <div class="filter-right">
             <button class="btn btn-primary" onclick="switchPage('page2')"><span style="font-size:15px;line-height:1">+</span> AI 生成</button>
-            <button class="btn btn-sm">下载</button>
+            <button class="btn btn-sm" onclick="batchDownload()">下载</button>
             <button class="btn btn-danger btn-sm">删除</button>
           </div>
         </div>
@@ -730,8 +730,9 @@ select.form-ctrl:focus { border-color:var(--primary); }
           <div class="topic-item-reason">应急管理部通报2025年9起重大事故，指出江苏响水桥梁垮塌事故暴露严重违法分包问题。</div>
           <div class="topic-evidence">
             <span class="evidence-tag" style="color:var(--red);background:#f9e2e2">预警级别 <span class="ev-val" style="color:var(--red)">红色</span></span>
-            <span class="evidence-tag">来源 <span class="ev-val">央广网、极目新闻</span></span>
+            <span class="evidence-tag">信息总量 <span class="ev-val">186篇次</span></span>
             <span class="evidence-tag">涉及领域 <span class="ev-val">公路</span></span>
+            <span class="evidence-tag">来源 <span class="ev-val">央广网、极目新闻</span></span>
           </div>
         </div>
         <div class="topic-item selected" onclick="toggleTopic(this)" style="border-left:3px solid var(--orange)">
@@ -742,7 +743,8 @@ select.form-ctrl:focus { border-color:var(--primary); }
           <div class="topic-item-reason">苏州市辟谣平台确认相关帖文为不实信息，所发高速收费站不在苏州市。</div>
           <div class="topic-evidence">
             <span class="evidence-tag" style="color:var(--orange);background:#fef3e2">预警级别 <span class="ev-val" style="color:var(--orange)">橙色</span></span>
-            <span class="evidence-tag up">信息来源 <span class="ev-val">343条</span></span>
+            <span class="evidence-tag">信息总量 <span class="ev-val">343篇次</span></span>
+            <span class="evidence-tag">涉及领域 <span class="ev-val">公路</span></span>
             <span class="evidence-tag">来源 <span class="ev-val">九派新闻</span></span>
           </div>
         </div>
@@ -754,6 +756,7 @@ select.form-ctrl:focus { border-color:var(--primary); }
           <div class="topic-item-reason">协会反映外市企业集中定向挖角核心技术人才，函件流出后引发行业讨论。</div>
           <div class="topic-evidence">
             <span class="evidence-tag" style="color:var(--orange);background:#fef3e2">预警级别 <span class="ev-val" style="color:var(--orange)">橙色</span></span>
+            <span class="evidence-tag">信息总量 <span class="ev-val">52篇次</span></span>
             <span class="evidence-tag">涉及领域 <span class="ev-val">水运</span></span>
             <span class="evidence-tag">来源 <span class="ev-val">大象新闻</span></span>
           </div>
