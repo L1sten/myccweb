@@ -195,6 +195,10 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 .doc-preview .doc-section-title{font-size:15px;font-weight:700;margin-bottom:8px}
 .doc-preview .doc-item{font-size:14px;color:var(--text-secondary);margin-bottom:4px;text-indent:2em}
 .doc-preview .doc-item-title{font-weight:600;color:var(--text-primary)}
+.doc-preview .doc-toc{font-size:12px;color:var(--text-tertiary);line-height:1.8}
+.doc-preview .doc-toc .toc-title{font-size:12px;font-weight:600;color:var(--text-secondary);margin:8px 0 4px}
+.doc-preview .doc-toc .toc-entry{padding-left:1em;margin-bottom:2px}
+.doc-preview .body-section-title{font-size:15px;font-weight:700;margin:28px 0 12px;padding-left:12px;border-left:3px solid var(--primary);color:var(--text)}
 
 /* Edit Layout */
 .edit-layout{display:flex;gap:24px;height:calc(100vh - 56px - 140px)}
@@ -225,16 +229,9 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 /* Toast */
 .toast-container{position:fixed;top:20px;right:20px;z-index:99999;display:flex;flex-direction:column;gap:8px}
-/* Version Switcher */
-.vs-btn{position:relative;display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;background:#fff;border:1px solid var(--border);cursor:pointer;font-size:12px;font-weight:500;color:var(--text-secondary);box-shadow:var(--shadow-md);transition:var(--transition);font-family:inherit}
-.vs-btn:hover{border-color:var(--primary);color:var(--primary)}
-.vs-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.vs-dot.latest{background:var(--green)}.vs-dot.history{background:var(--text-quaternary)}
-.vs-menu{position:absolute;top:100%;right:0;margin-top:6px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-md);min-width:180px;display:none;overflow:hidden;z-index:401}
-.vs-menu.show{display:block}
-.vs-menu-item{display:flex;align-items:center;gap:8px;padding:8px 14px;font-size:12px;cursor:pointer;transition:var(--transition);color:var(--text-secondary)}
-.vs-menu-item:hover{background:var(--bg-page)}
-.vs-menu-item.active{color:var(--primary);font-weight:600;background:var(--primary-bg)}
+/* Update History */
+.history-btn{display:flex;align-items:center;gap:4px;padding:5px 12px;background:#fff;border:1px solid var(--border-light);border-radius:14px;font-size:12px;color:var(--text-secondary);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.08);transition:all .2s;white-space:nowrap;font-family:inherit}
+.history-btn:hover{border-color:var(--primary-light);color:var(--primary)}
 .toast{padding:12px 20px;border-radius:var(--radius-md);font-size:13px;font-weight:500;color:#fff;box-shadow:var(--shadow-md);animation:slideIn .3s ease;display:flex;align-items:center;gap:8px}
 .toast-success{background:var(--green)}.toast-error{background:var(--red)}.toast-info{background:var(--primary)}
 @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
@@ -323,6 +320,9 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 /* PRD Panel */
 .prd-panel{width:460px;flex-shrink:0;display:flex;border-left:1px solid var(--border);transition:width .3s,opacity .3s}
 .prd-panel.collapsed{width:0;opacity:0;overflow:hidden;border:none}
+.split-drag{width:4px;cursor:col-resize;flex-shrink:0;background:var(--border-light);transition:background .15s;position:relative;z-index:10}
+.split-drag:hover,.split-drag.dragging{background:var(--primary)}
+.split-drag::after{content:'';position:absolute;left:-3px;right:-3px;top:0;bottom:0}
 .top-controls{position:fixed;top:68px;right:14px;z-index:400;display:flex;align-items:center;gap:8px}
 .prd-toggle{display:flex;align-items:center;gap:4px;padding:5px 12px;background:#fff;border:1px solid var(--border-light);border-radius:14px;font-size:12px;color:var(--text-secondary);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.08);transition:all .2s;white-space:nowrap;font-family:inherit}
 .prd-toggle:hover{border-color:var(--primary-light);color:var(--primary)}
@@ -392,6 +392,8 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
     <div class="page-container" id="pageContainer"></div>
   </div>
 
+  <div class="split-drag" id="splitDrag"></div>
+
   <div class="prd-panel" id="prdPanel">
     <div class="prd-toc" id="prdToc"></div>
     <div class="prd-content" id="prdContent"></div>
@@ -400,8 +402,7 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 <div class="top-controls">
   <button class="prd-toggle" id="prdToggle" onclick="togglePrdPanel()"><span class="toggle-dot"></span> PRD</button>
-  <div class="vs-btn" id="vsBtn" onclick="event.stopPropagation();toggleVsMenu()"></div>
-  <div class="vs-menu" id="vsMenu"></div>
+  <button class="history-btn" onclick="showUpdateHistory()"><i class="ri-history-line"></i> 更新记录</button>
 </div>
 
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
@@ -414,7 +415,7 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 <div class="toast-container" id="toastContainer"></div>
 <textarea id="prdMdSource" style="display:none"># 舆情报送与管理系统 产品需求文档
 
-> 版本：v1.1.3 | 日期：2026-04-22
+> 版本：v1.1.4 | 日期：2026-04-22
 > 上一版本：v1.1.2
 > 原型文件：index.html
 
@@ -814,7 +815,7 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 ### 7.1 功能说明
 
-舆情处和管理员在此编写、预览和管理舆情报告。报告由多条舆情信息按【内容提要】+ 正文 +【外省舆情镜鉴】的结构组合而成。
+舆情处和管理员在此编写、预览和管理舆情报告。报告由多条舆情信息按【内容提要】+ 一、本省舆情 + 二、外省舆情镜鉴的结构组合而成。
 
 > 地市人员无此模块入口。
 
@@ -883,20 +884,20 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
    - 下方显示报告日期
    - 底部双横线分隔
 
-2. **【内容提要】**
-   - 一、省内舆情：列出所有"本省"类型舆情的序号 + 标题（仅标题，不显示摘要）
-   - 二、外省舆情镜鉴：列出所有"外省镜鉴"类型舆情的序号 + 标题（仅标题，不显示摘要）
+2. **【内容提要】**（目录样式，小号字体）
+   - 一、省内舆情：列出所有"本省"类型舆情的序号 + 标题
+   - 二、外省舆情镜鉴：列出所有"外省镜鉴"类型舆情的序号 + 标题
    - 若无外省舆情则不显示外省子板块
 
-3. **正文**
+3. **一、本省舆情**
    - 每条"本省"舆情独立一段：
      - 序号 + 标题（加粗）
      - 完整摘要内容
      - 建议意见（如有，橙色图标 + 灰色文字）
      - 来源和时间（灰色小字）
 
-4. **【外省舆情镜鉴】**
-   - 列出所有"外省镜鉴"类型舆情的序号 + 标题 + 摘要前 80 字
+4. **二、外省舆情镜鉴**
+   - 每条"外省镜鉴"舆情独立一段，格式与本省舆情一致
    - 若无外省舆情则不显示此板块
 
 ### 7.4 报告编辑
@@ -1209,6 +1210,16 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 - 侧边栏导航点击切换页面，当前激活项以蓝色背景高亮
 - 顶部导航栏标题随页面切换同步更新
 - 页面内容区滚动位置自动回到顶部
+</textarea>
+<textarea id="sessionsMdSource" style="display:none"># 舆情报送与管理系统 - 对话记录
+
+| 对话 ID | 说明 | 更新时间 |
+|---------|------|----------|
+| 313308ec-6699-40ed-b428-968958be84ed | v1.1.0：去除演示登录、角色管理重构、分类打标、权限树更新、筛选增强、右上角优化、版本管理初始化 | 2026-04-14 |
+| 313308ec-6699-40ed-b428-968958be84ed | v1.1.1：新增部门管理模块（浙政钉组织树）、用户/角色新增用户数据源整合、PRD规范化（textarea嵌入、去除像素值） | 2026-04-15 |
+| 313308ec-6699-40ed-b428-968958be84ed | v1.1.2：部门管理升级为省市县三级组织树，新增用户/角色赋予用户弹窗按省分组调用组织树数据 | 2026-04-15 |
+| 313308ec-6699-40ed-b428-968958be84ed | v1.1.3：报告预览内容提要分省内/外省、正文增加建议意见、编辑侧栏同步优化 | 2026-04-22 |
+| 313308ec-6699-40ed-b428-968958be84ed | v1.1.4：PRD面板拖拽分界线、版本切换改为更新记录弹窗、报告预览内容提要改为目录样式、正文按省内/外省分段展示 | 2026-04-22 |
 </textarea>
 <script>
 /* ===== Auth & Roles ===== */
@@ -1642,11 +1653,12 @@ function deleteReport(id){showModal('确认删除','<p style="font-size:14px;col
 
 /* ===== Preview ===== */
 function renderPreviewPage(reportId){const report=reportData.find(r=>r.id===reportId);if(!report)return;const li=report.items.filter(i=>i.type==='本省'),ei=report.items.filter(i=>i.type==='外省镜鉴');
+function bodyItems(items,offset){return items.map((it,i)=>'<div class="doc-section" style="margin-bottom:20px"><div class="doc-section-title">'+(offset+i+1)+'、'+it.title+'</div><div class="doc-item">'+it.summary+'</div>'+(it.suggestion?'<div class="doc-item" style="color:var(--text-secondary);font-size:13px;margin-top:8px"><i class="ri-lightbulb-line" style="color:var(--orange)"></i> 建议意见：'+it.suggestion+'</div>':'')+'<div class="doc-item" style="color:var(--text-tertiary);font-size:12px;margin-top:4px">（'+it.source+' | '+it.time+'）</div></div>').join('')}
 document.getElementById('pageContainer').innerHTML='<div class="page active"><div style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center"><button class="btn btn-ghost" onclick="navigate(\'manage\')"><i class="ri-arrow-left-line"></i> 返回</button><div style="display:flex;gap:8px">'+(report.status==='draft'?'<button class="btn btn-primary btn-sm" onclick="navigate(\'edit\',\''+report.id+'\')"><i class="ri-edit-line"></i>编辑</button>':'')+'<button class="btn btn-outline btn-sm" onclick="exportWord(\''+report.id+'\')"><i class="ri-download-line"></i>导出 Word</button></div></div>'
 +'<div class="doc-preview"><div class="doc-header"><div class="doc-title">'+report.title+'</div><div class="doc-date">'+report.time+'</div></div>'
-+'<div class="doc-section"><div class="doc-section-title">【内容提要】</div>'+(li.length?'<div style="font-weight:600;margin-bottom:8px">一、省内舆情</div>'+li.map((it,i)=>'<div class="doc-item"><span class="doc-item-title">'+(i+1)+'. '+it.title+'</span></div>').join(''):'')+(ei.length?'<div style="font-weight:600;margin:'+(li.length?'16px':'0')+' 0 8px">二、外省舆情镜鉴</div>'+ei.map((it,i)=>'<div class="doc-item"><span class="doc-item-title">'+(i+1)+'. '+it.title+'</span></div>').join(''):'')+'</div>'
-+li.map((it,i)=>'<div class="doc-section" style="margin-bottom:20px"><div class="doc-section-title">'+(i+1)+'、'+it.title+'</div><div class="doc-item">'+it.summary+'</div>'+(it.suggestion?'<div class="doc-item" style="color:var(--text-secondary);font-size:13px;margin-top:8px"><i class="ri-lightbulb-line" style="color:var(--orange)"></i> 建议意见：'+it.suggestion+'</div>':'')+'<div class="doc-item" style="color:var(--text-tertiary);font-size:12px;margin-top:4px">（'+it.source+' | '+it.time+'）</div></div>').join('')
-+(ei.length?'<div class="doc-section"><div class="doc-section-title">【外省舆情镜鉴】</div>'+ei.map((it,i)=>'<div class="doc-item"><span class="doc-item-title">'+(i+1)+'. '+it.title+'</span>：'+it.summary.slice(0,80)+'...</div>').join('')+'</div>':'')
++'<div class="doc-section"><div class="doc-section-title">【内容提要】</div><div class="doc-toc">'+(li.length?'<div class="toc-title">一、省内舆情</div>'+li.map((it,i)=>'<div class="toc-entry">'+(i+1)+'. '+it.title+'</div>').join(''):'')+(ei.length?'<div class="toc-title" style="margin-top:10px">二、外省舆情镜鉴</div>'+ei.map((it,i)=>'<div class="toc-entry">'+(i+1)+'. '+it.title+'</div>').join(''):'')+'</div></div>'
++(li.length?'<div class="body-section-title">一、本省舆情</div>'+bodyItems(li,0):'')
++(ei.length?'<div class="body-section-title">二、外省舆情镜鉴</div>'+bodyItems(ei,0):'')
 +'</div></div>'}
 
 function exportWord(reportId){
@@ -1655,18 +1667,16 @@ function exportWord(reportId){
   let body='<h1 style="text-align:center;font-family:方正小标宋,FangSong,serif">'+report.title+'</h1>';
   body+='<p style="text-align:center;color:#666;font-size:12pt">'+report.time+'</p><hr>';
   body+='<h2 style="font-family:黑体,SimHei,sans-serif">【内容提要】</h2>';
-  if(li.length){body+='<p style="font-weight:bold">一、省内舆情</p>';li.forEach((it,i)=>{body+='<p style="text-indent:2em">'+(i+1)+'. '+it.title+'</p>'})}
-  if(ei.length){body+='<p style="font-weight:bold;margin-top:12pt">二、外省舆情镜鉴</p>';ei.forEach((it,i)=>{body+='<p style="text-indent:2em">'+(i+1)+'. '+it.title+'</p>'})}
-  li.forEach((it,i)=>{
-    body+='<h2 style="font-family:黑体,SimHei,sans-serif">'+(i+1)+'、'+it.title+'</h2>';
+  if(li.length){body+='<p style="font-weight:bold">一、省内舆情</p>';li.forEach((it,i)=>{body+='<p style="text-indent:2em;font-size:11pt">'+(i+1)+'. '+it.title+'</p>'})}
+  if(ei.length){body+='<p style="font-weight:bold;margin-top:8pt">二、外省舆情镜鉴</p>';ei.forEach((it,i)=>{body+='<p style="text-indent:2em;font-size:11pt">'+(i+1)+'. '+it.title+'</p>'})}
+  function writeBodyItems(items,offset){items.forEach((it,i)=>{
+    body+='<h2 style="font-family:黑体,SimHei,sans-serif">'+(offset+i+1)+'、'+it.title+'</h2>';
     body+='<p style="text-indent:2em">'+it.summary+'</p>';
     if(it.suggestion){body+='<p style="text-indent:2em;color:#666;font-size:12pt">建议意见：'+it.suggestion+'</p>'}
     body+='<p style="color:#999;font-size:10pt;text-indent:2em">（'+it.source+' | '+it.time+'）</p>';
-  });
-  if(ei.length){
-    body+='<h2 style="font-family:黑体,SimHei,sans-serif">【外省舆情镜鉴】</h2>';
-    ei.forEach((it,i)=>{body+='<p style="text-indent:2em"><b>'+(i+1)+'. '+it.title+'</b>：'+it.summary.slice(0,80)+'...</p>'});
-  }
+  })}
+  if(li.length){body+='<h2 style="font-family:黑体,SimHei,sans-serif">一、本省舆情</h2>';writeBodyItems(li,0)}
+  if(ei.length){body+='<h2 style="font-family:黑体,SimHei,sans-serif">二、外省舆情镜鉴</h2>';writeBodyItems(ei,0)}
   const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]--><style>@page{size:A4;margin:2.54cm}body{font-family:仿宋,FangSong,serif;font-size:14pt;line-height:28pt}h1{font-size:22pt;margin-bottom:12pt}h2{font-size:16pt;margin-top:16pt;margin-bottom:8pt}p{margin:4pt 0}</style></head><body>'+body+'</body></html>';
   const blob=new Blob(['\ufeff'+html],{type:'application/msword'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
@@ -1943,13 +1953,14 @@ function closeModal(){document.getElementById('modalOverlay').classList.remove('
 /* ===== PRD ===== */
 async function loadPRD(){let md='';const ta=document.getElementById('prdMdSource');if(ta)md=ta.value;if(!md){try{const r=await fetch('PRD.md');if(r.ok)md=await r.text()}catch(e){}}if(md){document.getElementById('prdContent').innerHTML=renderMD(md);buildToc()}else document.getElementById('prdContent').innerHTML='<p style="color:var(--text-tertiary)">PRD 加载失败</p>'}
 function togglePrdPanel(){const p=document.getElementById('prdPanel');const t=document.getElementById('prdToggle');const dot=t.querySelector('.toggle-dot');p.classList.toggle('collapsed');if(p.classList.contains('collapsed')){dot.style.background='#aaa'}else{dot.style.background='var(--green)'}}
+(function(){var drag=document.getElementById('splitDrag');var panel=document.getElementById('prdPanel');var startX,startW;drag.addEventListener('mousedown',function(e){e.preventDefault();startX=e.clientX;startW=panel.offsetWidth;drag.classList.add('dragging');document.body.style.cursor='col-resize';document.body.style.userSelect='none';function onMove(e){var w=startW-(e.clientX-startX);if(w<200)w=200;if(w>window.innerWidth*0.7)w=window.innerWidth*0.7;panel.style.width=w+'px'}function onUp(){drag.classList.remove('dragging');document.body.style.cursor='';document.body.style.userSelect='';document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp)}document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',onUp)})})();
 function renderMD(md){let h=md.replace(/^####\s+(.+)$/gm,'<h4>$1</h4>').replace(/^###\s+(.+)$/gm,'<h3>$1</h3>').replace(/^##\s+(.+)$/gm,'<h2>$1</h2>').replace(/^#\s+(.+)$/gm,'<h1>$1</h1>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/^>\s+(.+)$/gm,'<blockquote>$1</blockquote>').replace(/^---$/gm,'<hr>').replace(/^- (.+)$/gm,'<li class="ul-item">$1</li>').replace(/^(\d+)\.\s+(.+)$/gm,'<li class="ol-item">$2</li>');h=h.replace(/(<li class="ul-item">.*<\/li>\n?)+/g,m=>'<ul>'+m.replace(/ class="ul-item"/g,'')+'</ul>');h=h.replace(/(<li class="ol-item">.*<\/li>\n?)+/g,m=>'<ol>'+m.replace(/ class="ol-item"/g,'')+'</ol>');h=h.replace(/<\/blockquote>\n*<blockquote>/g,'<br>');h=h.replace(/<!--[\s\S]*?-->/g,'');return h}
 function buildToc(){const c=document.getElementById('prdContent');const t=document.getElementById('prdToc');const hs=c.querySelectorAll('h1,h2,h3,h4');t.innerHTML='<div class="prd-toc-title">PRD 目录</div>';hs.forEach((h,i)=>{h.id='ph-'+i;const a=document.createElement('a');const depth={H1:'',H2:'',H3:' sub',H4:' sub'};a.className='prd-toc-item'+(depth[h.tagName]||'');a.textContent=h.textContent;a.href='#ph-'+i;a.onclick=e=>{e.preventDefault();h.scrollIntoView({behavior:'smooth',block:'start'})};t.appendChild(a)})}
 
 window.__PRD__=document.getElementById('prdMdSource')?.value||`
 # 舆情报送与管理系统 产品需求文档
 
-> 版本：v1.1.3 | 日期：2026-04-22
+> 版本：v1.1.4 | 日期：2026-04-22
 > 上一版本：v1.1.2
 > 原型文件：index.html
 
@@ -2348,7 +2359,7 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`
 
 ### 7.1 功能说明
 
-舆情处和管理员在此编写、预览和管理舆情报告。报告由多条舆情信息按【内容提要】+ 正文 +【外省舆情镜鉴】的结构组合而成。
+舆情处和管理员在此编写、预览和管理舆情报告。报告由多条舆情信息按【内容提要】+ 一、本省舆情 + 二、外省舆情镜鉴的结构组合而成。
 
 > 地市人员无此模块入口。
 
@@ -2417,20 +2428,20 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`
    - 下方显示报告日期
    - 底部双横线分隔
 
-2. **【内容提要】**
-   - 一、省内舆情：列出所有"本省"类型舆情的序号 + 标题（仅标题，不显示摘要）
-   - 二、外省舆情镜鉴：列出所有"外省镜鉴"类型舆情的序号 + 标题（仅标题，不显示摘要）
+2. **【内容提要】**（目录样式，小号字体）
+   - 一、省内舆情：列出所有"本省"类型舆情的序号 + 标题
+   - 二、外省舆情镜鉴：列出所有"外省镜鉴"类型舆情的序号 + 标题
    - 若无外省舆情则不显示外省子板块
 
-3. **正文**
+3. **一、本省舆情**
    - 每条"本省"舆情独立一段：
      - 序号 + 标题（加粗）
      - 完整摘要内容
      - 建议意见（如有，橙色图标 + 灰色文字）
      - 来源和时间（灰色小字）
 
-4. **【外省舆情镜鉴】**
-   - 列出所有"外省镜鉴"类型舆情的序号 + 标题 + 摘要前 80 字
+4. **二、外省舆情镜鉴**
+   - 每条"外省镜鉴"舆情独立一段，格式与本省舆情一致
    - 若无外省舆情则不显示此板块
 
 ### 7.4 报告编辑
@@ -2701,12 +2712,39 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`
 `;
 
 /* ===== Init ===== */
-const CURRENT_VERSION='latest';
-const VERSION_HISTORY=[{version:'v1.1.2',file:'v1.1.2.html',date:'2026-04-15',desc:'部门管理三级组织树、省市县层级、用户/角色弹窗数据源整合'},{version:'v1.1.1',file:'v1.1.1.html',date:'2026-04-15',desc:'部门管理模块、浙政钉组织树、用户数据源整合、PRD规范化'},{version:'v1.1.0',file:'v1.1.0.html',date:'2026-04-14',desc:'舆情分类打标、权限树更新、筛选增强'}];
-loadPRD();renderVersionSwitcher();
-function renderVersionSwitcher(){const btn=document.getElementById('vsBtn');if(!btn)return;const isLatest=CURRENT_VERSION==='latest';const latestVer=VERSION_HISTORY[0].version;btn.innerHTML='<span class="vs-dot '+(isLatest?'latest':'history')+'"></span>'+(isLatest?latestVer+' (最新)':CURRENT_VERSION)+'<i class="ri-arrow-down-s-line" style="font-size:14px"></i>';btn.onclick=function(e){e.stopPropagation();toggleVsMenu()};const menu=document.getElementById('vsMenu');let items='';items+='<div class="vs-menu-item'+(isLatest?' active':'')+'" onclick="window.location.href=\'index.html\'" style="border-bottom:1px solid var(--border-light)"><span class="vs-dot latest"></span>'+latestVer+' (最新)<span style="color:var(--text-quaternary);margin-left:auto">'+VERSION_HISTORY[0].date+'</span></div>';items+=VERSION_HISTORY.map(v=>'<div class="vs-menu-item'+(!isLatest&&CURRENT_VERSION===v.version?' active':'')+'" onclick="window.location.href=\''+v.file+'\'"><span class="vs-dot '+(v.version===latestVer?'latest':'history')+'"></span>'+v.version+'<span style="color:var(--text-quaternary);margin-left:auto">'+v.date+'</span></div>').join('');menu.innerHTML=items}
-function toggleVsMenu(){document.getElementById('vsMenu').classList.toggle('show')}
-document.addEventListener('click',e=>{const vs=document.getElementById('vsBtn');if(vs&&!vs.contains(e.target))document.getElementById('vsMenu').classList.remove('show')});
+loadPRD();
+function showUpdateHistory(){
+  const ta=document.getElementById('sessionsMdSource');
+  const md=ta?ta.value:'';
+  if(!md){showToast('error','更新记录加载失败');return}
+  const lines=md.trim().split('\n').filter(l=>l.trim());
+  // Skip header rows (title + table header + separator), parse table body
+  let rows=[];
+  for(const line of lines){
+    const trimmed=line.trim();
+    if(!trimmed.startsWith('|'))continue;
+    if(trimmed.match(/^\|[\s\-|]+\|$/))continue; // separator
+    const cells=trimmed.split('|').map(c=>c.trim()).filter(c=>c);
+    if(cells.length>=2)rows.push(cells);
+  }
+  // First row after skip is the table header; skip it
+  if(rows.length>0&&rows[0][0]==='对话 ID')rows.shift();
+  let content='';
+  if(!rows.length){
+    content='<p style="color:var(--text-tertiary);text-align:center;padding:40px 0">暂无更新记录</p>';
+  }else{
+    content='<div style="display:flex;flex-direction:column;gap:12px">';
+    rows.forEach(r=>{
+      const desc=r[1]||'';const time=r[2]||'';
+      content+='<div style="padding:12px 16px;background:var(--bg-page);border-radius:var(--radius-md);border:1px solid var(--border-light)">';
+      content+='<div style="font-size:13px;color:var(--text);line-height:1.6">'+desc+'</div>';
+      if(time)content+='<div style="font-size:11px;color:var(--text-quaternary);margin-top:6px"><i class="ri-time-line"></i> '+time+'</div>';
+      content+='</div>';
+    });
+    content+='</div>';
+  }
+  showModal('更新记录',content,'<button class="btn btn-primary" onclick="closeModal()">关闭</button>');
+}
 </script>
 </body>
 </html>
