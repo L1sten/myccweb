@@ -281,8 +281,11 @@ select.form-ctrl:focus { border-color:var(--primary); }
 .app-split { display:flex; height:100vh; overflow:hidden; }
 .app-split .page-container { flex:1; min-width:0; overflow-y:auto; }
 .app-split .page-container > body { overflow:visible; height:auto; }
-.prd-panel { width:460px; flex-shrink:0; display:flex; border-left:1px solid var(--border-light); background:#fff; position:relative; transition:width 0.3s,opacity 0.3s; }
+.prd-panel { width:460px; flex-shrink:0; display:flex; border-left:1px solid var(--border-light); background:#fff; position:relative; transition:opacity 0.3s; }
 .prd-panel.collapsed { width:0; opacity:0; overflow:hidden; border:none; }
+.split-drag { width:4px; cursor:col-resize; flex-shrink:0; background:var(--border-light); transition:background 0.15s; position:relative; z-index:10; }
+.split-drag:hover, .split-drag.dragging { background:var(--primary); }
+.split-drag::after { content:''; position:absolute; left:-3px; right:-3px; top:0; bottom:0; }
 .prd-toc { width:180px; border-right:1px solid var(--border-light); overflow-y:auto; background:#fafafa; padding:14px 0; flex-shrink:0; }
 .prd-toc-title { font-size:13px; font-weight:600; color:var(--text); padding:0 14px 10px; border-bottom:1px solid var(--border-light); margin-bottom:6px; }
 .prd-toc-item { display:block; padding:5px 14px; font-size:12px; color:var(--text-secondary); cursor:pointer; transition:all 0.15s; line-height:1.5; border-left:2px solid transparent; }
@@ -1028,6 +1031,8 @@ select.form-ctrl:focus { border-color:var(--primary); }
 
 </div><!-- end page-container -->
 
+<div class="split-drag" id="splitDrag"></div>
+
 <!-- PRD Panel -->
 <div class="prd-panel" id="prdPanel">
   <div class="prd-toc" id="prdToc">
@@ -1150,6 +1155,36 @@ function setupTocObserver() {
   }, { root: content, rootMargin: '0px 0px -60% 0px', threshold: 0.1 });
   headers.forEach(function(h) { observer.observe(h); });
 }
+
+/* ===== Split Drag ===== */
+(function() {
+  var drag = document.getElementById('splitDrag');
+  var panel = document.getElementById('prdPanel');
+  var startX, startW;
+  drag.addEventListener('mousedown', function(e) {
+    e.preventDefault();
+    startX = e.clientX;
+    startW = panel.offsetWidth;
+    drag.classList.add('dragging');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    function onMove(e) {
+      var w = startW - (e.clientX - startX);
+      if (w < 200) w = 200;
+      if (w > window.innerWidth * 0.7) w = window.innerWidth * 0.7;
+      panel.style.width = w + 'px';
+    }
+    function onUp() {
+      drag.classList.remove('dragging');
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+})();
 
 /* ===== Init ===== */
 document.addEventListener('DOMContentLoaded', function() {
