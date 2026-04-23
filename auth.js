@@ -13,6 +13,8 @@
       "4cf32614b2488b3e9615748ef1b1592215adc936acef8c661632928194242fdb",
     "yuqing-report":
       "dc0f435c887d2e8f1a082cbef3533beda5acf8d53d96a5b1d7fc3b25d0c794ef",
+    "broadcast-player":
+      "47e1a0e2e92fd65b2eab47d601152da5ec6b479279397b9cc114ca4a15867a1b",
   };
 
   var projectKey = "root";
