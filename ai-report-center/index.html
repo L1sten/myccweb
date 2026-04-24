@@ -151,9 +151,6 @@ select.form-ctrl:focus { border-color:var(--primary); }
 
 /* === Config Page === */
 .config-wrap { max-width:820px; }
-.breadcrumb { font-size:13px; color:var(--text-secondary); margin-bottom:16px; padding:0 4px; }
-.breadcrumb a { color:var(--primary); cursor:pointer; }
-.breadcrumb .sep { margin:0 6px; }
 .config-panel { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:24px 28px; }
 .config-section { margin-bottom:24px; }
 .config-section:last-child { margin-bottom:0; }
@@ -611,7 +608,6 @@ select.form-ctrl:focus { border-color:var(--primary); }
 <!-- ===== Page 2: 配置页 ===== -->
 <div id="page2" class="page">
   <div class="config-wrap">
-    <div class="breadcrumb"><a onclick="switchSubPage('ai')">报告中心</a><span class="sep">&gt;</span><a onclick="switchSubPage('ai')">AI报告</a><span class="sep">&gt;</span>新建配置</div>
     <div class="config-panel">
       <div class="config-section">
         <div class="section-title">基本信息</div>
@@ -1559,7 +1555,7 @@ function showToast(msg){
 - 当前所在入口在浮层中以高亮（蓝色加粗）标识
 - "报告中心"图标始终显示为选中状态（蓝色背景）
 - 两个页面各自独立，互不干扰
-- AI 报告页面的面包屑导航、返回按钮均指向 AI 报告入口
+- AI 报告页面的返回按钮指向 AI 报告入口
 
 **展示规则**：
 - "AI 报告"分组标题显示"AI 报告"文字和蓝色"AI"角标
@@ -1623,7 +1619,7 @@ function showToast(msg){
 #### 3.2.1 入口
 
 - 在 AI 报告列表页顶部的操作栏中，点击"AI 生成"按钮进入配置页
-- 通过面包屑导航可返回 AI 报告列表
+- 通过返回按钮可返回 AI 报告列表
 
 #### 3.2.2 基本信息
 
