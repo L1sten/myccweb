@@ -306,6 +306,10 @@ select.form-ctrl:focus { border-color:var(--primary); }
 .prd-content pre code { background:none; padding:0; }
 .prd-content hr { border:none; border-top:1px solid var(--border); margin:20px 0; }
 .prd-content blockquote { border-left:3px solid var(--primary); padding:4px 12px; margin:8px 0; color:var(--text-secondary); font-size:12px; background:var(--primary-bg); border-radius:0 4px 4px 0; }
+.prd-content ul.prd-list { margin: 8px 0 8px 20px; padding-left: 0; }
+.prd-content ul.prd-list > li { margin: 6px 0; list-style: disc !important; }
+.prd-content ul.prd-nested { margin: 2px 0 2px 18px; padding-left: 0; list-style: circle !important; }
+.prd-content ul.prd-nested li { list-style: circle !important; font-size: 13px !important; color: #555; }
 
 /* Top-right Controls Bar */
 .top-controls { position:fixed; top:68px; right:14px; z-index:400; display:flex; align-items:center; gap:8px; }
@@ -1146,28 +1150,67 @@ function md2html(md) {
   md = md.replace(/```([\s\S]*?)```/g, function(m, code) { return '<pre><code>' + code.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</code></pre>'; });
   // inline code
   md = md.replace(/`([^`]+)`/g, '<code>$1</code>');
-  // headers
-  md = md.replace(/^#### (.+)$/gm, function(m, t) { hIdx++; return '<h4 id="h-'+hIdx+'">'+t+'</h4>'; });
-  md = md.replace(/^### (.+)$/gm, function(m, t) { hIdx++; return '<h3 id="h-'+hIdx+'">'+t+'</h3>'; });
-  md = md.replace(/^## (.+)$/gm, function(m, t) { hIdx++; return '<h2 id="h-'+hIdx+'">'+t+'</h2>'; });
-  md = md.replace(/^# (.+)$/gm, function(m, t) { hIdx++; return '<h1 id="h-'+hIdx+'">'+t+'</h1>'; });
-  // bold
-  md = md.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  // hr
-  md = md.replace(/^---+$/gm, '<hr>');
   // blockquote
   md = md.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
-  // unordered list
-  md = md.replace(/^- (.+)$/gm, '<li>$1</li>');
-  md = md.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
-  // ordered list
-  md = md.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
-  // paragraphs
-  md = md.replace(/\n{2,}/g, '\n</p>\n<p>\n');
-  md = '<p>' + md + '</p>';
-  md = md.replace(/<p>\s*<(h[1-4]|ul|ol|pre|hr|blockquote)/g, '<$1');
-  md = md.replace(/<\/(h[1-4]|ul|ol|pre|hr|blockquote)>\s*<\/p>/g, '</$1>');
-  return md;
+  // line-by-line parsing for headers, lists, hr, paragraphs
+  function inlineFmt(s) { return s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>'); }
+  var lines = md.split('\n');
+  var h = '';
+  var inUl = false, liOpen = false, inNestedUl = false;
+  for (var j = 0; j < lines.length; j++) {
+    var ln = lines[j], tr = ln.trim();
+    if (!tr) {
+      if (inNestedUl) { h += '</ul>'; inNestedUl = false; }
+      if (liOpen) { h += '</li>'; liOpen = false; }
+      if (inUl) { h += '</ul>'; inUl = false; }
+      continue;
+    }
+    if (/^---+$/.test(tr)) {
+      if (inNestedUl) { h += '</ul>'; inNestedUl = false; }
+      if (liOpen) { h += '</li>'; liOpen = false; }
+      if (inUl) { h += '</ul>'; inUl = false; }
+      h += '<hr>'; continue;
+    }
+    var hm = tr.match(/^(#{1,4})\s+(.+)$/);
+    if (hm) {
+      if (inNestedUl) { h += '</ul>'; inNestedUl = false; }
+      if (liOpen) { h += '</li>'; liOpen = false; }
+      if (inUl) { h += '</ul>'; inUl = false; }
+      hIdx++;
+      h += '<h' + hm[1].length + ' id="h-'+hIdx+'">' + inlineFmt(hm[2]) + '</h' + hm[1].length + '>';
+      continue;
+    }
+    if (/^\s{2,}- /.test(ln)) {
+      if (!inNestedUl) h += '<ul class="prd-nested">';
+      inNestedUl = true;
+      h += '<li>' + inlineFmt(tr.replace(/^- /, '')) + '</li>';
+      continue;
+    }
+    if (/^- /.test(ln)) {
+      if (inNestedUl) { h += '</ul>'; inNestedUl = false; }
+      if (liOpen) h += '</li>';
+      if (!inUl) { h += '<ul class="prd-list">'; inUl = true; }
+      h += '<li>' + inlineFmt(tr.replace(/^- /, ''));
+      liOpen = true;
+      continue;
+    }
+    if (/^\d+\. /.test(tr)) {
+      if (inNestedUl) { h += '</ul>'; inNestedUl = false; }
+      if (liOpen) h += '</li>';
+      if (!inUl) { h += '<ul class="prd-list">'; inUl = true; }
+      h += '<li>' + inlineFmt(tr.replace(/^\d+\. /, ''));
+      liOpen = true;
+      continue;
+    }
+    if (inNestedUl) { h += '</ul>'; inNestedUl = false; }
+    if (liOpen) { h += '</li>'; liOpen = false; }
+    if (inUl) { h += '</ul>'; inUl = false; }
+    h += '<p>' + inlineFmt(tr) + '</p>';
+  }
+  if (inNestedUl) h += '</ul>';
+  if (liOpen) h += '</li>';
+  if (inUl) h += '</ul>';
+  return h;
 }
 
 function buildToc(html) {
