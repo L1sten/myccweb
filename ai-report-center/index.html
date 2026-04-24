@@ -294,6 +294,7 @@ select.form-ctrl:focus { border-color:var(--primary); }
 .prd-content h2 { font-size:15px; font-weight:600; margin:28px 0 12px; padding-left:10px; border-left:3px solid var(--primary); padding-bottom:8px; border-bottom:1px solid var(--border-light); }
 .prd-content h3 { font-size:13.5px; font-weight:600; margin:20px 0 8px; }
 .prd-content h4 { font-size:13px; font-weight:600; margin:16px 0 6px; color:var(--text-secondary); }
+.prd-content h5 { font-size:12.5px; font-weight:600; margin:12px 0 4px; color:var(--text-secondary); }
 .prd-content p { font-size:13px; line-height:1.8; margin-bottom:10px; color:var(--text-secondary); }
 .prd-content ul, .prd-content ol { font-size:13px; line-height:1.8; margin-bottom:10px; padding-left:24px; color:var(--text-secondary); }
 .prd-content li { margin-bottom:4px; }
@@ -1167,7 +1168,7 @@ function md2html(md) {
       if (inUl) { h += '</ul>'; inUl = false; }
       h += '<hr>'; continue;
     }
-    var hm = tr.match(/^(#{1,4})\s+(.+)$/);
+    var hm = tr.match(/^(#{1,5})\s+(.+)$/);
     if (hm) {
       if (inNestedUl) { h += '</ul>'; inNestedUl = false; }
       if (liOpen) { h += '</li>'; liOpen = false; }
@@ -1212,7 +1213,7 @@ function md2html(md) {
 function buildToc(html) {
   var parser = new DOMParser();
   var doc = parser.parseFromString('<div>' + html + '</div>', 'text/html');
-  var headers = doc.querySelectorAll('h1,h2,h3,h4');
+  var headers = doc.querySelectorAll('h1,h2,h3,h4,h5');
   var tocHtml = '<div class="prd-toc-title">PRD 目录</div>';
   headers.forEach(function(h) {
     var level = parseInt(h.tagName.charAt(1));
@@ -1246,7 +1247,7 @@ function loadPrd() {
 
 function setupTocObserver() {
   var content = document.getElementById('prdContent');
-  var headers = content.querySelectorAll('h1,h2,h3,h4');
+  var headers = content.querySelectorAll('h1,h2,h3,h4,h5');
   if (!headers.length) return;
   var observer = new IntersectionObserver(function(entries) {
     entries.forEach(function(entry) {
