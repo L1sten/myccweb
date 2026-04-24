@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>传播投手 - 需求管理系统</title>
+<script src="../auth.js"></script>
+<style>
+:root {
+  --primary: #1677FF;
+  --primary-light: #4096ff;
+  --green: #52c41a;
+  --border: #e8e8e8;
+  --border-light: #f0f0f0;
+  --text: #1f1f1f;
+  --text-secondary: #8c8c8c;
+  --bg: #f0f2f5;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--text); }
+
+/* SVG Icons */
+.ico { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ico svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ico-sm svg { width: 14px; height: 14px; }
+.ico-md svg { width: 16px; height: 16px; }
+.ico-lg svg { width: 18px; height: 18px; }
+
+.app-split { display: flex; height: 100vh; overflow: hidden; }
+.app-split .page-container { flex: 1; min-width: 0; overflow-y: auto; }
+
+/* PRD Panel */
+.prd-panel { width: 460px; flex-shrink: 0; display: flex; border-left: 1px solid var(--border); transition: opacity .3s; }
+.prd-panel.collapsed { width: 0; opacity: 0; overflow: hidden; border: none; }
+.split-drag { width: 4px; cursor: col-resize; flex-shrink: 0; background: var(--border-light); transition: background .15s; position: relative; z-index: 10; }
+.split-drag:hover, .split-drag.dragging { background: var(--primary); }
+.split-drag::after { content: ''; position: absolute; left: -3px; right: -3px; top: 0; bottom: 0; }
+.prd-toc { width: 180px; border-right: 1px solid var(--border); overflow-y: auto; background: #fafafa; flex-shrink: 0; }
+.prd-toc-inner { padding: 12px 0; }
+.prd-toc-item { display: block; padding: 6px 16px; font-size: 12px; color: var(--text-secondary); cursor: pointer; transition: all .15s; border-left: 2px solid transparent; }
+.prd-toc-item:hover { color: var(--primary); background: #f0f5ff; }
+.prd-toc-item.active { color: var(--primary); border-left-color: var(--primary); background: #f0f5ff; font-weight: 500; }
+.prd-toc-item.sub { padding-left: 28px; font-size: 11px; }
+.prd-content { flex: 1; overflow-y: auto; padding: 24px; }
+.prd-content h1 { font-size: 22px !important; font-weight: 600 !important; margin: 0 0 16px 0 !important; color: var(--text) !important; }
+.prd-content h2 { font-size: 17px !important; font-weight: 600 !important; margin: 24px 0 12px 0 !important; color: var(--text) !important; padding-bottom: 8px; border-bottom: 1px solid var(--border-light); }
+.prd-content h3 { font-size: 15px !important; font-weight: 600 !important; margin: 20px 0 8px 0 !important; color: var(--text) !important; }
+.prd-content p { font-size: 13px !important; line-height: 1.7 !important; margin: 8px 0 !important; color: #444 !important; }
+.prd-content strong { font-weight: 600 !important; color: var(--text) !important; }
+.prd-content ul.prd-list { margin: 8px 0 8px 20px !important; padding-left: 0 !important; }
+.prd-content ul.prd-list > li { margin: 6px 0 !important; list-style: disc !important; font-size: 13px !important; line-height: 1.7 !important; color: #444 !important; }
+.prd-content hr { border: none; border-top: 1px solid var(--border-light); margin: 16px 0 !important; }
+
+/* Top Controls */
+.top-controls { position: fixed; top: 68px; right: 14px; z-index: 400; display: flex; align-items: center; gap: 8px; }
+.prd-toggle { display: flex; align-items: center; gap: 4px; padding: 5px 12px; background: #fff; border: 1px solid var(--border-light); border-radius: 14px; font-size: 12px; color: var(--text-secondary); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.08); transition: all .2s; white-space: nowrap; }
+.prd-toggle:hover { border-color: var(--primary-light); color: var(--primary); }
+.prd-toggle .toggle-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+.changelog-btn { display: flex; align-items: center; gap: 5px; padding: 5px 12px; background: #fff; border: 1px solid var(--border-light); border-radius: 14px; font-size: 11px; color: var(--text-secondary); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.08); transition: all .2s; white-space: nowrap; }
+.changelog-btn:hover { border-color: var(--primary-light); color: var(--primary); }
+.changelog-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 500; }
+.changelog-overlay.show { display: block; }
+.changelog-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 560px; max-height: 70vh; background: #fff; border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); z-index: 501; overflow: hidden; }
+.changelog-modal.show { display: flex; flex-direction: column; }
+.changelog-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border-light); }
+.changelog-header h3 { font-size: 15px; font-weight: 600; margin: 0; }
+.changelog-close { background: none; border: none; font-size: 20px; color: var(--text-secondary); cursor: pointer; padding: 0 4px; line-height: 1; }
+.changelog-close:hover { color: var(--text); }
+.changelog-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
+.changelog-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.changelog-table th { text-align: left; padding: 8px 12px; background: #f8f9fa; color: var(--text-secondary); font-weight: 500; border-bottom: 1px solid var(--border-light); }
+.changelog-table td { padding: 8px 12px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+.changelog-table tr:last-child td { border-bottom: none; }
+.changelog-table td:first-child { white-space: nowrap; color: var(--text-secondary); font-size: 12px; }
+
+/* Admin Styles */
+.admin-header { height: 56px; background: #fff; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+.admin-header-left { display: flex; align-items: center; gap: 12px; }
+.admin-logo { width: 32px; height: 32px; background: linear-gradient(135deg, #1677FF, #4F46E5); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; }
+.admin-logo svg { width: 16px; height: 16px; }
+.admin-title { font-size: 15px; color: var(--text); }
+.admin-title-sep { color: #e8e8e8; margin: 0 8px; }
+.admin-subtitle { font-size: 14px; color: var(--text-secondary); }
+.admin-header-right { display: flex; align-items: center; gap: 16px; }
+.admin-bell { position: relative; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background .2s; }
+.admin-bell:hover { background: #f5f5f5; }
+.admin-bell-dot { position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; background: #ff4d4f; border-radius: 50%; }
+.admin-user { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 4px 8px; border-radius: 8px; transition: background .2s; }
+.admin-user:hover { background: #fafafa; }
+.admin-avatar { width: 28px; height: 28px; background: linear-gradient(135deg, #69b1ff, #597ef7); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; }
+.admin-user-name { font-size: 13px; color: #666; }
+.admin-content { padding: 24px; max-width: 1200px; margin: 0 auto; }
+.admin-page-title { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+.admin-page-title h1 { font-size: 22px; color: var(--text); }
+.admin-page-title p { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+.admin-page-title p span { color: var(--primary); }
+.admin-actions { display: flex; gap: 8px; }
+.admin-action-btn { display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: #fff; border: 1px solid var(--border-light); border-radius: 8px; font-size: 13px; color: var(--text-secondary); cursor: pointer; transition: all .2s; }
+.admin-action-btn:hover { background: #fafafa; border-color: #d9d9d9; }
+.admin-filter-bar { background: #fff; border-radius: 12px; border: 1px solid #f0f0f0; padding: 16px; display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+.admin-search { position: relative; flex: 1; max-width: 320px; }
+.admin-search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #d9d9d9; font-size: 14px; }
+.admin-search input { width: 100%; padding: 8px 12px 8px 36px; background: #f9f9f9; border: 1px solid #f0f0f0; border-radius: 8px; font-size: 13px; outline: none; transition: border-color .2s; }
+.admin-search input:focus { border-color: var(--primary); }
+.admin-search input::placeholder { color: #ccc; }
+.admin-filter-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.admin-filter-tag { padding: 6px 12px; border-radius: 8px; font-size: 13px; border: 1px solid #e8e8e8; background: #fff; color: #666; cursor: pointer; transition: all .2s; }
+.admin-filter-tag.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.admin-table { background: #fff; border-radius: 12px; border: 1px solid #f0f0f0; overflow: hidden; }
+.admin-table-header { display: grid; grid-template-columns: 100px 1fr 120px 150px 140px 70px; gap: 16px; padding: 12px 24px; background: #fafafa; border-bottom: 1px solid #f0f0f0; font-size: 12px; color: var(--text-secondary); }
+.admin-table-row { display: grid; grid-template-columns: 100px 1fr 120px 150px 140px 70px; gap: 16px; padding: 16px 24px; border-bottom: 1px solid #f9f9f9; align-items: center; cursor: pointer; transition: background .15s; }
+.admin-table-row:hover { background: rgba(22,119,255,0.02); }
+.admin-table-row:last-child { border-bottom: none; }
+.admin-table-id { font-size: 12px; color: var(--text-secondary); font-family: monospace; }
+.admin-table-name { font-size: 13px; color: #333; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.admin-table-name-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; display: flex; align-items: center; gap: 6px; }
+.admin-table-tag { font-size: 12px; color: #666; background: #f5f5f5; padding: 4px 8px; border-radius: 4px; display: inline-block; }
+.admin-table-company { font-size: 12px; color: #666; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.admin-table-date { font-size: 12px; color: var(--text-secondary); }
+.admin-table-action { font-size: 12px; color: var(--primary); display: flex; align-items: center; gap: 2px; }
+.admin-table-action:hover { text-decoration: underline; }
+.admin-table-footer { display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; background: #fafafa; border-top: 1px solid #f0f0f0; font-size: 12px; color: var(--text-secondary); }
+.admin-pagination { display: flex; gap: 8px; align-items: center; }
+.admin-page-btn { padding: 4px 12px; border: 1px solid #e8e8e8; border-radius: 4px; background: #fff; color: #666; font-size: 12px; cursor: pointer; }
+.admin-page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+/* Admin Detail */
+.admin-detail-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+.admin-detail-back { width: 36px; height: 36px; background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background .2s; font-size: 16px; color: #666; }
+.admin-detail-back:hover { background: #fafafa; }
+.admin-detail-title h1 { font-size: 20px; color: var(--text); }
+.admin-detail-title p { font-size: 13px; color: var(--text-secondary); margin-top: 2px; display: flex; align-items: center; gap: 8px; }
+.admin-detail-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+.admin-detail-card { background: #fff; border-radius: 12px; border: 1px solid #f0f0f0; padding: 24px; }
+.admin-detail-card-title { font-size: 15px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.admin-detail-card-title::before { content: ''; width: 3px; height: 16px; background: var(--primary); border-radius: 2px; }
+.admin-detail-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 32px; }
+.admin-detail-field-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; }
+.admin-detail-field-value { font-size: 14px; color: #333; display: flex; align-items: center; gap: 6px; }
+.admin-detail-field-value .icon { color: #d9d9d9; font-size: 14px; }
+.admin-detail-field-value.highlight { color: var(--primary); }
+.admin-detail-desc { font-size: 14px; color: #666; line-height: 1.8; white-space: pre-wrap; }
+.admin-detail-file { display: flex; align-items: center; justify-content: space-between; background: #f9f9f9; border-radius: 8px; padding: 12px 16px; margin-bottom: 8px; }
+.admin-detail-file-left { display: flex; align-items: center; gap: 10px; }
+.admin-detail-file-icon { color: var(--primary); font-size: 16px; }
+.admin-detail-file-name { font-size: 13px; color: #666; }
+.admin-detail-file-download { font-size: 12px; color: var(--primary); display: flex; align-items: center; gap: 4px; cursor: pointer; }
+.admin-detail-file-download:hover { text-decoration: underline; }
+.admin-detail-contact-avatar { width: 44px; height: 44px; background: linear-gradient(135deg, #69b1ff, #597ef7); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 15px; }
+.admin-detail-contact-name { font-size: 15px; color: #333; }
+.admin-detail-contact-company { font-size: 12px; color: var(--text-secondary); }
+.admin-detail-contact-info { margin-top: 16px; }
+.admin-detail-contact-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 13px; color: #666; }
+.admin-detail-contact-row .icon { color: #d9d9d9; font-size: 14px; }
+.admin-detail-summary { background: linear-gradient(135deg, #1677FF, #4F46E5); border-radius: 12px; padding: 20px; color: #fff; margin-top: 20px; }
+.admin-detail-summary-title { font-size: 12px; color: rgba(255,255,255,0.7); margin-bottom: 12px; }
+.admin-detail-summary-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 10px; }
+.admin-detail-summary-row:last-child { margin-bottom: 0; }
+.admin-detail-summary-row span:first-child { color: rgba(255,255,255,0.6); }
+</style>
+</head>
+<body>
+<div class="app-split">
+  <div class="page-container">
+    <div style="background:#f0f2f5;min-height:100vh;">
+      <!-- Admin List (default view) -->
+      <div id="view-admin-list">
+        <div class="admin-header">
+          <div class="admin-header-left">
+            <div class="admin-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <span class="admin-title">传播投手</span>
+            <span class="admin-title-sep">|</span>
+            <span class="admin-subtitle">需求管理</span>
+          </div>
+          <div class="admin-header-right">
+            <div class="admin-bell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><div class="admin-bell-dot"></div></div>
+            <div class="admin-user">
+              <div class="admin-avatar">管</div>
+              <span class="admin-user-name">运营管理员</span>
+              <span style="color:#ccc;font-size:10px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:10px;height:10px"><path d="M6 9l6 6 6-6"/></svg></span>
+            </div>
+          </div>
+        </div>
+        <div class="admin-content">
+          <div class="admin-page-title">
+            <div>
+              <h1>需求管理</h1>
+              <p>共收到 <span>6</span> 条传播需求</p>
+            </div>
+            <div class="admin-actions">
+              <button class="admin-action-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 12a9 9 0 1 1-6.219-8.56"/><polyline points="21 3 21 9 15 9"/></svg> 刷新</button>
+              <button class="admin-action-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> 导出</button>
+            </div>
+          </div>
+          <div class="admin-filter-bar">
+            <div class="admin-search">
+              <span class="admin-search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+              <input placeholder="搜索需求名称、公司、联系人...">
+            </div>
+            <div class="admin-filter-tags">
+              <div class="admin-filter-tag active">全部类型</div>
+              <div class="admin-filter-tag">微博热搜</div>
+              <div class="admin-filter-tag">抖音热推</div>
+              <div class="admin-filter-tag">稿件热推</div>
+              <div class="admin-filter-tag">央媒传播</div>
+              <div class="admin-filter-tag">定制传播</div>
+            </div>
+          </div>
+          <div class="admin-table">
+            <div class="admin-table-header">
+              <span>编号</span><span>需求名称</span><span>服务类型</span><span>提交公司</span><span>提交时间</span><span>操作</span>
+            </div>
+            <div class="admin-table-row" onclick="showDetail()">
+              <span class="admin-table-id">D20260401001</span>
+              <div>
+                <div class="admin-table-name">2026春季消费品博览会全网传播</div>
+                <div class="admin-table-name-sub">张明远 · 2026-04-05 ~ 2026-04-10</div>
+              </div>
+              <span class="admin-table-tag">微博热搜</span>
+              <span class="admin-table-company">杭州新锐消费科技有限公司</span>
+              <span class="admin-table-date">2026-04-01 09:23</span>
+              <span class="admin-table-action">详情 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M9 18l6-6-6-6"/></svg></span>
+            </div>
+            <div class="admin-table-row">
+              <span class="admin-table-id">D20260401002</span>
+              <div>
+                <div class="admin-table-name">国际智能制造展媒体矩阵传播</div>
+                <div class="admin-table-name-sub">李慧琳 · 2026-04-08 ~ 2026-04-15</div>
+              </div>
+              <span class="admin-table-tag">央媒传播</span>
+              <span class="admin-table-company">浙江博联智造集团</span>
+              <span class="admin-table-date">2026-03-30 14:15</span>
+              <span class="admin-table-action">详情 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M9 18l6-6-6-6"/></svg></span>
+            </div>
+            <div class="admin-table-row">
+              <span class="admin-table-id">D20260331003</span>
+              <div>
+                <div class="admin-table-name">绿色能源峰会抖音短视频传播</div>
+                <div class="admin-table-name-sub">陈启航 · 2026-04-12 ~ 2026-04-18</div>
+              </div>
+              <span class="admin-table-tag">抖音热推</span>
+              <span class="admin-table-company">绿能未来科技股份有限公司</span>
+              <span class="admin-table-date">2026-03-28 11:30</span>
+              <span class="admin-table-action">详情 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M9 18l6-6-6-6"/></svg></span>
+            </div>
+            <div class="admin-table-row">
+              <span class="admin-table-id">D20260329004</span>
+              <div>
+                <div class="admin-table-name">跨境电商博览会稿件推送</div>
+                <div class="admin-table-name-sub">王海涛 · 2026-04-02 ~ 2026-04-06</div>
+              </div>
+              <span class="admin-table-tag">稿件热推</span>
+              <span class="admin-table-company">环球通达跨境电商有限公司</span>
+              <span class="admin-table-date">2026-03-25 16:45</span>
+              <span class="admin-table-action">详情 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M9 18l6-6-6-6"/></svg></span>
+            </div>
+            <div class="admin-table-row">
+              <span class="admin-table-id">D20260328005</span>
+              <div>
+                <div class="admin-table-name">健康产业大会微博同城热搜</div>
+                <div class="admin-table-name-sub">孙丽娜 · 2026-04-01 ~ 2026-04-03</div>
+              </div>
+              <span class="admin-table-tag">微博热搜</span>
+              <span class="admin-table-company">康源健康产业发展有限公司</span>
+              <span class="admin-table-date">2026-03-28 08:50</span>
+              <span class="admin-table-action">详情 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M9 18l6-6-6-6"/></svg></span>
+            </div>
+            <div class="admin-table-row">
+              <span class="admin-table-id">D20260401006</span>
+              <div>
+                <div class="admin-table-name">文化创意产业博览会整合传播</div>
+                <div class="admin-table-name-sub">周文轩 · 2026-04-20 ~ 2026-04-28</div>
+              </div>
+              <span class="admin-table-tag">定制传播</span>
+              <span class="admin-table-company">杭州东方文创集团有限公司</span>
+              <span class="admin-table-date">2026-04-01 10:05</span>
+              <span class="admin-table-action">详情 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M9 18l6-6-6-6"/></svg></span>
+            </div>
+            <div class="admin-table-footer">
+              <span>共 6 条需求</span>
+              <div class="admin-pagination">
+                <button class="admin-page-btn">上一页</button>
+                <button class="admin-page-btn active">1</button>
+                <button class="admin-page-btn">下一页</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Detail (hidden by default) -->
+      <div id="view-admin-detail" style="display:none">
+        <div class="admin-header">
+          <div class="admin-header-left">
+            <div class="admin-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <span class="admin-title">传播投手</span>
+            <span class="admin-title-sep">|</span>
+            <span class="admin-subtitle">需求管理</span>
+          </div>
+          <div class="admin-header-right">
+            <div class="admin-bell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><div class="admin-bell-dot"></div></div>
+            <div class="admin-user">
+              <div class="admin-avatar">管</div>
+              <span class="admin-user-name">运营管理员</span>
+              <span style="color:#ccc;font-size:10px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:10px;height:10px"><path d="M6 9l6 6 6-6"/></svg></span>
+            </div>
+          </div>
+        </div>
+        <div class="admin-content">
+          <div class="admin-detail-header">
+            <button class="admin-detail-back" onclick="showList()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></button>
+            <div class="admin-detail-title">
+              <h1>2026春季消费品博览会全网传播</h1>
+              <p><span style="font-family:monospace">D20260401001</span> · 提交于 2026-04-01 09:23</p>
+            </div>
+          </div>
+          <div class="admin-detail-grid">
+            <div>
+              <div class="admin-detail-card">
+                <div class="admin-detail-card-title">基本信息</div>
+                <div class="admin-detail-fields">
+                  <div>
+                    <div class="admin-detail-field-label">展会名称</div>
+                    <div class="admin-detail-field-value"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span> 2026春季消费品博览会</div>
+                  </div>
+                  <div>
+                    <div class="admin-detail-field-label">所属公司</div>
+                    <div class="admin-detail-field-value"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg></span> 杭州新锐消费科技有限公司</div>
+                  </div>
+                  <div>
+                    <div class="admin-detail-field-label">服务类型</div>
+                    <div class="admin-detail-field-value highlight">微博热搜 · 全国热搜榜</div>
+                  </div>
+                  <div>
+                    <div class="admin-detail-field-label">传播周期</div>
+                    <div class="admin-detail-field-value"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span> 2026-04-05 至 2026-04-10</div>
+                  </div>
+                </div>
+              </div>
+              <div class="admin-detail-card" style="margin-top:20px">
+                <div class="admin-detail-card-title">需求描述</div>
+                <div class="admin-detail-desc">希望在春季消费品博览会期间冲击微博全国热搜，核心关键词围绕「杭州消博会」和「新消费趋势」，目标受众为25-45岁消费者和行业从业者，传播调性为专业、前沿、国际化。</div>
+              </div>
+              <div class="admin-detail-card" style="margin-top:20px">
+                <div class="admin-detail-card-title">附件材料 (2)</div>
+                <div class="admin-detail-file">
+                  <div class="admin-detail-file-left">
+                    <span class="admin-detail-file-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+                    <span class="admin-detail-file-name">春季消博会传播方案.docx</span>
+                  </div>
+                  <span class="admin-detail-file-download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> 下载</span>
+                </div>
+                <div class="admin-detail-file">
+                  <div class="admin-detail-file-left">
+                    <span class="admin-detail-file-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+                    <span class="admin-detail-file-name">品牌素材包.zip</span>
+                  </div>
+                  <span class="admin-detail-file-download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> 下载</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="admin-detail-card">
+                <div class="admin-detail-card-title">对接人信息</div>
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+                  <div class="admin-detail-contact-avatar">张</div>
+                  <div>
+                    <div class="admin-detail-contact-name">张明远</div>
+                    <div class="admin-detail-contact-company">杭州新锐消费科技有限公司</div>
+                  </div>
+                </div>
+                <div style="border-top:1px solid #f0f0f0;padding-top:16px">
+                  <div class="admin-detail-contact-info">
+                    <div class="admin-detail-contact-row"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span> 138****6789</div>
+                    <div class="admin-detail-contact-row"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span> 市场总监</div>
+                    <div class="admin-detail-contact-row"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span> 2026春季消费品博览会</div>
+                  </div>
+                </div>
+              </div>
+              <div class="admin-detail-summary">
+                <div class="admin-detail-summary-title">需求概要</div>
+                <div class="admin-detail-summary-row"><span>服务</span><span>微博热搜</span></div>
+                <div class="admin-detail-summary-row"><span>明细</span><span>全国热搜榜</span></div>
+                <div class="admin-detail-summary-row"><span>周期</span><span>2026-04-05 ~ 2026-04-10</span></div>
+                <div class="admin-detail-summary-row"><span>附件</span><span>2 个文件</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="split-drag" id="splitDrag"></div>
+
+  <div class="prd-panel" id="prdPanel">
+    <div class="prd-toc" id="prdToc"></div>
+    <div class="prd-content" id="prdContent"></div>
+  </div>
+</div>
+
+<div class="top-controls">
+  <button class="prd-toggle" id="prdToggle" onclick="togglePrdPanel()">
+    <span class="toggle-dot"></span> PRD
+  </button>
+  <div class="changelog-btn" onclick="toggleChangelog()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+    <span>更新记录</span>
+  </div>
+</div>
+
+<div class="changelog-overlay" id="changelogOverlay" onclick="toggleChangelog()"></div>
+<div class="changelog-modal" id="changelogModal">
+  <div class="changelog-header">
+    <h3>更新记录</h3>
+    <button class="changelog-close" onclick="toggleChangelog()">&times;</button>
+  </div>
+  <div class="changelog-body" id="changelogBody"></div>
+</div>
+
+<textarea id="prdMdSource" style="display:none">
+# 传播投手 - 需求管理系统 PRD
+
+## 1. 产品概述
+
+传播投手是一款面向会展中心及活动主办方的传播需求管理工具。运营管理员通过后台管理需求、匹配方案并协调执行。
+
+- **运营管理员**：通过管理后台处理和管理传播需求（微博热搜、抖音热推、稿件推送、央媒传播、定制传播）
+
+---
+
+## 2. 管理后台 - 需求列表
+
+### 2.1 页面结构
+
+- 顶部导航栏：Logo、产品名称、页面标题、通知铃铛、用户信息
+- 页面标题区：标题、需求总数、刷新和导出按钮
+- 筛选栏：搜索框 + 服务类型标签筛选
+- 数据表格：编号、需求名称、服务类型、提交公司、提交时间、操作
+- 分页底栏
+
+### 2.2 搜索与筛选
+
+- **展示规则**：搜索框支持按需求名称、公司、联系人、编号模糊匹配；服务类型标签支持单选切换
+- **交互规则**：搜索和筛选条件取交集，实时更新表格
+- **数据规则**：6个筛选选项：全部类型、微博热搜、抖音热推、稿件热推、央媒传播、定制传播
+
+### 2.3 数据表格
+
+- **展示规则**：白色圆角表格，每行显示编号、需求名称（含联系人和时间副标题）、服务类型标签、公司、提交时间、详情链接
+- **交互规则**：点击行或详情链接跳转到需求详情页
+- **数据规则**：按提交时间倒序排列
+
+---
+
+## 3. 管理后台 - 需求详情
+
+### 3.1 页面结构
+
+- 返回按钮 + 需求标题 + 编号和提交时间
+- 两栏布局：左侧（基本信息、需求描述、附件材料）+ 右侧（对接人信息、需求概要）
+
+### 3.2 基本信息
+
+- **展示规则**：2x2网格，展示展会名称、所属公司、服务类型（蓝色高亮）、传播周期
+- **交互规则**：纯展示
+
+### 3.3 需求描述
+
+- **展示规则**：纯文本展示，保留换行格式
+- **交互规则**：纯展示
+
+### 3.4 附件材料
+
+- **展示规则**：文件列表，每行显示文件图标、文件名和下载按钮
+- **交互规则**：点击下载按钮触发下载
+
+### 3.5 对接人信息
+
+- **展示规则**：头像（姓名首字）+ 姓名 + 公司；下方显示联系方式、职务、展会名称
+- **交互规则**：纯展示
+
+### 3.6 需求概要
+
+- **展示规则**：蓝色渐变背景卡片，展示服务类型、明细、周期、附件数量
+- **交互规则**：纯展示
+
+---
+
+## 4. 全局规则
+
+- 管理后台支持关键词搜索和服务类型筛选，条件取交集
+- 表格行点击跳转详情页，详情页支持返回列表
+</textarea>
+
+<script>
+function showDetail() {
+  document.getElementById('view-admin-list').style.display = 'none';
+  document.getElementById('view-admin-detail').style.display = 'block';
+}
+function showList() {
+  document.getElementById('view-admin-list').style.display = 'block';
+  document.getElementById('view-admin-detail').style.display = 'none';
+}
+
+function togglePrdPanel() {
+  var panel = document.getElementById('prdPanel');
+  var toggle = document.getElementById('prdToggle');
+  var dot = toggle.querySelector('.toggle-dot');
+  panel.classList.toggle('collapsed');
+  dot.style.background = panel.classList.contains('collapsed') ? '#aaa' : 'var(--green)';
+}
+
+(function() {
+  var drag = document.getElementById('splitDrag');
+  var panel = document.getElementById('prdPanel');
+  var startX, startW;
+  drag.addEventListener('mousedown', function(e) {
+    e.preventDefault();
+    startX = e.clientX;
+    startW = panel.offsetWidth;
+    drag.classList.add('dragging');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    function onMove(e) {
+      var w = startW - (e.clientX - startX);
+      if (w < 200) w = 200;
+      if (w > window.innerWidth * 0.7) w = window.innerWidth * 0.7;
+      panel.style.width = w + 'px';
+    }
+    function onUp() {
+      drag.classList.remove('dragging');
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+})();
+
+var changelogData = [
+  { time: '2026-04-24 14:50', desc: '初始版本：管理后台需求列表和详情页原型' }
+];
+
+function toggleChangelog() {
+  var overlay = document.getElementById('changelogOverlay');
+  var modal = document.getElementById('changelogModal');
+  var isOpen = modal.classList.contains('show');
+  overlay.classList.toggle('show', !isOpen);
+  modal.classList.toggle('show', !isOpen);
+  if (!isOpen) renderChangelog();
+}
+
+function renderChangelog() {
+  var body = document.getElementById('changelogBody');
+  var html = '<table class="changelog-table"><thead><tr><th>更新时间</th><th>说明</th></tr></thead><tbody>';
+  changelogData.forEach(function(item) {
+    html += '<tr><td>' + item.time + '</td><td>' + item.desc + '</td></tr>';
+  });
+  html += '</tbody></table>';
+  body.innerHTML = html;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var md = document.getElementById('prdMdSource').textContent;
+  var lines = md.split('\n');
+  var h = '';
+  var inUl = false, liOpen = false;
+  var tocItems = [];
+  var headingCount = 0;
+
+  function inlineFmt(s) {
+    return s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  }
+
+  for (var j = 0; j < lines.length; j++) {
+    var ln = lines[j], tr = ln.trim();
+    if (!tr) {
+      if (liOpen) { h += '</li>'; liOpen = false; }
+      if (inUl) { h += '</ul>'; inUl = false; }
+      continue;
+    }
+    if (/^---+$/.test(tr)) {
+      if (liOpen) { h += '</li>'; liOpen = false; }
+      if (inUl) { h += '</ul>'; inUl = false; }
+      h += '<hr>'; continue;
+    }
+    var hm = tr.match(/^(#{1,4})\s+(.+)$/);
+    if (hm) {
+      if (liOpen) { h += '</li>'; liOpen = false; }
+      if (inUl) { h += '</ul>'; inUl = false; }
+      headingCount++;
+      var id = 'h-' + headingCount;
+      h += '<h' + hm[1].length + ' id="' + id + '">' + inlineFmt(hm[2]) + '</h' + hm[1].length + '>';
+      tocItems.push({ id: id, text: hm[2], level: hm[1].length });
+      continue;
+    }
+    if (/^- /.test(ln)) {
+      if (liOpen) h += '</li>';
+      if (!inUl) { h += '<ul class="prd-list">'; inUl = true; }
+      h += '<li>' + inlineFmt(tr.replace(/^- /, ''));
+      liOpen = true;
+      continue;
+    }
+    if (liOpen) { h += '</li>'; liOpen = false; }
+    if (inUl) { h += '</ul>'; inUl = false; }
+    h += '<p>' + inlineFmt(tr) + '</p>';
+  }
+  if (liOpen) h += '</li>';
+  if (inUl) h += '</ul>';
+
+  document.getElementById('prdContent').innerHTML = h;
+
+  var tocHtml = '';
+  tocItems.forEach(function(item) {
+    var cls = item.level > 2 ? 'prd-toc-item sub' : 'prd-toc-item';
+    tocHtml += '<div class="' + cls + '" onclick="scrollToPrd(\'' + item.id + '\')">' + item.text + '</div>';
+  });
+  document.getElementById('prdToc').innerHTML = '<div class="prd-toc-inner">' + tocHtml + '</div>';
+});
+
+function scrollToPrd(id) {
+  var el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>

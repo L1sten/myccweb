@@ -15,6 +15,8 @@
       "dc0f435c887d2e8f1a082cbef3533beda5acf8d53d96a5b1d7fc3b25d0c794ef",
     "broadcast-player":
       "47e1a0e2e92fd65b2eab47d601152da5ec6b479279397b9cc114ca4a15867a1b",
+    "chuanchuan-toushou":
+      "49c6792fa9fa0168ee0fd4c7af6113984a5ab3234bc03eb48ff39c9d1f2ae5f6",
   };
 
   var projectKey = "root";
