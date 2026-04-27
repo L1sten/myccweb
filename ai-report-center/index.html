@@ -612,8 +612,8 @@ select.form-ctrl:focus { border-color:var(--primary); }
     <div class="config-panel">
       <div class="config-section">
         <div class="section-title">基本信息</div>
-        <div class="form-row"><div class="form-label"><span class="req">*</span> 报告名称</div><div class="form-field"><input type="text" value="江苏交通运输网络舆情监测" id="cfgName"></div></div>
-        <div class="form-row"><div class="form-label"><span class="req">*</span> 发布单位</div><div class="form-field"><input type="text" value="江苏省交通运输厅" id="cfgOrg"></div></div>
+        <div class="form-row"><div class="form-label"><span class="req">*</span> 报告名称</div><div class="form-field"><input type="text" maxlength="100" value="江苏交通运输网络舆情监测" id="cfgName"></div></div>
+        <div class="form-row"><div class="form-label"><span class="req">*</span> 发布单位</div><div class="form-field"><input type="text" maxlength="100" value="江苏省交通运输厅" id="cfgOrg"></div></div>
         <div class="form-row"><div class="form-label">关联方案</div><div class="form-field"><select><option selected>江苏交通运输监测方案</option><option>浙江公安舆情监测方案</option><option>山东公安舆情监测方案</option></select></div></div>
         <div class="form-row">
           <div class="form-label">生成周期</div>
@@ -626,7 +626,7 @@ select.form-ctrl:focus { border-color:var(--primary); }
             <div id="periodHint" style="margin-top:6px;font-size:12px;color:var(--text-secondary);background:var(--primary-bg);padding:6px 12px;border-radius:var(--radius);display:inline-flex;align-items:center;gap:6px"><span style="color:var(--primary)">&#x2139;</span> 每期自动覆盖：上周五 15:00 至 本周五 15:00</div>
           </div>
         </div>
-        <div class="form-row"><div class="form-label">起始期号</div><div class="form-field"><input type="text" value="第1期" class="w-sm" id="cfgIssue"></div></div>
+        <div class="form-row"><div class="form-label">起始期号</div><div class="form-field"><input type="text" maxlength="100" value="第1期" class="w-sm" id="cfgIssue"></div></div>
       </div>
       <div class="config-section">
         <div class="section-title">行业配置</div>
@@ -635,10 +635,10 @@ select.form-ctrl:focus { border-color:var(--primary); }
       </div>
       <div class="config-section">
         <div class="section-title">内容设置</div>
-        <div class="form-row"><div class="form-label">热点事件数量</div><div class="form-field"><div class="num-input"><button class="num-btn" onclick="numStep(this,-1,1,20)">-</button><input type="number" value="5" min="1" max="20" onchange="numClamp(this,1,20)"><button class="num-btn" onclick="numStep(this,1,1,20)">+</button><span class="num-hint">报告包含的热点事件条数</span></div></div></div>
-        <div class="form-row"><div class="form-label">敏感事件数量</div><div class="form-field"><div class="num-input"><button class="num-btn" onclick="numStep(this,-1,1,20)">-</button><input type="number" value="5" min="1" max="20" onchange="numClamp(this,1,20)"><button class="num-btn" onclick="numStep(this,1,1,20)">+</button><span class="num-hint">报告包含的敏感事件条数</span></div></div></div>
-        <div class="form-row"><div class="form-label">行业资讯数量</div><div class="form-field"><div class="num-input"><button class="num-btn" onclick="numStep(this,-1,1,20)">-</button><input type="number" value="10" min="1" max="20" onchange="numClamp(this,1,20)"><button class="num-btn" onclick="numStep(this,1,1,20)">+</button><span class="num-hint">报告包含的行业资讯条数</span></div></div></div>
-        <div class="form-row"><div class="form-label">重点关注数量</div><div class="form-field"><div class="num-input"><button class="num-btn" onclick="numStep(this,-1,1,5)">-</button><input type="number" value="3" min="1" max="5" onchange="numClamp(this,1,5)"><button class="num-btn" onclick="numStep(this,1,1,5)">+</button><span class="num-hint">报告包含的重点关注选题数</span></div></div></div>
+        <div class="form-row"><div class="form-label">热点事件数量</div><div class="form-field"><div class="num-input"><button class="num-btn" onclick="numStep(this,-1,1,20)">-</button><input type="number" value="5" min="1" max="20" onchange="numClamp(this,1,20)"><button class="num-btn" onclick="numStep(this,1,1,20)">+</button><span class="num-hint">（AI 从监测数据中筛选正面/中性热点事件，可设 1-20 条）</span></div></div></div>
+        <div class="form-row"><div class="form-label">敏感事件数量</div><div class="form-field"><div class="num-input"><button class="num-btn" onclick="numStep(this,-1,1,20)">-</button><input type="number" value="5" min="1" max="20" onchange="numClamp(this,1,20)"><button class="num-btn" onclick="numStep(this,1,1,20)">+</button><span class="num-hint">（AI 从监测数据中筛选负面敏感事件，可设 1-20 条）</span></div></div></div>
+        <div class="form-row"><div class="form-label">重点关注数量</div><div class="form-field"><div class="num-input"><button class="num-btn" onclick="numStep(this,-1,1,5)">-</button><input type="number" value="3" min="1" max="5" onchange="numClamp(this,1,5)"><button class="num-btn" onclick="numStep(this,1,1,5)">+</button><span class="num-hint">（AI 提供候选选题，可设 1-5 个，最终选择 1 个生成深度分析文章）</span></div></div></div>
+        <div class="form-row"><div class="form-label">行业资讯数量</div><div class="form-field"><div class="num-input"><button class="num-btn" onclick="numStep(this,-1,1,20)">-</button><input type="number" value="10" min="1" max="20" onchange="numClamp(this,1,20)"><button class="num-btn" onclick="numStep(this,1,1,20)">+</button><span class="num-hint">（AI 筛选行业相关新闻资讯，可设 1-20 条）</span></div></div></div>
       </div>
       <div class="config-footer">
         <button class="btn" onclick="switchSubPage('ai')">取消</button>
@@ -729,7 +729,7 @@ select.form-ctrl:focus { border-color:var(--primary); }
         </div>
       </div>
       <div class="topic-actions">
-        <div class="info">已选择 <strong>3</strong> 条</div>
+        <div class="info">已选 <strong>3</strong> 条事件</div>
       </div>
     </div>
 
@@ -781,7 +781,7 @@ select.form-ctrl:focus { border-color:var(--primary); }
         </div>
       </div>
       <div class="topic-actions">
-        <div class="info">已选择 <strong>3</strong> 条</div>
+        <div class="info">已选 <strong>3</strong> 条信息</div>
       </div>
     </div>
 
@@ -789,7 +789,7 @@ select.form-ctrl:focus { border-color:var(--primary); }
     <div class="topic-step">
       <div class="topic-step-header">
         <h4><span class="step-num">3</span> 重点关注选题</h4>
-        <span class="header-info">选择 1 个热搜话题，AI 将生成深度分析文章</span>
+        <span class="header-info">请选定 1 个选题，AI 将据此生成深度分析文章</span>
       </div>
       <div class="topic-list">
         <div class="topic-item selected" onclick="selectSingleTopic(this, 'focusGroup')">
@@ -1080,6 +1080,12 @@ select.form-ctrl:focus { border-color:var(--primary); }
 <script>
 /* ===== Changelog Modal ===== */
 var changelogData = [
+  { time: '2026-04-27 10:50', desc: '候选主题确认页热点/敏感底部文案优化：已选X条事件/已选X条信息' },
+  { time: '2026-04-27 10:40', desc: '报告配置页内容设置顺序调整：重点关注数量与行业资讯数量互换' },
+  { time: '2026-04-27 10:35', desc: '候选主题确认页重点关注步骤说明文案优化：隐去热搜逻辑' },
+  { time: '2026-04-27 10:30', desc: '辅助说明文案优化：括号包裹、去掉生硬范围表述、重点关注突出选题概念' },
+  { time: '2026-04-27 10:15', desc: '内容设置辅助说明优化（含取值范围）+ 候选主题每步至少选1条校验' },
+  { time: '2026-04-27 10:00', desc: '报告名称/发布单位/起始期号输入上限100字符，PRD同步更新校验规则' },
   { time: '2026-04-24 17:25', desc: 'changelogData同步sessions.md全部记录' },
   { time: '2026-04-24 17:18', desc: 'md2html支持5级标题、skill同步更新、去除模块定义写法指引' },
   { time: '2026-04-24 17:16', desc: '优化第五章全国行业资讯：去除冗余、补充所需数据和聚合规则、skill同步更新模块定义写法' },
@@ -1387,12 +1393,23 @@ function updatePeriodHint() {
 }
 function toggleTopic(el) {
   var cb = el.querySelector('input[type="checkbox"]');
+  var group = el.closest('.topic-step');
+  var selectedCount = group.querySelectorAll('.topic-item.selected').length;
   if (el.classList.contains('selected')) {
+    if (selectedCount <= 1) { showToast('每个模块至少选择 1 条，不可全部取消'); return; }
     el.classList.remove('selected');
     if (cb) cb.checked = false;
   } else {
     el.classList.add('selected');
     if (cb) cb.checked = true;
+  }
+  // update count
+  var newCount = group.querySelectorAll('.topic-item.selected').length;
+  var info = group.querySelector('.topic-actions .info');
+  if (info) {
+    var orig = info.textContent;
+    var suffix = orig.includes('事件') ? '条事件' : orig.includes('信息') ? '条信息' : orig.includes('主题') ? '个主题' : orig.includes('资讯') ? '条资讯' : '条';
+    info.innerHTML = '已选 <strong>' + newCount + '</strong> ' + suffix;
   }
 }
 function selectSingleTopic(el, group) {
@@ -1443,6 +1460,13 @@ function showTopicContent() {
 }
 
 function startGenerate() {
+  // Validate: each step must have at least 1 item selected
+  var steps = document.querySelectorAll('#page3a .topic-step');
+  var stepNames = ['热点事件', '敏感信息', '重点关注选题', '行业资讯'];
+  for (var i = 0; i < steps.length; i++) {
+    var count = steps[i].querySelectorAll('.topic-item.selected').length;
+    if (count < 1) { showToast(stepNames[i] + '至少需要选择 1 条'); return; }
+  }
   // Called when user clicks "确认并生成报告"
   switchPage('page3');
 
@@ -1497,7 +1521,8 @@ function showToast(msg){
   setTimeout(function(){ t.classList.remove('show'); setTimeout(function(){ t.remove(); },300); },2200);
 }
 </script>
-<textarea id="prdMdSource" style="display:none"># AI 智能报告生成 — 产品需求文档（PRD）
+<textarea id="prdMdSource" style="display:none">
+# AI 智能报告生成 — 产品需求文档（PRD）
 
 > 版本：v1.0 | 日期：2026-04-14 | 状态：评审中
 
@@ -1633,12 +1658,12 @@ function showToast(msg){
 
 **报告名称**
 - 展示规则：文本输入框
-- 校验规则：必填，不支持为空
+- 校验规则：必填，不支持为空，最多100个字符
 - 用途：显示在报告封面和列表中
 
 **发布单位**
 - 展示规则：文本输入框
-- 校验规则：必填
+- 校验规则：必填，最多100个字符
 - 用途：显示在报告封面
 
 **关联方案**
@@ -1662,7 +1687,7 @@ function showToast(msg){
 **起始期号**
 - 展示规则：文本输入框
 - 默认值：空，用户手动输入
-- 校验规则：必填
+- 校验规则：必填，最多100个字符
 - 数据规则：纯文本输入，用户自行填写当前期号（如"第12期"），系统不做自动递增
 
 #### 3.2.3 行业配置
@@ -1708,25 +1733,29 @@ function showToast(msg){
 - 展示规则：数字步进器，由减号按钮、数值输入框、加号按钮组成
 - 取值范围：1-20
 - 默认值：5
+- 辅助说明：（AI 从监测数据中筛选正面/中性热点事件，可设 1-20 条）
 - 用途：控制报告中"热点事件舆情分析"章节的事件条数
 
 **敏感事件数量**
 - 展示规则：数字步进器
 - 取值范围：1-20
 - 默认值：5
+- 辅助说明：（AI 从监测数据中筛选负面敏感事件，可设 1-20 条）
 - 用途：控制报告中"敏感信息舆情分析"章节的事件条数
-
-**行业资讯数量**
-- 展示规则：数字步进器
-- 取值范围：1-20
-- 默认值：10
-- 用途：控制报告中"全国行业资讯"章节的资讯条数
 
 **重点关注数量**
 - 展示规则：数字步进器
 - 取值范围：1-5
 - 默认值：3
-- 用途：控制重点关注候选热搜话题数量（从微博热搜取排名前 N 个展示给用户选择）
+- 辅助说明：（AI 提供候选选题，可设 1-5 个，最终选择 1 个生成深度分析文章）
+- 用途：控制重点关注候选选题数量（从候选池中取排名前 N 个展示给用户选择）
+
+**行业资讯数量**
+- 展示规则：数字步进器
+- 取值范围：1-20
+- 默认值：10
+- 辅助说明：（AI 筛选行业相关新闻资讯，可设 1-20 条）
+- 用途：控制报告中"全国行业资讯"章节的资讯条数
 
 #### 3.2.5 操作按钮
 
@@ -1744,8 +1773,9 @@ function showToast(msg){
 
 - 跳转到候选主题确认页，顶部进度条展示当前步骤状态
 - 展示"正在进行数据聚合与智能分析…"统一提示，进度条"智能分析"步骤显示加载动画
+- 提示语：系统正在拉取监测数据，进行统计聚合、事件聚类、热度评分和主题推荐
 - 分析完成后，下方的候选主题卡片才渲染展示，供用户操作
-- 若分析超时或失败，展示错误提示
+- 若分析超时或失败，展示错误提示：提示文案“‘报告生成失败’”+报错原因”
 
 ---
 
@@ -1772,8 +1802,9 @@ function showToast(msg){
 
 **交互规则**：
 - 默认全部选中，用户可取消勾选不需要的事件
+- 每个模块至少保留 1 条选中项，不允许全部取消
 - 事件卡片选中时显示勾选标记，取消选中时移除勾选标记
-- 勾选/取消操作同时同步顶部复选框状态
+- 勾选/取消操作同时更新底部已选数量（显示"已选 X 条事件"）
 
 #### 3.3.3 步骤二：敏感信息确认
 
@@ -1793,12 +1824,13 @@ function showToast(msg){
 
 **交互规则**：
 - 默认全部选中，用户可取消勾选
-- 交互方式与热点事件确认一致
+- 每个模块至少保留 1 条选中项，不允许全部取消
+- 交互方式与热点事件确认一致（底部显示"已选 X 条信息"）
 
 #### 3.3.4 步骤三：重点关注选题
 
 **展示内容**：
-- 步骤标题和说明：重点关注选题，提示选择 1 个话题
+- 步骤标题和说明：重点关注选题，请选定 1 个选题，AI 将据此生成深度分析文章
 - 每个选题展示：选题标题（必显）、证据标签（热搜排名、阅读量、在榜时间、在榜时长）
 
 **数据规则**：
@@ -1828,9 +1860,9 @@ function showToast(msg){
 
 **交互规则**：
 - 默认全部选中，用户可取消勾选不需要的资讯
+- 每个模块至少保留 1 条选中项，不允许全部取消
 - 交互方式与热点事件确认一致（复选框多选）
-- 勾选/取消操作同时同步顶部全选复选框状态
-- 底部显示"已选 N 条资讯"
+- 勾选/取消操作同时更新底部已选数量
 
 #### 3.3.6 操作按钮
 
