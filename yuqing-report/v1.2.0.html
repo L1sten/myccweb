@@ -33,9 +33,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'PingFang SC','Microso
 .login-card{width:360px}
 .login-card h2{font-size:22px;font-weight:700;margin-bottom:8px}
 .login-card .login-sub{font-size:13px;color:var(--text-tertiary);margin-bottom:32px}
-.login-input{width:100%;padding:12px 16px;border:1px solid #ddd;border-radius:var(--radius-md);background:#fff;color:#333;font-size:14px;outline:none;font-family:inherit;transition:border-color .2s}
-.login-input::placeholder{color:#aaa}
-.login-input:focus{border-color:var(--primary)}
 .login-dingbtn{width:100%;padding:14px;border:2px solid var(--primary);border-radius:var(--radius-md);font-size:15px;font-weight:600;color:var(--primary);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:var(--transition);margin-bottom:16px;font-family:inherit}
 .login-dingbtn:hover{background:var(--primary-bg)}
 .login-dingbtn i{font-size:22px}
@@ -162,7 +159,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'PingFang SC','Microso
 .btn-success{background:var(--green);color:#fff}.btn-success:hover{opacity:.9}
 .btn-outline{background:#fff;border-color:var(--border);color:var(--text-secondary)}.btn-outline:hover{background:var(--bg-page)}
 .btn-ghost{background:transparent;color:var(--text-secondary)}.btn-ghost:hover{background:var(--bg-page)}
-.btn-danger{background:var(--red);color:#fff}.btn-danger:hover{background:#c92a2a}
 .btn-sm{padding:5px 12px;font-size:12px}
 
 /* Form */
@@ -344,9 +340,6 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 .prd-content h4{font-size:13px;font-weight:600;margin:16px 0 6px;color:var(--text-secondary)}
 .prd-content p{font-size:13px;line-height:1.8;margin-bottom:10px;color:var(--text-secondary)}
 .prd-content ul,.prd-content ol{font-size:13px;line-height:1.8;margin-bottom:10px;padding-left:24px;color:var(--text-secondary)}
-.prd-content ul.prd-list{margin:8px 0 8px 20px;padding-left:0}.prd-content ul.prd-list>li{margin:6px 0;list-style:disc!important}
-.prd-content ul.prd-nested{margin:2px 0 2px 18px;padding-left:0;list-style:circle!important}.prd-content ul.prd-nested li{list-style:circle!important;font-size:13px!important;color:#555}
-.prd-content hr{border:none;border-top:1px solid var(--border-light);margin:16px 0}
 .prd-content li{margin-bottom:4px}
 .prd-content strong{color:var(--text);font-weight:600}
 .prd-content hr{border:none;border-top:1px solid var(--border);margin:20px 0}
@@ -363,21 +356,14 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
       <div class="login-feat"><i class="ri-send-plane-line"></i>地市一键上报舆情信息</div>
       <div class="login-feat"><i class="ri-list-check-2"></i>省级汇总查看与筛选</div>
       <div class="login-feat"><i class="ri-file-text-line"></i>报告一键生成与发布</div>
-      <div class="login-feat"><i class="ri-smartphone-line"></i>手机号密码登录</div>
+      <div class="login-feat"><i class="ri-shield-check-line"></i>对接浙政钉统一身份认证</div>
     </div>
   </div>
   <div class="login-right">
     <div class="login-card">
       <h2>系统登录</h2>
-      <div class="login-sub">欢迎登录舆情信息报送与管理平台</div>
-      <div style="margin-bottom:14px"><input class="login-input" id="loginPhone" type="tel" placeholder="请输入手机号" maxlength="11"></div>
-      <div style="margin-bottom:14px"><input class="login-input" id="loginPwd" type="password" placeholder="请输入密码"></div>
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
-        <input class="login-input" id="loginCaptcha" type="text" placeholder="请输入验证码" maxlength="4" style="flex:1;margin-bottom:0">
-        <canvas id="captchaCanvas" width="100" height="38" style="cursor:pointer;border-radius:6px;flex-shrink:0" onclick="refreshCaptcha()" title="点击刷新验证码"></canvas>
-      </div>
-      <button class="login-dingbtn full" onclick="doLogin()"><i class="ri-login-box-line"></i>登 录</button>
-      <div style="font-size:11px;color:#bbb;text-align:center;margin-top:12px">点击登录即可进入系统体验</div>
+      <div class="login-sub">通过浙政钉扫码登录系统</div>
+      <button class="login-dingbtn full" onclick="loginWithDing()"><i class="ri-qr-code-line"></i>浙政钉扫码登录</button>
     </div>
   </div>
 </div>
@@ -429,8 +415,8 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 <div class="toast-container" id="toastContainer"></div>
 <textarea id="prdMdSource" style="display:none"># 舆情报送与管理系统 产品需求文档
 
-> 版本：v1.2.0 | 日期：2026-04-22
-> 上一版本：v1.1.4
+> 版本：v1.1.4 | 日期：2026-04-22
+> 上一版本：v1.1.2
 > 原型文件：index.html
 
 ---
@@ -441,14 +427,14 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 省级宣传部门需要一套轻量化的舆情信息报送与管理工具，用于收集各地市上报的舆情事件、汇总查看、并编写舆情专报上报领导。本系统为简版，聚焦核心报送流程，去除数据分析、趋势预警等高级功能，降低使用门槛。
 
-系统采用手机号密码登录方式，实现统一身份认证与权限管控。
+系统整体对接浙政钉平台，实现统一身份认证、组织架构同步与消息推送。
 
 ### 1.2 产品目标
 
 - 为各地市宣传部提供统一的舆情上报入口，规范报送流程
 - 为舆情处提供舆情汇总查看、批量录用至报告的快捷操作
 - 提供轻量的报告编写、预览与发布能力
-- 实现组织内统一登录与权限管控
+- 通过浙政钉实现组织内统一登录与权限管控
 
 ### 1.3 用户角色与权限
 
@@ -472,7 +458,7 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
   - 所属组织：省委宣传部
   - 核心权限：系统运维与权限配置
   - 数据可见范围：全部
-  - 可用功能模块：全部功能 + 系统管理（用户管理、角色管理、部门管理）
+  - 可用功能模块：全部功能 + 系统管理（用户管理、角色管理）
 
 ---
 
@@ -480,29 +466,21 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 ### 2.1 登录方式
 
-系统提供手机号密码登录方式，登录流程如下：
+系统提供浙政钉扫码登录方式：
 
-- 用户打开系统后显示登录页
-- 输入手机号、密码和验证码完成身份认证
-- 系统校验手机号和密码匹配后，自动获取用户姓名、所属部门、角色等信息
+- 用户打开系统后显示浙政钉登录页
+- 使用浙政钉 App 扫描二维码完成身份认证
+- 系统自动从浙政钉获取用户姓名、所属单位、职务等信息
 - 根据用户在系统中的角色配置，自动进入对应权限的主界面
-- 若不填写手机号和密码，直接点击登录可进入系统（原型演示模式）
 
 ### 2.2 登录页信息展示
 
 - 左侧展示系统名称、功能简介、核心特性列表
-- 右侧为登录操作区域，包含以下字段：
-  - **手机号**：文本输入框，占位文字"请输入手机号"，限制 11 位
-  - **密码**：密码输入框，占位文字"请输入密码"
-  - **验证码**：文本输入框（限制 4 位）+ 右侧图形验证码画布
-    - 展示规则：画布显示 4 位随机字符（大小写字母+数字），配干扰线和干扰点
-    - 交互规则：点击画布刷新验证码内容
-  - **登录按钮**：点击执行登录
-- 底部显示体验提示信息
+- 右侧为登录操作区域
 
 ### 2.3 登录后初始化
 
-- 自动填充用户信息至顶部导航栏（头像取姓名首字）
+- 自动填充用户信息至顶部导航栏
 - 根据角色动态构建侧边栏导航菜单
 - 默认进入"舆情汇总"页面
 
@@ -556,89 +534,70 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 ### 4.2 统计概览
 
-页面标题下方展示 4 张统计卡片，实时反映当前筛选结果。
+页面标题下方展示统计卡片，实时反映当前筛选结果：
 
-- **取数规则**：统计基于当前筛选条件过滤后的舆情列表
-- **更新规则**：筛选条件变化时实时重新计算
+1. **上报总数**：当前筛选结果中的舆情总条数，蓝色图标
+2. **已录用**：已被录用至任意报告的舆情条数，橙色图标
+3. **本省**：来源为"本省"的舆情条数，蓝色图标
+4. **外省镜鉴**：来源为"外省镜鉴"的舆情条数，绿色图标
 
-各卡片字段：
-
-1. **上报总数**
-   - 展示规则：蓝色图标，显示数字 + "上报总数"标签
-   - 数据规则：当前筛选结果中的舆情总条数
-
-2. **已录用**
-   - 展示规则：橙色图标，显示数字 + "已录用"标签
-   - 数据规则：当前筛选结果中已被录用至任意报告的舆情条数（即录用状态为"已录用"）
-
-3. **本省**
-   - 展示规则：蓝色图标，显示数字 + "本省"标签
-   - 数据规则：当前筛选结果中来源类型为"本省"的舆情条数
-
-4. **外省镜鉴**
-   - 展示规则：绿色图标，显示数字 + "外省镜鉴"标签
-   - 数据规则：当前筛选结果中来源类型为"外省镜鉴"的舆情条数
+> 统计数据随筛选条件变化实时更新。
 
 ### 4.3 搜索与筛选
 
 #### 4.3.1 搜索框
 
-- 展示规则：文本输入框，占位文字"搜索标题、地域、单位、内容..."
-- 交互规则：输入后实时过滤列表，清空搜索框恢复全部数据
-- 数据筛选规则：按舆情标题、地域、上报单位、内容摘要四个字段进行模糊匹配（包含即命中），取并集
+- 占位文字："搜索标题、地域、单位、内容..."
+- 支持按以下字段进行模糊搜索：舆情标题、地域、上报单位、内容摘要
+- 输入后实时过滤列表，无需手动触发搜索
+- 清空搜索框恢复全部数据
 
 #### 4.3.2 时间范围筛选
 
-- 展示规则：两个日期选择器，组成"起始日期 至 结束日期"
-- 交互规则：选择后立即过滤，可单独设置起始或结束，另一端不限
-- 数据筛选规则：按舆情的上报时间字段进行范围匹配，仅显示上报时间在起止日期之间的舆情
+- 两个日期选择器，组成"起始日期 至 结束日期"的范围筛选
+- 选择后按舆情的上报日期进行过滤，仅显示范围内的舆情
+- 可单独设置起始或结束，另一端不限
 
 #### 4.3.3 来源类型筛选
 
-- 展示规则：下拉选择框
-- 交互规则：选择后立即过滤列表
-- 数据筛选规则：
-  - 默认值："全部来源"（不限）
-  - 选项："全部来源"、"本省"、"外省镜鉴"
-  - 选中后按舆情的来源类型字段精确匹配
+- 下拉选择框，选项：
+  - 全部来源（默认）
+  - 本省
+  - 外省镜鉴
+- 选择后立即过滤列表
 
 #### 4.3.4 单位类型筛选
 
-- 展示规则：下拉选择框
-- 交互规则：选择后立即过滤列表
-- 数据筛选规则：
-  - 默认值："全部单位"（不限）
-  - 选项及匹配方式：
-    - "省级"：上报单位包含"省委"或"省网信"
-    - "地市"：上报单位包含"市宣传部"
+- 下拉选择框，选项：
+  - 全部单位（默认）
+  - 省级：筛选上报单位包含"省委""省网信"的舆情
+  - 地市：筛选上报单位包含"市宣传部"的舆情
+- 选择后立即过滤列表
 
 #### 4.3.5 录用状态筛选
 
-- 展示规则：下拉选择框
-- 交互规则：选择后立即过滤列表
-- 数据筛选规则：
-  - 默认值："录用状态"（不限）
-  - 选项及匹配方式：
-    - "已录用"：舆情已被至少一个报告收录
-    - "未录用"：舆情未被任何报告收录
+- 下拉选择框，选项：
+  - 录用状态（默认，不限）
+  - 已录用：仅显示已被录用至任意报告的舆情
+  - 未录用：仅显示尚未被任何报告收录的舆情
+- 选择后立即过滤列表
 
 #### 4.3.6 地域筛选
 
-- 展示规则：二级级联控件（省→市），第一级省份下拉，第二级城市下拉（选择省份后显示）
-- 交互规则：选择后立即过滤，支持仅选省份或选省份+城市
-- 数据筛选规则：
-  - 第一级含"全部省份"选项，选具体省份后按舆情地域的省份字段精确匹配
-  - 第二级含"全部城市"选项，选具体城市后按舆情地域的城市字段精确匹配
-  - 两级均选时取交集
+- 二级级联控件（省→市），精确到市
+- 第一级：省份下拉，含"全部省份"选项，支持全国所有省级行政区
+- 第二级：城市下拉，默认隐藏，选择省份后动态显示对应地级市列表，含"全部城市"选项
+- 仅选省份：筛选该省份下所有地市的舆情
+- 选省份+城市：精确筛选该城市的舆情
+- 选择后立即过滤列表
 
 #### 4.3.7 舆情分类筛选
 
-- 展示规则：下拉选择框
-- 交互规则：选择后立即过滤列表
-- 数据筛选规则：
-  - 默认值："全部分类"（不限）
-  - 选项："刑事案件"、"治安事件"、"交通事故"、"执法不当及违纪违法"、"非正常死亡或失踪"、"其他"
-  - 选中后按舆情的分类字段精确匹配，未打标分类的舆情不显示
+- 下拉选择框，选项：
+  - 全部分类（默认）
+  - 各分类列表（刑事案件、治安事件、交通事故、执法不当及违纪违法、非正常死亡或失踪、其他）
+- 选择后仅显示已打标为该分类的舆情，未打标的不显示
+- 选择后立即过滤列表
 
 #### 4.3.8 筛选组合规则
 
@@ -648,78 +607,81 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 ### 4.4 操作栏
 
 - **全选按钮**（仅舆情处/管理员可见）
-  - 展示规则：按钮文字"全选"/"取消全选"
-  - 交互规则：点击后勾选/取消当前筛选结果中的所有舆情，仅对当前可见列表生效
-  - 数据规则：不包含被筛选条件隐藏的条目
+  - 点击后勾选当前筛选结果中的所有舆情
+  - 再次点击取消全选
+  - 仅对当前可见列表生效，不包含被筛选条件隐藏的条目
 
 - **信息计数**
-  - 展示规则：文字"共 N 条上报信息"
-  - 数据规则：N = 当前筛选结果的总条数，随筛选条件变化实时更新
+  - 显示当前筛选结果的总条数，格式："共 N 条上报信息"
+  - 随筛选条件变化实时更新
 
 ### 4.5 舆情列表
-
-- **取数规则**：从舆情数据集中读取。地市人员仅读取上报单位与本单位匹配的记录，舆情处和管理员读取全部记录
-- **数据筛选规则**：在角色数据范围基础上，叠加 4.3 中所有筛选条件，取交集
-- **数据排序规则**：默认按上报时间倒序排列（最新在上）
 
 #### 4.5.1 列表项展示字段
 
 每条舆情以卡片形式展示，从左到右包含：
 
 1. **勾选框**（仅舆情处/管理员可见）
-   - 展示规则：圆形复选框
-   - 交互规则：点击切换选中/取消，选中后卡片左侧出现蓝色边框，背景变为浅蓝色
+   - 圆形复选框，点击切换选中/取消
+   - 选中后卡片左侧出现蓝色边框，背景变为浅蓝色
 
 2. **舆情元信息行**
-   - **舆情编号**：展示规则：蓝色文字。数据规则：系统自动生成，格式 YQ-YYYYMMDD-NNN（NNN 为当日序号，从 001 递增）
-   - **来源类型标签**：展示规则：本省为蓝色浅底标签，外省镜鉴为橙色浅底标签。数据规则：取舆情的来源类型字段
-   - **地域**：展示规则：地市名称，配地理位置图标。数据规则：取舆情的地域字段（省+市拼接）
-   - **分类标签**（已打标时显示）：展示规则：绿色浅底标签。数据规则：取舆情的分类字段，未打标不显示
-   - **录用状态标签**：展示规则：已录用显示绿色浅底标签，未录用显示灰色浅底标签。数据规则：判断该舆情是否被任意报告收录
+   - 舆情编号：系统自动生成，格式 YQ-YYYYMMDD-NNN，蓝色文字
+   - 来源类型标签：
+     - 本省：蓝色浅底标签
+     - 外省镜鉴：橙色浅底标签
+   - 地域：地市名称，配地理位置图标
+   - 分类标签（已打标时显示）：绿色浅底标签，显示舆情分类名称
+   - 录用状态标签：
+     - 已录用：绿色浅底标签
+     - 未录用：灰色浅底标签
 
 3. **舆情标题**
-   - 展示规则：单行显示，超出部分省略号
-   - 交互规则：点击进入舆情详情页
+   - 单行显示，超出部分省略号
+   - 点击可进入舆情详情页
 
 4. **底部信息行**
-   - **上报单位**：展示规则：配建筑图标。数据规则：取舆情的上报单位字段
-   - **上报时间**：展示规则：格式 YYYY-MM-DD HH:mm，配时钟图标。数据规则：取舆情的上报时间字段
+   - 上报单位：配建筑图标
+   - 上报时间：格式 YYYY-MM-DD HH:mm，配时钟图标
 
-#### 4.5.2 空状态
+#### 4.5.2 列表排序
 
-- 无数据时展示"未找到匹配的舆情信息"提示，配大号图标辅助说明
+- 默认按上报时间倒序排列（最新在上）
+
+#### 4.5.3 空状态
+
+- 无数据时展示"未找到匹配的舆情信息"提示
+- 配大号图标辅助说明
 
 ### 4.6 舆情分类打标
 
-拥有权限的用户（舆情处和管理员）可对舆情进行分类打标。
+拥有权限的用户（舆情处和管理员）可对舆情进行分类打标，用于标记舆情类型。
 
-- 展示规则：每条舆情卡片右侧显示打标按钮（标签图标）
-- 交互规则：
-  1. 点击后弹出分类选择弹窗，以单选列表形式展示分类选项
-  2. 已有分类的舆情默认选中当前分类
-  3. 选择后点击"确认"完成打标
-  4. 支持重复打标覆盖原有分类
-- 数据规则：
-  - 分类选项固定为："刑事案件"、"治安事件"、"交通事故"、"执法不当及违纪违法"、"非正常死亡或失踪"、"其他"
-  - 确认后将选中的分类写入该舆情的分类字段
-  - 打标后舆情卡片元信息行即时显示绿色分类标签
+1. 每条舆情卡片右侧显示打标按钮（标签图标）
+2. 点击后弹出分类选择弹窗，以单选列表形式展示以下分类：
+   - 刑事案件
+   - 治安事件
+   - 交通事故
+   - 执法不当及违纪违法
+   - 非正常死亡或失踪
+   - 其他
+3. 已有分类的舆情默认选中当前分类
+4. 选择后点击"确认"完成打标
+5. 打标后舆情卡片的元信息行显示绿色分类标签
+6. 支持重复打标覆盖原有分类
 
 ### 4.7 录用至报告交互流程
 
 > 仅舆情处和管理员可操作
 
-- 交互规则：
-  1. 勾选一条或多条舆情（通过列表勾选框或全选按钮）
-  2. "录用至报告"按钮从灰色变为蓝色可点击态
-  3. 点击后弹出报告选择弹窗
-  4. 用户选择目标报告后点击"确认录用"
-  5. 系统将选中舆情添加到目标报告的舆情列表中（已存在的不会重复添加）
-  6. 弹窗关闭，显示成功提示
-  7. 自动跳转至该报告的编辑页面
-- 数据规则（弹窗报告列表）：
-  - 取数规则：从报告数据集中读取所有状态为"草稿"的报告
-  - 数据排序规则：按创建时间倒序排列
-  - 每项展示：报告编号 + 报告标题
+1. 勾选一条或多条舆情（通过列表勾选框或全选按钮）
+2. "录用至报告"按钮从灰色变为蓝色可点击态
+3. 点击后弹出报告选择弹窗
+4. 弹窗展示所有状态为"草稿"的报告列表，每项显示报告标题和编号
+5. 用户选择目标报告后点击"确认录用"
+6. 系统将选中舆情添加到目标报告的舆情列表中（已存在的不会重复添加）
+7. 弹窗关闭，显示成功提示
+8. 自动跳转至该报告的编辑页面
 
 ---
 
@@ -733,67 +695,80 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 ### 5.2 多条上报机制
 
-- 展示规则：页面默认展示 1 条舆情填写表单，每条为独立卡片，标题显示"第 N 条舆情"
-- 交互规则：
-  - 点击"添加一条舆情"按钮在下方新增一条空白表单
-  - 第 1 条不显示移除按钮，第 2 条及以后每条右上角显示移除按钮
-  - 点击移除按钮后该卡片以滑出动画消失
-  - 页面右上角实时显示当前表单总数："共 N 条"
-  - 底部提交按钮同步显示条数："提交上报（N 条）"
+- 页面默认展示 1 条舆情填写表单
+- 点击"添加一条舆情"按钮可在下方新增一条空白表单
+- 每条舆情为独立的表单卡片，卡片标题显示"第 N 条舆情"
+- 第 1 条舆情不显示移除按钮，第 2 条及以后每条右上角显示移除按钮
+- 点击移除按钮后，该卡片以滑出动画消失
+- 页面右上角实时显示当前表单总数："共 N 条"
+- 底部提交按钮同步显示条数："提交上报（N 条）"
 
 ### 5.3 单条表单字段
 
 每条舆情表单包含以下字段：
 
 1. **上报时间**
-   - 展示规则：日期时间选择器，精确到分钟
-   - 交互规则：必填，未填时边框变红
-   - 数据规则：写入舆情记录的上报时间字段
+   - 必填
+   - 日期时间选择器，精确到分钟
 
 2. **舆情地域**
-   - 展示规则：二级级联控件（省→市），第一级省份下拉，第二级城市下拉（选择省份后启用）
-   - 交互规则：必填，选择后自动触发"报送单位"字段的填充
-   - 数据规则：写入舆情记录的地域字段（省+市）
+   - 必填
+   - 二级级联控件（省→市），精确到市
+   - 第一级：省份下拉，支持全国所有省级行政区
+   - 第二级：城市下拉，默认禁用，选择省份后动态启用并填充对应地级市
+   - 选择后自动触发"报送单位"字段的填充
 
 3. **报送单位**
-   - 展示规则：下拉选择框，默认选中当前用户所属单位
-   - 交互规则：非必填，用户可从下拉列表中手动切换报送单位
-   - 取数规则：下拉选项取数来源为部门树中所有末级部门（地市宣传部）
+   - 非必填（系统自动填充）
+   - 取数规则：根据选择的"舆情地域"，自动匹配对应的地市宣传部名称
+     - 浙江/杭州 → 杭州市宣传部
+     - 浙江/宁波 → 宁波市宣传部
+     - 浙江/温州 → 温州市宣传部
+     - 浙江/绍兴 → 绍兴市宣传部
+     - 浙江/台州 → 台州市宣传部
+     - 浙江/嘉兴 → 嘉兴市宣传部
+     - 浙江/湖州 → 湖州市宣传部
+     - 浙江/金华 → 金华市宣传部
+     - 浙江/衢州 → 衢州市宣传部
+     - 浙江/丽水 → 丽水市宣传部
+     - 浙江/舟山 → 舟山市宣传部
+   - 字段为只读状态，用户不可手动修改
 
 4. **标题**
-   - 展示规则：文本输入框，占位文字"请输入舆情标题"
-   - 交互规则：必填，未填时边框变红
-   - 数据规则：写入舆情记录的标题字段
+   - 必填
+   - 文本输入框
+   - 占位文字："请输入舆情标题"
 
 5. **内容**
-   - 展示规则：多行文本输入框，占位文字"请详细描述舆情事件经过、传播情况、影响范围等..."
-   - 交互规则：必填，未填时边框变红
-   - 数据规则：写入舆情记录的内容摘要字段
+   - 必填
+   - 多行文本输入框
+   - 占位文字："请详细描述舆情事件经过、传播情况、影响范围等..."
+
+
 
 ### 5.4 操作按钮
 
 位于所有表单卡片下方：
 
 1. **添加一条舆情**
-   - 展示规则：轮廓样式按钮，带加号图标
-   - 交互规则：点击后在最下方新增一条空白表单
+   - 轮廓样式按钮，带加号图标
+   - 点击后在最下方新增一条空白表单
 
 2. **重置**
-   - 展示规则：轮廓样式按钮，带刷新图标
-   - 交互规则：点击后清空所有已填写的表单卡片，恢复为仅 1 条空白表单的初始状态
+   - 轮廓样式按钮，带刷新图标
+   - 点击后清空所有已填写的表单卡片
+   - 恢复为仅 1 条空白表单的初始状态
 
 3. **提交上报（N 条）**
-   - 展示规则：主按钮样式，带发送图标，N 随当前表单数量动态变化
-   - 交互规则：
-     - 点击后逐一校验所有表单中的必填字段（上报时间、地域、标题、内容）
-     - 未填写的必填字段边框变红，弹出错误提示指明需完善第几条表单
-     - 校验通过后弹出成功提示，显示实际上报条数，延迟后自动跳转回舆情汇总页
-   - 数据规则：
-     - 舆情编号生成规则：格式 YQ-YYYYMMDD-NNN，YYYYMMDD 取上报日期，NNN 为当日序号（从 001 递增）
-     - 来源类型：根据上报用户所属单位自动判定（地市人员上报的为"本省"）
-     - 录用状态：默认"未录用"
-     - 分类字段：默认为空（待后续打标）
-     - 写入舆情数据集
+   - 主按钮样式，带发送图标
+   - N 随当前表单数量动态变化
+   - 点击后执行校验：
+     - 逐一检查所有表单中的必填字段（上报时间、地域、标题、内容）
+     - 未填写的必填字段边框变红
+     - 校验不通过时弹出错误提示，指明需完善第几条表单
+   - 校验通过后：
+     - 弹出成功提示，显示实际上报条数
+     - 延迟后自动跳转回舆情汇总页
 
 ---
 
@@ -803,8 +778,6 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 点击舆情列表中的标题，进入该条舆情的完整信息展示页。
 
-- 取数规则：根据当前点击的舆情编号，从舆情数据集中读取该条记录的全部字段
-
 ### 6.2 页面顶部
 
 - "返回列表"按钮，点击回到舆情汇总页
@@ -812,30 +785,29 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 ### 6.3 信息展示
 
 **元信息行**
-- 舆情编号：蓝色文字，取舆情编号字段
-- 来源类型标签：本省/外省镜鉴，取来源类型字段
-- 地域：配图标，取地域字段
+- 舆情编号（蓝色文字）
+- 来源类型标签（本省/外省镜鉴，颜色区分）
+- 地域（配图标）
 
 **舆情标题**
-- 大号加粗显示，取标题字段
+- 大号加粗显示
 
 **舆情内容区**
 - "舆情内容"小标题
-- 完整摘要内容，灰色背景区域展示，取内容摘要字段
+- 完整摘要内容，灰色背景区域展示
 
 **基本信息区**
-- 上报单位：取上报单位字段
-- 上报时间：取上报时间字段，格式 YYYY-MM-DD HH:mm
+- 上报单位：显示字段值
+- 上报时间：显示字段值
 
 ### 6.4 操作按钮
 
 - **"录用至报告"按钮**（仅舆情处/管理员可见）
-  - 展示规则：蓝色主按钮
-  - 交互规则：点击后触发录用流程（自动勾选当前这一条，弹出报告选择弹窗），弹窗逻辑同 4.7
+  - 蓝色主按钮
+  - 点击后触发录用流程（自动勾选当前这一条，弹出报告选择弹窗）
 
 - **"返回列表"按钮**
-  - 展示规则：轮廓样式，带左箭头图标
-  - 交互规则：点击回到舆情汇总页
+  - 轮廓样式，带左箭头图标
 
 ---
 
@@ -849,10 +821,6 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 ### 7.2 报告列表
 
-- 取数规则：从报告数据集中读取所有报告记录
-- 数据筛选规则：舆情处和管理员可查看全部报告
-- 数据排序规则：按创建时间倒序排列（最新在上）
-
 #### 7.2.1 页面标题区
 
 - 标题"报告管理"
@@ -862,21 +830,14 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 每条报告以卡片形式展示：
 
-1. **报告编号**
-   - 展示规则：蓝色文字
-   - 数据规则：系统自动生成，格式 BG-YYYYMMDD-NNN（NNN 为当日序号，从 001 递增）
-
-2. **报告状态标签**
-   - 展示规则：草稿为灰色标签，已发布为绿色标签
-   - 数据规则：取报告的状态字段
-
-3. **报告标题**
-   - 展示规则：单行显示
-   - 数据规则：取报告的标题字段
-
-4. **底部信息**
-   - 创建时间：展示规则：日期时间格式。数据规则：取报告的创建时间字段
-   - 包含舆情条数：展示规则：显示"N 条舆情"。数据规则：该报告收录的舆情总数
+- **报告编号**：系统自动生成，格式 BG-YYYYMMDD-NNN，蓝色文字
+- **报告状态标签**：
+  - 草稿：灰色标签
+  - 已发布：绿色标签
+- **报告标题**
+- **底部信息**：
+  - 创建时间
+  - 包含舆情条数
 
 #### 7.2.3 操作按钮显示规则
 
@@ -892,14 +853,11 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 #### 7.2.4 新建报告
 
-- 交互规则：点击"新建报告"按钮，创建后立即进入报告编辑页
-- 数据规则：
-  - 报告编号：系统自动生成，格式 BG-YYYYMMDD-NNN
-  - 报告标题：默认为空，由用户在编辑页手动输入
-  - 状态：默认"草稿"
-  - 舆情列表：默认为空
-  - 创建时间：取当前时间
-  - 写入报告数据集
+- 点击"新建报告"按钮
+- 系统自动生成报告编号
+- 报告标题默认取当前日期，格式："YYYY年M月D日舆情信息专报"
+- 状态默认为"草稿"
+- 创建后立即进入报告编辑页
 
 ### 7.3 报告预览
 
@@ -919,9 +877,6 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 #### 7.3.3 预览内容格式（公文格式）
 
-- 取数规则：根据当前报告 ID 从报告数据集中读取报告信息及其收录的舆情列表
-- 数据排序规则：先展示"本省"来源的舆情，再展示"外省镜鉴"来源的舆情；各来源内部按舆情编号正序排列
-
 预览以正式公文样式展示，结构如下：
 
 1. **标题区**
@@ -932,7 +887,7 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 2. **【内容提要】**（目录样式，小号字体）
    - 一、省内舆情：列出所有"本省"类型舆情的序号 + 标题
    - 二、外省舆情镜鉴：列出所有"外省镜鉴"类型舆情的序号 + 标题
-   - 数据规则：序号按各分组内顺序从 1 递增；若无外省舆情则不显示外省子板块
+   - 若无外省舆情则不显示外省子板块
 
 3. **一、本省舆情**
    - 每条"本省"舆情独立一段：
@@ -974,8 +929,8 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 - **报告日期**：日期选择器
 
 统计标签：
-- "本省: N"（蓝色浅底标签）：数据规则 = 当前报告中来源为"本省"的舆情条数
-- "外省: N"（橙色浅底标签）：数据规则 = 当前报告中来源为"外省镜鉴"的舆情条数
+- "本省: N"（蓝色浅底标签）：统计当前报告中本省舆情条数
+- "外省: N"（橙色浅底标签）：统计当前外省镜鉴条数
 
 舆情列表分为两个区块（每个区块标题带蓝色竖线装饰）：
 
@@ -1004,7 +959,6 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 - **修改标题**：在卡片中的标题输入框直接编辑，右侧预览面板同步更新
 - **修改正文**：在"正文内容"文本区直接编辑
-- **修改建议意见**：在"建议意见"文本区直接编辑
 - **删除舆情**：点击卡片右上角的删除按钮，该条目从报告中移除，列表和预览同步更新
 - **添加舆情**：
   1. 点击"选取舆情"按钮
@@ -1013,22 +967,22 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
   4. 支持多选（复选框）
   5. 点击"确认"后，选中舆情添加到报告的舆情列表中
   6. 已存在的舆情不会重复添加
-  - 数据规则（弹窗舆情列表）：
-    - 取数规则：从舆情数据集中读取所有未被当前报告收录的舆情
-    - 数据排序规则：按上报时间倒序排列
 
 #### 7.4.4 保存与发布
 
 - **保存草稿**
-  - 交互规则：将当前编辑内容保存，状态保持"草稿"，弹出成功提示
-  - 数据规则：将报告标题、报告日期、舆情列表（含修改后的标题/正文/建议意见）写入报告数据集
+  - 将当前编辑内容保存，状态保持"草稿"
+  - 弹出成功提示
 
 - **发布**
-  - 交互规则：校验报告标题是否为空，为空则提示错误；校验通过后弹出成功提示，自动跳转回报告管理列表
-  - 数据规则：报告状态字段更新为"已发布"
+  - 校验报告标题是否为空，为空则提示错误
+  - 校验通过后，报告状态变为"已发布"
+  - 弹出成功提示
+  - 自动跳转回报告管理列表
 
 - **预览**
-  - 交互规则：先自动保存草稿，跳转至公文格式预览页
+  - 先自动保存草稿
+  - 跳转至公文格式预览页
 
 ---
 
@@ -1040,7 +994,7 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 #### 8.1.1 功能说明
 
-管理系统中的用户账号。支持新增、编辑用户，角色分配与状态管理。
+管理系统中的用户账号。支持角色分配与状态管理。
 
 #### 8.1.2 页面标题区
 
@@ -1049,71 +1003,35 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 #### 8.1.3 用户列表
 
-- 取数规则：从用户数据集中读取所有用户记录
-- 数据筛选规则：默认展示全部用户，无额外筛选
-- 数据排序规则：按用户 ID 正序排列
-
 以表格形式展示所有用户，列字段如下：
 
 1. **姓名**
-   - 展示规则：普通文字
-   - 数据规则：取用户的姓名字段
+   - 取值：浙政钉同步的用户真实姓名
 
-2. **手机号**
-   - 展示规则：普通文字
-   - 数据规则：取用户的手机号字段
+2. **所属单位**
+   - 取值：浙政钉同步的组织架构信息
+   - 格式：XX市宣传部 / 省委宣传部
 
-3. **所属部门**
-   - 展示规则：普通文字，多个部门以分号（；）分隔展示
-   - 数据规则：取用户关联的部门名称列表
+3. **角色**
+   - 取值：用户被分配的多个角色名称，以分号（；）分隔展示
 
-4. **角色**
-   - 展示规则：多个角色名称以分号（；）分隔展示
-   - 数据规则：取用户被分配的角色名称列表
+4. **状态**
+   - 取值：正常 / 停用
+   - 交互方式：滑动开关，点击切换启用/停用
+   - 切换后立即生效，显示成功提示
+   - 显示规则：启用显示绿色圆点+绿色文字"正常"，停用显示灰色圆点+灰色文字"停用"
 
-5. **状态**
-   - 展示规则：滑动开关，启用显示绿色圆点+绿色文字"正常"，停用显示灰色圆点+灰色文字"停用"
-   - 交互规则：点击切换启用/停用，切换后立即生效，显示成功提示
-   - 数据规则：取用户的状态字段（"正常"或"停用"）
-
-6. **操作**
-   - 展示规则："编辑"按钮（蓝色小按钮）
-   - 交互规则：点击弹出编辑弹窗，修改用户姓名、手机号、所属部门和角色分配
+5. **操作**
+   - "编辑"按钮：弹出编辑弹窗，修改用户所属单位和角色分配
 
 #### 8.1.4 新增用户
 
-- 交互规则：
-  1. 点击"新增用户"按钮弹出弹窗
-  2. 填写表单字段（见下方）
-  3. 校验通过后确认添加
-- 弹窗表单字段：
-  - **姓名**：文本输入框，必填
-  - **手机号**：文本输入框，必填，校验 11 位格式，不可与已有用户重复
-  - **密码**：密码输入框，必填，至少 8 个字符，必须包含大写字母、小写字母、数字、符号（!@#$%^&*?）
-  - **确认密码**：密码输入框，必填，需与密码一致
-  - **所属部门**：复选框多选，至少选择一个
-    - 数据规则：取数来源为部门树中所有末级部门，选项以"省 / 市 / 县"路径形式展示
-  - **角色**：复选框多选，至少选择一个
-- 数据规则：
-  - 确认后新增到用户数据集
-  - 用户 ID：自动生成
-  - 状态：默认"正常"
-  - 密码：取用户填写的密码值
-  - 同时在每个选中部门的人员列表中添加该用户
-
-#### 8.1.5 编辑用户
-
-- 交互规则：
-  1. 点击用户列表中的"编辑"按钮弹出弹窗
-  2. 修改表单字段后保存
-- 弹窗表单字段：
-  - **姓名**：文本输入框，预填当前姓名
-  - **手机号**：文本输入框，预填当前手机号
-  - **重置密码**：密码输入框，非必填
-    - 展示规则：占位文字"留空则不修改密码"，下方灰色提示"留空表示不修改密码，填写需至少8位且包含大写、小写、数字、符号"
-    - 交互规则：留空则不修改密码，填写则校验至少 8 位且包含大写字母、小写字母、数字、符号（!@#$%^&*?）
-  - **所属部门**：复选框多选，预选当前已关联的部门
-  - **角色**：复选框多选，预选当前角色
+- 点击"新增用户"按钮弹出弹窗
+- 弹窗展示组织树中的可选用户列表（按省分组，仅展示未在系统中创建账号的人员），以单选方式选择
+- 角色分配区域支持多选（复选框），可同时分配多个角色
+- 校验规则：必须选择一个用户且至少分配一个角色
+- 确认后用户添加到列表，状态默认为"正常"
+- 若选择的用户已在系统中存在，则为其追加角色
 
 ### 8.2 角色管理
 
@@ -1127,21 +1045,17 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 **左栏 — 角色列表**
 
-- 取数规则：从角色数据集中读取所有角色
-- 数据筛选规则：搜索框支持按角色名称和描述模糊匹配
-- 数据排序规则：按角色 ID 正序排列
-
 - 顶部区域：
   - 标题"角色列表"
-  - "新增"按钮（蓝色小按钮）
+  - "新增"按钮
   - 搜索框：支持按角色名称和描述模糊搜索
 - 角色列表：
   - 每项显示角色名称
-  - 鼠标悬停时右侧显示删除按钮（红色图标）
+  - 鼠标悬停时右侧显示删除按钮
   - 当前选中项蓝色背景高亮
   - 点击切换右侧内容
 
-**右栏 — 角色详情（自适应宽度）**
+**右栏 — 角色详情**
 
 通过顶部标签页切换三个视图：
 
@@ -1150,44 +1064,43 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
    - 角色描述：文本输入框
 
 2. **功能权限分配**标签页
-   - 展示规则：以树形结构展示系统功能模块及子权限，每个节点前有复选框
-   - 交互规则：
-     - 父节点勾选：子节点全部勾选
-     - 子节点全部勾选：父节点自动勾选
-     - 子节点部分勾选：父节点显示半选状态（横线图标）
-     - 底部"保存"按钮保存权限配置
+   - 以树形结构展示系统功能模块及子权限
+   - 每个节点前有复选框
+   - 父节点勾选：子节点全部勾选
+   - 子节点全部勾选：父节点自动勾选
+   - 子节点部分勾选：父节点显示半选状态
+   - 底部"保存"按钮
    - 权限树结构：
      - 舆情汇总：查看本单位舆情、查看全部舆情、录用至报告、舆情分类打标
      - 舆情上报：上报舆情信息
      - 报告管理：查看报告列表、新建报告、编辑报告、删除报告、预览报告、发布报告
-     - 系统管理：用户管理、角色管理、部门管理
+     - 系统管理：用户管理、角色管理、部门管理、部门管理
 
 3. **用户管理**标签页
-   - 取数规则：从用户数据集中读取属于当前角色的用户列表
-   - 数据筛选规则：搜索框支持按姓名、所属部门模糊匹配
-   - 数据排序规则：按用户 ID 正序排列
    - 顶部操作区：
-     - 左侧："添加用户"按钮（蓝色小按钮）：弹出弹窗，多选未属于当前角色的用户，确认后加入当前角色
-     - 左侧："移除用户"按钮（轮廓小按钮）：勾选用户后出现，点击后弹出确认弹窗，批量移除选中用户
-     - 右侧：搜索框
+     - "添加用户"按钮：弹出弹窗，多选未属于当前角色的用户，确认后加入当前角色
+     - "移除用户"按钮：勾选用户后出现，点击后弹出确认弹窗，批量移除选中用户
+     - 搜索框，支持按姓名、所属单位模糊搜索
    - 用户列表以表格形式展示，列字段：
-     - 勾选框：支持单选和全选，选中后"移除用户"按钮出现
+     - 勾选框：支持单选和全选
      - 姓名
-     - 所属部门
-     - 状态标签：已开通（绿色）、已停用（橙色）
-     - 操作："移除"链接，点击弹出确认弹窗后移除单个用户
+     - 所属单位
+     - 状态标签：已开通、已停用
+     - 操作："移除"链接
    - 底部显示用户总数
    - 无用户时展示空状态提示
 
 #### 8.2.3 新增角色
 
-- 交互规则：点击左栏"新增"按钮弹出弹窗，填写角色名称（必填）和角色描述，确认后添加
-- 数据规则：新增到角色数据集，权限默认为空
+- 点击左栏"新增"按钮弹出弹窗
+- 填写角色名称（必填）和角色描述
+- 确认后角色添加到列表，权限默认为空
 
 #### 8.2.4 删除角色
 
-- 交互规则：鼠标悬停角色项时显示删除按钮，点击后弹出确认弹窗
-- 数据规则：从角色数据集中删除该角色。系统至少保留一个角色，不可全部删除
+- 鼠标悬停角色项时显示删除按钮
+- 点击后弹出确认弹窗
+- 系统至少保留一个角色，不可全部删除
 
 #### 8.2.5 预置角色权限配置
 
@@ -1207,14 +1120,11 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 #### 8.3.1 功能说明
 
-管理系统的组织架构。管理员可手动创建、编辑、删除部门层级结构，部门数据作为用户管理中"所属部门"复选框选项的数据源，也作为角色管理中"添加用户"弹窗的人员数据源。
-
-- 取数规则：从部门数据集中读取完整的树形结构数据
+展示从浙政钉同步的组织架构（省市县三级部门及人员），仅供查看，不可编辑、新增或删除。部门数据作为用户管理中"所属单位"下拉选项的数据源，也作为角色管理中"添加用户"弹窗的人员数据源。
 
 #### 8.3.2 页面标题区
 
 - 标题"部门管理"
-- 右侧"新增部门"按钮（蓝色小按钮）：点击后弹窗填写部门名称，确认后添加到组织树顶层
 
 #### 8.3.3 统计概览
 
@@ -1222,74 +1132,61 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 #### 8.3.4 组织树展示
 
-以可展开/折叠的树形结构展示组织架构，最多支持两级层级，支持动态增删改：
+以可展开/折叠的三级树形结构展示组织架构：
 
-- 展示规则：
-  - 第一级：如"浙江省""杭州市"，左侧文件夹图标，展开后显示下属部门
-  - 第二级：如"杭州市宣传部""萧山区宣传部"，为末级节点，直接展示该部门下的人员
-  - 不支持在第二级下继续添加子部门
+- **第一级（省级）**：如"浙江省"，左侧文件夹图标，展开后显示下属地市
+- **第二级（市级）**：如"杭州市"，展开后显示下属区县部门
+- **第三级（县级/处级）**：如"杭州市宣传部""萧山区宣传部"，为末级节点，直接展示该部门下的人员
 
 每个层级节点展示：
 
-- 展开/折叠箭头（仅第一级节点）
+- 展开/折叠箭头（仅非末级节点）
 - 节点名称
-- 操作按钮组：
-  - "添加部门"图标按钮：仅第一级节点显示，点击后弹窗填写子部门名称，确认后在该节点下新增子部门
-  - "编辑"图标按钮：点击后弹窗修改部门名称
-  - "删除"图标按钮：点击后弹出二次确认弹窗，确认后删除该部门及其子部门
+- 该节点下人员总数
 
 末级节点展示：
 
 - 部门名称（配建筑图标）
-- 操作按钮组（编辑、删除）
 - 人员列表：每人以头像胶囊形式展示（头像首字 + 姓名），停用人员标注"(停用)"
+- 人员数量
 
-#### 8.3.5 部门操作规则
+#### 8.3.5 取数规则
 
-- **新增部门**：
-  1. 点击页面标题区"新增部门"按钮
-  2. 弹窗填写部门名称（必填）
-  3. 确认后添加到部门数据集顶层，自动生成唯一 ID
-
-- **添加子部门**：
-  1. 点击任意节点上的"添加部门"图标按钮
-  2. 弹窗填写子部门名称（必填）
-  3. 确认后添加到该节点的子节点列表中，自动生成唯一 ID
-  4. 支持在任意层级节点下添加子部门，不限层级深度
-
-- **编辑部门**：
-  1. 点击节点上的"编辑"图标按钮
-  2. 弹窗显示当前部门名称，可修改
-  3. 确认后更新部门数据集中的部门名称
-
-- **删除部门**：
-  1. 点击节点上的"删除"图标按钮
-  2. 弹出二次确认弹窗，提示该部门下的子部门和人员将一并移除
-  3. 确认后从部门数据集中删除该部门及其所有子部门
+- 部门数据从浙政钉组织架构接口同步，保持省市县三级结构
+- 人员数据包含姓名、浙政钉账号、状态
+- 系统定期自动同步，管理员不可手动修改
 
 #### 8.3.6 数据使用场景
 
-- **新增用户**弹窗中的"所属部门"复选框选项：取数来源为部门数据集中所有末级部门，选项以路径形式展示
-- **编辑用户**弹窗中的"所属部门"复选框选项：取数来源同上
-- **角色管理-添加用户**弹窗中的可选人员列表：取数来源为部门数据集中所有人员，按省市分组展示，每条显示姓名头像 + 姓名 + 所属部门路径
+- **新增用户**弹窗中的"所属单位"下拉选项，取值来源为组织树中所有末级部门，选项以"省 / 市 / 县"路径形式展示
+- **编辑用户**弹窗中的"所属单位"下拉选项，取值来源同上
+- **角色管理-添加用户**弹窗中的可选人员列表，取值来源为组织树中所有人员（含未在系统中创建账号的人员），按省市分组展示，每条显示姓名头像 + 姓名 + 所属部门路径
 
 ---
 
-## 9. 系统配置
+## 9. 浙政钉对接
 
-### 9.1 登录认证
+### 9.1 统一身份认证
 
-- 系统采用手机号+密码登录方式
+- 登录页提供浙政钉扫码登录入口
+- 用户使用浙政钉 App 扫码后，系统自动完成身份验证
+- 首次登录的用户自动创建系统账号，默认角色为"地市人员"
+
+### 9.2 组织架构同步
+
+- 定期从浙政钉同步组织架构信息
+- 用户所属单位字段自动取浙政钉中的部门信息
+- 用户姓名自动取浙政钉中的真实姓名
+
+### 9.3 信息自动填充
+
 - 登录后用户信息自动填充至系统各处（侧边栏、顶部导航栏）
+- 上报表单中"报送单位"字段根据地域选择自动匹配对应单位
 
-### 9.2 信息自动填充
+### 9.4 消息通知
 
-- 用户头像自动取姓名首字
-
-### 9.3 消息通知（预留）
-
-- 舆情上报成功后，可配置消息通知至相关人员
-- 报告发布后，可配置消息通知至相关领导
+- 舆情上报成功后，可配置浙政钉消息通知至相关人员
+- 报告发布后，可配置浙政钉消息通知至相关领导
 
 ---
 
@@ -1303,7 +1200,7 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 ### 10.2 确认弹窗
 
-- 用于不可逆操作的二次确认（如删除报告、删除部门）
+- 用于不可逆操作的二次确认（如删除报告）
 - 包含标题、说明文字、"取消"和"确认"两个按钮
 - 点击遮罩层可关闭弹窗
 - 操作按钮右对齐，确认按钮在右侧
@@ -1323,61 +1220,18 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 | 313308ec-6699-40ed-b428-968958be84ed | v1.1.2：部门管理升级为省市县三级组织树，新增用户/角色赋予用户弹窗按省分组调用组织树数据 | 2026-04-15 |
 | 313308ec-6699-40ed-b428-968958be84ed | v1.1.3：报告预览内容提要分省内/外省、正文增加建议意见、编辑侧栏同步优化 | 2026-04-22 |
 | 313308ec-6699-40ed-b428-968958be84ed | v1.1.4：PRD面板拖拽分界线、版本切换改为更新记录弹窗、报告预览内容提要改为目录样式、正文按省内/外省分段展示 | 2026-04-22 |
-| 313308ec-6699-40ed-b428-968958be84ed | v1.2.0：去除浙政钉、手机号密码登录、用户管理表单化（姓名+手机号+部门+角色）、部门管理可编辑（新增根节点/子节点） | 2026-04-22 |
 </textarea>
 <script>
 /* ===== Auth & Roles ===== */
-let loginUser={org:'省委宣传部',name:'张伟',roles:['舆情处人员']};
-let captchaCode='';
+const loginUser={org:'省委宣传部'};
 
-function generateCaptcha(){
-  const chars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
-  let code='';
-  for(let i=0;i<4;i++) code+=chars.charAt(Math.floor(Math.random()*chars.length));
-  return code;
-}
-function drawCaptcha(){
-  const canvas=document.getElementById('captchaCanvas');
-  if(!canvas) return;
-  const ctx=canvas.getContext('2d');
-  captchaCode=generateCaptcha();
-  const grad=ctx.createLinearGradient(0,0,canvas.width,canvas.height);
-  grad.addColorStop(0,'#e8f0fe');grad.addColorStop(1,'#dbeafe');
-  ctx.fillStyle=grad;ctx.fillRect(0,0,canvas.width,canvas.height);
-  for(let i=0;i<4;i++){
-    ctx.strokeStyle='rgba('+Math.floor(Math.random()*180)+','+Math.floor(Math.random()*180)+','+Math.floor(Math.random()*180)+',0.4)';
-    ctx.lineWidth=1;ctx.beginPath();
-    ctx.moveTo(Math.random()*canvas.width,Math.random()*canvas.height);
-    ctx.lineTo(Math.random()*canvas.width,Math.random()*canvas.height);ctx.stroke();
-  }
-  for(let i=0;i<30;i++){
-    ctx.fillStyle='rgba('+Math.floor(Math.random()*200)+','+Math.floor(Math.random()*200)+','+Math.floor(Math.random()*200)+',0.5)';
-    ctx.beginPath();ctx.arc(Math.random()*canvas.width,Math.random()*canvas.height,1.2,0,Math.PI*2);ctx.fill();
-  }
-  const colors=['#1a6ff0','#e8590c','#2f9e44','#862e9c','#e8590c'];
-  for(let i=0;i<4;i++){
-    ctx.save();ctx.font=(20+Math.random()*4)+'px Arial';
-    ctx.fillStyle=colors[Math.floor(Math.random()*colors.length)];
-    ctx.translate(16+i*22,26+Math.random()*6-3);
-    ctx.rotate((Math.random()-0.5)*0.4);
-    ctx.fillText(captchaCode[i],0,0);ctx.restore();
-  }
-}
-function refreshCaptcha(){drawCaptcha()}
-
-function doLogin(){
-  const phone=document.getElementById('loginPhone').value.trim();
-  const pwd=document.getElementById('loginPwd').value;
-  let user=adminUsers[0];
-  if(phone&&pwd){
-    const found=adminUsers.find(u=>u.phone===phone&&u.password===pwd);
-    if(found) user=found;
-  }
-  if(user.status==='停用'){showToast('error','账号已停用，请联系管理员');return}
-  loginUser={name:user.name,org:user.orgs[0],orgs:user.orgs,roles:user.roles};
-  document.getElementById('loginPage').style.display='none';
-  document.getElementById('appContainer').style.display='flex';
-  buildSidebar();updateUserUI();navigate('summary');
+function loginWithDing(){
+  showToast('info','浙政钉扫码登录中...');
+  setTimeout(()=>{
+    document.getElementById('loginPage').style.display='none';
+    document.getElementById('appContainer').style.display='flex';
+    buildSidebar();updateUserUI();navigate('summary');
+  },800);
 }
 function doLogout(){
   selectedIds.clear();editingReport=null;
@@ -1385,8 +1239,9 @@ function doLogout(){
   document.getElementById('loginPage').style.display='flex';
 }
 function updateUserUI(){
-  document.getElementById('topAvatar').textContent=(loginUser.name||'用').charAt(0);
-  document.getElementById('topName').textContent=loginUser.name||'用户';
+  const u={avatar:'张',user:'张伟'};
+  document.getElementById('topAvatar').textContent=u.avatar;
+  document.getElementById('topName').textContent=u.user;
 }
 
 /* ===== Sidebar ===== */
@@ -1427,6 +1282,7 @@ const yuqingData=[
   {id:'YQ-20260326-002',type:'本省',region:'浙江/绍兴',category:'',title:'绍兴文理学院课程调整引发学生讨论',source:'绍兴市宣传部',time:'2026-03-26 09:15',summary:'绍兴文理学院近日发布课程调整通知，部分专业课程设置有较大变动，引发在校学生热议。',reporter:'绍兴市宣传部'},
   {id:'YQ-20260326-001',type:'本省',region:'浙江/台州',category:'治安事件',title:'台州市某化工企业安全事故引发周边群众关注',source:'台州市宣传部',time:'2026-03-26 08:30',summary:'台州市某化工企业发生安全事故，造成一定环境影响。周边居民通过社交媒体传播现场图片和视频。',reporter:'台州市宣传部'}
 ];
+const regionUnitMap={'浙江/杭州':'杭州市宣传部','浙江/宁波':'宁波市宣传部','浙江/温州':'温州市宣传部','浙江/绍兴':'绍兴市宣传部','浙江/台州':'台州市宣传部','浙江/嘉兴':'嘉兴市宣传部','浙江/湖州':'湖州市宣传部','浙江/金华':'金华市宣传部','浙江/衢州':'衢州市宣传部','浙江/丽水':'丽水市宣传部','浙江/舟山':'舟山市宣传部'};
 const yqCategories=['刑事案件','治安事件','交通事故','执法不当及违纪违法','非正常死亡或失踪','其他'];
 const provinceCityData=[
   {name:'北京',cities:['北京']},{name:'天津',cities:['天津']},{name:'河北',cities:['石家庄','唐山','秦皇岛','邯郸','邢台','保定','张家口','承德','沧州','廊坊','衡水']},
@@ -1464,12 +1320,12 @@ let reportData=[
   {id:'BG-20260409-001',title:'2026年4月9日舆情信息专报',status:'published',time:'2026-04-09 17:00',items:[...yuqingData.slice(2,7)]}
 ];
 const adminUsers=[
-  {id:1,name:'张伟',phone:'13800000001',password:'123456',orgs:['省委宣传部','省委宣传部舆情处'],roles:['舆情处人员'],status:'正常'},
-  {id:2,name:'李明',phone:'13800000002',password:'123456',orgs:['杭州市宣传部'],roles:['地市人员'],status:'正常'},
-  {id:3,name:'王芳',phone:'13800000003',password:'123456',orgs:['宁波市宣传部'],roles:['地市人员'],status:'正常'},
-  {id:4,name:'赵强',phone:'13800000004',password:'123456',orgs:['温州市宣传部'],roles:['地市人员'],status:'正常'},
-  {id:5,name:'王超',phone:'13800000005',password:'123456',orgs:['省委宣传部'],roles:['系统管理员'],status:'正常'},
-  {id:6,name:'陈静',phone:'13800000006',password:'123456',orgs:['绍兴市宣传部'],roles:['地市人员'],status:'停用'}
+  {id:1,name:'张伟',org:'省委宣传部',roles:['舆情处人员'],status:'正常'},
+  {id:2,name:'李明',org:'杭州市宣传部',roles:['地市人员'],status:'正常'},
+  {id:3,name:'王芳',org:'宁波市宣传部',roles:['地市人员'],status:'正常'},
+  {id:4,name:'赵强',org:'温州市宣传部',roles:['地市人员'],status:'正常'},
+  {id:5,name:'王超',org:'省委宣传部',roles:['系统管理员'],status:'正常'},
+  {id:6,name:'陈静',org:'绍兴市宣传部',roles:['地市人员'],status:'停用'}
 ];
 const permTree=[
   {id:'p1',label:'舆情汇总',children:[
@@ -1502,106 +1358,106 @@ const adminRoles=[
 ];
 let activeRoleId='r1';
 
-/* ===== Department Data (three-level tree) ===== */
+/* ===== Department Data (Fixed from 浙政钉, three-level tree) ===== */
 const departmentData=[
   {id:'zj',name:'浙江省',children:[
     {id:'zj-prov',name:'省委宣传部',users:[
-      {id:'du1',name:'张伟',status:'正常'},
-      {id:'du2',name:'王超',status:'正常'}
+      {id:'du1',name:'张伟',ding:'张伟',status:'正常'},
+      {id:'du2',name:'王超',ding:'王超',status:'正常'}
     ]},
     {id:'zj-yqc',name:'省委宣传部舆情处',users:[
-      {id:'du3',name:'张伟',status:'正常'},
-      {id:'du4',name:'刘洋',status:'正常'}
+      {id:'du3',name:'张伟',ding:'张伟',status:'正常'},
+      {id:'du4',name:'刘洋',ding:'刘洋',status:'正常'}
     ]}
   ]},
   {id:'hz',name:'杭州市',children:[
     {id:'hz-city',name:'杭州市宣传部',users:[
-      {id:'du5',name:'李明',status:'正常'},
-      {id:'du6',name:'周杰',status:'正常'}
+      {id:'du5',name:'李明',ding:'李明',status:'正常'},
+      {id:'du6',name:'周杰',ding:'周杰',status:'正常'}
     ]},
     {id:'hz-xs',name:'萧山区宣传部',users:[
-      {id:'du18',name:'钱丽',status:'正常'}
+      {id:'du18',name:'钱丽',ding:'钱丽',status:'正常'}
     ]},
     {id:'hz-yh',name:'余杭区宣传部',users:[
-      {id:'du19',name:'冯刚',status:'正常'}
+      {id:'du19',name:'冯刚',ding:'冯刚',status:'正常'}
     ]},
     {id:'hz-lin',name:'临平区宣传部',users:[
-      {id:'du20',name:'褚明',status:'正常'}
+      {id:'du20',name:'褚明',ding:'褚明',status:'正常'}
     ]}
   ]},
   {id:'nb',name:'宁波市',children:[
     {id:'nb-city',name:'宁波市宣传部',users:[
-      {id:'du7',name:'王芳',status:'正常'}
+      {id:'du7',name:'王芳',ding:'王芳',status:'正常'}
     ]},
     {id:'nb-cb',name:'慈溪市宣传部',users:[
-      {id:'du21',name:'卫国',status:'正常'}
+      {id:'du21',name:'卫国',ding:'卫国',status:'正常'}
     ]},
     {id:'nb-y',name:'余姚市宣传部',users:[
-      {id:'du22',name:'蒋芳',status:'正常'}
+      {id:'du22',name:'蒋芳',ding:'蒋芳',status:'正常'}
     ]}
   ]},
   {id:'wz',name:'温州市',children:[
     {id:'wz-city',name:'温州市宣传部',users:[
-      {id:'du8',name:'赵强',status:'正常'},
-      {id:'du9',name:'林小红',status:'正常'}
+      {id:'du8',name:'赵强',ding:'赵强',status:'正常'},
+      {id:'du9',name:'林小红',ding:'林小红',status:'正常'}
     ]},
     {id:'wz-yy',name:'乐清市宣传部',users:[
-      {id:'du23',name:'沈伟',status:'正常'}
+      {id:'du23',name:'沈伟',ding:'沈伟',status:'正常'}
     ]},
     {id:'wz-ra',name:'瑞安市宣传部',users:[
-      {id:'du24',name:'韩梅',status:'正常'}
+      {id:'du24',name:'韩梅',ding:'韩梅',status:'正常'}
     ]}
   ]},
   {id:'sx',name:'绍兴市',children:[
     {id:'sx-city',name:'绍兴市宣传部',users:[
-      {id:'du10',name:'陈静',status:'停用'}
+      {id:'du10',name:'陈静',ding:'陈静',status:'停用'}
     ]},
     {id:'sx-zj',name:'诸暨市宣传部',users:[
-      {id:'du25',name:'杨磊',status:'正常'}
+      {id:'du25',name:'杨磊',ding:'杨磊',status:'正常'}
     ]}
   ]},
   {id:'tz',name:'台州市',children:[
     {id:'tz-city',name:'台州市宣传部',users:[
-      {id:'du11',name:'孙磊',status:'正常'}
+      {id:'du11',name:'孙磊',ding:'孙磊',status:'正常'}
     ]},
     {id:'tz-wl',name:'温岭市宣传部',users:[
-      {id:'du26',name:'朱丽',status:'正常'}
+      {id:'du26',name:'朱丽',ding:'朱丽',status:'正常'}
     ]}
   ]},
   {id:'jx',name:'嘉兴市',children:[
     {id:'jx-city',name:'嘉兴市宣传部',users:[
-      {id:'du12',name:'吴敏',status:'正常'}
+      {id:'du12',name:'吴敏',ding:'吴敏',status:'正常'}
     ]},
     {id:'jx-hn',name:'海宁市宣传部',users:[
-      {id:'du27',name:'秦伟',status:'正常'}
+      {id:'du27',name:'秦伟',ding:'秦伟',status:'正常'}
     ]}
   ]},
   {id:'hu',name:'湖州市',children:[
     {id:'hu-city',name:'湖州市宣传部',users:[
-      {id:'du13',name:'郑华',status:'正常'}
+      {id:'du13',name:'郑华',ding:'郑华',status:'正常'}
     ]}
   ]},
   {id:'jh',name:'金华市',children:[
     {id:'jh-city',name:'金华市宣传部',users:[
-      {id:'du14',name:'何芳',status:'正常'}
+      {id:'du14',name:'何芳',ding:'何芳',status:'正常'}
     ]},
     {id:'jh-yw',name:'义乌市宣传部',users:[
-      {id:'du28',name:'许强',status:'正常'}
+      {id:'du28',name:'许强',ding:'许强',status:'正常'}
     ]}
   ]},
   {id:'qz',name:'衢州市',children:[
     {id:'qz-city',name:'衢州市宣传部',users:[
-      {id:'du15',name:'谢伟',status:'正常'}
+      {id:'du15',name:'谢伟',ding:'谢伟',status:'正常'}
     ]}
   ]},
   {id:'ls',name:'丽水市',children:[
     {id:'ls-city',name:'丽水市宣传部',users:[
-      {id:'du16',name:'宋佳',status:'正常'}
+      {id:'du16',name:'宋佳',ding:'宋佳',status:'正常'}
     ]}
   ]},
   {id:'zs',name:'舟山市',children:[
     {id:'zs-city',name:'舟山市宣传部',users:[
-      {id:'du17',name:'徐明',status:'正常'}
+      {id:'du17',name:'徐明',ding:'徐明',status:'正常'}
     ]}
   ]}
 ];
@@ -1768,15 +1624,15 @@ function addReportItem(){
   card.innerHTML='<div class="item-header"><span class="item-number">第 '+n+' 条舆情</span>'+(n>1?'<button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="removeReportItem('+n+')"><i class="ri-close-line"></i></button>':'')+'</div>'
     +'<div class="form-row"><div class="form-group"><label>上报时间<span class="req">*</span></label><input class="form-control" type="datetime-local" data-field="time"></div>'
     +'<div class="form-group"><label>舆情地域<span class="req">*</span></label><div style="display:flex;gap:8px"><select class="form-control" id="rptProv-'+n+'" onchange="onReportProvChange('+n+')" style="flex:1"><option value="">请选择省份</option>'+provinceCityData.map(p=>'<option value="'+p.name+'">'+p.name+'</option>').join('')+'</select><select class="form-control" id="rptCity-'+n+'" onchange="onReportCityChange('+n+')" style="flex:1" disabled><option value="">请先选省份</option></select></div></div></div>'
-    +'<div class="form-row"><div class="form-group"><label>报送单位</label><select class="form-control" data-field="unit" id="rptUnit-'+n+'">'+getUnitOptions(loginUser.org)+'</select></div></div>'
+    +'<div class="form-row"><div class="form-group"><label>报送单位</label><input class="form-control" data-field="unit" id="rptUnit-'+n+'" value="'+loginUser.org+'" style="background:#fafafa"></div></div>'
     +'<div class="form-row"><div class="form-group" style="flex:none;width:100%"><label>标题<span class="req">*</span></label><input class="form-control" data-field="title" placeholder="请输入舆情标题"></div></div>'
     +'<div class="form-row"><div class="form-group" style="flex:none;width:100%"><label>内容<span class="req">*</span></label><textarea class="form-control" data-field="content" rows="3" placeholder="请详细描述舆情事件经过、传播情况、影响范围等..."></textarea></div></div>'
 ;
   c.appendChild(card);updateFormCount();
 }
-function getUnitOptions(defaultOrg){const leaves=getDeptLeaves(departmentData);return leaves.map(d=>'<option value="'+d.name+'"'+(d.name===defaultOrg?' selected':'')+'>'+d.name+'</option>').join('')}
-function onReportProvChange(n){const provSel=document.getElementById('rptProv-'+n);const citySel=document.getElementById('rptCity-'+n);citySel.innerHTML='<option value="">请选择城市</option>';citySel.disabled=false;if(provSel.value){const prov=provinceCityData.find(p=>p.name===provSel.value);if(prov){prov.cities.forEach(c=>{citySel.innerHTML+='<option value="'+c+'">'+c+'</option>'})}}}
-function onReportCityChange(n){}
+function autoFillUnit(n){const prov=document.getElementById('rptProv-'+n);const city=document.getElementById('rptCity-'+n);const val=(prov&&city&&prov.value&&city.value)?prov.value+'/'+city.value:'';document.getElementById('rptUnit-'+n).value=regionUnitMap[val]||loginUser.org}
+function onReportProvChange(n){const provSel=document.getElementById('rptProv-'+n);const citySel=document.getElementById('rptCity-'+n);citySel.innerHTML='<option value="">请选择城市</option>';citySel.disabled=false;if(provSel.value){const prov=provinceCityData.find(p=>p.name===provSel.value);if(prov){prov.cities.forEach(c=>{citySel.innerHTML+='<option value="'+c+'">'+c+'</option>'})}}autoFillUnit(n)}
+function onReportCityChange(n){autoFillUnit(n)}
 function onFilterProvChange(){const provSel=document.getElementById('filterProv');const citySel=document.getElementById('filterCity');citySel.innerHTML='<option value="">全部城市</option>';if(provSel.value){citySel.style.display='';const prov=provinceCityData.find(p=>p.name===provSel.value);if(prov){prov.cities.forEach(c=>{citySel.innerHTML+='<option value="'+c+'">'+c+'</option>'})}}else{citySel.style.display='none'}citySel.value='';filterList()}
 function removeReportItem(n){const c=document.getElementById('rptItem-'+n);if(c){c.style.opacity='0';c.style.transition='all .3s';setTimeout(()=>{c.remove();updateFormCount()},300)}}
 function updateFormCount(){const c=document.querySelectorAll('#reportFormList .report-item-card').length;document.getElementById('reportFormCount').textContent='共 '+c+' 条';document.getElementById('btnSubmitReport').innerHTML='<i class="ri-send-plane-line"></i>提交上报（'+c+' 条）'}
@@ -1792,7 +1648,7 @@ function confirmUseToReport(){const ch=document.querySelector('input[name="rptCh
 /* ===== Manage ===== */
 function renderManagePage(){const pc=document.getElementById('pageContainer');pc.innerHTML='<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">报告管理</div></div><button class="btn btn-primary" onclick="createNewReport()"><i class="ri-add-line"></i>新建报告</button></div><div class="report-list" id="reportList"></div></div>';renderManageList()}
 function renderManageList(){const list=document.getElementById('reportList');if(!list)return;list.innerHTML=reportData.map(r=>{const sm={draft:['草稿','status-draft'],published:['已发布','status-published']};const[l,c]=sm[r.status]||['',''];return'<div class="report-card" onclick="navigate(\'preview\',\''+r.id+'\')"><div class="report-body"><div class="report-meta"><span class="report-id">'+r.id+'</span><span class="status-tag '+c+'">'+l+'</span></div><div class="report-title">'+r.title+'</div><div class="report-info"><span><i class="ri-time-line"></i> '+r.time+'</span><span><i class="ri-file-list-3-line"></i> '+r.items.length+' 条</span></div></div><div class="report-actions" onclick="event.stopPropagation()">'+(r.status==='draft'?'<button class="btn btn-primary btn-sm" onclick="navigate(\'edit\',\''+r.id+'\')"><i class="ri-edit-line"></i>编辑</button><button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="deleteReport(\''+r.id+'\')"><i class="ri-delete-bin-line"></i></button>':'')+'<button class="btn btn-outline btn-sm" onclick="navigate(\'preview\',\''+r.id+'\')"><i class="ri-eye-line"></i>预览</button></div></div>'}).join('')}
-function createNewReport(){const id='BG-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(reportData.length+1).padStart(3,'0');const d=new Date();const r={id,title:'',status:'draft',time:d.toISOString().slice(0,16).replace('T',' '),items:[]};reportData.unshift(r);renderManageList();navigate('edit',id);setTimeout(()=>openSelectFromSummary(),100)}
+function createNewReport(){const id='BG-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(reportData.length+1).padStart(3,'0');const d=new Date();const r={id,title:d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日舆情信息专报',status:'draft',time:d.toISOString().slice(0,16).replace('T',' '),items:[]};reportData.unshift(r);renderManageList();navigate('edit',id);setTimeout(()=>openSelectFromSummary(),100)}
 function deleteReport(id){showModal('确认删除','<p style="font-size:14px;color:var(--text-secondary)">确定删除该报告？</p>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" style="background:var(--red)" onclick="reportData.splice(reportData.findIndex(r=>r.id===\''+id+'\'),1);closeModal();showToast(\'success\',\'已删除\');renderManageList()">确认</button>')}
 
 /* ===== Preview ===== */
@@ -1831,7 +1687,7 @@ function renderEditPage(reportId){const report=reportData.find(r=>r.id===reportI
 document.getElementById('pageContainer').innerHTML='<div class="page active"><div style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:12px"><button class="btn btn-ghost" onclick="navigate(\'manage\')"><i class="ri-arrow-left-line"></i>返回</button><div style="font-size:18px;font-weight:600">'+(report.items.length?'编辑报告':'新建报告')+'</div></div><div class="edit-stats"><span class="edit-stat-tag" style="background:var(--primary-bg);color:var(--primary)">本省 '+li.length+'</span><span class="edit-stat-tag" style="background:var(--orange-bg);color:var(--orange)">外省 '+ei.length+'</span></div></div>'
 +'<div class="edit-toolbar"><button class="btn btn-outline btn-sm" onclick="openSelectFromSummary()"><i class="ri-add-line"></i>选取舆情</button><button class="btn btn-outline btn-sm" onclick="saveReportEdit()"><i class="ri-save-line"></i>保存草稿</button><div class="spacer"></div><button class="btn btn-primary btn-sm" onclick="previewFromEdit()"><i class="ri-eye-line"></i>预览</button><button class="btn btn-success btn-sm" onclick="publishReport()"><i class="ri-send-plane-line"></i>发布</button></div>'
 +'<div class="edit-layout"><div class="edit-main">'
-+'<div style="display:flex;gap:16px;margin-bottom:20px"><div class="form-group" style="flex:2"><label>报告标题<span class="req">*</span></label><input class="form-control" id="editTitle" value="'+report.title+'" placeholder="请输入报告标题" oninput="updateEditPreview()"></div><div class="form-group" style="flex:1"><label>报告日期</label><input class="form-control" type="date" id="editDate" value="'+report.time.slice(0,10)+'"></div></div>'
++'<div style="display:flex;gap:16px;margin-bottom:20px"><div class="form-group" style="flex:2"><label>报告标题<span class="req">*</span></label><input class="form-control" id="editTitle" value="'+report.title+'" oninput="updateEditPreview()"></div><div class="form-group" style="flex:1"><label>报告日期</label><input class="form-control" type="date" id="editDate" value="'+report.time.slice(0,10)+'"></div></div>'
 +(li.length?'<div class="edit-section-title">本省舆情（'+li.length+'）</div>'+li.map((it,i)=>editItemHTML(it,i)).join(''):'')
 +(ei.length?'<div class="edit-section-title" style="margin-top:20px">外省舆情镜鉴（'+ei.length+'）</div>'+ei.map((it,i)=>editItemHTML(it,i)).join(''):'')
 +'</div><div class="edit-sidebar" id="editSidebar">'+buildEditSidebar(report)+'</div></div></div>'}
@@ -1850,69 +1706,11 @@ function confirmSelectFromSummary(){const ch=document.querySelectorAll('#modalBo
 /* ===== Admin Pages ===== */
 function renderDepartmentsPage(){
   const pc=document.getElementById('pageContainer');
-  let html='<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">部门管理</div></div><button class="btn btn-primary" onclick="addRootDept()"><i class="ri-add-line"></i>新增部门</button></div>';
+  let html='<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">部门管理</div></div></div>';
   html+='<div class="admin-card" id="deptTreeContainer"></div>';
   html+='</div>';
   pc.innerHTML=html;
   document.getElementById('deptTreeContainer').innerHTML=buildDeptTreeHTML(departmentData,0);
-}
-function addRootDept(){
-  showModal('新增部门','<div class="form-group"><label>部门名称<span class="req">*</span></label><input class="form-control" id="newRootDeptName" placeholder="请输入部门名称"></div>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmAddRootDept()">确认</button>');
-}
-function confirmAddRootDept(){
-  const name=document.getElementById('newRootDeptName').value.trim();
-  if(!name){showToast('error','请输入部门名称');return}
-  departmentData.push({id:'dept-'+Date.now(),name:name,children:[],users:[]});
-  closeModal();showToast('success','已添加部门"'+name+'"');renderDepartmentsPage();
-}
-function addChildDept(parentId){
-  function getDepth(nodes,targetId,d){for(const n of nodes){if(n.id===targetId)return d;if(n.children){const r=getDepth(n.children,targetId,d+1);if(r!==null)return r}}return null}
-  const depth=getDepth(departmentData,parentId,0);
-  if(depth>=1){showToast('error','最多支持两级层级，无法继续添加');return}
-  showModal('添加部门','<div class="form-group"><label>部门名称<span class="req">*</span></label><input class="form-control" id="newChildDeptName" placeholder="请输入部门名称"></div>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmAddChildDept(\''+parentId+'\')">确认</button>');
-}
-function confirmAddChildDept(parentId){
-  const name=document.getElementById('newChildDeptName').value.trim();
-  if(!name){showToast('error','请输入部门名称');return}
-  function findNode(nodes){
-    for(const n of nodes){
-      if(n.id===parentId)return n;
-      if(n.children){const found=findNode(n.children);if(found)return found}
-    }
-    return null;
-  }
-  const parent=findNode(departmentData);
-  if(!parent){showToast('error','未找到上级部门');return}
-  if(!parent.children)parent.children=[];
-  parent.children.push({id:'dept-'+Date.now(),name:name,children:[],users:[]});
-  closeModal();showToast('success','已添加"'+name+'"');renderDepartmentsPage();
-}
-function editDept(deptId){
-  const dept=findDeptById(departmentData,deptId);
-  if(!dept){showToast('error','未找到部门');return}
-  showModal('编辑部门','<div class="form-group"><label>部门名称<span class="req">*</span></label><input class="form-control" id="editDeptName" value="'+dept.name.replace(/"/g,'&quot;')+'" placeholder="请输入部门名称"></div>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmEditDept(\''+deptId+'\')">确认</button>');
-}
-function confirmEditDept(deptId){
-  const name=document.getElementById('editDeptName').value.trim();
-  if(!name){showToast('error','请输入部门名称');return}
-  const dept=findDeptById(departmentData,deptId);
-  if(!dept){showToast('error','未找到部门');return}
-  dept.name=name;
-  closeModal();showToast('success','已更新为"'+name+'"');renderDepartmentsPage();
-}
-function deleteDept(deptId,deptName){
-  showModal('删除确认','<div style="font-size:14px;line-height:1.8">确定要删除部门<strong>"'+deptName+'"</strong>吗？<br><span style="color:var(--text-quaternary);font-size:12px">删除后该部门下的子部门和人员将一并移除，此操作不可恢复。</span></div>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-danger" onclick="confirmDeleteDept(\''+deptId+'\')">确认删除</button>');
-}
-function confirmDeleteDept(deptId){
-  function removeFrom(nodes){
-    for(let i=0;i<nodes.length;i++){
-      if(nodes[i].id===deptId){nodes.splice(i,1);return true}
-      if(nodes[i].children&&removeFrom(nodes[i].children))return true;
-    }
-    return false;
-  }
-  removeFrom(departmentData);
-  closeModal();showToast('success','已删除');renderDepartmentsPage();
 }
 function buildDeptTreeHTML(nodes,depth){
   let html='';
@@ -1921,19 +1719,13 @@ function buildDeptTreeHTML(nodes,depth){
     const hasUsers=node.users&&node.users.length;
     const isLeaf=!hasChildren;
     const indent=depth*24;
-    // 操作按钮（编辑+删除+添加子部门）
-    const btns='<div style="display:flex;align-items:center;gap:2px;flex-shrink:0;margin-left:auto">'
-      +(depth<1?'<button class="btn btn-ghost btn-sm" style="color:var(--primary);padding:2px 6px" onclick="event.stopPropagation();addChildDept(\''+node.id+'\')" title="添加部门"><i class="ri-add-line"></i></button>':'')
-      +'<button class="btn btn-ghost btn-sm" style="color:var(--text-tertiary);padding:2px 6px" onclick="event.stopPropagation();editDept(\''+node.id+'\')" title="编辑"><i class="ri-edit-line"></i></button>'
-      +'<button class="btn btn-ghost btn-sm" style="color:var(--red);padding:2px 6px" onclick="event.stopPropagation();deleteDept(\''+node.id+'\',\''+node.name.replace(/'/g,"\\'")+'\')" title="删除"><i class="ri-delete-bin-line"></i></button>'
-      +'</div>';
     if(isLeaf){
       html+='<div class="dept-tree-node" style="padding-left:'+indent+'px">';
       html+='<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border-light)">';
       html+='<i class="ri-building-line" style="color:var(--primary);font-size:16px;flex-shrink:0"></i>';
-      html+='<div style="flex:1"><div style="font-size:13px;font-weight:500">'+node.name+'</div>';
+      html+='<div style="flex:1"><div style="font-size:13px;font-weight:500;margin-bottom:4px">'+node.name+'</div>';
       if(hasUsers){
-        html+='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">';
+        html+='<div style="display:flex;flex-wrap:wrap;gap:6px">';
         node.users.forEach(u=>{
           html+='<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px 2px 2px;border-radius:999px;border:1px solid var(--border-light);font-size:12px">';
           html+='<span style="width:20px;height:20px;border-radius:50%;background:var(--primary-bg);color:var(--primary);display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:500">'+u.name.charAt(0)+'</span>';
@@ -1943,7 +1735,7 @@ function buildDeptTreeHTML(nodes,depth){
         html+='</div>';
       }
       html+='</div>';
-      html+=btns;
+      html+='<span style="font-size:11px;color:var(--text-quaternary);flex-shrink:0">'+(hasUsers?node.users.length+'人':'')+'</span>';
       html+='</div></div>';
     }else{
       html+='<div class="dept-tree-branch" style="padding-left:'+indent+'px">';
@@ -1951,7 +1743,8 @@ function buildDeptTreeHTML(nodes,depth){
       html+='<i class="ri-arrow-down-s-line dept-arrow" style="font-size:16px;color:var(--text-tertiary);transition:transform .2s;flex-shrink:0"></i>';
       html+='<i class="ri-folder-3-line" style="color:var(--orange);font-size:16px;flex-shrink:0"></i>';
       html+='<span style="font-size:13px;font-weight:500">'+node.name+'</span>';
-      html+=btns;
+      const cnt=countDeptUsers(node.children||[]);
+      html+='<span style="font-size:11px;color:var(--text-quaternary);margin-left:auto">'+(cnt>0?cnt+'人':'')+'</span>';
       html+='</div>';
       html+='<div class="dept-tree-children">'+buildDeptTreeHTML(node.children,depth+1)+'</div>';
       html+='</div>';
@@ -1960,12 +1753,12 @@ function buildDeptTreeHTML(nodes,depth){
   return html;
 }
 function renderUsersPage(){
-  document.getElementById('pageContainer').innerHTML='<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">用户管理</div></div><button class="btn btn-primary" onclick="showAddUserModal()"><i class="ri-add-line"></i>新增用户</button></div><div class="admin-card"><table class="admin-table"><thead><tr><th>姓名</th><th>手机号</th><th>所属部门</th><th>角色</th><th>状态</th><th>操作</th></tr></thead><tbody id="userTableBody"></tbody></table></div></div>';
+  document.getElementById('pageContainer').innerHTML='<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">用户管理</div></div><button class="btn btn-primary" onclick="showAddUserModal()"><i class="ri-add-line"></i>新增用户</button></div><div class="admin-card"><table class="admin-table"><thead><tr><th>姓名</th><th>所属单位</th><th>角色</th><th>状态</th><th>操作</th></tr></thead><tbody id="userTableBody"></tbody></table></div></div>';
   renderUserRows();
 }
 function renderUserRows(){
   const tb=document.getElementById('userTableBody');if(!tb)return;
-  tb.innerHTML=adminUsers.map(u=>'<tr><td style="font-weight:500">'+u.name+'</td><td>'+u.phone+'</td><td>'+(u.orgs||[]).join('；')+'</td><td>'+(u.roles||[]).join('；')+'</td><td><div class="toggle-wrap" onclick="toggleUserStatus('+u.id+')"><div class="toggle'+(u.status==='正常'?' on':'')+'"></div><span style="font-size:12px;color:'+(u.status==='正常'?'var(--green)':'var(--text-quaternary)')+'">'+u.status+'</span></div></td><td><button class="btn btn-outline btn-sm" onclick="showEditUserModal('+u.id+')"><i class="ri-edit-line"></i></button></td></tr>').join('');
+  tb.innerHTML=adminUsers.map(u=>'<tr><td style="font-weight:500">'+u.name+'</td><td>'+u.org+'</td><td>'+(u.roles||[]).join('；')+'</td><td><div class="toggle-wrap" onclick="toggleUserStatus('+u.id+')"><div class="toggle'+(u.status==='正常'?' on':'')+'"></div><span style="font-size:12px;color:'+(u.status==='正常'?'var(--green)':'var(--text-quaternary)')+'">'+u.status+'</span></div></td><td><button class="btn btn-outline btn-sm" onclick="showEditUserModal('+u.id+')"><i class="ri-edit-line"></i></button></td></tr>').join('');
 }
 function toggleUserStatus(uid){
   const u=adminUsers.find(x=>x.id===uid);if(!u)return;
@@ -1974,71 +1767,53 @@ function toggleUserStatus(uid){
   renderUserRows();
 }
 function showAddUserModal(){
-  const leaves=getDeptLeaves(departmentData);
+  const allTreeUsers=getAllDeptUsers(departmentData);
+  const existingDings=new Set(adminUsers.map(u=>u.name));
+  const avail=allTreeUsers.filter(u=>!existingDings.has(u.name));
+  let userOpts='';
+  departmentData.forEach(prov=>{
+    const provUsers=getAllDeptUsers(prov.children||[]).filter(u=>!existingDings.has(u.name));
+    if(!provUsers.length)return;
+    userOpts+='<div style="margin-bottom:8px"><div style="font-size:11px;font-weight:600;color:var(--text-tertiary);padding:4px 0 6px;text-transform:uppercase;letter-spacing:0.5px">'+prov.name+'</div>';
+    provUsers.forEach(u=>{
+      const path=getDeptPath(departmentData,u.deptId);
+      const pathStr=path?path.slice(0,-1).join(' / '):'';
+      userOpts+='<label style="display:flex;align-items:center;gap:10px;padding:6px 12px;border:1px solid var(--border-light);border-radius:var(--radius-md);cursor:pointer;margin-bottom:4px"><input type="radio" name="addUserPick" value="'+u.name+'" data-org="'+u.deptName+'" style="accent-color:var(--primary)"><div style="display:flex;align-items:center;gap:8px"><span style="width:22px;height:22px;border-radius:50%;background:var(--primary-bg);color:var(--primary);display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:500">'+u.name.charAt(0)+'</span><div><span style="font-size:13px;font-weight:500">'+u.name+'</span><span style="font-size:11px;color:var(--text-tertiary);margin-left:6px">'+pathStr+'</span></div></div></label>';
+    });
+    userOpts+='</div>';
+  });
   const roleOpts=adminRoles.map(r=>'<label style="display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer"><input type="checkbox" value="'+r.id+'" data-role-name="'+r.name+'" class="add-user-role-cb" style="accent-color:var(--primary)"><span style="font-size:13px">'+r.name+'</span></label>').join('');
-  const body='<div style="display:flex;flex-direction:column;gap:12px">'
-    +'<div class="form-group"><label>姓名<span class="req">*</span></label><input class="form-control" id="addUserName" placeholder="请输入姓名"></div>'
-    +'<div class="form-group"><label>手机号<span class="req">*</span></label><input class="form-control" id="addUserPhone" type="tel" placeholder="请输入手机号" maxlength="11"></div>'
-    +'<div class="form-group"><label>密码<span class="req">*</span></label><input class="form-control" id="addUserPwd" type="password" placeholder="至少8位，含大写、小写、数字、符号"></div>'
-    +'<div class="form-group"><label>确认密码<span class="req">*</span></label><input class="form-control" id="addUserPwd2" type="password" placeholder="请再次输入密码"></div>'
-    +'<div class="form-group"><label>所属部门（可多选）<span class="req">*</span></label><div style="border:1px solid var(--border-light);border-radius:var(--radius-md);padding:8px;max-height:150px;overflow-y:auto">'+leaves.map(d=>{const path=getDeptPath(departmentData,d.id);const label=path?path.join(' / '):d.name;return'<label style="display:flex;align-items:center;gap:8px;padding:4px 0;cursor:pointer"><input type="checkbox" value="'+d.name+'" class="add-user-dept-cb" style="accent-color:var(--primary)"><span style="font-size:13px">'+label+'</span></label>'}).join('')+'</div></div>'
-    +'<div class="form-group"><label>角色（可多选）<span class="req">*</span></label><div style="border:1px solid var(--border-light);border-radius:var(--radius-md);padding:8px">'+roleOpts+'</div></div></div>';
+  const body='<div style="display:flex;flex-direction:column;gap:16px">'
+    +'<div><div style="font-size:13px;font-weight:500;margin-bottom:8px">选择用户</div><div style="max-height:260px;overflow-y:auto;border:1px solid var(--border-light);border-radius:var(--radius-md);padding:8px">'+(userOpts||'<div style="font-size:12px;color:var(--text-tertiary);padding:12px;text-align:center">暂无可添加用户</div>')+'</div></div>'
+    +'<div><div style="font-size:13px;font-weight:500;margin-bottom:8px">分配角色（可多选）</div><div style="border:1px solid var(--border-light);border-radius:var(--radius-md);padding:8px">'+roleOpts+'</div></div></div>';
   showModal('新增用户',body,'<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmAddUser()">确定</button>');
 }
 function confirmAddUser(){
-  const name=document.getElementById('addUserName').value.trim();
-  const phone=document.getElementById('addUserPhone').value.trim();
-  const pwd=document.getElementById('addUserPwd').value;
-  const pwd2=document.getElementById('addUserPwd2').value;
-  if(!name){showToast('error','请输入姓名');return}
-  if(!phone||phone.length!==11){showToast('error','请输入正确的11位手机号');return}
-  if(!pwd){showToast('error','请输入密码');return}
-  const pwdErr=validatePwd(pwd);if(pwdErr){showToast('error',pwdErr);return}
-  if(pwd!==pwd2){showToast('error','两次输入的密码不一致');return}
-  const deptCbs=document.querySelectorAll('.add-user-dept-cb:checked');
-  const orgs=Array.from(deptCbs).map(cb=>cb.value);
-  if(!orgs.length){showToast('error','请至少选择一个部门');return}
-  if(adminUsers.find(u=>u.phone===phone)){showToast('error','该手机号已存在');return}
+  const ch=document.querySelector('input[name="addUserPick"]:checked');
+  if(!ch){showToast('error','请选择用户');return}
   const roleCbs=document.querySelectorAll('.add-user-role-cb:checked');
   const roles=Array.from(roleCbs).map(cb=>cb.getAttribute('data-role-name'));
   if(!roles.length){showToast('error','请至少分配一个角色');return}
-  adminUsers.push({id:Date.now(),name:name,phone:phone,password:pwd,orgs:orgs,roles:roles,status:'正常'});
-  orgs.forEach(orgName=>{const leaf=getDeptLeaves(departmentData).find(d=>d.name===orgName);if(leaf){if(!leaf.users)leaf.users=[];leaf.users.push({id:'du-'+Date.now(),name:name,status:'正常'})}});
+  const name=ch.value;const org=ch.getAttribute('data-org');
+  const existing=adminUsers.find(u=>u.name===name);
+  if(existing){roles.forEach(r=>{if(!existing.roles.includes(r))existing.roles.push(r)})}
+  else{adminUsers.push({id:Date.now(),name:name,org:org,roles:roles,status:'正常'})}
   closeModal();showToast('success','用户 '+name+' 已添加');renderUsersPage();
-}
-function validatePwd(p){if(p.length<8)return'密码至少8个字符';if(!/[A-Z]/.test(p))return'密码必须包含大写字母';if(!/[a-z]/.test(p))return'密码必须包含小写字母';if(!/[0-9]/.test(p))return'密码必须包含数字';if(!/[!@#$%^&*?]/.test(p))return'密码必须包含符号(!@#$%^&*?)';return''}
-function findDeptById(nodes,id){
-  for(const n of nodes){
-    if(n.id===id)return n;
-    if(n.children){const found=findDeptById(n.children,id);if(found)return found}
-  }
-  return null;
 }
 function showEditUserModal(uid){
   const u=adminUsers.find(x=>x.id===uid);if(!u)return;
   const leaves=getDeptLeaves(departmentData);
   const roleOpts=adminRoles.map(r=>'<label style="display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer"><input type="checkbox" value="'+r.id+'" data-role-name="'+r.name+'" class="edit-user-role-cb"'+(u.roles&&u.roles.includes(r.name)?' checked':'')+' style="accent-color:var(--primary)"><span style="font-size:13px">'+r.name+'</span></label>').join('');
-  const deptOpts=leaves.map(d=>{const path=getDeptPath(departmentData,d.id);const label=path?path.join(' / '):d.name;return'<label style="display:flex;align-items:center;gap:8px;padding:4px 0;cursor:pointer"><input type="checkbox" value="'+d.name+'" class="edit-user-dept-cb"'+(u.orgs&&u.orgs.includes(d.name)?' checked':'')+' style="accent-color:var(--primary)"><span style="font-size:13px">'+label+'</span></label>'}).join('');
   const body='<div style="display:flex;flex-direction:column;gap:12px">'
     +'<div class="form-group"><label>姓名</label><input class="form-control" id="editUserName" value="'+u.name+'"></div>'
-    +'<div class="form-group"><label>手机号</label><input class="form-control" id="editUserPhone" type="tel" value="'+u.phone+'" maxlength="11"></div>'
-    +'<div class="form-group"><label>重置密码</label><input class="form-control" id="editUserPwd" type="password" placeholder="留空则不修改密码"><div style="font-size:12px;color:var(--text-muted);margin-top:4px">留空表示不修改密码，填写需至少8位且包含大写、小写、数字、符号</div></div>'
-    +'<div class="form-group"><label>所属部门（可多选）</label><div style="border:1px solid var(--border-light);border-radius:var(--radius-md);padding:8px;max-height:150px;overflow-y:auto">'+deptOpts+'</div></div>'
+    +'<div class="form-group"><label>所属单位</label><select class="form-control" id="editUserOrg">'+leaves.map(d=>{const path=getDeptPath(departmentData,d.id);const label=path?path.join(' / '):d.name;return'<option value="'+d.name+'"'+(d.name===u.org?' selected':'')+'>'+label+'</option>'}).join('')+'</select></div>'
     +'<div class="form-group"><label>角色（可多选）</label><div style="border:1px solid var(--border-light);border-radius:var(--radius-md);padding:8px">'+roleOpts+'</div></div></div>';
   showModal('编辑用户',body,'<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmEditUser('+uid+')">保存</button>');
 }
 function confirmEditUser(uid){
   const u=adminUsers.find(x=>x.id===uid);if(!u)return;
   u.name=document.getElementById('editUserName').value.trim()||u.name;
-  u.phone=document.getElementById('editUserPhone').value.trim()||u.phone;
-  const newPwd=document.getElementById('editUserPwd').value;
-  if(newPwd){
-    const pwdErr=validatePwd(newPwd);if(pwdErr){showToast('error',pwdErr);return}
-    u.password=newPwd;
-  }
-  const deptCbs=document.querySelectorAll('.edit-user-dept-cb:checked');
-  u.orgs=Array.from(deptCbs).map(cb=>cb.value);
-  if(!u.orgs.length)u.orgs=[u.orgs[0]||''];
+  u.org=document.getElementById('editUserOrg').value;
   const roleCbs=document.querySelectorAll('.edit-user-role-cb:checked');
   u.roles=Array.from(roleCbs).map(cb=>cb.getAttribute('data-role-name'));
   if(!u.roles.length)u.roles=['地市人员'];
@@ -2137,7 +1912,7 @@ function renderRoleUserTable(users,roleId){
   const el=document.getElementById('roleUserTable');if(!el)return;
   selectedRoleUserIds.clear();
   if(!users.length){el.innerHTML='<div class="empty-state" style="padding:30px"><i class="ri-user-line"></i><p>无匹配用户</p></div>';updateRemoveBtn();return}
-  el.innerHTML='<table class="admin-table" style="margin-bottom:12px"><thead><tr><th style="width:40px"><div class="yq-check" style="width:16px;height:16px;margin:0 auto" onclick="toggleAllRoleUsers('+JSON.stringify(users.map(u=>u.id))+')"></div></th><th>姓名</th><th>所属部门</th><th>状态</th><th style="width:60px">操作</th></tr></thead><tbody>'+users.map(u=>'<tr><td style="text-align:center"><div class="yq-check" style="width:16px;height:16px;margin:0 auto" id="ruc-'+u.id+'" onclick="toggleRoleUserCheck('+u.id+')"></div></td><td style="font-weight:500">'+u.name+'</td><td>'+(u.deptName||u.org||'')+'</td><td><span style="font-size:11px;padding:2px 8px;border-radius:999px;'+(u.status==='正常'?'background:var(--green-bg);color:var(--green)':'background:var(--orange-bg);color:var(--orange)')+'">'+(u.status==='正常'?'已开通':'已停用')+'</span></td><td><a style="font-size:12px;color:var(--primary);cursor:pointer" onclick="removeSingleRoleUser('+u.id+',\''+roleId+'\')">移除</a></td></tr>').join('')+'</tbody></table><div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0"><span style="font-size:11px;color:var(--text-quaternary)">共 '+users.length+' 条</span></div>';
+  el.innerHTML='<table class="admin-table" style="margin-bottom:12px"><thead><tr><th style="width:40px"><div class="yq-check" style="width:16px;height:16px;margin:0 auto" onclick="toggleAllRoleUsers('+JSON.stringify(users.map(u=>u.id))+')"></div></th><th>姓名</th><th>所属单位</th><th>状态</th><th style="width:60px">操作</th></tr></thead><tbody>'+users.map(u=>'<tr><td style="text-align:center"><div class="yq-check" style="width:16px;height:16px;margin:0 auto" id="ruc-'+u.id+'" onclick="toggleRoleUserCheck('+u.id+')"></div></td><td style="font-weight:500">'+u.name+'</td><td>'+u.org+'</td><td><span style="font-size:11px;padding:2px 8px;border-radius:999px;'+(u.status==='正常'?'background:var(--green-bg);color:var(--green)':'background:var(--orange-bg);color:var(--orange)')+'">'+(u.status==='正常'?'已开通':'已停用')+'</span></td><td><a style="font-size:12px;color:var(--primary);cursor:pointer" onclick="removeSingleRoleUser('+u.id+',\''+roleId+'\')">移除</a></td></tr>').join('')+'</tbody></table><div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0"><span style="font-size:11px;color:var(--text-quaternary)">共 '+users.length+' 条</span></div>';
   updateRemoveBtn();
 }
 function updateRemoveBtn(){const btn=document.getElementById('btnRemoveRoleUser');if(btn)btn.style.display=selectedRoleUserIds.size>0?'inline-flex':'none'}
@@ -2179,13 +1954,14 @@ function closeModal(){document.getElementById('modalOverlay').classList.remove('
 async function loadPRD(){let md='';const ta=document.getElementById('prdMdSource');if(ta)md=ta.value;if(!md){try{const r=await fetch('PRD.md');if(r.ok)md=await r.text()}catch(e){}}if(md){document.getElementById('prdContent').innerHTML=renderMD(md);buildToc()}else document.getElementById('prdContent').innerHTML='<p style="color:var(--text-tertiary)">PRD 加载失败</p>'}
 function togglePrdPanel(){const p=document.getElementById('prdPanel');const t=document.getElementById('prdToggle');const dot=t.querySelector('.toggle-dot');p.classList.toggle('collapsed');if(p.classList.contains('collapsed')){dot.style.background='#aaa'}else{dot.style.background='var(--green)'}}
 (function(){var drag=document.getElementById('splitDrag');var panel=document.getElementById('prdPanel');var startX,startW;drag.addEventListener('mousedown',function(e){e.preventDefault();startX=e.clientX;startW=panel.offsetWidth;drag.classList.add('dragging');document.body.style.cursor='col-resize';document.body.style.userSelect='none';function onMove(e){var w=startW-(e.clientX-startX);if(w<200)w=200;if(w>window.innerWidth*0.7)w=window.innerWidth*0.7;panel.style.width=w+'px'}function onUp(){drag.classList.remove('dragging');document.body.style.cursor='';document.body.style.userSelect='';document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp)}document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',onUp)})})();
-function renderMD(md){function inlineFmt(s){return s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')}var lines=md.split('\n');var h='';var inUl=false,liOpen=false,inNestedUl=false;for(var j=0;j<lines.length;j++){var ln=lines[j],tr=ln.trim();if(!tr){if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}continue}if(/^---+$/.test(tr)){if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}h+='<hr>';continue}var hm=tr.match(/^(#{1,5})\s+(.+)$/);if(hm){if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}h+='<h'+hm[1].length+'>'+inlineFmt(hm[2])+'</h'+hm[1].length+'>';continue}if(/^\s{2,}- /.test(ln)){if(!inNestedUl)h+='<ul class="prd-nested">';inNestedUl=true;h+='<li>'+inlineFmt(tr.replace(/^- /,''))+'</li>';continue}if(/^- /.test(ln)){if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen)h+='</li>';if(!inUl){h+='<ul class="prd-list">';inUl=true}h+='<li>'+inlineFmt(tr.replace(/^- /,''));liOpen=true;continue}if(/^>\s+(.+)$/.test(tr)){if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}h+='<blockquote>'+inlineFmt(tr.replace(/^>\s+/,''))+'</blockquote>';continue}if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}h+='<p>'+inlineFmt(tr)+'</p>'}if(inNestedUl)h+='</ul>';if(liOpen)h+='</li>';if(inUl)h+='</ul>';return h}
+function renderMD(md){let h=md.replace(/^####\s+(.+)$/gm,'<h4>$1</h4>').replace(/^###\s+(.+)$/gm,'<h3>$1</h3>').replace(/^##\s+(.+)$/gm,'<h2>$1</h2>').replace(/^#\s+(.+)$/gm,'<h1>$1</h1>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/^>\s+(.+)$/gm,'<blockquote>$1</blockquote>').replace(/^---$/gm,'<hr>').replace(/^- (.+)$/gm,'<li class="ul-item">$1</li>').replace(/^(\d+)\.\s+(.+)$/gm,'<li class="ol-item">$2</li>');h=h.replace(/(<li class="ul-item">.*<\/li>\n?)+/g,m=>'<ul>'+m.replace(/ class="ul-item"/g,'')+'</ul>');h=h.replace(/(<li class="ol-item">.*<\/li>\n?)+/g,m=>'<ol>'+m.replace(/ class="ol-item"/g,'')+'</ol>');h=h.replace(/<\/blockquote>\n*<blockquote>/g,'<br>');h=h.replace(/<!--[\s\S]*?-->/g,'');return h}
 function buildToc(){const c=document.getElementById('prdContent');const t=document.getElementById('prdToc');const hs=c.querySelectorAll('h1,h2,h3,h4');t.innerHTML='<div class="prd-toc-title">PRD 目录</div>';hs.forEach((h,i)=>{h.id='ph-'+i;const a=document.createElement('a');const depth={H1:'',H2:'',H3:' sub',H4:' sub'};a.className='prd-toc-item'+(depth[h.tagName]||'');a.textContent=h.textContent;a.href='#ph-'+i;a.onclick=e=>{e.preventDefault();h.scrollIntoView({behavior:'smooth',block:'start'})};t.appendChild(a)})}
 
-window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与管理系统 产品需求文档
+window.__PRD__=document.getElementById('prdMdSource')?.value||`
+# 舆情报送与管理系统 产品需求文档
 
-> 版本：v1.2.0 | 日期：2026-04-22
-> 上一版本：v1.1.4
+> 版本：v1.1.4 | 日期：2026-04-22
+> 上一版本：v1.1.2
 > 原型文件：index.html
 
 ---
@@ -2196,14 +1972,14 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 省级宣传部门需要一套轻量化的舆情信息报送与管理工具，用于收集各地市上报的舆情事件、汇总查看、并编写舆情专报上报领导。本系统为简版，聚焦核心报送流程，去除数据分析、趋势预警等高级功能，降低使用门槛。
 
-系统采用手机号密码登录方式，实现统一身份认证与权限管控。
+系统整体对接浙政钉平台，实现统一身份认证、组织架构同步与消息推送。
 
 ### 1.2 产品目标
 
 - 为各地市宣传部提供统一的舆情上报入口，规范报送流程
 - 为舆情处提供舆情汇总查看、批量录用至报告的快捷操作
 - 提供轻量的报告编写、预览与发布能力
-- 实现组织内统一登录与权限管控
+- 通过浙政钉实现组织内统一登录与权限管控
 
 ### 1.3 用户角色与权限
 
@@ -2227,7 +2003,7 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
   - 所属组织：省委宣传部
   - 核心权限：系统运维与权限配置
   - 数据可见范围：全部
-  - 可用功能模块：全部功能 + 系统管理（用户管理、角色管理、部门管理）
+  - 可用功能模块：全部功能 + 系统管理（用户管理、角色管理）
 
 ---
 
@@ -2235,29 +2011,21 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 ### 2.1 登录方式
 
-系统提供手机号密码登录方式，登录流程如下：
+系统提供浙政钉扫码登录方式：
 
-- 用户打开系统后显示登录页
-- 输入手机号、密码和验证码完成身份认证
-- 系统校验手机号和密码匹配后，自动获取用户姓名、所属部门、角色等信息
+- 用户打开系统后显示浙政钉登录页
+- 使用浙政钉 App 扫描二维码完成身份认证
+- 系统自动从浙政钉获取用户姓名、所属单位、职务等信息
 - 根据用户在系统中的角色配置，自动进入对应权限的主界面
-- 若不填写手机号和密码，直接点击登录可进入系统（原型演示模式）
 
 ### 2.2 登录页信息展示
 
 - 左侧展示系统名称、功能简介、核心特性列表
-- 右侧为登录操作区域，包含以下字段：
-  - **手机号**：文本输入框，占位文字"请输入手机号"，限制 11 位
-  - **密码**：密码输入框，占位文字"请输入密码"
-  - **验证码**：文本输入框（限制 4 位）+ 右侧图形验证码画布
-    - 展示规则：画布显示 4 位随机字符（大小写字母+数字），配干扰线和干扰点
-    - 交互规则：点击画布刷新验证码内容
-  - **登录按钮**：点击执行登录
-- 底部显示体验提示信息
+- 右侧为登录操作区域
 
 ### 2.3 登录后初始化
 
-- 自动填充用户信息至顶部导航栏（头像取姓名首字）
+- 自动填充用户信息至顶部导航栏
 - 根据角色动态构建侧边栏导航菜单
 - 默认进入"舆情汇总"页面
 
@@ -2282,7 +2050,6 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
   - 报告管理：仅舆情处和管理员可见。地市人员无此入口
 
 - **系统管理**（仅管理员可见）
-  - 部门管理
   - 用户管理
   - 角色管理
 
@@ -2311,89 +2078,70 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 ### 4.2 统计概览
 
-页面标题下方展示 4 张统计卡片，实时反映当前筛选结果。
+页面标题下方展示统计卡片，实时反映当前筛选结果：
 
-- **取数规则**：统计基于当前筛选条件过滤后的舆情列表
-- **更新规则**：筛选条件变化时实时重新计算
+1. **上报总数**：当前筛选结果中的舆情总条数，蓝色图标
+2. **已录用**：已被录用至任意报告的舆情条数，橙色图标
+3. **本省**：来源为"本省"的舆情条数，蓝色图标
+4. **外省镜鉴**：来源为"外省镜鉴"的舆情条数，绿色图标
 
-各卡片字段：
-
-1. **上报总数**
-   - 展示规则：蓝色图标，显示数字 + "上报总数"标签
-   - 数据规则：当前筛选结果中的舆情总条数
-
-2. **已录用**
-   - 展示规则：橙色图标，显示数字 + "已录用"标签
-   - 数据规则：当前筛选结果中已被录用至任意报告的舆情条数（即录用状态为"已录用"）
-
-3. **本省**
-   - 展示规则：蓝色图标，显示数字 + "本省"标签
-   - 数据规则：当前筛选结果中来源类型为"本省"的舆情条数
-
-4. **外省镜鉴**
-   - 展示规则：绿色图标，显示数字 + "外省镜鉴"标签
-   - 数据规则：当前筛选结果中来源类型为"外省镜鉴"的舆情条数
+> 统计数据随筛选条件变化实时更新。
 
 ### 4.3 搜索与筛选
 
 #### 4.3.1 搜索框
 
-- 展示规则：文本输入框，占位文字"搜索标题、地域、单位、内容..."
-- 交互规则：输入后实时过滤列表，清空搜索框恢复全部数据
-- 数据筛选规则：按舆情标题、地域、上报单位、内容摘要四个字段进行模糊匹配（包含即命中），取并集
+- 占位文字："搜索标题、地域、单位、内容..."
+- 支持按以下字段进行模糊搜索：舆情标题、地域、上报单位、内容摘要
+- 输入后实时过滤列表，无需手动触发搜索
+- 清空搜索框恢复全部数据
 
 #### 4.3.2 时间范围筛选
 
-- 展示规则：两个日期选择器，组成"起始日期 至 结束日期"
-- 交互规则：选择后立即过滤，可单独设置起始或结束，另一端不限
-- 数据筛选规则：按舆情的上报时间字段进行范围匹配，仅显示上报时间在起止日期之间的舆情
+- 两个日期选择器，组成"起始日期 至 结束日期"的范围筛选
+- 选择后按舆情的上报日期进行过滤，仅显示范围内的舆情
+- 可单独设置起始或结束，另一端不限
 
 #### 4.3.3 来源类型筛选
 
-- 展示规则：下拉选择框
-- 交互规则：选择后立即过滤列表
-- 数据筛选规则：
-  - 默认值："全部来源"（不限）
-  - 选项："全部来源"、"本省"、"外省镜鉴"
-  - 选中后按舆情的来源类型字段精确匹配
+- 下拉选择框，选项：
+  - 全部来源（默认）
+  - 本省
+  - 外省镜鉴
+- 选择后立即过滤列表
 
 #### 4.3.4 单位类型筛选
 
-- 展示规则：下拉选择框
-- 交互规则：选择后立即过滤列表
-- 数据筛选规则：
-  - 默认值："全部单位"（不限）
-  - 选项及匹配方式：
-    - "省级"：上报单位包含"省委"或"省网信"
-    - "地市"：上报单位包含"市宣传部"
+- 下拉选择框，选项：
+  - 全部单位（默认）
+  - 省级：筛选上报单位包含"省委""省网信"的舆情
+  - 地市：筛选上报单位包含"市宣传部"的舆情
+- 选择后立即过滤列表
 
 #### 4.3.5 录用状态筛选
 
-- 展示规则：下拉选择框
-- 交互规则：选择后立即过滤列表
-- 数据筛选规则：
-  - 默认值："录用状态"（不限）
-  - 选项及匹配方式：
-    - "已录用"：舆情已被至少一个报告收录
-    - "未录用"：舆情未被任何报告收录
+- 下拉选择框，选项：
+  - 录用状态（默认，不限）
+  - 已录用：仅显示已被录用至任意报告的舆情
+  - 未录用：仅显示尚未被任何报告收录的舆情
+- 选择后立即过滤列表
 
 #### 4.3.6 地域筛选
 
-- 展示规则：二级级联控件（省→市），第一级省份下拉，第二级城市下拉（选择省份后显示）
-- 交互规则：选择后立即过滤，支持仅选省份或选省份+城市
-- 数据筛选规则：
-  - 第一级含"全部省份"选项，选具体省份后按舆情地域的省份字段精确匹配
-  - 第二级含"全部城市"选项，选具体城市后按舆情地域的城市字段精确匹配
-  - 两级均选时取交集
+- 二级级联控件（省→市），精确到市
+- 第一级：省份下拉，含"全部省份"选项，支持全国所有省级行政区
+- 第二级：城市下拉，默认隐藏，选择省份后动态显示对应地级市列表，含"全部城市"选项
+- 仅选省份：筛选该省份下所有地市的舆情
+- 选省份+城市：精确筛选该城市的舆情
+- 选择后立即过滤列表
 
 #### 4.3.7 舆情分类筛选
 
-- 展示规则：下拉选择框
-- 交互规则：选择后立即过滤列表
-- 数据筛选规则：
-  - 默认值："全部分类"（不限）
-  - 选项："刑事案件"、"治安事件"、"交通事故"、"执法不当及违纪违法"、"非正常死亡或失踪"、"其他"
-  - 选中后按舆情的分类字段精确匹配，未打标分类的舆情不显示
+- 下拉选择框，选项：
+  - 全部分类（默认）
+  - 各分类列表（刑事案件、治安事件、交通事故、执法不当及违纪违法、非正常死亡或失踪、其他）
+- 选择后仅显示已打标为该分类的舆情，未打标的不显示
+- 选择后立即过滤列表
 
 #### 4.3.8 筛选组合规则
 
@@ -2403,78 +2151,81 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 ### 4.4 操作栏
 
 - **全选按钮**（仅舆情处/管理员可见）
-  - 展示规则：按钮文字"全选"/"取消全选"
-  - 交互规则：点击后勾选/取消当前筛选结果中的所有舆情，仅对当前可见列表生效
-  - 数据规则：不包含被筛选条件隐藏的条目
+  - 点击后勾选当前筛选结果中的所有舆情
+  - 再次点击取消全选
+  - 仅对当前可见列表生效，不包含被筛选条件隐藏的条目
 
 - **信息计数**
-  - 展示规则：文字"共 N 条上报信息"
-  - 数据规则：N = 当前筛选结果的总条数，随筛选条件变化实时更新
+  - 显示当前筛选结果的总条数，格式："共 N 条上报信息"
+  - 随筛选条件变化实时更新
 
 ### 4.5 舆情列表
-
-- **取数规则**：从舆情数据集中读取。地市人员仅读取上报单位与本单位匹配的记录，舆情处和管理员读取全部记录
-- **数据筛选规则**：在角色数据范围基础上，叠加 4.3 中所有筛选条件，取交集
-- **数据排序规则**：默认按上报时间倒序排列（最新在上）
 
 #### 4.5.1 列表项展示字段
 
 每条舆情以卡片形式展示，从左到右包含：
 
 1. **勾选框**（仅舆情处/管理员可见）
-   - 展示规则：圆形复选框
-   - 交互规则：点击切换选中/取消，选中后卡片左侧出现蓝色边框，背景变为浅蓝色
+   - 圆形复选框，点击切换选中/取消
+   - 选中后卡片左侧出现蓝色边框，背景变为浅蓝色
 
 2. **舆情元信息行**
-   - **舆情编号**：展示规则：蓝色文字。数据规则：系统自动生成，格式 YQ-YYYYMMDD-NNN（NNN 为当日序号，从 001 递增）
-   - **来源类型标签**：展示规则：本省为蓝色浅底标签，外省镜鉴为橙色浅底标签。数据规则：取舆情的来源类型字段
-   - **地域**：展示规则：地市名称，配地理位置图标。数据规则：取舆情的地域字段（省+市拼接）
-   - **分类标签**（已打标时显示）：展示规则：绿色浅底标签。数据规则：取舆情的分类字段，未打标不显示
-   - **录用状态标签**：展示规则：已录用显示绿色浅底标签，未录用显示灰色浅底标签。数据规则：判断该舆情是否被任意报告收录
+   - 舆情编号：系统自动生成，格式 YQ-YYYYMMDD-NNN，蓝色文字
+   - 来源类型标签：
+     - 本省：蓝色浅底标签
+     - 外省镜鉴：橙色浅底标签
+   - 地域：地市名称，配地理位置图标
+   - 分类标签（已打标时显示）：绿色浅底标签，显示舆情分类名称
+   - 录用状态标签：
+     - 已录用：绿色浅底标签
+     - 未录用：灰色浅底标签
 
 3. **舆情标题**
-   - 展示规则：单行显示，超出部分省略号
-   - 交互规则：点击进入舆情详情页
+   - 单行显示，超出部分省略号
+   - 点击可进入舆情详情页
 
 4. **底部信息行**
-   - **上报单位**：展示规则：配建筑图标。数据规则：取舆情的上报单位字段
-   - **上报时间**：展示规则：格式 YYYY-MM-DD HH:mm，配时钟图标。数据规则：取舆情的上报时间字段
+   - 上报单位：配建筑图标
+   - 上报时间：格式 YYYY-MM-DD HH:mm，配时钟图标
 
-#### 4.5.2 空状态
+#### 4.5.2 列表排序
 
-- 无数据时展示"未找到匹配的舆情信息"提示，配大号图标辅助说明
+- 默认按上报时间倒序排列（最新在上）
+
+#### 4.5.3 空状态
+
+- 无数据时展示"未找到匹配的舆情信息"提示
+- 配大号图标辅助说明
 
 ### 4.6 舆情分类打标
 
-拥有权限的用户（舆情处和管理员）可对舆情进行分类打标。
+拥有权限的用户（舆情处和管理员）可对舆情进行分类打标，用于标记舆情类型。
 
-- 展示规则：每条舆情卡片右侧显示打标按钮（标签图标）
-- 交互规则：
-  1. 点击后弹出分类选择弹窗，以单选列表形式展示分类选项
-  2. 已有分类的舆情默认选中当前分类
-  3. 选择后点击"确认"完成打标
-  4. 支持重复打标覆盖原有分类
-- 数据规则：
-  - 分类选项固定为："刑事案件"、"治安事件"、"交通事故"、"执法不当及违纪违法"、"非正常死亡或失踪"、"其他"
-  - 确认后将选中的分类写入该舆情的分类字段
-  - 打标后舆情卡片元信息行即时显示绿色分类标签
+1. 每条舆情卡片右侧显示打标按钮（标签图标）
+2. 点击后弹出分类选择弹窗，以单选列表形式展示以下分类：
+   - 刑事案件
+   - 治安事件
+   - 交通事故
+   - 执法不当及违纪违法
+   - 非正常死亡或失踪
+   - 其他
+3. 已有分类的舆情默认选中当前分类
+4. 选择后点击"确认"完成打标
+5. 打标后舆情卡片的元信息行显示绿色分类标签
+6. 支持重复打标覆盖原有分类
 
 ### 4.7 录用至报告交互流程
 
 > 仅舆情处和管理员可操作
 
-- 交互规则：
-  1. 勾选一条或多条舆情（通过列表勾选框或全选按钮）
-  2. "录用至报告"按钮从灰色变为蓝色可点击态
-  3. 点击后弹出报告选择弹窗
-  4. 用户选择目标报告后点击"确认录用"
-  5. 系统将选中舆情添加到目标报告的舆情列表中（已存在的不会重复添加）
-  6. 弹窗关闭，显示成功提示
-  7. 自动跳转至该报告的编辑页面
-- 数据规则（弹窗报告列表）：
-  - 取数规则：从报告数据集中读取所有状态为"草稿"的报告
-  - 数据排序规则：按创建时间倒序排列
-  - 每项展示：报告编号 + 报告标题
+1. 勾选一条或多条舆情（通过列表勾选框或全选按钮）
+2. "录用至报告"按钮从灰色变为蓝色可点击态
+3. 点击后弹出报告选择弹窗
+4. 弹窗展示所有状态为"草稿"的报告列表，每项显示报告标题和编号
+5. 用户选择目标报告后点击"确认录用"
+6. 系统将选中舆情添加到目标报告的舆情列表中（已存在的不会重复添加）
+7. 弹窗关闭，显示成功提示
+8. 自动跳转至该报告的编辑页面
 
 ---
 
@@ -2488,67 +2239,80 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 ### 5.2 多条上报机制
 
-- 展示规则：页面默认展示 1 条舆情填写表单，每条为独立卡片，标题显示"第 N 条舆情"
-- 交互规则：
-  - 点击"添加一条舆情"按钮在下方新增一条空白表单
-  - 第 1 条不显示移除按钮，第 2 条及以后每条右上角显示移除按钮
-  - 点击移除按钮后该卡片以滑出动画消失
-  - 页面右上角实时显示当前表单总数："共 N 条"
-  - 底部提交按钮同步显示条数："提交上报（N 条）"
+- 页面默认展示 1 条舆情填写表单
+- 点击"添加一条舆情"按钮可在下方新增一条空白表单
+- 每条舆情为独立的表单卡片，卡片标题显示"第 N 条舆情"
+- 第 1 条舆情不显示移除按钮，第 2 条及以后每条右上角显示移除按钮
+- 点击移除按钮后，该卡片以滑出动画消失
+- 页面右上角实时显示当前表单总数："共 N 条"
+- 底部提交按钮同步显示条数："提交上报（N 条）"
 
 ### 5.3 单条表单字段
 
 每条舆情表单包含以下字段：
 
 1. **上报时间**
-   - 展示规则：日期时间选择器，精确到分钟
-   - 交互规则：必填，未填时边框变红
-   - 数据规则：写入舆情记录的上报时间字段
+   - 必填
+   - 日期时间选择器，精确到分钟
 
 2. **舆情地域**
-   - 展示规则：二级级联控件（省→市），第一级省份下拉，第二级城市下拉（选择省份后启用）
-   - 交互规则：必填，选择后自动触发"报送单位"字段的填充
-   - 数据规则：写入舆情记录的地域字段（省+市）
+   - 必填
+   - 二级级联控件（省→市），精确到市
+   - 第一级：省份下拉，支持全国所有省级行政区
+   - 第二级：城市下拉，默认禁用，选择省份后动态启用并填充对应地级市
+   - 选择后自动触发"报送单位"字段的填充
 
 3. **报送单位**
-   - 展示规则：下拉选择框，默认选中当前用户所属单位
-   - 交互规则：非必填，用户可从下拉列表中手动切换报送单位
-   - 取数规则：下拉选项取数来源为部门树中所有末级部门（地市宣传部）
+   - 非必填（系统自动填充）
+   - 取数规则：根据选择的"舆情地域"，自动匹配对应的地市宣传部名称
+     - 浙江/杭州 → 杭州市宣传部
+     - 浙江/宁波 → 宁波市宣传部
+     - 浙江/温州 → 温州市宣传部
+     - 浙江/绍兴 → 绍兴市宣传部
+     - 浙江/台州 → 台州市宣传部
+     - 浙江/嘉兴 → 嘉兴市宣传部
+     - 浙江/湖州 → 湖州市宣传部
+     - 浙江/金华 → 金华市宣传部
+     - 浙江/衢州 → 衢州市宣传部
+     - 浙江/丽水 → 丽水市宣传部
+     - 浙江/舟山 → 舟山市宣传部
+   - 字段为只读状态，用户不可手动修改
 
 4. **标题**
-   - 展示规则：文本输入框，占位文字"请输入舆情标题"
-   - 交互规则：必填，未填时边框变红
-   - 数据规则：写入舆情记录的标题字段
+   - 必填
+   - 文本输入框
+   - 占位文字："请输入舆情标题"
 
 5. **内容**
-   - 展示规则：多行文本输入框，占位文字"请详细描述舆情事件经过、传播情况、影响范围等..."
-   - 交互规则：必填，未填时边框变红
-   - 数据规则：写入舆情记录的内容摘要字段
+   - 必填
+   - 多行文本输入框
+   - 占位文字："请详细描述舆情事件经过、传播情况、影响范围等..."
+
+
 
 ### 5.4 操作按钮
 
 位于所有表单卡片下方：
 
 1. **添加一条舆情**
-   - 展示规则：轮廓样式按钮，带加号图标
-   - 交互规则：点击后在最下方新增一条空白表单
+   - 轮廓样式按钮，带加号图标
+   - 点击后在最下方新增一条空白表单
 
 2. **重置**
-   - 展示规则：轮廓样式按钮，带刷新图标
-   - 交互规则：点击后清空所有已填写的表单卡片，恢复为仅 1 条空白表单的初始状态
+   - 轮廓样式按钮，带刷新图标
+   - 点击后清空所有已填写的表单卡片
+   - 恢复为仅 1 条空白表单的初始状态
 
 3. **提交上报（N 条）**
-   - 展示规则：主按钮样式，带发送图标，N 随当前表单数量动态变化
-   - 交互规则：
-     - 点击后逐一校验所有表单中的必填字段（上报时间、地域、标题、内容）
-     - 未填写的必填字段边框变红，弹出错误提示指明需完善第几条表单
-     - 校验通过后弹出成功提示，显示实际上报条数，延迟后自动跳转回舆情汇总页
-   - 数据规则：
-     - 舆情编号生成规则：格式 YQ-YYYYMMDD-NNN，YYYYMMDD 取上报日期，NNN 为当日序号（从 001 递增）
-     - 来源类型：根据上报用户所属单位自动判定（地市人员上报的为"本省"）
-     - 录用状态：默认"未录用"
-     - 分类字段：默认为空（待后续打标）
-     - 写入舆情数据集
+   - 主按钮样式，带发送图标
+   - N 随当前表单数量动态变化
+   - 点击后执行校验：
+     - 逐一检查所有表单中的必填字段（上报时间、地域、标题、内容）
+     - 未填写的必填字段边框变红
+     - 校验不通过时弹出错误提示，指明需完善第几条表单
+   - 校验通过后：
+     - 弹出成功提示，显示实际上报条数
+     - 延迟后自动跳转回舆情汇总页
 
 ---
 
@@ -2558,8 +2322,6 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 点击舆情列表中的标题，进入该条舆情的完整信息展示页。
 
-- 取数规则：根据当前点击的舆情编号，从舆情数据集中读取该条记录的全部字段
-
 ### 6.2 页面顶部
 
 - "返回列表"按钮，点击回到舆情汇总页
@@ -2567,30 +2329,29 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 ### 6.3 信息展示
 
 **元信息行**
-- 舆情编号：蓝色文字，取舆情编号字段
-- 来源类型标签：本省/外省镜鉴，取来源类型字段
-- 地域：配图标，取地域字段
+- 舆情编号（蓝色文字）
+- 来源类型标签（本省/外省镜鉴，颜色区分）
+- 地域（配图标）
 
 **舆情标题**
-- 大号加粗显示，取标题字段
+- 大号加粗显示
 
 **舆情内容区**
 - "舆情内容"小标题
-- 完整摘要内容，灰色背景区域展示，取内容摘要字段
+- 完整摘要内容，灰色背景区域展示
 
 **基本信息区**
-- 上报单位：取上报单位字段
-- 上报时间：取上报时间字段，格式 YYYY-MM-DD HH:mm
+- 上报单位：显示字段值
+- 上报时间：显示字段值
 
 ### 6.4 操作按钮
 
 - **"录用至报告"按钮**（仅舆情处/管理员可见）
-  - 展示规则：蓝色主按钮
-  - 交互规则：点击后触发录用流程（自动勾选当前这一条，弹出报告选择弹窗），弹窗逻辑同 4.7
+  - 蓝色主按钮
+  - 点击后触发录用流程（自动勾选当前这一条，弹出报告选择弹窗）
 
 - **"返回列表"按钮**
-  - 展示规则：轮廓样式，带左箭头图标
-  - 交互规则：点击回到舆情汇总页
+  - 轮廓样式，带左箭头图标
 
 ---
 
@@ -2604,10 +2365,6 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 ### 7.2 报告列表
 
-- 取数规则：从报告数据集中读取所有报告记录
-- 数据筛选规则：舆情处和管理员可查看全部报告
-- 数据排序规则：按创建时间倒序排列（最新在上）
-
 #### 7.2.1 页面标题区
 
 - 标题"报告管理"
@@ -2617,21 +2374,14 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 每条报告以卡片形式展示：
 
-1. **报告编号**
-   - 展示规则：蓝色文字
-   - 数据规则：系统自动生成，格式 BG-YYYYMMDD-NNN（NNN 为当日序号，从 001 递增）
-
-2. **报告状态标签**
-   - 展示规则：草稿为灰色标签，已发布为绿色标签
-   - 数据规则：取报告的状态字段
-
-3. **报告标题**
-   - 展示规则：单行显示
-   - 数据规则：取报告的标题字段
-
-4. **底部信息**
-   - 创建时间：展示规则：日期时间格式。数据规则：取报告的创建时间字段
-   - 包含舆情条数：展示规则：显示"N 条舆情"。数据规则：该报告收录的舆情总数
+- **报告编号**：系统自动生成，格式 BG-YYYYMMDD-NNN，蓝色文字
+- **报告状态标签**：
+  - 草稿：灰色标签
+  - 已发布：绿色标签
+- **报告标题**
+- **底部信息**：
+  - 创建时间
+  - 包含舆情条数
 
 #### 7.2.3 操作按钮显示规则
 
@@ -2647,14 +2397,11 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 #### 7.2.4 新建报告
 
-- 交互规则：点击"新建报告"按钮，创建后立即进入报告编辑页
-- 数据规则：
-  - 报告编号：系统自动生成，格式 BG-YYYYMMDD-NNN
-  - 报告标题：默认为空，由用户在编辑页手动输入
-  - 状态：默认"草稿"
-  - 舆情列表：默认为空
-  - 创建时间：取当前时间
-  - 写入报告数据集
+- 点击"新建报告"按钮
+- 系统自动生成报告编号
+- 报告标题默认取当前日期，格式："YYYY年M月D日舆情信息专报"
+- 状态默认为"草稿"
+- 创建后立即进入报告编辑页
 
 ### 7.3 报告预览
 
@@ -2674,9 +2421,6 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 #### 7.3.3 预览内容格式（公文格式）
 
-- 取数规则：根据当前报告 ID 从报告数据集中读取报告信息及其收录的舆情列表
-- 数据排序规则：先展示"本省"来源的舆情，再展示"外省镜鉴"来源的舆情；各来源内部按舆情编号正序排列
-
 预览以正式公文样式展示，结构如下：
 
 1. **标题区**
@@ -2687,7 +2431,7 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 2. **【内容提要】**（目录样式，小号字体）
    - 一、省内舆情：列出所有"本省"类型舆情的序号 + 标题
    - 二、外省舆情镜鉴：列出所有"外省镜鉴"类型舆情的序号 + 标题
-   - 数据规则：序号按各分组内顺序从 1 递增；若无外省舆情则不显示外省子板块
+   - 若无外省舆情则不显示外省子板块
 
 3. **一、本省舆情**
    - 每条"本省"舆情独立一段：
@@ -2729,8 +2473,8 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 - **报告日期**：日期选择器
 
 统计标签：
-- "本省: N"（蓝色浅底标签）：数据规则 = 当前报告中来源为"本省"的舆情条数
-- "外省: N"（橙色浅底标签）：数据规则 = 当前报告中来源为"外省镜鉴"的舆情条数
+- "本省: N"（蓝色浅底标签）：统计当前报告中本省舆情条数
+- "外省: N"（橙色浅底标签）：统计当前外省镜鉴条数
 
 舆情列表分为两个区块（每个区块标题带蓝色竖线装饰）：
 
@@ -2759,7 +2503,6 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 - **修改标题**：在卡片中的标题输入框直接编辑，右侧预览面板同步更新
 - **修改正文**：在"正文内容"文本区直接编辑
-- **修改建议意见**：在"建议意见"文本区直接编辑
 - **删除舆情**：点击卡片右上角的删除按钮，该条目从报告中移除，列表和预览同步更新
 - **添加舆情**：
   1. 点击"选取舆情"按钮
@@ -2768,22 +2511,22 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
   4. 支持多选（复选框）
   5. 点击"确认"后，选中舆情添加到报告的舆情列表中
   6. 已存在的舆情不会重复添加
-  - 数据规则（弹窗舆情列表）：
-    - 取数规则：从舆情数据集中读取所有未被当前报告收录的舆情
-    - 数据排序规则：按上报时间倒序排列
 
 #### 7.4.4 保存与发布
 
 - **保存草稿**
-  - 交互规则：将当前编辑内容保存，状态保持"草稿"，弹出成功提示
-  - 数据规则：将报告标题、报告日期、舆情列表（含修改后的标题/正文/建议意见）写入报告数据集
+  - 将当前编辑内容保存，状态保持"草稿"
+  - 弹出成功提示
 
 - **发布**
-  - 交互规则：校验报告标题是否为空，为空则提示错误；校验通过后弹出成功提示，自动跳转回报告管理列表
-  - 数据规则：报告状态字段更新为"已发布"
+  - 校验报告标题是否为空，为空则提示错误
+  - 校验通过后，报告状态变为"已发布"
+  - 弹出成功提示
+  - 自动跳转回报告管理列表
 
 - **预览**
-  - 交互规则：先自动保存草稿，跳转至公文格式预览页
+  - 先自动保存草稿
+  - 跳转至公文格式预览页
 
 ---
 
@@ -2795,7 +2538,7 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 #### 8.1.1 功能说明
 
-管理系统中的用户账号。支持新增、编辑用户，角色分配与状态管理。
+管理系统中的用户账号。支持角色分配与状态管理。
 
 #### 8.1.2 页面标题区
 
@@ -2804,71 +2547,35 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 #### 8.1.3 用户列表
 
-- 取数规则：从用户数据集中读取所有用户记录
-- 数据筛选规则：默认展示全部用户，无额外筛选
-- 数据排序规则：按用户 ID 正序排列
-
 以表格形式展示所有用户，列字段如下：
 
 1. **姓名**
-   - 展示规则：普通文字
-   - 数据规则：取用户的姓名字段
+   - 取值：浙政钉同步的用户真实姓名
 
-2. **手机号**
-   - 展示规则：普通文字
-   - 数据规则：取用户的手机号字段
+2. **所属单位**
+   - 取值：浙政钉同步的组织架构信息
+   - 格式：XX市宣传部 / 省委宣传部
 
-3. **所属部门**
-   - 展示规则：普通文字，多个部门以分号（；）分隔展示
-   - 数据规则：取用户关联的部门名称列表
+3. **角色**
+   - 取值：用户被分配的多个角色名称，以分号（；）分隔展示
 
-4. **角色**
-   - 展示规则：多个角色名称以分号（；）分隔展示
-   - 数据规则：取用户被分配的角色名称列表
+4. **状态**
+   - 取值：正常 / 停用
+   - 交互方式：滑动开关，点击切换启用/停用
+   - 切换后立即生效，显示成功提示
+   - 显示规则：启用显示绿色圆点+绿色文字"正常"，停用显示灰色圆点+灰色文字"停用"
 
-5. **状态**
-   - 展示规则：滑动开关，启用显示绿色圆点+绿色文字"正常"，停用显示灰色圆点+灰色文字"停用"
-   - 交互规则：点击切换启用/停用，切换后立即生效，显示成功提示
-   - 数据规则：取用户的状态字段（"正常"或"停用"）
-
-6. **操作**
-   - 展示规则："编辑"按钮（蓝色小按钮）
-   - 交互规则：点击弹出编辑弹窗，修改用户姓名、手机号、所属部门和角色分配
+5. **操作**
+   - "编辑"按钮：弹出编辑弹窗，修改用户所属单位和角色分配
 
 #### 8.1.4 新增用户
 
-- 交互规则：
-  1. 点击"新增用户"按钮弹出弹窗
-  2. 填写表单字段（见下方）
-  3. 校验通过后确认添加
-- 弹窗表单字段：
-  - **姓名**：文本输入框，必填
-  - **手机号**：文本输入框，必填，校验 11 位格式，不可与已有用户重复
-  - **密码**：密码输入框，必填，至少 8 个字符，必须包含大写字母、小写字母、数字、符号（!@#$%^&*?）
-  - **确认密码**：密码输入框，必填，需与密码一致
-  - **所属部门**：复选框多选，至少选择一个
-    - 数据规则：取数来源为部门树中所有末级部门，选项以"省 / 市 / 县"路径形式展示
-  - **角色**：复选框多选，至少选择一个
-- 数据规则：
-  - 确认后新增到用户数据集
-  - 用户 ID：自动生成
-  - 状态：默认"正常"
-  - 密码：取用户填写的密码值
-  - 同时在每个选中部门的人员列表中添加该用户
-
-#### 8.1.5 编辑用户
-
-- 交互规则：
-  1. 点击用户列表中的"编辑"按钮弹出弹窗
-  2. 修改表单字段后保存
-- 弹窗表单字段：
-  - **姓名**：文本输入框，预填当前姓名
-  - **手机号**：文本输入框，预填当前手机号
-  - **重置密码**：密码输入框，非必填
-    - 展示规则：占位文字"留空则不修改密码"，下方灰色提示"留空表示不修改密码，填写需至少8位且包含大写、小写、数字、符号"
-    - 交互规则：留空则不修改密码，填写则校验至少 8 位且包含大写字母、小写字母、数字、符号（!@#$%^&*?）
-  - **所属部门**：复选框多选，预选当前已关联的部门
-  - **角色**：复选框多选，预选当前角色
+- 点击"新增用户"按钮弹出弹窗
+- 弹窗展示组织树中的可选用户列表（按省分组，仅展示未在系统中创建账号的人员），以单选方式选择
+- 角色分配区域支持多选（复选框），可同时分配多个角色
+- 校验规则：必须选择一个用户且至少分配一个角色
+- 确认后用户添加到列表，状态默认为"正常"
+- 若选择的用户已在系统中存在，则为其追加角色
 
 ### 8.2 角色管理
 
@@ -2880,11 +2587,7 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 页面采用左右分栏布局：
 
-**左栏 — 角色列表**
-
-- 取数规则：从角色数据集中读取所有角色
-- 数据筛选规则：搜索框支持按角色名称和描述模糊匹配
-- 数据排序规则：按角色 ID 正序排列
+**左栏 — 角色列表（240px 固定宽度）**
 
 - 顶部区域：
   - 标题"角色列表"
@@ -2905,12 +2608,12 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
    - 角色描述：文本输入框
 
 2. **功能权限分配**标签页
-   - 展示规则：以树形结构展示系统功能模块及子权限，每个节点前有复选框
-   - 交互规则：
-     - 父节点勾选：子节点全部勾选
-     - 子节点全部勾选：父节点自动勾选
-     - 子节点部分勾选：父节点显示半选状态（横线图标）
-     - 底部"保存"按钮保存权限配置
+   - 以树形结构展示系统功能模块及子权限
+   - 每个节点前有复选框
+   - 父节点勾选：子节点全部勾选
+   - 子节点全部勾选：父节点自动勾选
+   - 子节点部分勾选：父节点显示半选状态（横线图标）
+   - 底部"保存"按钮
    - 权限树结构：
      - 舆情汇总：查看本单位舆情、查看全部舆情、录用至报告、舆情分类打标
      - 舆情上报：上报舆情信息
@@ -2918,17 +2621,14 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
      - 系统管理：用户管理、角色管理、部门管理
 
 3. **用户管理**标签页
-   - 取数规则：从用户数据集中读取属于当前角色的用户列表
-   - 数据筛选规则：搜索框支持按姓名、所属部门模糊匹配
-   - 数据排序规则：按用户 ID 正序排列
    - 顶部操作区：
      - 左侧："添加用户"按钮（蓝色小按钮）：弹出弹窗，多选未属于当前角色的用户，确认后加入当前角色
      - 左侧："移除用户"按钮（轮廓小按钮）：勾选用户后出现，点击后弹出确认弹窗，批量移除选中用户
-     - 右侧：搜索框
+     - 右侧：搜索框，支持按姓名、所属单位模糊搜索
    - 用户列表以表格形式展示，列字段：
      - 勾选框：支持单选和全选，选中后"移除用户"按钮出现
      - 姓名
-     - 所属部门
+     - 所属单位
      - 状态标签：已开通（绿色）、已停用（橙色）
      - 操作："移除"链接，点击弹出确认弹窗后移除单个用户
    - 底部显示用户总数
@@ -2936,13 +2636,15 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 #### 8.2.3 新增角色
 
-- 交互规则：点击左栏"新增"按钮弹出弹窗，填写角色名称（必填）和角色描述，确认后添加
-- 数据规则：新增到角色数据集，权限默认为空
+- 点击左栏"新增"按钮弹出弹窗
+- 填写角色名称（必填）和角色描述
+- 确认后角色添加到列表，权限默认为空
 
 #### 8.2.4 删除角色
 
-- 交互规则：鼠标悬停角色项时显示删除按钮，点击后弹出确认弹窗
-- 数据规则：从角色数据集中删除该角色。系统至少保留一个角色，不可全部删除
+- 鼠标悬停角色项时显示删除按钮
+- 点击后弹出确认弹窗
+- 系统至少保留一个角色，不可全部删除
 
 #### 8.2.5 预置角色权限配置
 
@@ -2958,93 +2660,31 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
    - 描述：系统运维管理员
    - 权限：全部功能权限
 
-### 8.3 部门管理
-
-#### 8.3.1 功能说明
-
-管理系统的组织架构。管理员可手动创建、编辑、删除部门层级结构，部门数据作为用户管理中"所属部门"复选框选项的数据源，也作为角色管理中"添加用户"弹窗的人员数据源。
-
-- 取数规则：从部门数据集中读取完整的树形结构数据
-
-#### 8.3.2 页面标题区
-
-- 标题"部门管理"
-- 右侧"新增部门"按钮（蓝色小按钮）：点击后弹窗填写部门名称，确认后添加到组织树顶层
-
-#### 8.3.3 统计概览
-
-无统计概览卡片。
-
-#### 8.3.4 组织树展示
-
-以可展开/折叠的树形结构展示组织架构，最多支持两级层级，支持动态增删改：
-
-- 展示规则：
-  - 第一级：如"浙江省""杭州市"，左侧文件夹图标，展开后显示下属部门
-  - 第二级：如"杭州市宣传部""萧山区宣传部"，为末级节点，直接展示该部门下的人员
-  - 不支持在第二级下继续添加子部门
-
-每个层级节点展示：
-
-- 展开/折叠箭头（仅第一级节点）
-- 节点名称
-- 操作按钮组：
-  - "添加部门"图标按钮：仅第一级节点显示，点击后弹窗填写子部门名称，确认后在该节点下新增子部门
-  - "编辑"图标按钮：点击后弹窗修改部门名称
-  - "删除"图标按钮：点击后弹出二次确认弹窗，确认后删除该部门及其子部门
-
-末级节点展示：
-
-- 部门名称（配建筑图标）
-- 操作按钮组（编辑、删除）
-- 人员列表：每人以头像胶囊形式展示（头像首字 + 姓名），停用人员标注"(停用)"
-
-#### 8.3.5 部门操作规则
-
-- **新增部门**：
-  1. 点击页面标题区"新增部门"按钮
-  2. 弹窗填写部门名称（必填）
-  3. 确认后添加到部门数据集顶层，自动生成唯一 ID
-
-- **添加子部门**：
-  1. 点击任意节点上的"添加部门"图标按钮
-  2. 弹窗填写子部门名称（必填）
-  3. 确认后添加到该节点的子节点列表中，自动生成唯一 ID
-  4. 支持在任意层级节点下添加子部门，不限层级深度
-
-- **编辑部门**：
-  1. 点击节点上的"编辑"图标按钮
-  2. 弹窗显示当前部门名称，可修改
-  3. 确认后更新部门数据集中的部门名称
-
-- **删除部门**：
-  1. 点击节点上的"删除"图标按钮
-  2. 弹出二次确认弹窗，提示该部门下的子部门和人员将一并移除
-  3. 确认后从部门数据集中删除该部门及其所有子部门
-
-#### 8.3.6 数据使用场景
-
-- **新增用户**弹窗中的"所属部门"复选框选项：取数来源为部门数据集中所有末级部门，选项以路径形式展示
-- **编辑用户**弹窗中的"所属部门"复选框选项：取数来源同上
-- **角色管理-添加用户**弹窗中的可选人员列表：取数来源为部门数据集中所有人员，按省市分组展示，每条显示姓名头像 + 姓名 + 所属部门路径
-
 ---
 
-## 9. 系统配置
+## 9. 浙政钉对接
 
-### 9.1 登录认证
+### 9.1 统一身份认证
 
-- 系统采用手机号+密码登录方式
+- 登录页提供浙政钉扫码登录入口
+- 用户使用浙政钉 App 扫码后，系统自动完成身份验证
+- 首次登录的用户自动创建系统账号，默认角色为"地市人员"
+
+### 9.2 组织架构同步
+
+- 定期从浙政钉同步组织架构信息
+- 用户所属单位字段自动取浙政钉中的部门信息
+- 用户姓名自动取浙政钉中的真实姓名
+
+### 9.3 信息自动填充
+
 - 登录后用户信息自动填充至系统各处（侧边栏、顶部导航栏）
+- 上报表单中"报送单位"字段根据地域选择自动匹配对应单位
 
-### 9.2 信息自动填充
+### 9.4 消息通知
 
-- 用户头像自动取姓名首字
-
-### 9.3 消息通知（预留）
-
-- 舆情上报成功后，可配置消息通知至相关人员
-- 报告发布后，可配置消息通知至相关领导
+- 舆情上报成功后，可配置浙政钉消息通知至相关人员
+- 报告发布后，可配置浙政钉消息通知至相关领导
 
 ---
 
@@ -3058,7 +2698,7 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 ### 10.2 确认弹窗
 
-- 用于不可逆操作的二次确认（如删除报告、删除部门）
+- 用于不可逆操作的二次确认（如删除报告）
 - 包含标题、说明文字、"取消"和"确认"两个按钮
 - 点击遮罩层可关闭弹窗
 - 操作按钮右对齐，确认按钮在右侧
@@ -3068,6 +2708,7 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 - 侧边栏导航点击切换页面，当前激活项以蓝色背景高亮
 - 顶部导航栏标题随页面切换同步更新
 - 页面内容区滚动位置自动回到顶部
+
 `;
 
 /* ===== Init ===== */
@@ -3104,7 +2745,6 @@ function showUpdateHistory(){
   }
   showModal('更新记录',content,'<button class="btn btn-primary" onclick="closeModal()">关闭</button>');
 }
-drawCaptcha();
 </script>
 </body>
 </html>
