@@ -17,6 +17,8 @@
       "47e1a0e2e92fd65b2eab47d601152da5ec6b479279397b9cc114ca4a15867a1b",
     "chuanchuan-toushou":
       "49c6792fa9fa0168ee0fd4c7af6113984a5ab3234bc03eb48ff39c9d1f2ae5f6",
+    "police-media":
+      "738f8446b5099426f268e425f8f1fbd0a34531466acfd19d1d4d4317849463a1",
   };
 
   var projectKey = "root";
