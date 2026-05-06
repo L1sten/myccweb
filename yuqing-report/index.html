@@ -608,9 +608,8 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 - 交互规则：选择后立即过滤列表
 - 数据筛选规则：
   - 默认值："全部单位"（不限）
-  - 选项及匹配方式：
-    - "省级"：上报单位包含"省委"或"省网信"
-    - "地市"：上报单位包含"市宣传部"
+  - 取数规则：下拉选项取数来源为部门树中所有第一级节点名称（如"浙江省""杭州市""宁波市"等）
+  - 匹配规则：选中某第一级部门后，取其所有二级子部门名称列表，舆情的上报单位必须在该子部门列表中才显示
 
 #### 4.3.5 录用状态筛选
 
@@ -1648,7 +1647,7 @@ function renderSummaryPage(){
     +'<span class="filter-sep">至</span>'
     +'<input type="date" class="filter-date" id="filterDateEnd" onchange="filterList()">'
     +'<select class="filter-select" id="filterSource" onchange="filterList()"><option value="">全部来源</option><option value="本省">本省</option><option value="外省镜鉴">外省镜鉴</option></select>'
-    +'<select class="filter-select" id="filterUnit" onchange="filterList()"><option value="">全部单位</option><option value="省级">省级</option><option value="地市">地市</option></select>'
+    +'<select class="filter-select" id="filterUnit" onchange="filterList()"><option value="">全部单位</option>'+departmentData.map(d=>'<option value="'+d.name+'">'+d.name+'</option>').join('')+'</select>'
     +'<select class="filter-select" id="filterUsed" onchange="filterList()"><option value="">录用状态</option><option value="yes">已录用</option><option value="no">未录用</option></select>'
     +'<select class="filter-select" id="filterProv" onchange="onFilterProvChange()"><option value="">全部省份</option>'+provinceCityData.map(p=>'<option value="'+p.name+'">'+p.name+'</option>').join('')+'</select>'
     +'<select class="filter-select" id="filterCity" onchange="filterList()" style="display:none"><option value="">全部城市</option></select>'
@@ -1675,8 +1674,8 @@ function filterList(){
     if(provF){if(cityF){if(item.region!==provF+'/'+cityF)return false}else{if(!item.region.startsWith(provF+'/'))return false}}
     if(catF&&item.category!==catF)return false;
     if(unitF){
-      if(unitF==='省级'&&!item.reporter.includes('省委')&&!item.reporter.includes('省网信'))return false;
-      if(unitF==='地市'&&!item.reporter.includes('市宣传部'))return false;
+      const dept=departmentData.find(d=>d.name===unitF);
+      if(dept){const childNames=(dept.children||[]).map(c=>c.name);if(!childNames.includes(item.reporter))return false}
     }
     if(dateStart){const d=item.time.slice(0,10);if(d<dateStart)return false}
     if(dateEnd){const d=item.time.slice(0,10);if(d>dateEnd)return false}
@@ -2359,9 +2358,8 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 - 交互规则：选择后立即过滤列表
 - 数据筛选规则：
   - 默认值："全部单位"（不限）
-  - 选项及匹配方式：
-    - "省级"：上报单位包含"省委"或"省网信"
-    - "地市"：上报单位包含"市宣传部"
+  - 取数规则：下拉选项取数来源为部门树中所有第一级节点名称（如"浙江省""杭州市""宁波市"等）
+  - 匹配规则：选中某第一级部门后，取其所有二级子部门名称列表，舆情的上报单位必须在该子部门列表中才显示
 
 #### 4.3.5 录用状态筛选
 
