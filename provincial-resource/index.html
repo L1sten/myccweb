@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><script src="../auth.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全省资源库 - 媒资系统</title>
+    <style>
+        :root{--background:#fff;--foreground:#0a0a0a;--card:#fff;--primary:#171717;--primary-foreground:#fafafa;--secondary:#f5f5f5;--secondary-foreground:#171717;--muted:#f5f5f5;--muted-foreground:#737373;--accent:#f5f5f5;--accent-foreground:#171717;--destructive:#ef4444;--border:#e5e5e5;--input:#e5e5e5;--ring:#0a0a0a;--radius:0.5rem;--sidebar-bg:#f8fafc;--sidebar-active:#e0e7ff;--sidebar-hover:#f1f5f9;--brand:#3b82f6;--brand-light:#eff6ff;--green:#22c55e;--text:#1e293b;--text-secondary:#64748b;--border-light:#e2e8f0}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;background:var(--background);color:var(--foreground);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+
+        /* ========== App Split ========== */
+        .app-split{display:flex;height:100vh;overflow:hidden}
+        .app-split .page-wrap{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+        .prd-panel{width:460px;flex-shrink:0;display:flex;border-left:1px solid var(--border);transition:opacity .3s}
+        .prd-panel.collapsed{width:0;opacity:0;overflow:hidden;border:none}
+        .split-drag{width:4px;cursor:col-resize;flex-shrink:0;background:var(--border-light);transition:background .15s;position:relative;z-index:10}
+        .split-drag:hover,.split-drag.dragging{background:var(--brand)}
+        .split-drag::after{content:'';position:absolute;left:-3px;right:-3px;top:0;bottom:0}
+
+        /* ========== Top Header ========== */
+        .top-header{height:56px;flex-shrink:0;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;z-index:100}
+        .header-left{display:flex;align-items:center;gap:12px}
+        .logo{width:32px;height:32px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700}
+        .sys-name{font-size:16px;font-weight:600}
+        .header-nav{display:flex;align-items:center;gap:4px;margin-left:24px}
+        .h-nav-item{padding:8px 16px;font-size:14px;color:var(--text-secondary);cursor:pointer;border-radius:6px;transition:all .15s;user-select:none;position:relative;display:flex;align-items:center;gap:2px}
+        .h-nav-item:hover{background:var(--muted);color:var(--foreground)}
+        .h-nav-item.active{color:var(--brand);font-weight:500}
+        .h-nav-dd{position:relative;display:flex;align-items:center}
+        .h-nav-dd::after{content:'';display:inline-block;width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:4px solid currentColor;margin-left:4px;opacity:.4;vertical-align:middle}
+        .h-nav-dd-menu{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.1);padding:16px 0;min-width:480px;z-index:200;margin-top:4px}
+        .h-nav-dd:hover .h-nav-dd-menu{display:flex}
+        .dd-section{flex:1;padding:0 20px}
+        .dd-section+.dd-section{border-left:1px solid var(--border-light)}
+        .dd-title{font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border-light);text-transform:uppercase;letter-spacing:.05em}
+        .dd-item{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;color:var(--text-secondary);cursor:pointer;transition:color .15s}
+        .dd-item:hover{color:var(--brand)}
+        .dd-item svg{width:14px;height:14px;flex-shrink:0}
+        .dd-highlight .dd-title{color:var(--brand)}
+        .dd-highlight .dd-item{color:var(--brand);font-weight:500}
+        .header-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+        .btn-upload{height:34px;padding:0 14px;background:var(--brand);color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px}
+        .btn-upload:hover{opacity:.9}
+        .btn-upload svg{width:14px;height:14px}
+        .user-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:600;cursor:pointer}
+
+        /* ========== Channel Tab Bar ========== */
+        .channel-tabs{height:44px;flex-shrink:0;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;z-index:99}
+        .ch-tab{padding:10px 20px;font-size:14px;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;user-select:none}
+        .ch-tab:hover{color:var(--foreground)}
+        .ch-tab.active{color:var(--brand);border-bottom-color:var(--brand);font-weight:500}
+
+        /* ========== Main Layout ========== */
+        .main-body{display:flex;flex:1;min-height:0;overflow:hidden}
+
+        /* ========== Left Sidebar ========== */
+        .sidebar{width:240px;flex-shrink:0;background:var(--sidebar-bg);border-right:1px solid var(--border);overflow-y:auto;padding:8px 0}
+        .sidebar-group{margin-bottom:2px}
+        .sidebar-group-header{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;cursor:pointer;color:var(--text);font-size:14px;transition:background .15s;user-select:none;border-radius:0;position:relative}
+        .sidebar-group-header:hover{background:var(--sidebar-hover)}
+        .sidebar-group-header .left{display:flex;align-items:center;gap:8px}
+        .sidebar-group-header .left input[type="checkbox"]{width:14px;height:14px;accent-color:var(--brand);cursor:pointer;flex-shrink:0}
+        .sidebar-group-header svg{width:16px;height:16px;color:var(--text-secondary)}
+        .sidebar-group-header .arrow{width:16px;height:16px;color:var(--muted-foreground);transition:transform .2s;flex-shrink:0}
+        .sidebar-group-header.expanded .arrow{transform:rotate(90deg)}
+        .sidebar-group-header.expanded{background:var(--sidebar-active);font-weight:500}
+        .sidebar-group-header .ctx-trigger{display:none;align-items:center;justify-content:center;cursor:pointer;padding:2px}
+        .sidebar-group-header:hover .ctx-trigger{display:flex}
+        .sidebar-group-header .ctx-trigger svg{width:14px;height:14px;color:var(--muted-foreground)}
+        .sidebar-group-header .ctx-trigger:hover svg{color:var(--brand)}
+        .sidebar-group-children{overflow:hidden;max-height:0;transition:max-height .25s ease}
+        .sidebar-group-children.open{max-height:500px}
+        .sidebar-child{display:flex;align-items:center;gap:8px;padding:7px 16px 7px 40px;font-size:13px;color:var(--text-secondary);cursor:pointer;transition:all .15s;position:relative}
+        .sidebar-child:hover{background:var(--sidebar-hover);color:var(--foreground)}
+        .sidebar-child input[type="checkbox"]{width:14px;height:14px;accent-color:var(--brand);cursor:pointer}
+        .sidebar-child.active{background:var(--sidebar-active);color:var(--foreground);font-weight:500}
+        .sidebar-child .ctx-trigger{position:absolute;right:8px;width:20px;height:20px;display:none;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;transition:all .1s}
+        .sidebar-child:hover .ctx-trigger{display:flex}
+        .sidebar-child .ctx-trigger:hover{color:var(--brand)}
+        .sidebar-child .ctx-trigger svg{width:14px;height:14px;color:var(--muted-foreground)}
+        .sidebar-child .ctx-trigger:hover svg{color:var(--brand)}
+        .sidebar-item{display:flex;align-items:center;gap:8px;padding:8px 16px;font-size:14px;color:var(--text);cursor:pointer;transition:all .15s}
+        .sidebar-item:hover{background:var(--sidebar-hover)}
+        .sidebar-item.active{background:var(--sidebar-active);font-weight:500}
+        .sidebar-item input[type="checkbox"]{width:14px;height:14px;accent-color:var(--brand);cursor:pointer}
+        .sidebar-item svg{width:16px;height:16px;color:var(--text-secondary)}
+        .sidebar-divider{height:1px;background:var(--border-light);margin:6px 16px}
+
+        /* ========== Content ========== */
+        .content{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+        .page-header{padding:20px 24px 0;display:flex;align-items:center;justify-content:space-between}
+        .page-header h2{font-size:20px;font-weight:600}
+        .page-header p{font-size:13px;color:var(--muted-foreground);margin-top:2px}
+        .toolbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;gap:16px}
+        .toolbar-left{display:flex;align-items:center;gap:8px}
+        .toolbar-right{display:flex;align-items:center;gap:8px}
+        .filter-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+        .filter-item{display:flex;align-items:center;gap:6px}
+        .filter-label{font-size:13px;color:var(--muted-foreground);white-space:nowrap}
+        .input{height:34px;padding:0 12px;border:1px solid var(--input);border-radius:var(--radius);font-size:13px;background:var(--background);color:var(--foreground);outline:none;transition:border-color .15s}
+        .input:focus{border-color:var(--ring);box-shadow:0 0 0 2px rgba(10,10,10,.06)}
+        .input::placeholder{color:var(--muted-foreground)}
+        .input-sm{height:30px;font-size:12px}
+        .input-search{width:240px;padding-left:32px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='%23737373' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:10px center}
+        .select{height:34px;padding:0 28px 0 10px;border:1px solid var(--input);border-radius:var(--radius);font-size:13px;background:var(--background);color:var(--foreground);outline:none;appearance:none;cursor:pointer;transition:border-color .15s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23737373' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+        .select:focus{border-color:var(--ring)}
+        .select-sm{height:30px;font-size:12px}
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 14px;height:34px;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:1px solid transparent;white-space:nowrap}
+        .btn-primary{background:var(--primary);color:var(--primary-foreground);border-color:var(--primary)}
+        .btn-primary:hover{background:#262626}
+        .btn-secondary{background:var(--background);color:var(--foreground);border-color:var(--input)}
+        .btn-secondary:hover{background:var(--muted)}
+        .btn-sm{height:30px;padding:0 10px;font-size:12px}
+
+        /* ========== Table ========== */
+        .table-card{margin:0 24px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;flex:1;display:flex;flex-direction:column}
+        .table-wrapper{overflow:auto;flex:1}
+        table{width:100%;border-collapse:collapse}
+        thead{background:var(--muted)}
+        th{text-align:left;padding:10px 14px;font-size:12px;font-weight:500;color:var(--muted-foreground);border-bottom:1px solid var(--border);white-space:nowrap}
+        td{padding:10px 14px;font-size:13px;color:var(--foreground);border-bottom:1px solid var(--border);vertical-align:middle}
+        tr:last-child td{border-bottom:none}
+        tbody tr{transition:background .1s}
+        tbody tr:hover{background:#fafafa}
+        .col-no{width:50px;text-align:center;color:var(--text-secondary)}
+        .col-title{min-width:200px}
+        .col-title a{color:var(--brand);text-decoration:none;display:flex;align-items:center;gap:5px}
+        .col-title a:hover{text-decoration:underline}
+        .col-title svg{width:13px;height:13px;flex-shrink:0;opacity:.5}
+        .col-source,.col-product,.col-time{color:var(--text-secondary);white-space:nowrap;font-size:12px}
+        .col-type{white-space:nowrap}
+        .col-wordcount{text-align:right;white-space:nowrap}
+        .date-group{padding:8px 14px;font-size:12px;font-weight:500;color:var(--text);background:#fafbfc;border-bottom:1px solid var(--border-light)}
+
+        /* ========== Pagination ========== */
+        .pagination-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-top:1px solid var(--border)}
+        .pagination-info{font-size:12px;color:var(--muted-foreground)}
+        .pagination-controls{display:flex;align-items:center;gap:4px}
+        .page-btn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:4px;font-size:12px;cursor:pointer;background:#fff;color:var(--text);transition:all .15s}
+        .page-btn:hover{border-color:var(--brand);color:var(--brand)}
+        .page-btn.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+        .page-btn:disabled{opacity:.4;cursor:default}
+
+        /* ========== List/Detail Page Toggle ========== */
+        .list-view{display:flex;flex:1;flex-direction:column;overflow:hidden}
+        .list-view.hidden{display:none}
+        .detail-view{display:none;flex:1;flex-direction:column;overflow:hidden}
+        .detail-view.active{display:flex}
+
+        /* ========== Detail Page ========== */
+        .detail-top{padding:14px 24px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;gap:12px}
+        .detail-back{display:flex;align-items:center;gap:5px;padding:6px 12px;border:1px solid var(--border);border-radius:6px;background:#fff;font-size:13px;color:var(--text-secondary);cursor:pointer;transition:all .15s}
+        .detail-back:hover{border-color:var(--brand);color:var(--brand)}
+        .detail-back svg{width:14px;height:14px}
+        .detail-body{flex:1;display:flex;overflow:hidden}
+        .detail-main{flex:1;overflow-y:auto;padding:24px 32px}
+        .detail-title{font-size:22px;font-weight:600;color:var(--foreground);margin-bottom:12px;line-height:1.4}
+        .detail-meta{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--text-secondary);margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border-light)}
+        .detail-meta .label{color:var(--text);font-weight:500}
+        .detail-content{font-size:15px;line-height:1.8;color:var(--text)}
+        .detail-content p{margin-bottom:16px}
+        .detail-content .source-note{font-size:13px;color:var(--text-secondary);margin-top:20px;padding-top:16px;border-top:1px solid var(--border-light)}
+        .detail-sidebar{width:280px;flex-shrink:0;border-left:1px solid var(--border-light);background:var(--sidebar-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px}
+        .empty-box{text-align:center}
+        .empty-box .empty-icon{width:48px;height:48px;margin:0 auto 16px;background:var(--muted);border-radius:50%;display:flex;align-items:center;justify-content:center}
+        .empty-box .empty-icon svg{width:24px;height:24px;color:var(--muted-foreground)}
+        .empty-box p{font-size:13px;color:var(--text-secondary);margin-bottom:16px}
+        .btn-analyze{padding:8px 20px;background:var(--brand);color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer}
+        .btn-analyze:hover{opacity:.9}
+
+        /* ========== PRD Panel ========== */
+        .prd-toc{width:180px;border-right:1px solid var(--border);overflow-y:auto;background:#fafafa;padding:16px 0}
+        .prd-toc-item{display:block;padding:5px 16px;font-size:12px;color:var(--text-secondary);cursor:pointer;text-decoration:none;line-height:1.5;transition:all .15s}
+        .prd-toc-item:hover{color:var(--brand);background:var(--brand-light)}
+        .prd-toc-item.level-3{padding-left:28px;font-size:11px}
+        .prd-toc-item.level-4{padding-left:40px;font-size:11px}
+        .prd-content{flex:1;overflow-y:auto;padding:20px}
+        .prd-content h1,.prd-content h2,.prd-content h3,.prd-content h4{font-weight:600;color:var(--text)!important;margin:20px 0 10px;line-height:1.4}
+        .prd-content h1{font-size:20px!important;border-bottom:1px solid var(--border-light);padding-bottom:8px}
+        .prd-content h2{font-size:17px!important}
+        .prd-content h3{font-size:15px!important}
+        .prd-content h4{font-size:14px!important}
+        .prd-content p{font-size:13px!important;color:#444!important;margin-bottom:10px;line-height:1.7}
+        .prd-content ul.prd-list{margin:8px 0 8px 20px;padding-left:0}
+        .prd-content ul.prd-list>li{margin:6px 0;list-style:disc!important;font-size:13px!important;color:#444;line-height:1.6}
+        .prd-content ul.prd-nested{margin:2px 0 2px 18px;padding-left:0;list-style:circle!important}
+        .prd-content ul.prd-nested li{list-style:circle!important;font-size:13px!important;color:#555}
+        .prd-content strong{font-weight:600!important}
+        .prd-content code{background:#f1f5f9;padding:1px 4px;border-radius:3px;font-size:12px}
+        .prd-content hr{border:none;border-top:1px solid var(--border-light);margin:16px 0}
+        .prd-content table.prd-table{width:100%!important;border-collapse:collapse!important;margin:12px 0!important;font-size:13px!important}
+        .prd-content table.prd-table th{background:#f8f9fa!important;padding:8px 12px!important;text-align:left!important;border:1px solid var(--border-light)!important;font-weight:600!important;color:var(--text)!important;font-size:12px!important}
+        .prd-content table.prd-table td{padding:8px 12px!important;border:1px solid var(--border-light)!important;color:#444!important;font-size:13px!important;line-height:1.6!important}
+
+        /* ========== Top Controls ========== */
+        .top-controls{position:fixed;top:68px;right:14px;z-index:400;display:flex;align-items:center;gap:8px}
+        .prd-toggle{display:flex;align-items:center;gap:4px;padding:5px 12px;background:#fff;border:1px solid var(--border-light);border-radius:14px;font-size:12px;color:var(--text-secondary);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.08);transition:all .2s;white-space:nowrap}
+        .prd-toggle:hover{border-color:var(--brand);color:var(--brand)}
+        .prd-toggle .toggle-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
+        .changelog-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;background:#fff;border:1px solid var(--border-light);border-radius:14px;font-size:11px;color:var(--text-secondary);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.08);transition:all .2s;white-space:nowrap}
+        .changelog-btn:hover{border-color:var(--brand);color:var(--brand)}
+        .changelog-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:500}
+        .changelog-overlay.show{display:block}
+        .changelog-modal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:560px;max-height:70vh;background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.15);z-index:501;overflow:hidden}
+        .changelog-modal.show{display:flex;flex-direction:column}
+        .changelog-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border-light)}
+        .changelog-header h3{font-size:15px;font-weight:600;margin:0}
+        .changelog-close{background:none;border:none;font-size:20px;color:var(--text-secondary);cursor:pointer}
+        .changelog-close:hover{color:var(--text)}
+        .changelog-body{flex:1;overflow-y:auto;padding:16px 20px}
+        .changelog-table{width:100%;border-collapse:collapse;font-size:13px}
+        .changelog-table th{text-align:left;padding:8px 12px;background:#f8f9fa;color:var(--text-secondary);font-weight:500;border-bottom:1px solid var(--border-light)}
+        .changelog-table td{padding:8px 12px;border-bottom:1px solid var(--border-light);vertical-align:top}
+        .changelog-table tr:last-child td{border-bottom:none}
+        .changelog-table td:first-child{white-space:nowrap;color:var(--text-secondary);font-size:12px}
+
+        /* ========== Fetch Modal ========== */
+        .fetch-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:500}
+        .fetch-overlay.show{display:block}
+        .fetch-modal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:480px;background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.15);z-index:501;overflow:hidden}
+        .fetch-modal.show{display:flex;flex-direction:column}
+        .fetch-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border-light)}
+        .fetch-header h3{font-size:15px;font-weight:600;margin:0}
+        .fetch-body{padding:24px 20px;display:flex;flex-direction:column;gap:20px}
+        .fetch-field{display:flex;flex-direction:column;gap:6px}
+        .fetch-label{font-size:13px;font-weight:500;color:var(--text)}
+        .fetch-select{width:100%}
+        .fetch-footer{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:16px 20px;border-top:1px solid var(--border-light)}
+
+        /* ========== Toast ========== */
+        .toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:600;display:flex;flex-direction:column;align-items:center;gap:8px}
+        .toast{padding:10px 24px;background:#fff;border:1px solid var(--border-light);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);font-size:14px;color:var(--text);display:flex;align-items:center;gap:8px;animation:toastIn .25s ease-out}
+        .toast.out{animation:toastOut .25s ease-in forwards}
+        .toast .toast-icon{width:18px;height:18px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .toast .toast-icon::after{content:'';display:block;width:5px;height:9px;border-bottom:2px solid #fff;border-right:2px solid #fff;transform:rotate(45deg);margin-top:-2px}
+        @keyframes toastIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes toastOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-10px)}}
+
+        /* ========== Batch Select ========== */
+        .tool-check{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--text-secondary);cursor:pointer}
+        .tool-check input{width:14px;height:14px;accent-color:var(--brand);cursor:pointer}
+        .tool-count{font-size:12px;color:var(--muted-foreground)}
+        .tool-count strong{color:var(--text-secondary)}
+        .tool-clear{font-size:12px;color:var(--muted-foreground);cursor:pointer;transition:color .15s}
+        .tool-clear:hover{color:var(--brand)}
+        .col-check{width:40px;text-align:center}
+        .col-check input{width:14px;height:14px;accent-color:var(--brand);cursor:pointer}
+
+        /* ========== Sidebar Context Menu ========== */
+        .sidebar-ctx{position:fixed;background:#fff;border:1px solid var(--border-light);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);padding:4px 0;z-index:600;min-width:140px;display:none}
+        .sidebar-ctx.show{display:block}
+        .sidebar-ctx-item{padding:7px 16px;font-size:13px;color:var(--text);cursor:pointer;white-space:nowrap;transition:background .1s}
+        .sidebar-ctx-item:hover{background:var(--brand-light);color:var(--brand)}
+    </style>
+</head>
+<body>
+
+<div class="app-split">
+<div class="page-wrap">
+
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="header-left">
+            <div class="logo">M</div>
+            <span class="sys-name">媒资系统</span>
+        </div>
+        <nav class="header-nav">
+            <div class="h-nav-item">首页</div>
+            <div class="h-nav-item" onclick="location.href='search.html'">搜索中心</div>
+            <div class="h-nav-dd">
+                <div class="h-nav-item active">资源中心</div>
+                <div class="h-nav-dd-menu">
+                    <div class="dd-section">
+                        <div class="dd-title">网络资源库</div>
+                        <div class="dd-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/></svg>网络稿件</div>
+                        <div class="dd-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>网络视频</div>
+                        <div class="dd-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>网络图片</div>
+                        <div class="dd-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>网络音频</div>
+                    </div>
+                    <div class="dd-section dd-highlight">
+                        <div class="dd-title">全省资源库</div>
+                        <div class="dd-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>成品稿件</div>
+                        <div class="dd-item" onclick="location.href='image.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>成品图片</div>
+                        <div class="dd-item" onclick="location.href='video.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>成品视频</div>
+                    </div>
+                </div>
+            </div>
+            <div class="h-nav-item">素材中心</div>
+            <div class="h-nav-item">审批中心</div>
+            <div class="h-nav-item">同步中心</div>
+            <div class="h-nav-item">智能标签库</div>
+        </nav>
+        <div class="header-right">
+            <button class="btn-upload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>上传</button>
+            <div class="user-avatar">李</div>
+        </div>
+    </header>
+
+    <!-- Channel Tabs -->
+    <div class="channel-tabs">
+        <div class="ch-tab active" onclick="switchChTab(this)">全部</div>
+        <div class="ch-tab" onclick="switchChTab(this)">客户端</div>
+        <div class="ch-tab" onclick="switchChTab(this)">网站</div>
+    </div>
+
+    <!-- Main Body -->
+    <div class="main-body">
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <!-- Level 2: 省本级 -->
+            <div class="sidebar-group">
+                <div class="sidebar-group-header expanded">
+                    <span class="left"><input type="checkbox" class="group-cb" data-group="province">省本级</span>
+                    <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="toggleGroup(this.closest('.sidebar-group-header'))"><path d="m9 18 6-6-6-6"/></svg>
+                </div>
+                <div class="sidebar-group-children open">
+                    <div class="sidebar-child"><input type="checkbox">浙报集团<span class="ctx-trigger" onclick="event.stopPropagation();filterOnlyCb(this.parentElement.querySelector('input[type=checkbox]'))"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></span></div>
+                </div>
+            </div>
+            <!-- Level 2: 11地市 -->
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-group" id="regionGroups">
+                <!-- JS rendered -->
+            </div>
+        </aside>
+
+        <!-- Content -->
+        <div class="content">
+
+            <!-- List View -->
+            <div class="list-view" id="listView">
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <div class="filter-bar">
+                            <div class="filter-item"><span class="filter-label">日期</span><input type="date" class="input input-sm" value="2026-04-06"><span style="color:var(--text-secondary);font-size:12px">至</span><input type="date" class="input input-sm" value="2026-05-06"></div>
+                            <div class="filter-item"><span class="filter-label">稿件类型</span><select class="select select-sm"><option>全部类型</option><option>新闻</option><option>评论</option><option>专题</option><option>图集</option></select></div>
+                        </div>
+                    </div>
+                    <div class="toolbar-right">
+                        <label class="tool-check"><input type="checkbox" id="checkAll" onchange="toggleAllRows(this)"><span>全选</span></label>
+                        <span class="tool-count">已选 <strong id="selCount">0</strong> 篇</span>
+                        <span class="tool-clear" onclick="clearSel()">清除</span>
+                        <button class="btn btn-primary btn-sm" onclick="toggleFetchModal()">取稿</button>
+                        <input class="input input-search input-sm" placeholder="多个关键词以空格完成输入">
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-wrapper" id="tableWrapper">
+                        <!-- dynamic -->
+                    </div>
+                    <div class="pagination-bar">
+                        <div class="pagination-info">共 15 条</div>
+                        <div class="pagination-controls">
+                            <button class="page-btn" disabled>&#8249;</button>
+                            <button class="page-btn active">1</button>
+                            <button class="page-btn">&#8250;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detail View -->
+            <div class="detail-view" id="detailView">
+                <div class="detail-top">
+                    <button class="detail-back" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>返回</button>
+                </div>
+                <div class="detail-body">
+                    <div class="detail-main">
+                        <div class="detail-title" id="detailTitle"></div>
+                        <div class="detail-meta">
+                            <span><span class="label">发布站点：</span><span id="detailSite"></span></span>
+                            <span><span class="label">渠道：</span><span id="detailChannel"></span></span>
+                            <span><span class="label">发布时间：</span><span id="detailTime"></span></span>
+                        </div>
+                        <div class="detail-content" id="detailContent"></div>
+                    </div>
+                    <div class="detail-sidebar">
+                        <div class="empty-box">
+                            <div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                            <p>暂无结构化信息</p>
+                            <button class="btn-analyze">去分析</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div><!-- end page-wrap -->
+
+<!-- Split Drag -->
+<div class="split-drag" id="splitDrag"></div>
+
+<!-- PRD Panel -->
+<div class="prd-panel" id="prdPanel">
+    <div class="prd-toc" id="prdToc"></div>
+    <div class="prd-content" id="prdContent"></div>
+</div>
+
+</div><!-- end app-split -->
+
+<!-- Top Controls -->
+<div class="top-controls">
+    <button class="prd-toggle" id="prdToggle" onclick="togglePrdPanel()"><span class="toggle-dot"></span> PRD</button>
+    <div class="changelog-btn" onclick="toggleChangelog()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg><span>更新记录</span></div>
+</div>
+
+<!-- Changelog -->
+<div class="changelog-overlay" id="changelogOverlay" onclick="toggleChangelog()"></div>
+<div class="changelog-modal" id="changelogModal">
+    <div class="changelog-header"><h3>更新记录</h3><button class="changelog-close" onclick="toggleChangelog()">&times;</button></div>
+    <div class="changelog-body" id="changelogBody"></div>
+</div>
+
+<!-- PRD Source -->
+<textarea id="prdMdSource" style="display:none">
+# 全省资源库 PRD
+
+**版本**: v1.0
+**日期**: 2026-05-06
+**作者**: 产品团队
+
+---
+
+## 1. 产品概述
+
+### 1.1 背景
+
+现有资源中心仅包含"网络资源库"，提供网络稿件、视频、图片、音频等素材类资源的检索与浏览。全省各级媒体单位产出的成品稿件（新闻、专题报道等）缺乏统一的汇聚与共享入口，市县融媒体中心的优质内容难以被省级媒体发现和选用。
+
+### 1.2 产品定位
+
+面向全省媒体从业人员的成品稿件共享平台，汇聚省本级、浙报集团及各市县融媒体中心已发布的成品类内容，支持按渠道、地域、时间、类型等多维度检索和浏览，促进优质内容在全省范围内的流通与复用。
+
+### 1.3 用户角色
+
+- **省级媒体编辑**：浏览、筛选市县优质稿件，择优选用或二次加工
+- **市县融媒体中心编辑**：查看其他地区稿件，了解全省报道动态
+- **平台管理员**：管理共享规则、审核共享内容
+
+### 1.4 核心功能概览
+
+在资源中心导航下拉菜单中新增"全省资源库"入口（与"网络资源库"平级），提供成品稿件的列表浏览、多条件筛选、地域筛选和稿件详情查看功能。
+
+---
+
+## 2. 系统架构
+
+### 2.1 功能模块清单
+
+- 全省资源库列表页 — 新增
+- 稿件详情页 — 新增
+- 导航入口改造 — 修改（资源中心下拉菜单新增入口）
+
+### 2.2 页面清单
+
+- 全省资源库列表页（主页面）
+- 稿件详情页（从列表页点击稿件标题进入）
+
+### 2.3 页面流转关系
+
+- 资源中心下拉菜单 → 点击"全省资源库" → 列表页
+- 列表页 → 点击稿件标题 → 稿件详情页
+- 稿件详情页 → 返回 → 列表页
+
+---
+
+## 3. 功能需求
+
+### 3.1 导航入口
+
+**功能描述**：在顶部导航栏"资源中心"下拉菜单中新增"全省资源库"入口，与"网络资源库"平级，位于其右侧。
+
+**展示规则**：
+- 下拉菜单分为左右两个并列区域
+- 左侧区域：网络资源库（含子菜单：网络稿件、网络视频、网络图片、网络音频）
+- 右侧区域：全省资源库（仅成品类，无子菜单分类，直接进入列表页）
+- 两个区域之间以竖线分隔
+
+**交互规则**：
+- 鼠标悬停"资源中心"时展开下拉菜单
+- 点击"全省资源库"区域直接跳转至全省资源库列表页
+- 当前页面为全省资源库时，对应区域高亮显示
+
+### 3.2 顶部渠道 Tab
+
+**功能描述**：页面顶部提供渠道一级分类 Tab，用于按发布渠道筛选稿件。
+
+- **全部**：展示所有渠道稿件（默认选中）
+- **客户端**：仅展示发布于客户端的稿件
+- **网站**：仅展示发布于网站的稿件
+- **数字报**：仅展示发布于数字报的稿件
+
+**交互规则**：
+- 点击 Tab 切换对应渠道，高亮当前选中
+- 切换后列表自动刷新
+
+**数据规则**：
+- 取数规则：匹配稿件的"渠道"字段
+- 数据筛选规则：单选，选中后仅显示对应渠道
+- 数据排序规则：保持当前排序设置不变
+
+### 3.3 左侧地域筛选
+
+**页面结构**：左侧边栏采用二级可折叠结构。
+
+**二级节点（默认展开省本级）**：
+- 省本级
+- 杭州市、湖州市、宁波市、温州市、嘉兴市、绍兴市、金华市、衢州市、舟山市、台州市、丽水市
+
+**三级节点**：
+- 省本级下：浙报集团
+- 各地级市下：该市所辖区县（如杭州市下有西湖区、萧山区、桐庐县等）
+
+**交互规则**：
+- 点击二级节点展开/折叠三级子节点
+- 每个节点前有复选框，支持多选
+- 勾选二级节点时，该节点下所有三级节点全部选中
+- 选中后自动刷新列表
+
+**数据规则**：
+- 取数规则：匹配稿件的"来源地域"字段
+- 数据筛选规则：多选取并集（OR 逻辑），与其他筛选条件取交集
+
+### 3.4 全省资源库列表页
+
+**功能描述**：展示全省范围内已共享的成品稿件列表，支持多条件筛选和排序。
+
+#### 筛选条件栏
+
+- **日期范围**：两个日期输入框，默认最近一个月
+- **稿件类型**：下拉选择（全部稿件/新闻/评论/专题/图集）
+- **产品类型**：下拉选择（全部产品/客户端/网站/报纸/微信/微博）
+- **排序**：下拉选择（时间/字数正序/字数倒序），默认按时间倒序
+- **搜索**：关键词搜索，多关键词空格分隔取交集
+
+#### 稿件列表
+
+**列表表头**：序号、稿件标题、来源、发布产品、共享时间
+
+**字段规则**：
+- **稿件标题**：蓝色文字带链接图标，点击进入详情页
+- **来源**：显示来源机构名称（如"平阳县融媒体中心"）
+- **发布产品**：发布产品名称（如"爱平阳客户端"）
+- **共享时间**：格式 YYYY/MM/DD HH:mm:ss
+
+**分页规则**：默认每页 20 条
+
+### 3.5 稿件详情页
+
+**功能描述**：展示单篇稿件的完整内容。
+
+**页面结构**：
+- 左侧主区域：稿件标题 + 元信息（发布站点、渠道、发布时间）+ 正文内容
+- 右侧辅助区：结构化信息面板（未分析时显示"暂无结构化信息"+"去分析"按钮）
+
+**返回操作**：左上角返回按钮，返回列表页并保留筛选状态。进入详情页时左侧地域边栏自动隐藏。
+
+---
+
+## 4. 交互规范
+
+- 所有筛选条件变更后自动刷新列表
+- 无数据时显示"暂无数据"空状态提示
+- 从列表页进入详情页时左侧地域边栏自动隐藏
+- 从详情页返回时恢复边栏和之前的筛选状态
+
+---
+
+## 5. 数据模型
+
+### 5.1 稿件实体
+
+```text
+Article {
+  id: string [必填] 稿件唯一标识
+  title: string [必填] 稿件标题
+  content: string [必填] 正文内容
+  source: string [必填] 来源机构
+  sourceRegion: string [必填] 来源地域
+  type: enum [必填] 稿件类型（新闻/评论/专题/图集）
+  wordCount: number [必填] 正文字数
+  publishProduct: string [必填] 发布产品名称
+  productType: enum [必填] 产品类型
+  publishSite: string [选填] 发布站点
+  channel: enum [选填] 渠道（网站/数字报/客户端/微信/微博）
+  publishTime: datetime [选填] 发布时间
+  shareTime: datetime [必填] 共享时间
+  structuredInfo: object [选填] 结构化分析结果
+}
+```
+
+---
+
+## 6. 未来规划
+
+- 稿件收藏功能
+- 稿件引用追踪
+- 智能推荐
+- 批量操作
+- 共享审核流程
+</textarea>
+
+<script>
+/* ========== Region Data ========== */
+var regionData = [
+  { name: '杭州市', children: ['西湖区','萧山区','桐庐县','上城区','滨江区','钱塘区','淳安县','临平区','临安区','富阳区','余杭区','建德市','拱墅区'] },
+  { name: '湖州市', children: ['吴兴区','南浔区','德清县','长兴县','安吉县'] },
+  { name: '宁波市', children: ['海曙区','江北区','北仑区','鄞州区','镇海区','奉化区','余姚市','慈溪市'] },
+  { name: '温州市', children: ['鹿城区','龙湾区','瓯海区','瑞安市','乐清市'] },
+  { name: '嘉兴市', children: ['南湖区','秀洲区','海宁市','桐乡市','平湖市'] },
+  { name: '绍兴市', children: ['越城区','柯桥区','上虞区','诸暨市','新昌县'] },
+  { name: '金华市', children: ['婺城区','金东区','义乌市','东阳市','永康市'] },
+  { name: '衢州市', children: ['柯城区','衢江区','江山市'] },
+  { name: '舟山市', children: ['定海区','普陀区','岱山县'] },
+  { name: '台州市', children: ['椒江区','黄岩区','路桥区','温岭市','临海市'] },
+  { name: '丽水市', children: ['莲都区','龙泉市','青田县'] }
+];
+
+/* ========== Article Mock Data ========== */
+var articles = [
+  { title: '新增38种本科专业，今年高考就可以报名→', source: '平阳县融媒体中心', region: '温州', type: '新闻', wc: 1240, product: '爱平阳客户端', time: '2026/05/06 11:00:00', channel: '客户端', content: '<p>近日，教育部发布最新通知，新增38种本科专业。</p><div class="source-note">来源：央视新闻微信</div>' },
+  { title: '浙报集团融媒体改革成果获全国表彰', source: '浙报集团', region: '省本级', type: '新闻', wc: 2100, product: '浙江新闻客户端', time: '2026/05/06 10:45:00', channel: '客户端', content: '<p>浙报集团融媒体改革成果获全国表彰。</p><div class="source-note">来源：浙江新闻客户端</div>' },
+  { title: '潮新闻报道：浙江数字经济蓬勃发展', source: '浙报集团', region: '省本级', type: '专题', wc: 3400, product: '潮新闻客户端', time: '2026/05/06 10:30:00', channel: '客户端', content: '<p>潮新闻专题报道浙江数字经济发展。</p><div class="source-note">来源：潮新闻客户端</div>' },
+  { title: '省教育厅发布2026年高考志愿填报指南', source: '省教育厅', region: '省本级', type: '新闻', wc: 2100, product: '浙江教育网', time: '2026/05/06 10:15:00', channel: '网站', content: '<p>浙江省教育厅发布高考志愿填报指南。</p><div class="source-note">来源：浙江教育网</div>' },
+  { title: '上城区：南宋文化节开幕', source: '上城区融媒体中心', region: '杭州', type: '新闻', wc: 980, product: '上城发布', time: '2026/05/06 09:55:00', channel: '微信', content: '<p>上城区南宋文化节盛大开幕。</p><div class="source-note">来源：上城发布</div>' },
+  { title: '桐庐县融媒体中心教育报道精选', source: '桐庐县融媒体中心', region: '杭州', type: '图集', wc: 800, product: '桐庐发布', time: '2026/05/06 09:30:00', channel: '微信', content: '<p>桐庐县融媒体中心教育报道精选。</p><div class="source-note">来源：桐庐发布</div>' },
+  { title: '余杭区：未来科技城AI企业突破千家', source: '余杭区融媒体中心', region: '杭州', type: '新闻', wc: 1500, product: '余杭发布', time: '2026/05/06 09:20:00', channel: '客户端', content: '<p>余杭区未来科技城AI企业突破千家。</p><div class="source-note">来源：余杭发布</div>' },
+  { title: '定海融媒体中心：海洋教育进校园', source: '定海融媒体中心', region: '舟山', type: '新闻', wc: 1800, product: '定海山客户端', time: '2026/05/06 09:00:00', channel: '客户端', content: '<p>定海融媒体中心报道海洋教育进校园活动。</p><div class="source-note">来源：定海山客户端</div>' },
+  { title: '宁波日报：数字经济人才培养新路径', source: '宁波日报', region: '宁波', type: '评论', wc: 2400, product: '宁波日报', time: '2026/05/06 08:45:00', channel: '数字报', content: '<p>宁波日报评论：数字经济人才培养需要新路径。</p><div class="source-note">来源：宁波日报</div>' },
+  { title: '鄞州区：东部新城CBD建设提速', source: '鄞州区融媒体中心', region: '宁波', type: '新闻', wc: 1600, product: '鄞州发布', time: '2026/05/06 08:30:00', channel: '网站', content: '<p>鄞州区东部新城CBD建设全面提速。</p><div class="source-note">来源：鄞州发布</div>' },
+  { title: '嘉兴在线：乡村振兴中的青年力量', source: '嘉兴在线', region: '嘉兴', type: '新闻', wc: 1600, product: '嘉兴在线', time: '2026/05/06 08:15:00', channel: '网站', content: '<p>嘉兴在线报道乡村振兴中的青年力量。</p><div class="source-note">来源：嘉兴在线</div>' },
+  { title: '绍兴晚报：古城文旅融合新探索', source: '绍兴晚报', region: '绍兴', type: '专题', wc: 3200, product: '绍兴晚报', time: '2026/05/05 22:00:00', channel: '数字报', content: '<p>绍兴晚报专题：古城文旅融合新探索。</p><div class="source-note">来源：绍兴晚报</div>' },
+  { title: '金华日报：数字乡村建设成果展示', source: '金华日报', region: '金华', type: '新闻', wc: 1900, product: '金华日报', time: '2026/05/05 21:30:00', channel: '数字报', content: '<p>金华日报展示数字乡村建设成果。</p><div class="source-note">来源：金华日报</div>' },
+  { title: '义乌市：小商品市场数字化转型纪实', source: '义乌市融媒体中心', region: '金华', type: '专题', wc: 2800, product: '爱义乌客户端', time: '2026/05/05 21:00:00', channel: '客户端', content: '<p>义乌市融媒体中心报道小商品市场数字化转型。</p><div class="source-note">来源：爱义乌客户端</div>' },
+  { title: '丽水发布：绿水青山就是金山银山实践', source: '丽水发布', region: '丽水', type: '专题', wc: 2800, product: '丽水发布', time: '2026/05/05 20:00:00', channel: '微信', content: '<p>丽水发布专题报道。</p><div class="source-note">来源：丽水发布</div>' },
+  { title: '温州都市报：民营经济高质量发展观察', source: '温州都市报', region: '温州', type: '评论', wc: 2600, product: '温州都市报', time: '2026/05/05 19:30:00', channel: '数字报', content: '<p>温州都市报评论。</p><div class="source-note">来源：温州都市报</div>' },
+  { title: '乐清市：电气产业集群升级路径探析', source: '乐清市融媒体中心', region: '温州', type: '评论', wc: 2300, product: '乐清发布', time: '2026/05/05 19:00:00', channel: '网站', content: '<p>乐清市融媒体中心评论文章。</p><div class="source-note">来源：乐清发布</div>' },
+  { title: '台州日报：制造业数字化转型纪实', source: '台州日报', region: '台州', type: '新闻', wc: 2100, product: '台州日报', time: '2026/05/05 18:00:00', channel: '数字报', content: '<p>台州日报纪实报道。</p><div class="source-note">来源：台州日报</div>' },
+  { title: '温岭市：鞋业创新驱动发展纪实', source: '温岭市融媒体中心', region: '台州', type: '新闻', wc: 1750, product: '温岭发布', time: '2026/05/05 17:45:00', channel: '客户端', content: '<p>温岭市融媒体中心报道。</p><div class="source-note">来源：温岭发布</div>' },
+  { title: '衢州晚报：四省边际中心城市发展纪略', source: '衢州晚报', region: '衢州', type: '专题', wc: 3500, product: '衢州晚报', time: '2026/05/05 17:30:00', channel: '数字报', content: '<p>衢州晚报专题。</p><div class="source-note">来源：衢州晚报</div>' },
+  { title: '南浔区：古镇保护与开发并重', source: '南浔区融媒体中心', region: '湖州', type: '专题', wc: 1900, product: '南浔发布', time: '2026/05/05 16:30:00', channel: '微信', content: '<p>南浔区融媒体中心报道古镇保护。</p><div class="source-note">来源：南浔发布</div>' },
+  { title: '湖州在线：绿色发展先行区建设观察', source: '湖州在线', region: '湖州', type: '评论', wc: 2200, product: '湖州在线', time: '2026/05/05 16:00:00', channel: '网站', content: '<p>湖州在线评论。</p><div class="source-note">来源：湖州在线</div>' },
+  { title: '柯桥区：纺织产业绿色转型纪实', source: '柯桥区融媒体中心', region: '绍兴', type: '新闻', wc: 1700, product: '柯桥发布', time: '2026/05/05 15:30:00', channel: '客户端', content: '<p>柯桥区融媒体中心报道。</p><div class="source-note">来源：柯桥发布</div>' },
+  { title: '岱山县：海洋牧场建设取得突破', source: '岱山县融媒体中心', region: '舟山', type: '新闻', wc: 1400, product: '岱山发布', time: '2026/05/05 15:00:00', channel: '网站', content: '<p>岱山县融媒体中心报道。</p><div class="source-note">来源：岱山发布</div>' },
+  { title: '东阳市：影视文化产业高质量发展', source: '东阳市融媒体中心', region: '金华', type: '专题', wc: 2600, product: '东阳发布', time: '2026/05/05 14:30:00', channel: '客户端', content: '<p>东阳市融媒体中心专题报道。</p><div class="source-note">来源：东阳发布</div>' },
+  { title: '江山市：省际边界城镇协同发展', source: '江山市融媒体中心', region: '衢州', type: '新闻', wc: 1500, product: '江山发布', time: '2026/05/05 14:00:00', channel: '微信', content: '<p>江山市融媒体中心报道。</p><div class="source-note">来源：江山发布</div>' }
+];
+
+/* ========== Region Filter Logic ========== */
+var regionMap = { '省本级': '省本级', '浙报集团': '省本级' };
+regionData.forEach(function(r) { r.children.forEach(function(c) { regionMap[c] = r.name; }); });
+
+function getSelectedRegions() {
+  var regions = [];
+  var cbs = document.querySelectorAll('.sidebar input[type="checkbox"]:checked');
+  cbs.forEach(function(cb) {
+    var text = cb.parentElement.textContent.trim();
+    if (regionMap[text]) { if (regions.indexOf(regionMap[text]) === -1) regions.push(regionMap[text]); }
+    else if (regionData.some(function(r) { return r.name === text; })) { if (regions.indexOf(text) === -1) regions.push(text); }
+  });
+  return regions;
+}
+
+/* ========== Channel Tab + Filter ========== */
+function switchChTab(el) {
+  document.querySelectorAll('.ch-tab').forEach(function(t) { t.classList.remove('active'); });
+  el.classList.add('active');
+  filterAndRender();
+}
+
+function getCurrentChannel() {
+  var el = document.querySelector('.ch-tab.active');
+  var ch = el ? el.textContent.trim() : '';
+  return ch === '全部' ? '' : ch;
+}
+
+function filterAndRender() {
+  var regions = getSelectedRegions();
+  var channel = getCurrentChannel();
+  var filtered = articles;
+  if (regions.length > 0) filtered = filtered.filter(function(a) { return regions.indexOf(a.region) !== -1; });
+  if (channel) filtered = filtered.filter(function(a) { return a.channel === channel; });
+  renderFilteredTable(filtered);
+}
+
+function renderFilteredTable(data) {
+  if (data.length === 0) { document.getElementById('tableWrapper').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted-foreground)">暂无数据</div>'; document.querySelector('.pagination-info').textContent = '共 0 条'; return; }
+  var html = '<table><thead><tr><th class="col-check"><input type="checkbox" onchange="toggleAllRows(this)"></th><th class="col-no">序号</th><th class="col-title">稿件标题</th><th>来源</th><th class="col-type">类型</th><th class="col-wordcount" style="text-align:right">字数</th><th>发布站点</th><th>发布时间</th></tr></thead><tbody>';
+  data.forEach(function(a, i) {
+    html += '<tr><td class="col-check"><input type="checkbox" class="row-cb" data-idx="' + articles.indexOf(a) + '" onchange="updSel()"></td>';
+    html += '<td class="col-no">' + (i + 1) + '</td>';
+    html += '<td class="col-title"><a href="#" onclick="showDetail(articles.indexOf(this._a));return false" id="a' + i + '">' + a.title + '</a></td>';
+    html += '<td class="col-source">' + a.source + '</td>';
+    html += '<td class="col-type">' + a.type + '</td>';
+    html += '<td class="col-wordcount">' + a.wc + '</td>';
+    html += '<td class="col-product">' + a.product + '</td>';
+    html += '<td class="col-time">' + a.time + '</td></tr>';
+  });
+  html += '</tbody></table>';
+  document.getElementById('tableWrapper').innerHTML = html;
+  document.querySelector('.pagination-info').textContent = '共 ' + data.length + ' 条';
+  data.forEach(function(a, i) { var el = document.getElementById('a' + i); if (el) el._a = a; });
+  updSel();
+}
+
+function showDetail(idx) {
+  var a = idx >= 0 ? articles[idx] : articles[0];
+  document.getElementById('detailTitle').textContent = a.title;
+  document.getElementById('detailSite').textContent = a.product;
+  document.getElementById('detailChannel').textContent = a.channel;
+  document.getElementById('detailTime').textContent = a.time;
+  document.getElementById('detailContent').innerHTML = a.content;
+  document.getElementById('listView').classList.add('hidden');
+  document.getElementById('detailView').classList.add('active');
+  document.getElementById('sidebar').style.display = 'none';
+}
+function renderRegions() {
+  var container = document.getElementById('regionGroups');
+  var html = '';
+  regionData.forEach(function(r) {
+    html += '<div class="sidebar-group">';
+    html += '<div class="sidebar-group-header">';
+    html += '<span class="left"><input type="checkbox" class="group-cb" data-group="' + r.name + '">' + r.name + '</span>';
+    html += '<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="toggleGroup(this.closest(\'.sidebar-group-header\'))"><path d="m9 18 6-6-6-6"/></svg>';
+    html += '</div>';
+    html += '<div class="sidebar-group-children">';
+    html += '<div class="sidebar-child"><input type="checkbox">' + r.name + '本级<span class="ctx-trigger" onclick="event.stopPropagation();filterOnlyCb(this.parentElement.querySelector(\'input[type=checkbox]\'))"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></span></div>';
+    r.children.forEach(function(c) {
+      html += '<div class="sidebar-child"><input type="checkbox">' + c + '<span class="ctx-trigger" onclick="event.stopPropagation();filterOnlyCb(this.parentElement.querySelector(\'input[type=checkbox]\'))"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></span></div>';
+    });
+    html += '</div></div>';
+  });
+  container.innerHTML = html;
+  bindGroupCheckboxes();
+  bindCtxMenu();
+}
+
+function toggleGroup(el) {
+  el.classList.toggle('expanded');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+/* ========== Sidebar Context Menu ========== */
+var ctxTarget = null;
+function showSidebarCtx(e, cb) {
+  e.preventDefault(); e.stopPropagation();
+  ctxTarget = cb;
+  var menu = document.getElementById('sidebarCtx');
+  menu.style.left = e.clientX + 'px';
+  menu.style.top = e.clientY + 'px';
+  menu.classList.add('show');
+}
+function hideSidebarCtx() { document.getElementById('sidebarCtx').classList.remove('show'); }
+document.addEventListener('click', hideSidebarCtx);
+
+function filterOnlyCb(cb) {
+  if (!cb) return;
+  cb.checked = true;
+  filterAndRender();
+}
+
+function bindCtxMenu() {
+  document.querySelectorAll('.sidebar-child input[type="checkbox"]').forEach(function(cb) {
+    cb.addEventListener('contextmenu', function(e) { showSidebarCtx(e, cb); });
+  });
+  document.querySelectorAll('.group-cb').forEach(function(cb) {
+    cb.addEventListener('contextmenu', function(e) { showSidebarCtx(e, cb); });
+  });
+}
+
+function bindGroupCheckboxes() {
+  document.querySelectorAll('.group-cb').forEach(function(cb) {
+    cb.addEventListener('change', function() {
+      var group = cb.closest('.sidebar-group');
+      var children = group.querySelectorAll('.sidebar-child input[type="checkbox"]');
+      children.forEach(function(c) { c.checked = cb.checked; });
+      filterAndRender();
+    });
+    cb.addEventListener('click', function(e) { e.stopPropagation(); });
+    cb.addEventListener('dblclick', function(e) { e.preventDefault(); });
+  });
+  document.querySelectorAll('.sidebar-child input[type="checkbox"]').forEach(function(cb) {
+    cb.addEventListener('change', function() {
+      var group = cb.closest('.sidebar-group');
+      var groupCb = group.querySelector('.group-cb');
+      var children = group.querySelectorAll('.sidebar-child input[type="checkbox"]');
+      var allChecked = true;
+      children.forEach(function(c) { if (!c.checked) allChecked = false; });
+      if (groupCb) groupCb.checked = allChecked;
+      filterAndRender();
+    });
+    cb.addEventListener('click', function(e) { e.stopPropagation(); });
+  });
+  /* Province-level (省本级/浙报集团) checkbox */
+  var provinceCb = document.querySelector('.sidebar-group:first-child .group-cb');
+  if (provinceCb) {
+    provinceCb.addEventListener('change', function() {
+      var children = provinceCb.closest('.sidebar-group').querySelectorAll('.sidebar-child input[type="checkbox"]');
+      children.forEach(function(c) { c.checked = provinceCb.checked; });
+      filterAndRender();
+    });
+  }
+  var provinceChildCbs = document.querySelectorAll('.sidebar-group:first-child .sidebar-child input[type="checkbox"]');
+  provinceChildCbs.forEach(function(cb) {
+    cb.addEventListener('change', function() {
+      var group = cb.closest('.sidebar-group');
+      var groupCb = group.querySelector('.group-cb');
+      var children = group.querySelectorAll('.sidebar-child input[type="checkbox"]');
+      var allChecked = true;
+      children.forEach(function(c) { if (!c.checked) allChecked = false; });
+      if (groupCb) groupCb.checked = allChecked;
+      filterAndRender();
+    });
+  });
+}
+
+/* ========== Render Table ========== */
+function renderTable() {
+  var html = '<div class="date-group">2026-05-06</div><table><thead><tr>';
+  html += '<th class="col-no">序号</th><th class="col-title">稿件标题</th><th>来源</th><th class="col-type">类型</th><th class="col-wordcount" style="text-align:right">字数</th><th>发布站点</th><th>发布时间</th>';
+  html += '</tr></thead><tbody>';
+  articles.forEach(function(a, i) {
+    if (i === 8) html += '</tbody></table><div class="date-group">2026-05-05</div><table><thead><tr><th class="col-no">序号</th><th class="col-title">稿件标题</th><th>来源</th><th class="col-type">类型</th><th class="col-wordcount" style="text-align:right">字数</th><th>发布产品</th><th>共享时间</th></tr></thead><tbody>';
+    html += '<tr>';
+    html += '<td class="col-no">' + (i < 8 ? i + 1 : i - 7) + '</td>';
+    html += '<td class="col-title"><a href="#" onclick="showDetail(' + i + ');return false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>' + a.title + '</a></td>';
+    html += '<td class="col-source">' + a.source + '</td>';
+    html += '<td class="col-type">' + a.type + '</td>';
+    html += '<td class="col-wordcount">' + a.wc + '</td>';
+    html += '<td class="col-product">' + a.product + '</td>';
+    html += '<td class="col-time">' + a.time + '</td>';
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  document.getElementById('tableWrapper').innerHTML = html;
+}
+
+/* ========== Detail ========== */
+function showDetail(idx) {
+  var a = articles[idx];
+  document.getElementById('detailTitle').textContent = a.title;
+  document.getElementById('detailSite').textContent = a.product;
+  document.getElementById('detailChannel').textContent = a.channel;
+  document.getElementById('detailTime').textContent = a.time;
+  document.getElementById('detailContent').innerHTML = a.content || '<p>正文内容加载中...</p>';
+  document.getElementById('listView').classList.add('hidden');
+  document.getElementById('detailView').classList.add('active');
+  document.getElementById('sidebar').style.display = 'none';
+}
+function goBack() {
+  document.getElementById('detailView').classList.remove('active');
+  document.getElementById('listView').classList.remove('hidden');
+  document.getElementById('sidebar').style.display = '';
+}
+
+/* ========== PRD ========== */
+function inlineFmt(s) { return s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>'); }
+function md2html(md) {
+  var lines = md.split('\n'), h = '', inUl = false, liOpen = false, inNestedUl = false, inTable = false, inCode = false, codeLines = '';
+  for (var j = 0; j < lines.length; j++) {
+    var ln = lines[j], tr = ln.trim();
+    if (tr.startsWith('```')) {
+      if (inCode) { h += '<pre style="background:#f8f9fa;padding:12px;border-radius:6px;font-size:12px;overflow-x:auto;margin:10px 0"><code>' + codeLines + '</code></pre>'; inCode = false; codeLines = ''; continue; }
+      if (inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}
+      inCode=true;codeLines='';continue;
+    }
+    if (inCode){codeLines+=(codeLines?'\n':'')+ln.replace(/</g,'&lt;');continue}
+    if (!tr){if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}continue}
+    if (/^---+$/.test(tr)){if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}h+='<hr>';continue}
+    var hm=tr.match(/^(#{1,5})\s+(.+)$/);
+    if(hm){if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}h+='<h'+hm[1].length+' id="h-'+j+'">'+inlineFmt(hm[2])+'</h'+hm[1].length+'>';continue}
+    if(/^\|(.+)\|$/.test(tr)){if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}if(!inTable){var nxt=(j+1<lines.length)?lines[j+1].trim():'';if(/^\|[\s\-:]+\|$/.test(nxt)){h+='<table class="prd-table"><thead><tr>';var hc=tr.replace(/^\|/,'').replace(/\|$/,'').split('|');for(var ci=0;ci<hc.length;ci++)h+='<th>'+inlineFmt(hc[ci].trim())+'</th>';h+='</tr></thead><tbody>';inTable=true;j++;continue}h+='<table class="prd-table"><tbody>';inTable=true}if(/^\|[\s\-:]+\|$/.test(tr))continue;var cells=tr.replace(/^\|/,'').replace(/\|$/,'').split('|');h+='<tr>';for(var ci=0;ci<cells.length;ci++)h+='<td>'+inlineFmt(cells[ci].trim())+'</td>';h+='</tr>';continue}
+    if(inTable){h+='</tbody></table>';inTable=false}
+    if(/^\s{2,}- /.test(ln)){if(!inNestedUl)h+='<ul class="prd-nested">';inNestedUl=true;h+='<li>'+inlineFmt(tr.replace(/^- /,''))+'</li>';continue}
+    if(/^- /.test(ln)){if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen)h+='</li>';if(!inUl){h+='<ul class="prd-list">';inUl=true}h+='<li>'+inlineFmt(tr.replace(/^- /,''));liOpen=true;continue}
+    if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}
+    h+='<p>'+inlineFmt(tr)+'</p>';
+  }
+  if(inNestedUl)h+='</ul>';if(liOpen)h+='</li>';if(inUl)h+='</ul>';if(inTable)h+='</tbody></table>';if(inCode)h+='<pre style="background:#f8f9fa;padding:12px;border-radius:6px;font-size:12px"><code>'+codeLines+'</code></pre>';
+  return h;
+}
+function buildToc(md) {
+  var lines = md.split('\n'), toc = [];
+  for (var j = 0; j < lines.length; j++) {
+    var hm = lines[j].trim().match(/^(#{2,5})\s+(.+)$/);
+    if (hm) toc.push({ id: 'h-' + j, text: hm[2].replace(/\*\*/g, ''), level: hm[1].length });
+  }
+  var html = '';
+  toc.forEach(function(t) {
+    var cls = t.level > 2 ? ' level-' + t.level : '';
+    html += '<div class="prd-toc-item' + cls + '" onclick="document.getElementById(\'' + t.id + '\').scrollIntoView({behavior:\'smooth\',block:\'start\'})">' + t.text + '</div>';
+  });
+  document.getElementById('prdToc').innerHTML = html;
+}
+function togglePrdPanel() {
+  var p = document.getElementById('prdPanel'), t = document.getElementById('prdToggle');
+  p.classList.toggle('collapsed');
+  t.querySelector('.toggle-dot').style.background = p.classList.contains('collapsed') ? '#aaa' : 'var(--green)';
+}
+
+/* ========== Drag ========== */
+(function() {
+  var drag = document.getElementById('splitDrag'), panel = document.getElementById('prdPanel'), startX, startW;
+  drag.addEventListener('mousedown', function(e) {
+    e.preventDefault(); startX = e.clientX; startW = panel.offsetWidth; drag.classList.add('dragging');
+    document.body.style.cursor = 'col-resize'; document.body.style.userSelect = 'none';
+    function onMove(e) { var w = startW - (e.clientX - startX); if (w < 200) w = 200; if (w > window.innerWidth * 0.7) w = window.innerWidth * 0.7; panel.style.width = w + 'px'; }
+    function onUp() { drag.classList.remove('dragging'); document.body.style.cursor = ''; document.body.style.userSelect = ''; document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); }
+    document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onUp);
+  });
+})();
+
+/* ========== Changelog ========== */
+var changelogData = [{ time: '2026-05-06', desc: '初始版本：全省资源库列表页 + 稿件详情页原型 + PRD' }];
+function toggleChangelog() {
+  var o = document.getElementById('changelogOverlay'), m = document.getElementById('changelogModal'), isOpen = m.classList.contains('show');
+  o.classList.toggle('show', !isOpen); m.classList.toggle('show', !isOpen);
+  if (!isOpen) { var b = document.getElementById('changelogBody'), h = '<table class="changelog-table"><thead><tr><th>更新时间</th><th>说明</th></tr></thead><tbody>'; changelogData.forEach(function(c) { h += '<tr><td>' + c.time + '</td><td>' + c.desc + '</td></tr>'; }); b.innerHTML = h + '</tbody></table>'; }
+}
+
+/* ========== Init ========== */
+var channelData = [
+  { name: '潮新闻', columns: ['新闻','专题','评论','图集'] },
+  { name: '浙江新闻', columns: ['要闻','社会','财经','文化'] },
+  { name: '天目新闻', columns: ['热点','深度','视频','图片'] },
+  { name: '钱江晚报', columns: ['城事','教育','健康','消费'] },
+  { name: '爱平阳客户端', columns: ['新闻','视频','图片'] },
+  { name: '上城发布', columns: ['要闻','民生','文化'] },
+  { name: '桐庐发布', columns: ['新闻','专题','视频'] },
+  { name: '余杭发布', columns: ['要闻','科技','民生'] },
+  { name: '定海山客户端', columns: ['新闻','专题','图片'] },
+  { name: '鄞州发布', columns: ['要闻','经济','民生'] },
+  { name: '嘉兴在线', columns: ['新闻','评论','专题'] },
+  { name: '义乌商报', columns: ['要闻','商贸','社会'] },
+  { name: '柯桥发布', columns: ['新闻','经济','文化'] },
+  { name: '岱山发布', columns: ['新闻','专题','图片'] },
+  { name: '东阳发布', columns: ['要闻','影视','社会'] },
+  { name: '江山发布', columns: ['新闻','民生','专题'] },
+  { name: '温岭发布', columns: ['要闻','经济','民生'] },
+  { name: '南浔发布', columns: ['新闻','文旅','专题'] },
+  { name: '乐清发布', columns: ['要闻','经济','社会'] },
+  { name: '丽水发布', columns: ['新闻','生态','文化'] },
+  { name: '柯城发布', columns: ['要闻','社会','专题'] },
+  { name: '上虞发布', columns: ['新闻','经济','文化'] }
+];
+
+function toggleFetchModal() {
+  var o = document.getElementById('fetchOverlay'), m = document.getElementById('fetchModal');
+  var isOpen = m.classList.contains('show');
+  o.classList.toggle('show', !isOpen); m.classList.toggle('show', !isOpen);
+  if (!isOpen) {
+    var sel = document.getElementById('fetchChannel');
+    sel.innerHTML = '<option value="">请选择渠道</option>';
+    channelData.forEach(function(c) { sel.innerHTML += '<option value="' + c.name + '">' + c.name + '</option>'; });
+    document.getElementById('fetchColumn').innerHTML = '<option value="">请先选择渠道</option>';
+  }
+}
+
+function onChannelChange() {
+  var name = document.getElementById('fetchChannel').value;
+  var colSel = document.getElementById('fetchColumn');
+  colSel.innerHTML = '';
+  if (!name) { colSel.innerHTML = '<option value="">请先选择渠道</option>'; return; }
+  var ch = channelData.find(function(c) { return c.name === name; });
+  colSel.innerHTML = '<option value="">请选择栏目</option>';
+  if (ch) ch.columns.forEach(function(c) { colSel.innerHTML += '<option value="' + c + '">' + c + '</option>'; });
+}
+
+function getSelectedArticles() {
+  var sel = [];
+  document.querySelectorAll('.row-cb:checked').forEach(function(cb) { sel.push(parseInt(cb.getAttribute('data-idx'))); });
+  return sel;
+}
+
+function toggleAllRows(cb) {
+  document.querySelectorAll('.row-cb').forEach(function(c) { c.checked = cb.checked; });
+  updSel();
+}
+
+function updSel() {
+  var count = document.querySelectorAll('.row-cb:checked').length;
+  document.getElementById('selCount').textContent = count;
+  var allBox = document.getElementById('checkAll');
+  var total = document.querySelectorAll('.row-cb').length;
+  if (allBox) allBox.checked = total > 0 && count === total;
+}
+
+function clearSel() {
+  document.getElementById('checkAll').checked = false;
+  document.querySelectorAll('.row-cb').forEach(function(c) { c.checked = false; });
+  updSel();
+}
+
+function confirmFetch() {
+  var sel = getSelectedArticles();
+  if (sel.length === 0) { showToast('请先选择稿件', true); return; }
+  var ch = document.getElementById('fetchChannel').value;
+  var col = document.getElementById('fetchColumn').value;
+  if (!ch) { showToast('请选择渠道', true); return; }
+  if (!col) { showToast('请选择栏目', true); return; }
+  toggleFetchModal();
+  showToast('取稿成功：已将 ' + sel.length + ' 篇稿件取至 ' + ch + ' - ' + col);
+}
+
+function showToast(msg, isWarn) {
+  var container = document.getElementById('toastContainer');
+  var toast = document.createElement('div');
+  toast.className = 'toast';
+  if (isWarn) toast.innerHTML = '<span style="color:var(--destructive);font-weight:500">' + msg + '</span>';
+  else toast.innerHTML = '<span class="toast-icon"></span><span>' + msg + '</span>';
+  container.appendChild(toast);
+  setTimeout(function() { toast.classList.add('out'); setTimeout(function() { toast.remove(); }, 300); }, 3000);
+}
+document.addEventListener('DOMContentLoaded', function() {
+  renderRegions();
+  filterAndRender();
+  document.getElementById('ctxFilterOnly').addEventListener('click', function() {
+    if (!ctxTarget) return;
+    document.querySelectorAll('.sidebar input[type="checkbox"]').forEach(function(c) { c.checked = false; });
+    ctxTarget.checked = true;
+    var group = ctxTarget.closest('.sidebar-group');
+    if (group) {
+      var groupCb = group.querySelector('.group-cb');
+      var children = group.querySelectorAll('.sidebar-child input[type="checkbox"]');
+      if (groupCb) groupCb.checked = children.length === 1;
+    }
+    filterAndRender();
+    hideSidebarCtx();
+  });
+  var md = document.getElementById('prdMdSource').textContent;
+  document.getElementById('prdContent').innerHTML = md2html(md);
+  buildToc(md);
+});
+</script>
+
+<!-- Fetch Modal -->
+<div class="fetch-overlay" id="fetchOverlay" onclick="toggleFetchModal()"></div>
+<div class="fetch-modal" id="fetchModal">
+    <div class="fetch-header">
+        <h3>取稿</h3>
+        <button class="changelog-close" onclick="toggleFetchModal()">&times;</button>
+    </div>
+    <div class="fetch-body">
+        <div class="fetch-field">
+            <label class="fetch-label">渠道</label>
+            <select class="input fetch-select" id="fetchChannel" onchange="onChannelChange()">
+                <option value="">请选择渠道</option>
+            </select>
+        </div>
+        <div class="fetch-field">
+            <label class="fetch-label">栏目</label>
+            <select class="input fetch-select" id="fetchColumn">
+                <option value="">请先选择渠道</option>
+            </select>
+        </div>
+    </div>
+    <div class="fetch-footer">
+        <button class="btn btn-secondary btn-sm" onclick="toggleFetchModal()">取消</button>
+        <button class="btn btn-primary btn-sm" onclick="confirmFetch()">确认取稿</button>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Sidebar Context Menu -->
+<div class="sidebar-ctx" id="sidebarCtx">
+    <div class="sidebar-ctx-item" id="ctxFilterOnly">仅筛选此项</div>
+</div>
+
+</body>
+</html>

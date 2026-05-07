@@ -19,6 +19,8 @@
       "49c6792fa9fa0168ee0fd4c7af6113984a5ab3234bc03eb48ff39c9d1f2ae5f6",
     "police-media":
       "738f8446b5099426f268e425f8f1fbd0a34531466acfd19d1d4d4317849463a1",
+    "provincial-resource":
+      "1052f1b0c3611bf45053e44e176f1c1a3802384e5e998694a49fd9d591452914",
   };
 
   var projectKey = "root";
