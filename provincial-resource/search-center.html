@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>搜索中心 - 智能媒资系统</title>
+<script src="../auth.js"></script>
+<style>
+:root {
+  --primary: #2e65f5;
+  --primary-light: #eef2ff;
+  --primary-dark: #1d4ed8;
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+  --bg: #f8fafc;
+  --bg-white: #fff;
+  --text: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --brand: #3b82f6;
+  --brand-light: #eff6ff;
+  --foreground: #0a0a0a;
+  --muted: #f5f5f5;
+  --muted-foreground: #737373;
+  --sidebar-bg: #f8fafc;
+  --sidebar-active: #e0e7ff;
+  --sidebar-hover: #f1f5f9;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.05);
+  --shadow: 0 1px 3px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.06);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05);
+  --radius: 8px;
+  --radius-sm: 6px;
+  --radius-lg: 12px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
+
+/* ===== Top Header ===== */
+.top-header{height:56px;flex-shrink:0;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;z-index:100}
+.header-left{display:flex;align-items:center;gap:12px}
+.logo{width:32px;height:32px;background:var(--foreground);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700}
+.sys-name{font-size:16px;font-weight:600}
+.header-nav{display:flex;align-items:center;gap:4px;margin-left:24px}
+.h-nav-item{padding:8px 16px;font-size:14px;color:var(--text-secondary);cursor:pointer;border-radius:6px;transition:all .15s;user-select:none;position:relative;display:flex;align-items:center;gap:2px}
+.h-nav-item:hover{background:var(--muted);color:var(--foreground)}
+.h-nav-item.active{color:var(--brand);font-weight:500}
+.h-nav-dd{position:relative;display:flex;align-items:center}
+.h-nav-dd::after{content:'';display:inline-block;width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:4px solid currentColor;margin-left:4px;opacity:.4;vertical-align:middle}
+.h-nav-dd-menu{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.1);padding:16px 0;min-width:480px;z-index:200;margin-top:4px}
+.h-nav-dd:hover .h-nav-dd-menu{display:flex}
+.dd-section{flex:1;padding:0 20px}
+.dd-section+.dd-section{border-left:1px solid var(--border-light)}
+.dd-title{font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border-light);text-transform:uppercase;letter-spacing:.05em}
+.dd-item{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;color:var(--text-secondary);cursor:pointer;transition:color .15s}
+.dd-item:hover{color:var(--brand)}
+.dd-item svg{width:14px;height:14px;flex-shrink:0}
+.dd-highlight .dd-title{color:var(--brand)}
+.dd-highlight .dd-item{color:var(--brand);font-weight:500}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.btn-upload{height:34px;padding:0 14px;background:var(--brand);color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px}
+.btn-upload:hover{opacity:.9}
+.btn-upload svg{width:14px;height:14px}
+.user-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:600;cursor:pointer}
+
+/* ===== Main ===== */
+.main { max-width: 1400px; margin: 0 auto; padding: 20px 24px; }
+
+/* ===== Search Panel ===== */
+.search-panel { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 16px; box-shadow: var(--shadow-sm); }
+.search-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin: -20px -24px 20px; padding: 0 24px; }
+.search-tab { padding: 14px 20px; font-size: 14px; color: var(--text-secondary); cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; margin-bottom: -1px; }
+.search-tab:hover { color: var(--text); }
+.search-tab.active { color: var(--primary); font-weight: 500; border-bottom-color: var(--primary); }
+.search-form { display: none; }
+.search-form.active { display: block; }
+
+/* Precise search form */
+.form-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.form-label { font-size: 13px; color: var(--text-secondary); white-space: nowrap; min-width: 70px; text-align: right; }
+.form-input { flex: 1; min-width: 200px; height: 36px; padding: 0 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; outline: none; transition: border .15s; }
+.form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(46,101,245,.1); }
+.form-select { height: 36px; padding: 0 28px 0 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; color: var(--text); background: var(--bg-white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") right 10px center no-repeat; appearance: none; cursor: pointer; outline: none; transition: border .15s; }
+.form-select:focus { border-color: var(--primary); }
+.form-radio-group { display: flex; gap: 16px; align-items: center; }
+.form-radio { display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 13px; color: var(--text); }
+.form-radio input { accent-color: var(--primary); }
+.form-actions { display: flex; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-light); }
+.btn { padding: 7px 20px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; cursor: pointer; transition: all .15s; background: var(--bg-white); color: var(--text); }
+.btn:hover { border-color: var(--text-muted); }
+.btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-primary:hover { background: var(--primary-dark); border-color: var(--primary-dark); }
+.btn-ghost { border: none; color: var(--text-secondary); background: transparent; }
+.btn-ghost:hover { color: var(--primary); }
+
+/* Image search */
+.img-upload-area { width: 100%; height: 160px; border: 2px dashed var(--border); border-radius: var(--radius); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: border .15s; color: var(--text-muted); }
+.img-upload-area:hover { border-color: var(--primary); color: var(--primary); }
+.img-upload-area svg { width: 36px; height: 36px; }
+.img-upload-area span { font-size: 13px; }
+.img-search-hint { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
+
+/* Text-to-image */
+.text-search-area textarea { width: 100%; height: 80px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; resize: vertical; outline: none; font-family: inherit; transition: border .15s; }
+.text-search-area textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(46,101,245,.1); }
+.text-search-area .hint { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+
+/* ===== Toolbar ===== */
+.toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding: 10px 16px; background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); }
+.toolbar-left { display: flex; align-items: center; gap: 10px; }
+.toolbar-check { display: flex; align-items: center; gap: 4px; font-size: 13px; color: var(--text-secondary); cursor: pointer; }
+.toolbar-check input { accent-color: var(--primary); width: 15px; height: 15px; }
+.toolbar-count { font-size: 13px; color: var(--text-secondary); }
+.toolbar-count strong { color: var(--primary); font-weight: 600; }
+.toolbar-clear { font-size: 12px; color: var(--primary); cursor: pointer; }
+.toolbar-clear:hover { text-decoration: underline; }
+.toolbar-right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.toolbar-btn { display: flex; align-items: center; gap: 4px; padding: 5px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 12px; color: var(--text-secondary); cursor: pointer; background: var(--bg-white); transition: all .15s; }
+.toolbar-btn:hover { border-color: var(--primary); color: var(--primary); }
+.toolbar-btn svg { width: 14px; height: 14px; }
+.sort-select { height: 30px; padding: 0 24px 0 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 12px; color: var(--text-secondary); background: var(--bg-white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") right 6px center no-repeat; appearance: none; cursor: pointer; outline: none; }
+
+/* ===== Card Grid ===== */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; margin-bottom: 20px; }
+.card { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: all .2s; position: relative; }
+.card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.card.selected { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(46,101,245,.2); }
+.card-check { position: absolute; top: 8px; left: 8px; z-index: 10; width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; opacity: 0; transition: opacity .15s; }
+.card:hover .card-check, .card.selected .card-check { opacity: 1; }
+.card-img { width: 100%; aspect-ratio: 16/11; object-fit: cover; display: block; background: var(--bg); }
+.card-body { padding: 10px 12px; }
+.card-title { font-size: 13px; color: var(--text); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 6px; }
+.card-meta { display: flex; justify-content: space-between; align-items: center; }
+.card-date { font-size: 11px; color: var(--text-muted); }
+.card-source { font-size: 11px; color: var(--primary); background: var(--primary-light); padding: 1px 6px; border-radius: 3px; }
+.card-actions { position: absolute; bottom: 54px; left: 0; right: 0; display: flex; justify-content: center; gap: 2px; padding: 6px 0; background: linear-gradient(transparent, rgba(0,0,0,.6)); opacity: 0; transition: opacity .2s; }
+.card:hover .card-actions { opacity: 1; }
+.card-action-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(255,255,255,.9); border: none; cursor: pointer; transition: all .15s; color: var(--text-secondary); }
+.card-action-btn:hover { background: #fff; color: var(--primary); box-shadow: var(--shadow); }
+.card-action-btn svg { width: 16px; height: 16px; }
+
+/* ===== Pagination ===== */
+.pagination { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 16px 0; }
+.pg-info { font-size: 13px; color: var(--text-secondary); margin-right: 12px; }
+.pg-size { height: 32px; padding: 0 24px 0 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; appearance: none; background: var(--bg-white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") right 6px center no-repeat; cursor: pointer; outline: none; margin-right: 8px; }
+.pg-btn { min-width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; color: var(--text-secondary); cursor: pointer; background: var(--bg-white); transition: all .15s; padding: 0 6px; }
+.pg-btn:hover:not(.disabled):not(.active) { border-color: var(--primary); color: var(--primary); }
+.pg-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.pg-btn.disabled { opacity: .4; cursor: not-allowed; }
+.pg-jump { display: flex; align-items: center; gap: 4px; font-size: 13px; color: var(--text-secondary); margin-left: 8px; }
+.pg-jump input { width: 48px; height: 32px; text-align: center; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; outline: none; }
+.pg-jump input:focus { border-color: var(--primary); }
+
+/* ===== Preview Modal ===== */
+.preview-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 500; }
+.preview-overlay.show { display: flex; align-items: center; justify-content: center; }
+.preview-modal { width: 900px; max-height: 85vh; background: var(--bg-white); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); overflow: hidden; display: flex; flex-direction: column; }
+.preview-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border); }
+.preview-header h3 { font-size: 15px; font-weight: 600; }
+.preview-close { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border: none; background: none; cursor: pointer; font-size: 18px; color: var(--text-secondary); border-radius: 50%; transition: background .15s; }
+.preview-close:hover { background: var(--bg); }
+.preview-body { display: flex; flex: 1; overflow: hidden; }
+.preview-img-area { flex: 1; background: #000; display: flex; align-items: center; justify-content: center; min-height: 400px; max-height: 60vh; overflow: hidden; }
+.preview-img-area img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.preview-sidebar { width: 260px; border-left: 1px solid var(--border); padding: 16px; overflow-y: auto; }
+.preview-sidebar h4 { font-size: 14px; font-weight: 500; margin-bottom: 12px; }
+.preview-field { margin-bottom: 10px; }
+.preview-field-label { font-size: 12px; color: var(--text-muted); margin-bottom: 2px; }
+.preview-field-value { font-size: 13px; color: var(--text); }
+.preview-footer { display: flex; align-items: center; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--border); justify-content: center; }
+.preview-footer .btn { min-width: 100px; }
+
+/* ===== Empty State ===== */
+.empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+.empty-state svg { width: 48px; height: 48px; margin-bottom: 12px; opacity: .4; }
+.empty-state p { font-size: 14px; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+    <header class="top-header">
+        <div class="header-left">
+            <div class="logo">M</div>
+            <span class="sys-name">媒资系统</span>
+        </div>
+        <nav class="header-nav">
+            <div class="h-nav-item">首页</div>
+            <div class="h-nav-item active">搜索中心</div>
+            <div class="h-nav-dd">
+                <div class="h-nav-item">资源中心</div>
+                <div class="h-nav-dd-menu">
+                    <div class="dd-section">
+                        <div class="dd-title">网络资源库</div>
+                        <div class="dd-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/></svg>网络稿件</div>
+                        <div class="dd-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>网络视频</div>
+                        <div class="dd-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>网络图片</div>
+                        <div class="dd-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>网络音频</div>
+                    </div>
+                    <div class="dd-section dd-highlight">
+                        <div class="dd-title">全省资源库</div>
+                        <div class="dd-item" onclick="location.href='index.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>成品稿件</div>
+                        <div class="dd-item" onclick="location.href='image.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>成品图片</div>
+                        <div class="dd-item" onclick="location.href='video.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>成品视频</div>
+                    </div>
+                </div>
+            </div>
+            <div class="h-nav-item">素材中心</div>
+            <div class="h-nav-item">审批中心</div>
+            <div class="h-nav-item">同步中心</div>
+            <div class="h-nav-item">智能标签库</div>
+        </nav>
+        <div class="header-right">
+            <button class="btn-upload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>上传</button>
+            <div class="user-avatar">李</div>
+        </div>
+    </header>
+
+<!-- Main Content -->
+<div class="main">
+
+  <!-- Search Panel -->
+  <div class="search-panel">
+    <div class="search-tabs">
+      <div class="search-tab active" onclick="switchTab(0)">精准检索</div>
+      <div class="search-tab" onclick="switchTab(1)">文搜图</div>
+      <div class="search-tab" onclick="switchTab(2)">图搜图</div>
+    </div>
+
+    <!-- Tab 0: Precise Search -->
+    <div class="search-form active" id="tab0">
+      <div class="form-row">
+        <span class="form-label">稿件标题</span>
+        <input class="form-input" type="text" placeholder="输入关键词，多个用空格隔开进行搜索" id="searchInput">
+        <select class="form-select" style="width:140px">
+          <option>全部</option>
+          <option>标题</option>
+          <option>描述</option>
+          <option>正文</option>
+          <option>人脸</option>
+          <option>场景</option>
+          <option>物体</option>
+          <option>LOGO</option>
+          <option>文本识别</option>
+          <option>见报媒体</option>
+          <option>作者</option>
+          <option>自定义标签</option>
+        </select>
+        <select class="form-select" style="width:160px">
+          <option>包含全部关键词</option>
+          <option>包含任意关键词</option>
+          <option>不包含任意关键词</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <span class="form-label">发布时间</span>
+        <div class="form-radio-group">
+          <label class="form-radio"><input type="radio" name="dateType" checked> 全部</label>
+          <label class="form-radio"><input type="radio" name="dateType"> 单日期</label>
+          <label class="form-radio"><input type="radio" name="dateType"> 时间段</label>
+          <label class="form-radio"><input type="radio" name="dateType"> 特殊日期</label>
+        </div>
+      </div>
+      <div class="form-row">
+        <span class="form-label">资源库</span>
+        <div class="form-radio-group">
+          <label class="form-radio"><input type="radio" name="libType" checked onchange="doSearch()"> 全部</label>
+          <label class="form-radio"><input type="radio" name="libType" onchange="doSearch()"> 网络资源库</label>
+          <label class="form-radio"><input type="radio" name="libType" onchange="doSearch()"> 个人素材库</label>
+          <label class="form-radio"><input type="radio" name="libType" onchange="doSearch()"> 全省资源库</label>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" onclick="resetForm()">重置条件</button>
+        <button class="btn btn-primary" onclick="doSearch()">搜索</button>
+        <button class="btn btn-ghost" onclick="toggleSearchPanel()">收起 ▲</button>
+      </div>
+    </div>
+
+    <!-- Tab 1: Text to Image -->
+    <div class="search-form" id="tab1">
+      <div class="text-search-area">
+        <textarea placeholder="请输入描述文字，系统将根据语义匹配相关图片&#10;例如：西湖边的樱花、城市夜景、会议现场" id="textSearchInput"></textarea>
+        <div class="hint">支持自然语言描述，系统将自动理解语义并检索相关图片</div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost">重置条件</button>
+        <button class="btn btn-primary">搜索</button>
+      </div>
+    </div>
+
+    <!-- Tab 2: Image to Image -->
+    <div class="search-form" id="tab2">
+      <div class="img-upload-area" onclick="document.getElementById('imgUpload').click()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span>点击或拖拽上传图片</span>
+        <span style="font-size:12px">支持 JPG、PNG 格式，不超过 10MB</span>
+      </div>
+      <input type="file" id="imgUpload" accept="image/*" style="display:none">
+      <div class="img-search-hint">上传图片后，系统将自动检索相似图片</div>
+      <div class="form-actions">
+        <button class="btn btn-ghost">重置条件</button>
+        <button class="btn btn-primary">搜索</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <label class="toolbar-check"><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"> 全选</label>
+      <span class="toolbar-count">已选 <strong id="selectedCount">0</strong> 项</span>
+      <span class="toolbar-clear" onclick="clearSelection()" id="clearBtn" style="display:none">清除</span>
+      <span style="color:var(--text-muted);font-size:13px;margin-left:8px">找到约 <strong style="color:var(--primary)" id="totalCount">0</strong> 条相关结果</span>
+    </div>
+    <div class="toolbar-right">
+      <select class="sort-select" onchange="sortData()">
+        <option value="time">时间排序</option>
+        <option value="rel">相关度排序</option>
+      </select>
+      <div class="toolbar-btn" onclick="batchDownload()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>下载</div>
+      <div class="toolbar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>加入素材库</div>
+    </div>
+  </div>
+
+  <!-- Card Grid -->
+  <div class="card-grid" id="cardGrid"></div>
+
+  <!-- Pagination -->
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<!-- Preview Modal -->
+<div class="preview-overlay" id="previewOverlay" onclick="closePreview(event)">
+  <div class="preview-modal" onclick="event.stopPropagation()">
+    <div class="preview-header">
+      <h3>预览</h3>
+      <button class="preview-close" onclick="closePreview()">&times;</button>
+    </div>
+    <div class="preview-body">
+      <div class="preview-img-area"><img id="previewImg" src=""></div>
+      <div class="preview-sidebar">
+        <h4>图片信息</h4>
+        <div class="preview-field"><div class="preview-field-label">标题</div><div class="preview-field-value" id="previewTitle"></div></div>
+        <div class="preview-field"><div class="preview-field-label">发布时间</div><div class="preview-field-value" id="previewDate"></div></div>
+        <div class="preview-field"><div class="preview-field-label">来源</div><div class="preview-field-value" id="previewSource"></div></div>
+        <div class="preview-field"><div class="preview-field-label">资源库</div><div class="preview-field-value" id="previewLib"></div></div>
+      </div>
+    </div>
+    <div class="preview-footer">
+      <button class="btn"><svg style="width:14px;height:14px;margin-right:4px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>下载</button>
+      <button class="btn"><svg style="width:14px;height:14px;margin-right:4px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>加入素材库</button>
+      <button class="btn"><svg style="width:14px;height:14px;margin-right:4px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>找相似</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var DATA = [
+  { img:'img/b90bfe95-5904-4c50-82cc-1041830e3671_m.jpg', title:'四川成都：视障人士体验依靠智能导盲犬出行', date:'2026-04-21 16:50', source:'网络资源库' },
+  { img:'img/f89c4e15-9d26-4602-a126-8c16167c8480_m.jpg', title:'杭州亚运会场馆赛后利用一周年成果展示', date:'2026-04-20 09:30', source:'全省资源库' },
+  { img:'img/8252fbe5-9f01-4712-8775-6eec3976ba6b_m.jpg', title:'浙江省数字经济创新发展的新篇章', date:'2026-04-19 14:22', source:'网络资源库' },
+  { img:'img/4f309388-b9a0-4f53-a81f-52a7b420f924_m.jpg', title:'西湖景区春日樱花盛开游人如织', date:'2026-04-18 11:05', source:'全省资源库' },
+  { img:'img/80077534-66d6-4bb6-b2b9-173fdc244dc0_m.jpg', title:'长三角一体化发展高层论坛在沪召开', date:'2026-04-17 08:45', source:'网络资源库' },
+  { img:'img/db1d8ad9-64aa-4460-a05f-6bf00b169980_m.jpg', title:'宁波舟山港年集装箱吞吐量创新纪录', date:'2026-04-16 16:30', source:'全省资源库' },
+  { img:'img/d27c9b18-561d-40e2-81fa-218c077492c5_m.jpg', title:'浙江省共同富裕示范区建设推进会现场', date:'2026-04-15 10:15', source:'网络资源库' },
+  { img:'img/f8cbc203-61f8-44ec-82cd-1b59353780b6_m.jpg', title:'杭州城市夜景灯光秀点亮钱塘江两岸', date:'2026-04-14 20:30', source:'全省资源库' },
+  { img:'img/191fe758-19a1-446f-8cae-16cb1c8c0660_m.png', title:'浙江省水利枢纽工程全景航拍图', date:'2026-04-13 09:00', source:'网络资源库' },
+  { img:'img/673c3d6e-114c-4f81-a6b8-bed9c03f4cc0_m.jpg', title:'温州民营经济高质量发展大会现场', date:'2026-04-12 15:45', source:'全省资源库' },
+  { img:'img/48318c6d-3f4a-45f4-921c-3ed4c4febd9a_m.jpg', title:'义乌国际商贸城数字化转型新成果', date:'2026-04-11 13:20', source:'网络资源库' },
+  { img:'img/4d8c8075-0daa-435f-a509-9b65880a4769_m.jpg', title:'绍兴古城文化旅游节盛大开幕', date:'2026-04-10 09:50', source:'全省资源库' },
+  { img:'img/2aa99f62-ba7c-4e36-9bf3-cffb1870b89c_m.jpg', title:'浙江省新材料产业创新发展论坛', date:'2026-04-09 11:30', source:'网络资源库' },
+  { img:'img/c57e0677-74ea-40fb-9efe-42ecfe368d56_m.png', title:'金华数字贸易博览会全景图', date:'2026-04-08 14:00', source:'全省资源库' },
+  { img:'img/6a461d0e-5448-4551-8a85-760682cfc1c5_m.jpg', title:'丽水生态产品价值实现机制成果展', date:'2026-04-07 10:10', source:'全省资源库' }
+];
+
+var pgCurrentPage = 1;
+var pgFilteredData = DATA;
+var selectedItems = [];
+
+function getPgSize() {
+  var sel = document.getElementById('pgSize');
+  return sel ? parseInt(sel.options[sel.selectedIndex].text) || 12 : 12;
+}
+
+function switchTab(idx) {
+  document.querySelectorAll('.search-tab').forEach(function(t,i){ t.classList.toggle('active', i===idx); });
+  document.querySelectorAll('.search-form').forEach(function(f,i){ f.classList.toggle('active', i===idx); });
+}
+
+function toggleSearchPanel() {
+  var panel = document.querySelector('.search-panel');
+  var forms = panel.querySelectorAll('.form-row, .form-actions');
+  var btn = panel.querySelector('.form-actions .btn-ghost:last-child');
+  var isCollapsed = panel.dataset.collapsed === '1';
+  if (isCollapsed) {
+    forms.forEach(function(f){ f.style.display=''; });
+    btn.textContent = '收起 ▲';
+    panel.dataset.collapsed = '0';
+  } else {
+    forms.forEach(function(f){ f.style.display='none'; });
+    btn.style.display = '';
+    btn.textContent = '展开 ▼';
+    panel.dataset.collapsed = '1';
+  }
+}
+
+function resetForm() {
+  document.getElementById('searchInput').value = '';
+  document.querySelectorAll('#tab0 input[type=radio]').forEach(function(r){ r.checked = false; });
+  document.querySelectorAll('#tab0 input[type=radio]:first-child').forEach(function(r){ r.checked = true; });
+}
+
+function doSearch() {
+  var kw = document.getElementById('searchInput').value.trim().toLowerCase();
+  var libRadio = document.querySelector('input[name="libType"]:checked');
+  var libType = libRadio ? libRadio.parentElement.textContent.trim() : '全部';
+  pgFilteredData = DATA;
+  if (kw) {
+    pgFilteredData = pgFilteredData.filter(function(d){ return d.title.toLowerCase().indexOf(kw) !== -1; });
+  }
+  if (libType === '全省资源库') {
+    pgFilteredData = pgFilteredData.filter(function(d){ return d.source === '全省资源库'; });
+  } else if (libType === '网络资源库') {
+    pgFilteredData = pgFilteredData.filter(function(d){ return d.source === '网络资源库'; });
+  }
+  pgCurrentPage = 1;
+  selectedItems = [];
+  renderPage();
+}
+
+function sortData() {
+  pgCurrentPage = 1;
+  renderPage();
+}
+
+function toggleSelectAll() {
+  var checked = document.getElementById('selectAll').checked;
+  var pgSize = getPgSize();
+  var offset = (pgCurrentPage - 1) * pgSize;
+  var pageData = pgFilteredData.slice(offset, offset + pgSize);
+  selectedItems = checked ? pageData.map(function(d){ return DATA.indexOf(d); }) : [];
+  renderCards(pageData, offset);
+  updateSelection();
+}
+
+function toggleSelect(idx) {
+  var pos = selectedItems.indexOf(idx);
+  if (pos === -1) selectedItems.push(idx); else selectedItems.splice(pos, 1);
+  var card = document.querySelector('.card[data-idx="'+idx+'"]');
+  if (card) card.classList.toggle('selected', selectedItems.indexOf(idx) !== -1);
+  updateSelection();
+}
+
+function clearSelection() {
+  selectedItems = [];
+  document.getElementById('selectAll').checked = false;
+  document.querySelectorAll('.card.selected').forEach(function(c){ c.classList.remove('selected'); });
+  updateSelection();
+}
+
+function updateSelection() {
+  document.getElementById('selectedCount').textContent = selectedItems.length;
+  document.getElementById('clearBtn').style.display = selectedItems.length > 0 ? '' : 'none';
+}
+
+function batchDownload() {
+  if (selectedItems.length === 0) return;
+  alert('已选择 ' + selectedItems.length + ' 项，下载功能演示');
+}
+
+function openPreview(idx) {
+  var d = DATA[idx];
+  document.getElementById('previewImg').src = d.img;
+  document.getElementById('previewTitle').textContent = d.title;
+  document.getElementById('previewDate').textContent = d.date;
+  document.getElementById('previewSource').textContent = d.source;
+  document.getElementById('previewLib').textContent = d.source;
+  document.getElementById('previewOverlay').classList.add('show');
+}
+
+function closePreview(e) {
+  if (e && e.target !== document.getElementById('previewOverlay') && !e.target.classList.contains('preview-close')) return;
+  document.getElementById('previewOverlay').classList.remove('show');
+}
+
+function renderCards(pageData, offset) {
+  var html = '';
+  pageData.forEach(function(d, i) {
+    var idx = DATA.indexOf(d);
+    var sel = selectedItems.indexOf(idx) !== -1 ? ' selected' : '';
+    html += '<div class="card'+sel+'" data-idx="'+idx+'" onclick="openPreview('+idx+')">';
+    html += '<input type="checkbox" class="card-check" onclick="event.stopPropagation();toggleSelect('+idx+')"'+(sel?' checked':'')+'>';
+    html += '<img class="card-img" src="'+d.img+'" loading="lazy">';
+    html += '<div class="card-actions">';
+    html += '<button class="card-action-btn" title="下载" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>';
+    html += '<button class="card-action-btn" title="加入素材库" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/></svg></button>';
+    html += '<button class="card-action-btn" title="找相似" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>';
+    html += '</div>';
+    html += '<div class="card-body"><div class="card-title">'+d.title+'</div><div class="card-meta"><span class="card-date">'+d.date+'</span><span class="card-source">'+d.source+'</span></div></div>';
+    html += '</div>';
+  });
+  document.getElementById('cardGrid').innerHTML = html;
+}
+
+function renderPage() {
+  var pgSize = getPgSize();
+  var total = pgFilteredData.length;
+  var totalPages = Math.ceil(total / pgSize) || 1;
+  if (pgCurrentPage > totalPages) pgCurrentPage = totalPages;
+  var offset = (pgCurrentPage - 1) * pgSize;
+  var pageData = pgFilteredData.slice(offset, offset + pgSize);
+
+  document.getElementById('totalCount').textContent = total;
+  renderCards(pageData, offset);
+  updateSelection();
+
+  // Pagination
+  var ph = '<span class="pg-info">共 '+total+' 条</span>';
+  ph += '<select class="pg-size" id="pgSize" onchange="pgCurrentPage=1;renderPage()">';
+  [12,20,40,60].forEach(function(n){ ph += '<option'+(n===pgSize?' selected':'')+'>'+n+'</option>'; });
+  ph += '</select>';
+  ph += '<div class="pg-btn'+(pgCurrentPage<=1?' disabled':'')+'" onclick="goPage('+(pgCurrentPage-1)+')">上一页</div>';
+  var start = Math.max(1, pgCurrentPage - 2);
+  var end = Math.min(totalPages, pgCurrentPage + 2);
+  if (start > 1) { ph += '<div class="pg-btn" onclick="goPage(1)">1</div>'; if (start > 2) ph += '<span style="padding:0 4px;color:var(--text-muted)">...</span>'; }
+  for (var i = start; i <= end; i++) { ph += '<div class="pg-btn'+(i===pgCurrentPage?' active':'')+'" onclick="goPage('+i+')">'+i+'</div>'; }
+  if (end < totalPages) { if (end < totalPages - 1) ph += '<span style="padding:0 4px;color:var(--text-muted)">...</span>'; ph += '<div class="pg-btn" onclick="goPage('+totalPages+')">'+totalPages+'</div>'; }
+  ph += '<div class="pg-btn'+(pgCurrentPage>=totalPages?' disabled':'')+'" onclick="goPage('+(pgCurrentPage+1)+')">下一页</div>';
+  ph += '<div class="pg-jump">前往 <input type="number" min="1" max="'+totalPages+'" onkeydown="if(event.key===\'Enter\')goPage(parseInt(this.value))"> 页</div>';
+  document.getElementById('pagination').innerHTML = ph;
+}
+
+function goPage(p) {
+  var pgSize = getPgSize();
+  var totalPages = Math.ceil(pgFilteredData.length / pgSize) || 1;
+  if (p < 1 || p > totalPages) return;
+  pgCurrentPage = p;
+  selectedItems = [];
+  document.getElementById('selectAll').checked = false;
+  renderPage();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  pgFilteredData = DATA;
+  renderPage();
+});
+</script>
+</body>
+</html>

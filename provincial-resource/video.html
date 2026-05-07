@@ -73,6 +73,10 @@
 
         /* ===== Client Sidebar ===== */
         .sidebar { width: 240px; flex-shrink: 0; background: var(--color-white); border-right: 1px solid var(--color-gray1); overflow-y: auto; padding: 8px 0; }
+        .sidebar-head{display:flex;align-items:center;justify-content:space-between;padding:6px 16px 10px;border-bottom:1px solid var(--color-gray1);margin-bottom:4px}
+        .sidebar-head-label{font-size:12px;font-weight:600;color:var(--color-text3)}
+        .sidebar-clear{font-size:12px;color:var(--color-primary);cursor:pointer;display:none}
+        .sidebar-clear:hover{text-decoration:underline}
         .sidebar-group { margin-bottom: 2px; }
         .sidebar-group-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; cursor: pointer; color: #343f56; font-size: 14px; transition: background .15s; user-select: none; }
         .sidebar-group-header:hover { background: var(--color-primary-bg); }
@@ -92,6 +96,8 @@
         .sidebar-child:hover .ctx-trigger { display: flex; }
         .sidebar-child .ctx-trigger svg { width: 14px; height: 14px; color: var(--color-text4); }
         .sidebar-child .ctx-trigger:hover svg { color: var(--color-primary); }
+        .sidebar-child .ctx-trigger.active { display: flex !important; }
+        .sidebar-child .ctx-trigger.active svg { color: var(--color-primary); fill: var(--color-primary); }
 
         /* ===== Content ===== */
         .content { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
@@ -189,7 +195,7 @@
     </div>
     <nav class="header-nav">
         <div class="h-nav-item">首页</div>
-        <div class="h-nav-item" onclick="location.href='search.html'">搜索中心</div>
+        <div class="h-nav-item" onclick="location.href='search-center.html'">搜索中心</div>
         <div class="h-nav-dd">
             <div class="h-nav-item active">资源中心</div>
             <div class="h-nav-dd-menu">
@@ -227,6 +233,7 @@
 
 <div class="main">
     <aside class="sidebar" id="sidebar">
+        <div class="sidebar-head"><span class="sidebar-head-label">地域筛选</span><span class="sidebar-clear" id="sidebarClear" onclick="clearSidebar()">清空</span></div>
         <div class="sidebar-group">
             <div class="sidebar-group-header expanded" onclick="toggleGroup(this)">
                 <span class="left"><input type="checkbox" class="group-cb" data-group="province" onclick="event.stopPropagation()">省本级</span>
@@ -318,6 +325,8 @@ var regionData = [
 ];
 var regionMap = { '省本级': '省本级', '浙报集团': '省本级' };
 regionData.forEach(function(r) { regionMap[r.name + '本级'] = r.name; r.children.forEach(function(c) { regionMap[c] = r.name; }); });
+var funnelOnlyRegion = null;
+
 function getSelectedRegions() {
   var regions = [];
   document.querySelectorAll('.sidebar input[type="checkbox"]:checked').forEach(function(cb) {
@@ -366,6 +375,7 @@ function bindGroupCheckboxes() {
         cb.addEventListener('change', function() {
             var group = cb.closest('.sidebar-group');
             group.querySelectorAll('.sidebar-child input[type="checkbox"]').forEach(function(c) { c.checked = cb.checked; });
+            funnelOnlyRegion = null;
         });
     });
     document.querySelectorAll('.sidebar-child input[type="checkbox"]').forEach(function(cb) {
@@ -376,6 +386,7 @@ function bindGroupCheckboxes() {
             var allChecked = true;
             children.forEach(function(c) { if (!c.checked) allChecked = false; });
             if (groupCb) groupCb.checked = allChecked;
+            funnelOnlyRegion = null;
         });
         cb.addEventListener('click', function(e) { e.stopPropagation(); });
     });
@@ -385,11 +396,31 @@ function updSel() { document.getElementById('selCount').textContent = document.q
 function clearSel() { document.querySelectorAll('.filter-bar input[type=checkbox]')[0].checked = false; document.querySelectorAll('.card-cb input').forEach(function(c){c.checked=false}); updSel(); }
 function doSearch() {
     var kw = document.getElementById('searchInput').value.trim().toLowerCase();
-    var regions = getSelectedRegions();
     pgFilteredData = DATA;
     if (kw) { pgFilteredData = pgFilteredData.filter(function(d){return d.title.toLowerCase().indexOf(kw)!==-1}); }
-    if (regions.length > 0) { pgFilteredData = pgFilteredData.filter(function(d){ return regions.indexOf(d.region) !== -1; }); }
+    if (funnelOnlyRegion) {
+      var fr = funnelOnlyRegion;
+      if (regionData.some(function(r) { return r.name === fr; })) {
+        pgFilteredData = pgFilteredData.filter(function(d) { return d.region === fr + '本级'; });
+      } else {
+        pgFilteredData = pgFilteredData.filter(function(d) { return d.region === fr; });
+      }
+    } else {
+      var regions = getSelectedRegions();
+      if (regions.length > 0) { pgFilteredData = pgFilteredData.filter(function(d){ return regions.indexOf(d.region) !== -1; }); }
+    }
     pgCurrentPage = 1; renderPage();
+    updSidebarClear();
+    updFunnelVisuals();
+}
+function updSidebarClear() {
+    var hasChecked = document.querySelectorAll('.sidebar input[type="checkbox"]:checked').length > 0;
+    document.getElementById('sidebarClear').style.display = hasChecked ? 'inline' : 'none';
+}
+function clearSidebar() {
+    document.querySelectorAll('.sidebar input[type="checkbox"]').forEach(function(c) { c.checked = false; });
+    funnelOnlyRegion = null;
+    doSearch();
 }
 /* ===== Pagination ===== */
 var pgCurrentPage = 1;
@@ -409,9 +440,22 @@ function renderPage() {
   ctrl.innerHTML = h;
 }
 function filterOnlyCb(cb) {
-  if (!cb) return;
-  cb.checked = true;
-  doSearch();
+    if (!cb) return;
+    cb.checked = true;
+    var text = cb.parentElement.textContent.trim();
+    funnelOnlyRegion = (funnelOnlyRegion === text) ? null : text;
+    doSearch();
+}
+
+function updFunnelVisuals() {
+    document.querySelectorAll('.sidebar-child .ctx-trigger').forEach(function(el) {
+        var text = el.parentElement.textContent.trim();
+        if (funnelOnlyRegion && funnelOnlyRegion === text) {
+            el.classList.add('active');
+        } else {
+            el.classList.remove('active');
+        }
+    });
 }
 
 document.addEventListener('DOMContentLoaded', function(){ renderRegions(); pgFilteredData = DATA; renderPage(); });

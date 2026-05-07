@@ -6,39 +6,36 @@
     <title>网络资源管理 - 媒资系统</title>
     <style>
         :root {
-            --background: #fafbfc;
-            --foreground: #1a1d23;
+            --background: #ffffff;
+            --foreground: #0a0a0a;
             --card: #ffffff;
-            --card-foreground: #1a1d23;
+            --card-foreground: #0a0a0a;
             --popover: #ffffff;
-            --popover-foreground: #1a1d23;
-            --primary: #2563eb;
-            --primary-foreground: #ffffff;
-            --secondary: #f1f5f9;
-            --secondary-foreground: #1e293b;
-            --muted: #f1f5f9;
-            --muted-foreground: #64748b;
-            --accent: #f1f5f9;
-            --accent-foreground: #1e293b;
+            --popover-foreground: #0a0a0a;
+            --primary: #171717;
+            --primary-foreground: #fafafa;
+            --secondary: #f5f5f5;
+            --secondary-foreground: #171717;
+            --muted: #f5f5f5;
+            --muted-foreground: #737373;
+            --accent: #f5f5f5;
+            --accent-foreground: #171717;
             --destructive: #ef4444;
-            --destructive-foreground: #ffffff;
-            --border: #e2e8f0;
-            --input: #e2e8f0;
-            --ring: #2563eb;
+            --destructive-foreground: #fafafa;
+            --border: #e5e5e5;
+            --input: #e5e5e5;
+            --ring: #0a0a0a;
             --radius: 0.5rem;
             --sidebar-bg: #f8fafc;
-            --sidebar-active: #e0e7ff;
+            --sidebar-active: #f1f5f9;
             --sidebar-hover: #f1f5f9;
-            --brand: #2563eb;
+            --brand: #3b82f6;
             --brand-light: #eff6ff;
-            --border-light: #f1f5f9;
+            --border-light: #f0f0f0;
             --primary-light: #eff6ff;
-            --text-secondary: #64748b;
+            --text-secondary: #737373;
             --green: #22c55e;
             --slate-800: #1e293b;
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
-            --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
-            --shadow-lg: 0 12px 40px rgba(0,0,0,0.1);
         }
 
         * {
@@ -68,7 +65,6 @@
             height: 56px;
             background: #fff;
             border-bottom: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -89,15 +85,14 @@
         .system-logo {
             width: 32px;
             height: 32px;
-            background: var(--brand);
+            background: var(--primary);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 700;
-            letter-spacing: -0.5px;
         }
 
         .system-name {
@@ -135,7 +130,7 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background: var(--brand);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -189,9 +184,8 @@
 
         .sidebar-item.active {
             background: var(--sidebar-active);
-            color: var(--brand);
-            font-weight: 600;
-            box-shadow: inset 3px 0 0 var(--brand);
+            color: var(--foreground);
+            font-weight: 500;
         }
 
         .sidebar-item .icon {
@@ -286,6 +280,7 @@
 
         .page-container {
             padding: 24px 32px;
+            max-width: 1400px;
         }
 
         /* ========== Page Header ========== */
@@ -297,11 +292,10 @@
         }
 
         .page-header-left h2 {
-            font-size: 22px;
-            font-weight: 700;
+            font-size: 20px;
+            font-weight: 600;
             color: var(--foreground);
             margin-bottom: 4px;
-            letter-spacing: -0.02em;
         }
 
         .page-header-left p {
@@ -365,8 +359,8 @@
         }
 
         .input:focus {
-            border-color: var(--brand);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            border-color: var(--ring);
+            box-shadow: 0 0 0 2px rgba(10, 10, 10, 0.08);
         }
 
         .input::placeholder {
@@ -404,8 +398,8 @@
         }
 
         .select:focus {
-            border-color: var(--brand);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            border-color: var(--ring);
+            box-shadow: 0 0 0 2px rgba(10, 10, 10, 0.08);
         }
 
         /* ========== Buttons ========== */
@@ -427,14 +421,13 @@
         }
 
         .btn-primary {
-            background: var(--brand);
-            color: #fff;
-            border-color: var(--brand);
+            background: var(--primary);
+            color: var(--primary-foreground);
+            border-color: var(--primary);
         }
 
         .btn-primary:hover {
-            background: #1d4ed8;
-            border-color: #1d4ed8;
+            background: #262626;
         }
 
         .btn-secondary {
@@ -513,7 +506,6 @@
             border: 1px solid var(--border);
             border-radius: var(--radius);
             overflow: hidden;
-            box-shadow: var(--shadow-sm);
         }
 
         .table-wrapper {
@@ -526,26 +518,24 @@
         }
 
         thead {
-            background: #f8fafc;
+            background: var(--muted);
         }
 
         th {
             text-align: left;
             padding: 10px 16px;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 500;
             color: var(--muted-foreground);
             border-bottom: 1px solid var(--border);
             white-space: nowrap;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
         }
 
         td {
             padding: 12px 16px;
             font-size: 14px;
             color: var(--foreground);
-            border-bottom: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border);
             vertical-align: middle;
         }
 
@@ -558,7 +548,7 @@
         }
 
         tbody tr:hover {
-            background: var(--brand-light);
+            background: #fafafa;
         }
 
         .td-channel-name {
@@ -925,7 +915,7 @@
             border: 1px solid var(--border);
             border-radius: 10px;
             padding: 12px 16px;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -1027,7 +1017,7 @@
             background: var(--popover);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
             min-width: 160px;
             z-index: 50;
             padding: 4px;
@@ -1066,13 +1056,9 @@
 
         /* ========== Main Split Layout ========== */
         .app-split { display: flex; height: 100%; overflow: hidden; }
-        .app-split .page-container { flex: 1; min-width: 0; overflow-y: auto; position: relative; }
-        .prd-panel { width: 460px; flex-shrink: 0; display: flex; flex-direction: column; border-left: 1px solid var(--border); background: #fff; overflow: hidden; transition: opacity .3s; }
+        .app-split .page-container { flex: 1; min-width: 0; overflow-y: auto; }
+        .prd-panel { width: 460px; flex-shrink: 0; display: flex; border-left: 1px solid var(--border); background: #fff; overflow: hidden; transition: opacity .3s; }
         .prd-panel.collapsed { width: 0; opacity: 0; overflow: hidden; border: none; }
-        .prd-header { padding: 16px 20px; border-bottom: 1px solid var(--border); flex-shrink: 0; background: #f8fafc; display: flex; align-items: center; justify-content: space-between; }
-        .prd-header h3 { font-size: 14px; font-weight: 600; color: var(--slate-800); margin: 0; }
-        .prd-header p { font-size: 12px; color: var(--muted-foreground); margin: 2px 0 0; }
-        .prd-body-wrap { display: flex; flex: 1; min-height: 0; overflow: hidden; }
         .split-drag { width: 4px; cursor: col-resize; flex-shrink: 0; background: var(--border-light); transition: background .15s; position: relative; z-index: 10; }
         .split-drag:hover, .split-drag.dragging { background: var(--brand); }
 
@@ -1168,7 +1154,7 @@
         .prd-content table.prd-table td{padding:8px 12px !important;border:1px solid var(--border-light) !important;color:#444 !important;font-size:13px !important;line-height:1.6 !important}
 
         /* ========== Top Controls (PRD toggle + Changelog) ========== */
-        .top-controls { display: flex; align-items: center; gap: 8px; }
+        .top-controls { position: fixed; top: 68px; right: 14px; z-index: 400; display: flex; align-items: center; gap: 8px; }
         .prd-toggle { display: flex; align-items: center; gap: 4px; padding: 5px 12px; background: #fff; border: 1px solid var(--border-light); border-radius: 14px; font-size: 12px; color: var(--text-secondary); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.08); transition: all .2s; white-space: nowrap; }
         .prd-toggle:hover { border-color: var(--primary-light); color: var(--brand); }
         .prd-toggle .toggle-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
@@ -1229,6 +1215,55 @@
         .keyword-input-row .input { flex: 1; }
         .keyword-count { font-size: 12px; color: var(--muted-foreground); margin-top: 8px; }
         .keyword-empty { font-size: 13px; color: var(--muted-foreground); text-align: center; padding: 16px 0; }
+
+        /* ========== Version Switcher ========== */
+        .vs-btn {
+            position: fixed; top: 64px; right: 24px; z-index: 90;
+            display: flex; align-items: center; gap: 6px;
+            padding: 6px 12px; border-radius: 20px;
+            border: 1px solid var(--border); background: var(--card);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            cursor: pointer; font-size: 12px; color: var(--muted-foreground);
+            transition: all 0.15s; user-select: none;
+        }
+        .vs-btn:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); color: var(--foreground); }
+        .vs-btn .vs-label {
+            font-weight: 500; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            letter-spacing: -0.02em;
+        }
+        .vs-btn .vs-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; }
+        .vs-btn .vs-dot.archived { background: var(--muted-foreground); }
+        .vs-dropdown {
+            position: fixed; top: 96px; right: 24px; z-index: 91;
+            width: 260px; max-height: 360px; overflow-y: auto;
+            background: var(--popover); border: 1px solid var(--border);
+            border-radius: var(--radius); box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            padding: 4px; display: none;
+        }
+        .vs-dropdown.show { display: block; }
+        .vs-dropdown::-webkit-scrollbar { width: 6px; }
+        .vs-dropdown::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 3px; }
+        .vs-item {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 12px; border-radius: 6px; font-size: 13px;
+            color: var(--foreground); text-decoration: none;
+            transition: background 0.1s; cursor: pointer;
+        }
+        .vs-item:hover { background: var(--muted); }
+        .vs-item.current {
+            background: var(--brand-light); color: var(--brand);
+            font-weight: 600; border-left: 3px solid var(--brand); padding-left: 9px;
+        }
+        .vs-item .vs-item-ver {
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 12px; flex-shrink: 0;
+        }
+        .vs-item .vs-item-desc {
+            flex: 1; overflow: hidden; text-overflow: ellipsis;
+            white-space: nowrap; font-size: 12px; color: var(--muted-foreground);
+        }
+        .vs-item.current .vs-item-desc { color: var(--brand); }
+        .vs-divider { height: 1px; background: var(--border); margin: 4px 0; }
 
         /* ========== Responsive ========== */
         @media (max-width: 768px) {
@@ -1390,10 +1425,6 @@
                         </div>
                     </div>
                     <div class="toolbar-right">
-                        <button class="btn btn-outline" onclick="openBatchAssign('channel')">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                            批量分配租户
-                        </button>
                     </div>
                 </div>
 
@@ -1403,7 +1434,6 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th style="width:40px;text-align:center"><div class="table-checkbox" id="channelSelectAll" onclick="toggleChannelSelectAll()"></div></th>
                                     <th>账号名称</th>
                                     <th>渠道类型</th>
                                     <th>已分配租户</th>
@@ -1463,17 +1493,11 @@
                                 <select class="input" id="provRegionFilter" onchange="renderProvTable()">
                                     <option value="">全部地区</option>
                                     <option value="省本级">省本级</option>
-                                    <option value="市本级">市本级</option>
+                                    <option value="市级">市级</option>
                                     <option value="区县级">区县级</option>
                                 </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="toolbar-right">
-                        <button class="btn btn-outline" onclick="openBatchAssign('provChannel')">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                            批量分配租户
-                        </button>
                     </div>
                 </div>
                 <div class="table-card">
@@ -1481,11 +1505,9 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th style="width:40px;text-align:center"><div class="table-checkbox" id="provChannelSelectAll" onclick="toggleProvChannelSelectAll()"></div></th>
                                     <th>账号名称</th>
                                     <th>渠道类型</th>
                                     <th>地区</th>
-                                    <th>级别</th>
                                     <th>已分配租户</th>
                                     <th>创建时间</th>
                                     <th style="width:80px">操作</th>
@@ -1517,34 +1539,28 @@
         </div><!-- close page-container -->
         <div class="split-drag" id="splitDrag"></div>
         <div class="prd-panel" id="prdPanel">
-            <div class="prd-header">
-                <div class="prd-header-left">
-                    <h3>PRD · 产品需求文档</h3>
-                    <p>网络资源管理系统需求规格</p>
-                </div>
-                <div class="top-controls">
-                    <button class="prd-toggle" id="prdToggle" onclick="togglePrdPanel()">
-                        <span class="toggle-dot"></span> PRD
-                    </button>
-                    <div class="changelog-btn" onclick="toggleChangelog()">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
-                        <span>更新记录</span>
-                    </div>
-                </div>
-            </div>
-            <div class="prd-body-wrap">
-                <div class="prd-toc" id="prdToc"></div>
-                <div class="prd-content prd-body" id="prdContent"></div>
-            </div>
+            <div class="prd-toc" id="prdToc"></div>
+            <div class="prd-content prd-body" id="prdContent"></div>
         </div>
         </div><!-- close app-split -->
+
+        <!-- 右上角控制栏 -->
+        <div class="top-controls">
+            <button class="prd-toggle" id="prdToggle" onclick="togglePrdPanel()">
+                <span class="toggle-dot"></span> PRD
+            </button>
+            <div class="changelog-btn" onclick="toggleChangelog()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+                <span>更新记录</span>
+            </div>
+        </div>
+
+        <!-- 更新记录弹窗 -->
         <div class="changelog-overlay" id="changelogOverlay" onclick="toggleChangelog()"></div>
         <div class="changelog-modal" id="changelogModal">
             <div class="changelog-header">
                 <h3>更新记录</h3>
-                <button class="modal-close" onclick="toggleChangelog()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                </button>
+                <button class="changelog-close" onclick="toggleChangelog()">&times;</button>
             </div>
             <div class="changelog-body" id="changelogBody"></div>
         </div>
@@ -1672,18 +1688,13 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">所属地区<span class="required">*</span></label>
-                        <div style="display:flex;gap:8px;width:100%">
-                            <select class="select" style="flex:1" id="provProvince" onchange="onProvProvinceChange()">
-                                <option value="">选择省</option>
-                            </select>
-                            <select class="select" style="flex:1" id="provCity" onchange="onProvCityChange()" disabled>
-                                <option value="">选择市</option>
-                            </select>
-                            <select class="select" style="flex:1" id="provDistrict" disabled>
-                                <option value="">选择区县</option>
-                            </select>
-                        </div>
+                        <label class="form-label">地区<span class="required">*</span></label>
+                        <select class="select" style="width:100%" id="provRegion">
+                            <option value="">请选择地区</option>
+                            <option value="省本级">省本级</option>
+                            <option value="市级">市级</option>
+                            <option value="区县级">区县级</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-row">
@@ -1729,32 +1740,6 @@
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('provAssignModal')">取消</button>
                 <button class="btn btn-primary" onclick="confirmProvAssign()">确定分配</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== Modal: Batch Assign Tenants ========== -->
-    <div class="modal-overlay" id="batchAssignModal">
-        <div class="modal modal-lg">
-            <div class="modal-header">
-                <div>
-                    <h3>批量分配租户</h3>
-                    <p id="batchAssignDesc">为选中的渠道批量分配租户</p>
-                </div>
-                <button class="modal-close" onclick="closeModal('batchAssignModal')">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div id="batchAssignChannels" style="margin-bottom:12px;padding:10px 12px;background:var(--brand-light);border-radius:6px;font-size:13px;color:var(--brand);line-height:1.6"></div>
-                <div style="margin-bottom:12px">
-                    <input type="text" class="input input-search input-sm" style="width:100%" placeholder="搜索租户名称..." oninput="filterBatchTenants(this.value)">
-                </div>
-                <div class="tenant-list" id="batchTenantList"></div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal('batchAssignModal')">取消</button>
-                <button class="btn btn-primary" onclick="confirmBatchAssign()">确定分配</button>
             </div>
         </div>
     </div>
@@ -1877,6 +1862,13 @@
         </div>
     </div>
 
+    <!-- ========== Version Switcher ========== -->
+    <div class="vs-btn" id="vsBtn" onclick="toggleVsDropdown()">
+        <span class="vs-dot" id="vsDot"></span>
+        <span class="vs-label" id="vsLabel"></span>
+    </div>
+    <div class="vs-dropdown" id="vsDropdown"></div>
+
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
@@ -1884,12 +1876,38 @@
         // ========== Version ==========
         const CURRENT_VERSION = 'latest';
         const VERSION_HISTORY = [
-            { version: 'v1.0.4', file: 'v1.0.4.html', date: '2026-05-07', desc: '地区级联选择器 + PRD优化 + UI美化' },
             { version: 'v1.0.3', file: 'v1.0.3.html', date: '2026-05-06', desc: '新增全省资源库管理' },
             { version: 'v1.0.2', file: 'v1.0.2.html', date: '2026-04-14', desc: '关键词管理迁移至租户管理 + 版本管理系统' },
             { version: 'v1.0.1', file: 'v1.0.1.html', date: '2026-04-13', desc: '初始版本' },
         ];
 
+        (function initVersionSwitcher() {
+            var label = document.getElementById('vsLabel');
+            var dot = document.getElementById('vsDot');
+            if (CURRENT_VERSION === 'latest') {
+                label.textContent = 'latest';
+            } else {
+                label.textContent = CURRENT_VERSION;
+                dot.classList.add('archived');
+            }
+            var dd = document.getElementById('vsDropdown');
+            var html = '<a class="vs-item' + (CURRENT_VERSION === 'latest' ? ' current' : '') + '" href="./"><span class="vs-item-ver">latest</span><span class="vs-item-desc">最新版</span></a>';
+            html += '<div class="vs-divider"></div>';
+            for (var i = 0; i < VERSION_HISTORY.length; i++) {
+                var v = VERSION_HISTORY[i];
+                html += '<a class="vs-item' + (CURRENT_VERSION === v.version ? ' current' : '') + '" href="./' + v.file + '">';
+                html += '<span class="vs-item-ver">' + v.version + '</span>';
+                html += '<span class="vs-item-desc">' + v.desc + '</span></a>';
+            }
+            dd.innerHTML = html;
+        })();
+        function toggleVsDropdown() { document.getElementById('vsDropdown').classList.toggle('show'); }
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#vsBtn') && !e.target.closest('#vsDropdown')) {
+                var dd = document.getElementById('vsDropdown');
+                if (dd) dd.classList.remove('show');
+            }
+        });
 
         // ========== Data ==========
         const channelTypeMap = {
@@ -1904,22 +1922,6 @@
             toutiao: { name: '头条号', icon: '头', class: 'toutiao' },
             baijia:  { name: '百家号', icon: '百', class: 'baijia' },
             qie:     { name: '企鹅号', icon: '鹅', class: 'qie' },
-        };
-
-        const regionData = {
-            '浙江省': {
-                '杭州市': ['上城区','拱墅区','西湖区','滨江区','萧山区','余杭区','临平区','钱塘区','富阳区','临安区','桐庐县','淳安县','建德市'],
-                '宁波市': ['海曙区','江北区','北仑区','镇海区','鄞州区','奉化区','余姚市','慈溪市','象山县','宁海县'],
-                '温州市': ['鹿城区','龙湾区','瓯海区','洞头区','永嘉县','平阳县','苍南县','文成县','泰顺县','瑞安市','乐清市','龙港市'],
-                '嘉兴市': ['南湖区','秀洲区','嘉善县','海盐县','海宁市','平湖市','桐乡市'],
-                '湖州市': ['吴兴区','南浔区','德清县','长兴县','安吉县'],
-                '绍兴市': ['越城区','柯桥区','上虞区','新昌县','嵊州市','诸暨市'],
-                '金华市': ['婺城区','金东区','武义县','浦江县','磐安县','兰溪市','义乌市','东阳市','永康市'],
-                '衢州市': ['柯城区','衢江区','常山县','开化县','龙游县','江山市'],
-                '舟山市': ['定海区','普陀区','岱山县','嵊泗县'],
-                '台州市': ['椒江区','黄岩区','路桥区','三门县','天台县','仙居县','温岭市','临海市','玉环市'],
-                '丽水市': ['莲都区','青田县','缙云县','遂昌县','松阳县','云和县','庆元县','景宁县','龙泉市']
-            }
         };
 
         const tenants = [
@@ -1951,9 +1953,6 @@
         let editingChannelId = null;
         let assigningChannelId = null;
         let deletingChannelId = null;
-        let channelSelectedIds = new Set();
-        let provChannelSelectedIds = new Set();
-        let batchAssignSource = null; // 'channel' or 'provChannel'
 
         // ========== Render ==========
         function renderTable() {
@@ -1974,7 +1973,7 @@
             const tbody = document.getElementById('tableBody');
             if (filtered.length === 0) {
                 tbody.innerHTML = `
-                    <tr><td colspan="6">
+                    <tr><td colspan="5">
                         <div class="empty-state">
                             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
                             <h4>暂无数据</h4>
@@ -1986,7 +1985,6 @@
 
             tbody.innerHTML = filtered.map(ch => {
                 const typeInfo = channelTypeMap[ch.type];
-                const checked = channelSelectedIds.has(ch.id);
                 const tenantNames = ch.tenants.map(tid => {
                     const t = tenants.find(t => t.id === tid);
                     return t ? `<span class="tenant-tag">${t.name}<span class="remove" onclick="event.stopPropagation();removeTenantFromChannel('${ch.id}','${tid}')">&times;</span></span>` : '';
@@ -1994,7 +1992,6 @@
 
                 return `
                 <tr>
-                    <td style="text-align:center"><div class="table-checkbox ${checked?'checked':''}" onclick="toggleChannelSelect('${ch.id}')"></div></td>
                     <td>
                         <div class="td-channel-name">
                             <div class="channel-icon ${typeInfo.class}">${typeInfo.icon}</div>
@@ -2035,35 +2032,6 @@
                     </td>
                 </tr>`;
             }).join('');
-            updateChannelSelectAll();
-        }
-
-        function toggleChannelSelect(id) {
-            if (channelSelectedIds.has(id)) channelSelectedIds.delete(id); else channelSelectedIds.add(id);
-            renderTable();
-        }
-        function toggleChannelSelectAll() {
-            const keyword = document.getElementById('searchInput').value.toLowerCase();
-            const typeVal = document.getElementById('typeFilter').value;
-            const visible = channels.filter(ch => {
-                if (typeVal && ch.type !== typeVal) return false;
-                if (keyword) { const s = [ch.accountName, ch.accountId].join(' ').toLowerCase(); if (!s.includes(keyword)) return false; }
-                return true;
-            });
-            const allSel = visible.length > 0 && visible.every(ch => channelSelectedIds.has(ch.id));
-            if (allSel) visible.forEach(ch => channelSelectedIds.delete(ch.id)); else visible.forEach(ch => channelSelectedIds.add(ch.id));
-            renderTable();
-        }
-        function updateChannelSelectAll() {
-            const keyword = document.getElementById('searchInput').value.toLowerCase();
-            const typeVal = document.getElementById('typeFilter').value;
-            const visible = channels.filter(ch => {
-                if (typeVal && ch.type !== typeVal) return false;
-                if (keyword) { const s = [ch.accountName, ch.accountId].join(' ').toLowerCase(); if (!s.includes(keyword)) return false; }
-                return true;
-            });
-            const el = document.getElementById('channelSelectAll');
-            if (visible.length > 0 && visible.every(ch => channelSelectedIds.has(ch.id))) el.classList.add('checked'); else el.classList.remove('checked');
         }
 
         // ========== Sidebar / Page Switch ==========
@@ -2270,111 +2238,21 @@
         // ================================================================
         //               PROVINCIAL RESOURCE MANAGEMENT
         // ================================================================
-        function getRegionLevel(region) {
-            if (!region) return '';
-            for (var prov in regionData) {
-                if (region === prov) return '省本级';
-                for (var city in regionData[prov]) {
-                    if (region === city) return '市本级';
-                    if (regionData[prov][city].indexOf(region) >= 0) return '区县级';
-                }
-            }
-            return '';
-        }
-
-        function onProvProvinceChange() {
-            var prov = document.getElementById('provProvince').value;
-            var citySel = document.getElementById('provCity');
-            var distSel = document.getElementById('provDistrict');
-            citySel.innerHTML = '<option value="">选择市</option>';
-            distSel.innerHTML = '<option value="">选择区县</option>';
-            distSel.disabled = true;
-            if (prov && regionData[prov]) {
-                citySel.disabled = false;
-                Object.keys(regionData[prov]).forEach(function(city) {
-                    var opt = document.createElement('option');
-                    opt.value = city; opt.textContent = city;
-                    citySel.appendChild(opt);
-                });
-            } else {
-                citySel.disabled = true;
-            }
-        }
-
-        function onProvCityChange() {
-            var prov = document.getElementById('provProvince').value;
-            var city = document.getElementById('provCity').value;
-            var distSel = document.getElementById('provDistrict');
-            distSel.innerHTML = '<option value="">选择区县</option>';
-            if (prov && city && regionData[prov][city]) {
-                distSel.disabled = false;
-                regionData[prov][city].forEach(function(d) {
-                    var opt = document.createElement('option');
-                    opt.value = d; opt.textContent = d;
-                    distSel.appendChild(opt);
-                });
-            } else {
-                distSel.disabled = true;
-            }
-        }
-
-        function setRegionDropdowns(region) {
-            var provSel = document.getElementById('provProvince');
-            var citySel = document.getElementById('provCity');
-            var distSel = document.getElementById('provDistrict');
-            provSel.innerHTML = '<option value="">选择省</option>';
-            Object.keys(regionData).forEach(function(p) {
-                var opt = document.createElement('option');
-                opt.value = p; opt.textContent = p;
-                provSel.appendChild(opt);
-            });
-            citySel.innerHTML = '<option value="">选择市</option>';
-            citySel.disabled = true;
-            distSel.innerHTML = '<option value="">选择区县</option>';
-            distSel.disabled = true;
-            if (!region) return;
-            for (var prov in regionData) {
-                if (region === prov) { provSel.value = prov; onProvProvinceChange(); return; }
-                for (var city in regionData[prov]) {
-                    if (region === city) {
-                        provSel.value = prov; onProvProvinceChange();
-                        citySel.value = city; return;
-                    }
-                    if (regionData[prov][city].indexOf(region) >= 0) {
-                        provSel.value = prov; onProvProvinceChange();
-                        citySel.value = city; onProvCityChange();
-                        distSel.value = region; return;
-                    }
-                }
-            }
-        }
-
-        function getSelectedRegion() {
-            var dist = document.getElementById('provDistrict').value;
-            var city = document.getElementById('provCity').value;
-            var prov = document.getElementById('provProvince').value;
-            return dist || city || prov || '';
-        }
-
-        function validateRegion() {
-            var prov = document.getElementById('provProvince').value;
-            if (!prov) { showToast('请选择所属地区', 'error'); return false; }
-            return true;
-        }
+        const regionOptions = ['省本级', '市级', '区县级'];
 
         let provChannels = [
-            { id: 'p001', type: 'wz', accountName: '浙江在线', accountId: 'zjol_com', region: '浙江省', tenants: ['t1', 't2', 't3'], remark: '浙江省重点新闻网站', createTime: '2026-01-10 09:00:00' },
-            { id: 'p002', type: 'szb', accountName: '浙江日报数字报', accountId: 'zjrb_digital', region: '浙江省', tenants: ['t1'], remark: '', createTime: '2026-01-12 10:30:00' },
-            { id: 'p003', type: 'app', accountName: '天目新闻', accountId: 'tmnews_app', region: '杭州市', tenants: ['t2', 't4'], remark: '浙江省级新闻客户端', createTime: '2026-01-15 14:00:00' },
-            { id: 'p004', type: 'wz', accountName: '中国宁波网', accountId: 'cnnb_com', region: '宁波市', tenants: ['t3'], remark: '宁波新闻门户网站', createTime: '2026-01-20 11:00:00' },
-            { id: 'p005', type: 'app', accountName: '禾点点', accountId: 'hedd_app', region: '嘉兴市', tenants: ['t5'], remark: '嘉兴新闻客户端', createTime: '2026-02-05 16:00:00' },
-            { id: 'p006', type: 'szb', accountName: '杭州日报数字报', accountId: 'hzrb_digital', region: '杭州市', tenants: ['t6'], remark: '', createTime: '2026-02-10 09:15:00' },
-            { id: 'p007', type: 'wz', accountName: '温州新闻网', accountId: 'wznews_com', region: '温州市', tenants: ['t4'], remark: '', createTime: '2026-02-15 13:00:00' },
-            { id: 'p008', type: 'app', accountName: '南太湖', accountId: 'nthu_app', region: '湖州市', tenants: ['t7'], remark: '湖州新闻客户端', createTime: '2026-02-20 10:00:00' },
-            { id: 'p009', type: 'wz', accountName: '余杭新闻网', accountId: 'yhnews_com', region: '余杭区', tenants: ['t2'], remark: '杭州余杭区', createTime: '2026-02-25 15:30:00' },
-            { id: 'p010', type: 'szb', accountName: '鄞州日报数字报', accountId: 'yzrb_digital', region: '鄞州区', tenants: ['t3'], remark: '宁波鄞州区', createTime: '2026-03-01 08:00:00' },
-            { id: 'p011', type: 'app', accountName: '掌上鹿城', accountId: 'zslc_app', region: '鹿城区', tenants: ['t4'], remark: '温州鹿城区', createTime: '2026-03-05 11:00:00' },
-            { id: 'p012', type: 'wz', accountName: '义乌新闻网', accountId: 'ywnews_com', region: '义乌市', tenants: ['t8'], remark: '金华义乌市', createTime: '2026-03-08 09:00:00' },
+            { id: 'p001', type: 'weixin', accountName: '浙江发布', accountId: 'gh_zjfabu', region: '省本级', tenants: ['t1', 't2', 't3'], remark: '浙江省人民政府新闻办公室', createTime: '2026-01-10 09:00:00' },
+            { id: 'p002', type: 'weibo', accountName: '浙江发布微博', accountId: 'weibo_zjfabu', region: '省本级', tenants: ['t1'], remark: '', createTime: '2026-01-12 10:30:00' },
+            { id: 'p003', type: 'douyin', accountName: '杭州发布', accountId: 'dy_hzfabu', region: '市级', tenants: ['t2', 't4'], remark: '杭州市政府抖音号', createTime: '2026-01-15 14:00:00' },
+            { id: 'p004', type: 'wz', accountName: '中国宁波网', accountId: 'cnnb_com', region: '市级', tenants: ['t3'], remark: '宁波新闻门户网站', createTime: '2026-01-20 11:00:00' },
+            { id: 'p005', type: 'weixin', accountName: '温州发布', accountId: 'gh_wzfabu', region: '市级', tenants: ['t4'], remark: '', createTime: '2026-02-01 08:30:00' },
+            { id: 'p006', type: 'app', accountName: '禾点点', accountId: 'hedd_app', region: '市级', tenants: ['t5'], remark: '嘉兴新闻客户端', createTime: '2026-02-05 16:00:00' },
+            { id: 'p007', type: 'shipin', accountName: '湖州发布视频号', accountId: 'shipin_huzhou', region: '市级', tenants: ['t6'], remark: '', createTime: '2026-02-10 09:15:00' },
+            { id: 'p008', type: 'toutiao', accountName: '绍兴发布头条号', accountId: 'tt_sxfabu', region: '市级', tenants: ['t7'], remark: '', createTime: '2026-02-15 13:00:00' },
+            { id: 'p009', type: 'weixin', accountName: '西湖发布', accountId: 'gh_xhfabu', region: '区县级', tenants: ['t2'], remark: '杭州西湖区', createTime: '2026-02-20 10:00:00' },
+            { id: 'p010', type: 'weibo', accountName: '鄞州发布', accountId: 'weibo_yinzhou', region: '区县级', tenants: ['t3'], remark: '宁波鄞州区', createTime: '2026-02-25 15:30:00' },
+            { id: 'p011', type: 'douyin', accountName: '鹿城发布', accountId: 'dy_lucheng', region: '区县级', tenants: ['t4'], remark: '温州鹿城区', createTime: '2026-03-01 08:00:00' },
+            { id: 'p012', type: 'kuaishou', accountName: '义乌发布', accountId: 'ks_yiwu', region: '区县级', tenants: ['t8'], remark: '金华义乌市', createTime: '2026-03-05 11:00:00' },
         ];
 
         let editingProvId = null;
@@ -2388,7 +2266,7 @@
 
             let filtered = provChannels.filter(ch => {
                 if (typeVal && ch.type !== typeVal) return false;
-                if (regionVal && getRegionLevel(ch.region) !== regionVal) return false;
+                if (regionVal && ch.region !== regionVal) return false;
                 if (keyword) {
                     const s = [ch.accountName, ch.accountId].join(' ').toLowerCase();
                     if (!s.includes(keyword)) return false;
@@ -2399,7 +2277,7 @@
 
             const tbody = document.getElementById('provTableBody');
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state">
+                tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
                     <h4>暂无数据</h4><p>没有找到匹配的渠道，请调整筛选条件或新建渠道</p></div></td></tr>`;
                 document.getElementById('provPaginationInfo').textContent = '共 0 条';
@@ -2408,24 +2286,20 @@
 
             tbody.innerHTML = filtered.map(ch => {
                 const typeInfo = channelTypeMap[ch.type];
-                const checked = provChannelSelectedIds.has(ch.id);
                 const tenantNames = ch.tenants.map(tid => {
                     const t = tenants.find(x => x.id === tid);
                     return t ? `<span class="tenant-tag">${t.name}<span class="remove" onclick="event.stopPropagation();removeProvTenant('${ch.id}','${tid}')">&times;</span></span>` : '';
                 }).join('');
 
-                const rLevel = getRegionLevel(ch.region);
-                const regionBadge = rLevel === '省本级' ? 'badge-info' : rLevel === '市本级' ? 'badge-success' : 'badge-warning';
+                const regionBadge = ch.region === '省本级' ? 'badge-info' : ch.region === '市级' ? 'badge-success' : 'badge-warning';
 
                 return `<tr>
-                    <td style="text-align:center"><div class="table-checkbox ${checked?'checked':''}" onclick="toggleProvChannelSelect('${ch.id}')"></div></td>
                     <td><div class="td-channel-name">
                         <div class="channel-icon ${typeInfo.class}">${typeInfo.icon}</div>
                         <div class="channel-info"><div class="name">${ch.accountName}</div><div class="account-id">${ch.accountId||''}</div></div>
                     </div></td>
                     <td>${typeInfo.name}</td>
-                    <td>${ch.region}</td>
-                    <td><span class="badge ${regionBadge}">${rLevel}</span></td>
+                    <td><span class="badge ${regionBadge}">${ch.region}</span></td>
                     <td><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
                         <div class="tenant-tags">${tenantNames || '<span style="color:#94a3b8;font-size:12px">未分配</span>'}</div>
                     </div></td>
@@ -2453,39 +2327,6 @@
                 </tr>`;
             }).join('');
             document.getElementById('provPaginationInfo').textContent = `显示 1-${filtered.length} 条，共 ${filtered.length} 条`;
-            updateProvChannelSelectAll();
-        }
-
-        function toggleProvChannelSelect(id) {
-            if (provChannelSelectedIds.has(id)) provChannelSelectedIds.delete(id); else provChannelSelectedIds.add(id);
-            renderProvTable();
-        }
-        function toggleProvChannelSelectAll() {
-            const keyword = document.getElementById('provSearchInput').value.toLowerCase();
-            const typeVal = document.getElementById('provTypeFilter').value;
-            const regionVal = document.getElementById('provRegionFilter').value;
-            const visible = provChannels.filter(ch => {
-                if (typeVal && ch.type !== typeVal) return false;
-                if (regionVal && getRegionLevel(ch.region) !== regionVal) return false;
-                if (keyword) { const s = [ch.accountName, ch.accountId].join(' ').toLowerCase(); if (!s.includes(keyword)) return false; }
-                return true;
-            });
-            const allSel = visible.length > 0 && visible.every(ch => provChannelSelectedIds.has(ch.id));
-            if (allSel) visible.forEach(ch => provChannelSelectedIds.delete(ch.id)); else visible.forEach(ch => provChannelSelectedIds.add(ch.id));
-            renderProvTable();
-        }
-        function updateProvChannelSelectAll() {
-            const keyword = document.getElementById('provSearchInput').value.toLowerCase();
-            const typeVal = document.getElementById('provTypeFilter').value;
-            const regionVal = document.getElementById('provRegionFilter').value;
-            const visible = provChannels.filter(ch => {
-                if (typeVal && ch.type !== typeVal) return false;
-                if (regionVal && getRegionLevel(ch.region) !== regionVal) return false;
-                if (keyword) { const s = [ch.accountName, ch.accountId].join(' ').toLowerCase(); if (!s.includes(keyword)) return false; }
-                return true;
-            });
-            const el = document.getElementById('provChannelSelectAll');
-            if (visible.length > 0 && visible.every(ch => provChannelSelectedIds.has(ch.id))) el.classList.add('checked'); else el.classList.remove('checked');
         }
 
         // Provincial CRUD
@@ -2494,7 +2335,7 @@
             document.getElementById('provModalTitle').textContent = '新建渠道';
             document.getElementById('provModalDesc').textContent = '添加新的全省资源库采集渠道';
             document.getElementById('provChannelType').value = '';
-            setRegionDropdowns('');
+            document.getElementById('provRegion').value = '';
             document.getElementById('provAccountName').value = '';
             document.getElementById('provAccountId').value = '';
             document.getElementById('provRemark').value = '';
@@ -2507,7 +2348,7 @@
             document.getElementById('provModalTitle').textContent = '编辑渠道';
             document.getElementById('provModalDesc').textContent = '修改渠道信息';
             document.getElementById('provChannelType').value = ch.type;
-            setRegionDropdowns(ch.region);
+            document.getElementById('provRegion').value = ch.region;
             document.getElementById('provAccountName').value = ch.accountName;
             document.getElementById('provAccountId').value = ch.accountId;
             document.getElementById('provRemark').value = ch.remark;
@@ -2515,12 +2356,11 @@
         }
         function saveProvChannel() {
             const type = document.getElementById('provChannelType').value;
+            const region = document.getElementById('provRegion').value;
             const accountName = document.getElementById('provAccountName').value.trim();
             const accountId = document.getElementById('provAccountId').value.trim();
             const remark = document.getElementById('provRemark').value.trim();
-            if (!type || !accountName) { showToast('请填写必填项', 'error'); return; }
-            if (!validateRegion()) return;
-            const region = getSelectedRegion();
+            if (!type || !region || !accountName) { showToast('请填写必填项', 'error'); return; }
             if (editingProvId) {
                 const ch = provChannels.find(c => c.id === editingProvId);
                 if (ch) { ch.type = type; ch.region = region; ch.accountName = accountName; ch.accountId = accountId; ch.remark = remark; }
@@ -2586,78 +2426,6 @@
         function confirmProvDelete() {
             provChannels = provChannels.filter(c => c.id !== deletingProvId);
             closeModal('provDeleteModal'); renderProvTable(); showToast('渠道已删除', 'success');
-        }
-
-        // ========== Batch Assign Tenants ==========
-        function openBatchAssign(source) {
-            batchAssignSource = source;
-            var selectedIds = source === 'channel' ? channelSelectedIds : provChannelSelectedIds;
-            var dataSource = source === 'channel' ? channels : provChannels;
-            if (selectedIds.size === 0) { showToast('请先选择渠道', 'error'); return; }
-
-            var selectedChannels = dataSource.filter(function(ch) { return selectedIds.has(ch.id); });
-            var names = selectedChannels.map(function(ch) { return ch.accountName; });
-            var displayNames = names.length <= 5 ? names.join('、') : names.slice(0, 5).join('、') + ' 等 ' + names.length + ' 个渠道';
-            document.getElementById('batchAssignDesc').textContent = '为选中的渠道批量分配租户（追加模式，不影响已有分配）';
-            document.getElementById('batchAssignChannels').innerHTML = '<strong>已选 ' + selectedIds.size + ' 个渠道：</strong>' + displayNames;
-
-            var list = document.getElementById('batchTenantList');
-            var sorted = tenants.slice().sort(function(a, b) { return b.createTime.localeCompare(a.createTime); });
-            list.innerHTML = sorted.map(function(t) {
-                return '<div class="checkbox-wrapper" onclick="toggleBatchTenantCheck(this)">' +
-                    '<div class="checkbox"></div>' +
-                    '<div class="checkbox-label"><div class="tenant-name">' + t.name + '</div></div>' +
-                '</div>';
-            }).join('');
-            openModal('batchAssignModal');
-        }
-
-        function toggleBatchTenantCheck(wrapper) {
-            wrapper.classList.toggle('checked');
-            wrapper.querySelector('.checkbox').classList.toggle('checked');
-        }
-
-        function filterBatchTenants(keyword) {
-            var items = document.querySelectorAll('#batchTenantList .checkbox-wrapper');
-            var kw = keyword.toLowerCase();
-            items.forEach(function(item) {
-                var name = item.querySelector('.tenant-name').textContent.toLowerCase();
-                item.style.display = name.includes(kw) ? '' : 'none';
-            });
-        }
-
-        function confirmBatchAssign() {
-            var selectedTenantIds = [];
-            document.querySelectorAll('#batchTenantList .checkbox-wrapper.checked').forEach(function(wrapper) {
-                var tenantName = wrapper.querySelector('.tenant-name').textContent;
-                var t = tenants.find(function(x) { return x.name === tenantName; });
-                if (t) selectedTenantIds.push(t.id);
-            });
-            if (selectedTenantIds.length === 0) { showToast('请选择要分配的租户', 'error'); return; }
-
-            var dataSource = batchAssignSource === 'channel' ? channels : provChannels;
-            var selectedIds = batchAssignSource === 'channel' ? channelSelectedIds : provChannelSelectedIds;
-            var count = 0;
-            dataSource.forEach(function(ch) {
-                if (selectedIds.has(ch.id)) {
-                    selectedTenantIds.forEach(function(tid) {
-                        if (!ch.tenants.includes(tid)) {
-                            ch.tenants.push(tid);
-                            count++;
-                        }
-                    });
-                }
-            });
-
-            closeModal('batchAssignModal');
-            if (batchAssignSource === 'channel') {
-                channelSelectedIds.clear();
-                renderTable();
-            } else {
-                provChannelSelectedIds.clear();
-                renderProvTable();
-            }
-            showToast('已为 ' + selectedIds.size + ' 个渠道分配 ' + selectedTenantIds.length + ' 个租户', 'success');
         }
 
         // ========== Dropdown ==========
@@ -2933,153 +2701,6 @@
         }
 
         // ========== PRD Content (loaded from textarea) ==========
-        // PRD markdown is in <textarea id="prdMdSource"> above
-
-        // ========== Init PRD (DOMContentLoaded) ==========
-        document.addEventListener('DOMContentLoaded', function() {
-            var md = document.getElementById('prdMdSource').textContent;
-            document.getElementById('prdContent').innerHTML = md2html(md);
-
-            // ========== Generate PRD TOC ==========
-            (function buildToc() {
-                const toc = document.getElementById('prdToc');
-                const content = document.getElementById('prdContent');
-                const titleEl = document.createElement('div');
-                titleEl.className = 'prd-toc-title';
-                titleEl.textContent = '文档目录';
-                toc.appendChild(titleEl);
-
-                const headings = content.querySelectorAll('h2, h3');
-                headings.forEach(h => {
-                    const a = document.createElement('a');
-                    a.className = 'prd-toc-item' + (h.tagName === 'H3' ? ' sub' : '');
-                    a.textContent = h.textContent;
-                    a.dataset.target = h.id;
-                    a.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        document.getElementById(this.dataset.target).scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    });
-                    toc.appendChild(a);
-                });
-
-                // IntersectionObserver for active highlighting
-                const tocItems = toc.querySelectorAll('.prd-toc-item');
-                const observer = new IntersectionObserver(entries => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            tocItems.forEach(item => item.classList.remove('active'));
-                            const active = toc.querySelector(`[data-target="${entry.target.id}"]`);
-                            if (active) active.classList.add('active');
-                        }
-                    });
-                }, { root: content, rootMargin: '-20% 0px -70% 0px' });
-                headings.forEach(h => observer.observe(h));
-            })();
-        });
-
-        // ========== Populate Type Filter ==========
-        (function() {
-            const sel = document.getElementById('typeFilter');
-            Object.keys(channelTypeMap).forEach(key => {
-                const opt = document.createElement('option');
-                opt.value = key;
-                opt.textContent = channelTypeMap[key].name;
-                sel.appendChild(opt);
-            });
-        })();
-
-        (function() {
-            const sel = document.getElementById('provTypeFilter');
-            const provTypeKeys = ['app', 'wz', 'szb'];
-            provTypeKeys.forEach(key => {
-                const opt = document.createElement('option');
-                opt.value = key;
-                opt.textContent = channelTypeMap[key].name;
-                sel.appendChild(opt);
-            });
-            const modalSel = document.getElementById('provChannelType');
-            provTypeKeys.forEach(key => {
-                const opt = document.createElement('option');
-                opt.value = key;
-                opt.textContent = channelTypeMap[key].name;
-                modalSel.appendChild(opt);
-            });
-        })();
-
-        // ========== Init ==========
-        renderTable();
-
-        // ========== PRD Toggle ==========
-        function togglePrdPanel() {
-            var panel = document.getElementById('prdPanel');
-            var toggle = document.getElementById('prdToggle');
-            var dot = toggle.querySelector('.toggle-dot');
-            panel.classList.toggle('collapsed');
-            dot.style.background = panel.classList.contains('collapsed') ? '#aaa' : 'var(--green)';
-        }
-
-        // ========== Split Drag ==========
-        (function() {
-            var drag = document.getElementById('splitDrag');
-            var panel = document.getElementById('prdPanel');
-            if (!drag || !panel) return;
-            var startX, startW;
-            drag.addEventListener('mousedown', function(e) {
-                e.preventDefault();
-                startX = e.clientX;
-                startW = panel.offsetWidth;
-                drag.classList.add('dragging');
-                document.body.style.cursor = 'col-resize';
-                document.body.style.userSelect = 'none';
-                function onMove(e) {
-                    var w = startW - (e.clientX - startX);
-                    if (w < 200) w = 200;
-                    if (w > window.innerWidth * 0.7) w = window.innerWidth * 0.7;
-                    panel.style.width = w + 'px';
-                }
-                function onUp() {
-                    drag.classList.remove('dragging');
-                    document.body.style.cursor = '';
-                    document.body.style.userSelect = '';
-                    document.removeEventListener('mousemove', onMove);
-                    document.removeEventListener('mouseup', onUp);
-                }
-                document.addEventListener('mousemove', onMove);
-                document.addEventListener('mouseup', onUp);
-            });
-        })();
-
-        // ========== Changelog ==========
-        var changelogData = [
-            { time: '2026-05-07 18:00', desc: '全省资源库地区级联选择器 + PRD 规范优化 + UI 美化' },
-            { time: '2026-05-06 18:00', desc: '新增全省资源库管理 + PRD 面板布局优化' },
-            { time: '2026-04-14 12:00', desc: '关键词管理迁移至租户管理 + 版本管理系统' },
-            { time: '2026-04-13 10:00', desc: '初始版本' }
-        ];
-
-        function toggleChangelog() {
-            var overlay = document.getElementById('changelogOverlay');
-            var modal = document.getElementById('changelogModal');
-            var isOpen = modal.classList.contains('show');
-            overlay.classList.toggle('show', !isOpen);
-            modal.classList.toggle('show', !isOpen);
-            if (!isOpen) renderChangelog();
-        }
-
-        function renderChangelog() {
-            var body = document.getElementById('changelogBody');
-            var html = '<table class="changelog-table"><thead><tr><th>更新时间</th><th>说明</th></tr></thead><tbody>';
-            changelogData.forEach(function(item) {
-                html += '<tr><td>' + item.time + '</td><td>' + item.desc + '</td></tr>';
-            });
-            html += '</tbody></table>';
-            body.innerHTML = html;
-        }
-    </script>
-
-    <!-- PRD Markdown Content (compatible with file:// protocol) -->
-    <textarea id="prdMdSource" style="display:none">
-# 网络资源管理 — 产品需求文档
 
 ## 一、产品概述
 
@@ -3109,29 +2730,20 @@
 
 #### 2.1.2 列表字段规则
 
-**第一列：行选择**
-
-- 展示规则：每行显示复选框，表头显示全选复选框
-- 交互规则：
-  - 点击行复选框选中/取消选中该行，点击全选复选框选中/取消选中当前筛选结果中的所有行
-  - 全选复选框状态自动联动：当前可见行全部选中时自动勾选，否则自动取消勾选
-  - 选中状态不受搜索筛选影响，已选中的行在筛选条件变化后仍保持选中
-- 数据规则：选中状态用于批量操作（如批量分配租户），切换页面时清空选中状态
-
-**第二列：账号名称**
+**第一列：账号名称**
 
 - 显示内容：渠道类型的图标标识 + 账号名称 + 账号ID（辅助信息）
 - 账号名称取数规则：取渠道创建时填写的"账号名称"字段，必填
 - 账号ID取数规则：取渠道创建时填写的"账号ID"字段，选填，若未填写则不显示
 - 渠道图标取数规则：根据渠道类型自动匹配对应平台的图标标识和品牌色
 
-**第三列：渠道类型**
+**第二列：渠道类型**
 
 - 显示内容：渠道类型的中文名称，如"微信""微博""抖音"等
 - 取数规则：根据渠道创建时选择的渠道类型，映射为对应的中文名称展示
 - 渠道类型枚举值：微信、微博、抖音、客户端、视频号、网站、数字报、快手、头条号、百家号、企鹅号
 
-**第四列：已分配租户**
+**第三列：已分配租户**
 
 - 显示内容：已分配租户的标签列表，每个租户以独立标签展示
 - 未分配状态：当渠道尚未分配任何租户时，显示"未分配"占位文字
@@ -3139,12 +2751,12 @@
   - 每个租户标签右侧显示关闭按钮（×），点击可直接移除该租户分配
   - 移除后即时生效，列表自动刷新，同时弹出操作成功提示
 
-**第五列：创建时间**
+**第四列：创建时间**
 
 - 显示内容：渠道的创建时间，格式为"YYYY-MM-DD HH:mm:ss"
 - 取数规则：新建渠道时系统自动生成当前时间戳
 
-**第六列：操作**
+**第五列：操作**
 
 - 显示内容：操作菜单按钮（三点图标），点击展开下拉菜单
 - 菜单项：
@@ -3398,60 +3010,6 @@
 
 ---
 
-### 2.8 批量分配租户
-
-#### 2.8.1 功能描述
-
-同时为多个渠道批量分配租户，采用追加模式，不影响各渠道已有的租户分配关系。
-
-#### 2.8.2 触发方式
-
-点击列表工具栏右侧"批量分配租户"按钮。
-
-#### 2.8.3 前置校验
-
-- 未选择任何渠道时点击按钮，弹出错误提示"请先选择渠道"，不打开弹窗
-
-#### 2.8.4 弹窗布局
-
-- 弹窗标题："批量分配租户"
-- 弹窗副标题："为选中的渠道批量分配租户（追加模式，不影响已有分配）"
-- 已选渠道摘要：顶部蓝色提示区域，显示已选渠道数量及名称列表
-  - 渠道数量 ≤ 5 时：显示全部名称，以顿号分隔
-  - 渠道数量 > 5 时：显示前 5 个名称 + "等 N 个渠道"
-- 租户搜索框：支持按租户名称模糊搜索
-- 租户复选框列表：展示所有可分配的租户，默认全部未勾选
-
-#### 2.8.5 租户列表展示
-
-- 排序规则：按创建时间倒序排列
-- 每个租户卡片包含：复选框 + 租户名称
-- 初始状态：所有租户均未勾选（追加模式，用户选择要新增分配的租户）
-
-#### 2.8.6 租户搜索
-
-- 占位提示："搜索租户名称..."
-- 匹配方式：按租户名称进行不区分大小写的包含匹配
-- 触发时机：输入时实时筛选
-- 未匹配的租户卡片隐藏，匹配的卡片正常显示
-
-#### 2.8.7 弹窗操作
-
-- 底部按钮：
-  - "取消"按钮：关闭弹窗，不保存修改
-  - "确定分配"按钮：保存当前勾选状态
-- 未选择任何租户时点击"确定分配"：弹出错误提示"请选择要分配的租户"，不关闭弹窗
-- 保存逻辑（追加模式）：
-  - 遍历所有已选中的渠道，将勾选的租户追加到每个渠道的租户列表中
-  - 若某租户已在渠道的租户列表中，则跳过不重复添加
-- 保存成功后：
-  - 关闭弹窗
-  - 清空渠道选中状态
-  - 列表数据即时刷新
-  - 弹出成功提示"已为 N 个渠道分配 M 个租户"
-
----
-
 ---
 
 ## 三、租户管理模块（增量）
@@ -3498,10 +3056,7 @@
 
 ### 4.1 功能描述
 
-全省资源库管理与网络资源管理功能逻辑一致，区别在于每个站点新增必填的"所属地区"字段，通过三级联动选择器（省→市→区县）选择地区，系统根据选择深度自动判定层级：
-- 选择到省（如"浙江省"）：层级为省本级
-- 选择到市（如"杭州市"）：层级为市本级
-- 选择到区县（如"西湖区"）：层级为区县级
+全省资源库管理与网络资源管理功能逻辑一致，区别在于每个站点新增必填的"地区"字段（省本级/市级/区县级），用于标识渠道资源所属层级。
 
 ### 4.2 列表字段规则
 
@@ -3509,14 +3064,12 @@
 
 **地区列（新增，位于渠道类型之后）**
 
-- 展示规则：以标签形式展示所选地区名称，下方显示对应层级（省本级/市本级/区县级）
-- 交互规则：无特殊交互
-- 数据规则：
-  - 取数规则：取站点创建时选择的地区字段值
-  - 层级判定规则：
-    - 选择到省（如"浙江省"）→ 省本级
-    - 选择到市（如"杭州市"）→ 市本级
-    - 选择到区县（如"西湖区"）→ 区县级
+- 显示内容：地区标签，以不同颜色徽章区分层级
+- 取数规则：取站点创建时选择的地区字段值
+- 展示规则：
+  - 省本级：蓝色徽章
+  - 市级：绿色徽章
+  - 区县级：黄色徽章
 
 ### 4.3 搜索筛选
 
@@ -3527,7 +3080,7 @@
 - 位置：渠道类型筛选框右侧
 - 控件类型：下拉选择框
 - 默认值："全部地区"
-- 可选值：全部地区、省本级、市本级、区县级
+- 可选值：全部地区、省本级、市级、区县级
 - 筛选逻辑：选择后列表仅展示对应地区的站点记录
 - 联动：与关键字搜索、渠道类型筛选同时生效，取交集
 
@@ -3535,40 +3088,34 @@
 
 与网络资源管理表单一致，新增：
 
-**所属地区（必填）**
+**地区（必填）**
 
-- 控件类型：三级联动下拉选择框（省→市→区县）
-- 选择规则：
-  - 第一级：选择省份（如"浙江省"），选择后联动加载市级选项
-  - 第二级：选择市（如"杭州市"），选择后联动加载区县选项
-  - 第三级：选择区县（如"西湖区"），选填
-- 层级自动判定：
-  - 仅选择到省 → 层级为省本级
-  - 选择到市 → 层级为市本级
-  - 选择到区县 → 层级为区县级
-- 校验规则：至少选择到省份，未选择时不允许提交
+- 控件类型：下拉选择框
+- 占位提示："请选择地区"
+- 可选值：省本级、市级、区县级
+- 校验规则：必选，未选择时不允许提交
 
-### 4.5 分配租户、移除租户、删除、批量分配租户
+### 4.5 分配租户、移除租户、删除
 
-交互逻辑与网络资源管理完全一致，包括行选择（复选框列）和批量分配租户功能。
+交互逻辑与网络资源管理完全一致。
 
 ---
 
 ## 五、全局交互规则
 
-### 5.1 操作反馈
+### 4.1 操作反馈
 
 - 所有涉及数据变更的操作成功后，均通过页面右上角的轻提示（Toast）给出操作结果反馈
 - 成功提示自动消失，无需手动关闭
 - 错误提示同样自动消失，提示文案为具体的错误原因
 
-### 5.2 弹窗通用行为
+### 4.2 弹窗通用行为
 
 - 弹窗打开时，背景遮罩层覆盖页面，防止误操作
 - 点击弹窗右上角关闭按钮可关闭弹窗
 - 弹窗内容区超出可视高度时支持内部滚动
 
-### 5.3 侧边栏导航
+### 4.3 侧边栏导航
 
 - 侧边栏包含三个同级功能入口，点击可切换页面：
   - 租户管理
@@ -3576,11 +3123,125 @@
   - 全省资源库管理
 - 当前页面在侧边栏中高亮显示
 
-### 5.4 权限说明
+### 4.4 权限说明
 
 - 本模块仅面向超级管理员角色，不涉及租户级用户
 - 超级管理员拥有全部增删改查权限
 
-</textarea>
+---
+
+## 五、数据字典
+
+### 5.1 渠道（Channel）
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| id | 字符串 | 系统生成 | 渠道唯一标识 |
+| type | 枚举 | 是 | 渠道类型，取值见渠道类型枚举 |
+| accountName | 字符串 | 是 | 账号名称，采集账号在平台的名称 |
+| accountId | 字符串 | 否 | 账号在平台的唯一ID |
+| tenants | 数组 | 否 | 已分配租户ID列表，默认为空数组 |
+| remark | 字符串 | 否 | 采集备注，渠道用途说明 |
+| createTime | 时间戳 | 系统生成 | 渠道创建时间 |
+
+### 5.2 渠道类型枚举
+
+| 类型值 | 中文名称 |
+|--------|----------|
+| weixin | 微信 |
+| weibo | 微博 |
+| douyin | 抖音 |
+| app | 客户端 |
+| shipin | 视频号 |
+| wz | 网站 |
+| szb | 数字报 |
+| kuaishou | 快手 |
+| toutiao | 头条号 |
+| baijia | 百家号 |
+| qie | 企鹅号 |
+
+### 5.3 全省资源库渠道（ProvChannel）
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| id | 字符串 | 系统生成 | 渠道唯一标识 |
+| type | 枚举 | 是 | 渠道类型，取值同渠道类型枚举 |
+| accountName | 字符串 | 是 | 账号名称 |
+| accountId | 字符串 | 否 | 账号在平台的唯一ID |
+| region | 枚举 | 是 | 地区层级：省本级/市级/区县级 |
+| tenants | 数组 | 否 | 已分配租户ID列表，默认为空数组 |
+| remark | 字符串 | 否 | 采集备注 |
+| createTime | 时间戳 | 系统生成 | 渠道创建时间 |
+
+### 5.4 租户（Tenant）增量字段
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| keywords | 数组 | 否 | 入库内容筛选关键词列表，每个租户独立维护 |
+`;
+
+        // ========== Init PRD ==========
+        document.getElementById('prdContent').innerHTML = md2html(prdMarkdown);
+
+        // ========== Generate PRD TOC ==========
+        (function buildToc() {
+            const toc = document.getElementById('prdToc');
+            const content = document.getElementById('prdContent');
+            const titleEl = document.createElement('div');
+            titleEl.className = 'prd-toc-title';
+            titleEl.textContent = '文档目录';
+            toc.appendChild(titleEl);
+
+            const headings = content.querySelectorAll('h2, h3');
+            headings.forEach(h => {
+                const a = document.createElement('a');
+                a.className = 'prd-toc-item' + (h.tagName === 'H3' ? ' sub' : '');
+                a.textContent = h.textContent;
+                a.dataset.target = h.id;
+                a.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.getElementById(this.dataset.target).scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+                toc.appendChild(a);
+            });
+
+            // IntersectionObserver for active highlighting
+            const tocItems = toc.querySelectorAll('.prd-toc-item');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        tocItems.forEach(item => item.classList.remove('active'));
+                        const active = toc.querySelector(`[data-target="${entry.target.id}"]`);
+                        if (active) active.classList.add('active');
+                    }
+                });
+            }, { root: content, rootMargin: '-20% 0px -70% 0px' });
+            headings.forEach(h => observer.observe(h));
+        })();
+
+        // ========== Populate Type Filter ==========
+        (function() {
+            const sel = document.getElementById('typeFilter');
+            Object.keys(channelTypeMap).forEach(key => {
+                const opt = document.createElement('option');
+                opt.value = key;
+                opt.textContent = channelTypeMap[key].name;
+                sel.appendChild(opt);
+            });
+        })();
+
+        (function() {
+            const sel = document.getElementById('provTypeFilter');
+            Object.keys(channelTypeMap).forEach(key => {
+                const opt = document.createElement('option');
+                opt.value = key;
+                opt.textContent = channelTypeMap[key].name;
+                sel.appendChild(opt);
+            });
+        })();
+
+        // ========== Init ==========
+        renderTable();
+    </script>
 </body>
 </html>
