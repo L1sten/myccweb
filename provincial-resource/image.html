@@ -29,30 +29,32 @@
         /* ===== Header ===== */
         .top-header {
             height: 56px; flex-shrink: 0; background: var(--color-white);
-            border-bottom: 1px solid var(--color-gray1); display: flex; align-items: center; padding: 0 20px;
+            border-bottom: 1px solid var(--color-gray1); display: flex; align-items: center; padding: 0 24px; z-index: 100;
         }
-        .logo { display: flex; align-items: center; gap: 10px; margin-right: 32px; }
-        .logo-img { width: 28px; height: 28px; border-radius: 6px; background: var(--color-primary); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; font-weight: 700; }
-        .logo-text { font-size: 16px; font-weight: 700; color: var(--color-text1); white-space: nowrap; }
-        .header-nav { display: flex; align-items: center; }
-        .h-nav {
-            padding: 16px 20px; font-size: 16px; font-weight: 600; color: var(--color-text1);
-            cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; transition: all .15s;
-            display: flex; align-items: center; gap: 2px;
-        }
-        .h-nav:hover { color: var(--color-primary); }
-        .h-nav.active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
-        .h-nav .arrow { font-size: 10px; margin-left: 3px; opacity: .45; }
-        .header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
-        .btn-upload {
-            height: 32px; padding: 0 16px; background: var(--color-primary); color: #fff;
-            border: none; border-radius: var(--radius); font-size: 14px; font-weight: 500; cursor: pointer; transition: all .15s;
-        }
-        .btn-upload:hover { opacity: .85; }
-        .user-tag {
-            display: flex; align-items: center; gap: 4px; padding: 6px 12px; background: var(--color-gray5);
-            border-radius: var(--radius); font-size: 13px; color: var(--color-text3); cursor: pointer;
-        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .logo { width: 32px; height: 32px; background: var(--color-primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; }
+        .sys-name { font-size: 16px; font-weight: 600; }
+        .header-nav { display: flex; align-items: center; gap: 4px; margin-left: 24px; }
+        .h-nav-item { padding: 8px 16px; font-size: 14px; color: var(--color-text3); cursor: pointer; border-radius: 6px; transition: all .15s; user-select: none; position: relative; display: flex; align-items: center; gap: 2px; }
+        .h-nav-item:hover { background: var(--color-gray3); color: var(--color-text1); }
+        .h-nav-item.active { color: var(--color-primary); font-weight: 500; }
+        .h-nav-dd { position: relative; display: flex; align-items: center; }
+        .h-nav-dd::after { content: ''; display: inline-block; width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 4px solid currentColor; margin-left: 4px; opacity: .4; vertical-align: middle; }
+        .h-nav-dd-menu { display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background: #fff; border: 1px solid var(--color-gray1); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.1); padding: 16px 0; min-width: 480px; z-index: 200; margin-top: 4px; }
+        .h-nav-dd:hover .h-nav-dd-menu { display: flex; }
+        .dd-section { flex: 1; padding: 0 20px; }
+        .dd-section+.dd-section { border-left: 1px solid var(--color-gray1); }
+        .dd-title { font-size: 12px; font-weight: 600; color: var(--color-text3); margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--color-gray1); text-transform: uppercase; letter-spacing: .05em; }
+        .dd-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 13px; color: var(--color-text3); cursor: pointer; transition: color .15s; }
+        .dd-item:hover { color: var(--color-primary); }
+        .dd-item svg { width: 14px; height: 14px; flex-shrink: 0; }
+        .dd-highlight .dd-title { color: var(--color-primary); }
+        .dd-highlight .dd-item { color: var(--color-primary); font-weight: 500; }
+        .header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+        .btn-upload { height: 34px; padding: 0 14px; background: var(--color-primary); color: #fff; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .btn-upload:hover { opacity: .9; }
+        .btn-upload svg { width: 14px; height: 14px; }
+        .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg,#667eea,#764ba2); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 600; cursor: pointer; }
 
         /* ===== Channel Tabs ===== */
         .channel-tabs {
@@ -85,6 +87,11 @@
         .sidebar-child:hover { background: var(--color-primary-bg); color: var(--color-text1); }
         .sidebar-child input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--color-primary); cursor: pointer; }
         .sidebar-child.active { background: var(--color-primary-bg); color: var(--color-primary); font-weight: 500; }
+        .sidebar-child { position: relative; }
+        .sidebar-child .ctx-trigger { position: absolute; right: 8px; width: 20px; height: 20px; display: none; align-items: center; justify-content: center; cursor: pointer; }
+        .sidebar-child:hover .ctx-trigger { display: flex; }
+        .sidebar-child .ctx-trigger svg { width: 14px; height: 14px; color: var(--color-text4); }
+        .sidebar-child .ctx-trigger:hover svg { color: var(--color-primary); }
         .sidebar-divider { height: 1px; background: var(--color-gray1); margin: 6px 16px; }
 
         /* ===== Content ===== */
@@ -143,27 +150,57 @@
         .card-title:hover { color: var(--color-primary); text-decoration: underline; }
         .card-info { padding: 6px 10px 10px; display: flex; align-items: center; justify-content: space-between; }
         .info-time { font-size: 14px; color: var(--color-text4); line-height: 20px; }
+
+        /* ===== Pagination ===== */
+        .pagination-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; background: var(--color-white); border-top: 1px solid var(--color-gray1); flex-shrink: 0; gap: 8px; }
+        .pagination-info { font-size: 12px; color: var(--color-text4); }
+        .pagination-info strong { color: var(--color-text3); }
+        .pagination-controls { display: flex; align-items: center; gap: 4px; }
+        .page-btn { height: 28px; min-width: 28px; padding: 0 8px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--color-gray1); border-radius: 4px; font-size: 12px; cursor: pointer; background: var(--color-white); color: var(--color-text2); transition: all .15s; }
+        .page-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+        .page-btn.active { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
+        .page-btn:disabled { opacity: .35; cursor: default; }
+        .pg-goto { margin-left: auto; display: flex; align-items: center; gap: 4px; color: var(--color-text4); font-size: 12px; }
+        .pg-goto input { width: 40px; height: 28px; border: 1px solid var(--color-gray1); border-radius: 4px; text-align: center; font-size: 12px; outline: none; }
+        .pg-select { height: 28px; padding: 0 8px; border: 1px solid var(--color-gray1); border-radius: 4px; font-size: 12px; outline: none; }
     </style>
 </head>
 <body>
 
 <header class="top-header">
-    <div class="logo">
-        <div class="logo-img">M</div>
-        <span class="logo-text">媒资系统</span>
+    <div class="header-left">
+        <div class="logo">M</div>
+        <span class="sys-name">媒资系统</span>
     </div>
     <nav class="header-nav">
-        <div class="h-nav" onclick="location.href='../'">首页</div>
-        <div class="h-nav" onclick="location.href='search.html'">搜索中心 <span class="arrow">▼</span></div>
-        <div class="h-nav active">资源中心 <span class="arrow">▼</span></div>
-        <div class="h-nav">素材中心 <span class="arrow">▼</span></div>
-        <div class="h-nav">审批中心</div>
-        <div class="h-nav">同步中心</div>
-        <div class="h-nav">智能标签库</div>
+        <div class="h-nav-item">首页</div>
+        <div class="h-nav-item" onclick="location.href='search.html'">搜索中心</div>
+        <div class="h-nav-dd">
+            <div class="h-nav-item active">资源中心</div>
+            <div class="h-nav-dd-menu">
+                <div class="dd-section">
+                    <div class="dd-title">网络资源库</div>
+                    <div class="dd-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/></svg>网络稿件</div>
+                    <div class="dd-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>网络视频</div>
+                    <div class="dd-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>网络图片</div>
+                    <div class="dd-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>网络音频</div>
+                </div>
+                <div class="dd-section dd-highlight">
+                    <div class="dd-title">全省资源库</div>
+                    <div class="dd-item" onclick="location.href='index.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>成品稿件</div>
+                    <div class="dd-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>成品图片</div>
+                    <div class="dd-item" onclick="location.href='video.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>成品视频</div>
+                </div>
+            </div>
+        </div>
+        <div class="h-nav-item">素材中心</div>
+        <div class="h-nav-item">审批中心</div>
+        <div class="h-nav-item">同步中心</div>
+        <div class="h-nav-item">智能标签库</div>
     </nav>
     <div class="header-right">
-        <button class="btn-upload">上传</button>
-        <div class="user-tag">用户 ▼</div>
+        <button class="btn-upload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>上传</button>
+        <div class="user-avatar">李</div>
     </div>
 </header>
 
@@ -181,7 +218,7 @@
                 <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </div>
             <div class="sidebar-group-children open">
-                <div class="sidebar-child"><input type="checkbox"> 浙报集团</div>
+                <div class="sidebar-child"><input type="checkbox"> 浙报集团<span class="ctx-trigger" onclick="event.stopPropagation();filterOnlyCb(this.parentElement.querySelector('input[type=checkbox]'))"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></span></div>
             </div>
         </div>
         <div class="sidebar-divider"></div>
@@ -201,6 +238,7 @@
             <button class="btn-search" onclick="doSearch()">&#128269;</button>
         </div>
         <div class="results-grid"><div class="card-list" id="cardList"></div></div>
+        <div class="pagination-bar"><div class="pagination-info">共 <strong id="pgTotal">0</strong> 条</div><select class="select select-sm" id="pgSize" onchange="goPage(1)"><option>12条/页</option><option>20条/页</option><option>50条/页</option></select><div class="pagination-controls" id="pgControls"></div><div class="pg-goto">前往 <input type="text" id="pgGoto" onkeydown="if(event.key==='Enter')goPage(parseInt(this.value))"> 页</div></div>
     </div>
 </div>
 
@@ -278,7 +316,7 @@ function renderRegions() {
         html += '</div>';
         html += '<div class="sidebar-group-children">';
         r.children.forEach(function(c) {
-            html += '<div class="sidebar-child"><input type="checkbox"> ' + c + '</div>';
+            html += '<div class="sidebar-child"><input type="checkbox"> ' + c + '<span class="ctx-trigger" onclick="event.stopPropagation();filterOnlyCb(this.parentElement.querySelector(\'input[type=checkbox]\'))"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></span></div>';
         });
         html += '</div></div>';
     });
@@ -310,10 +348,29 @@ function updSel() { document.getElementById('selCount').textContent = document.q
 function clearSel() { document.querySelectorAll('.filter-bar input[type=checkbox]')[0].checked = false; document.querySelectorAll('.card-cb input').forEach(function(c){c.checked=false}); updSel(); }
 function doSearch() {
     var kw = document.getElementById('searchInput').value.trim().toLowerCase();
-    if (!kw) { render(DATA); return; }
-    render(DATA.filter(function(d){return d.title.toLowerCase().indexOf(kw)!==-1}));
+    if (!kw) { pgFilteredData = DATA; } else { pgFilteredData = DATA.filter(function(d){return d.title.toLowerCase().indexOf(kw)!==-1}); }
+    pgCurrentPage = 1; renderPage();
 }
-document.addEventListener('DOMContentLoaded', function(){ renderRegions(); render(DATA); });
+/* ===== Pagination ===== */
+var pgCurrentPage = 1;
+var pgFilteredData = [];
+function getPgSize() { var sel = document.getElementById('pgSize'); return parseInt(sel.options[sel.selectedIndex].text) || 12; }
+function goPage(p) { pgCurrentPage = p; renderPage(); }
+function renderPage() {
+  var size = getPgSize(), total = pgFilteredData.length, pages = Math.max(1, Math.ceil(total / size));
+  if (pgCurrentPage > pages) pgCurrentPage = pages;
+  var start = (pgCurrentPage - 1) * size;
+  render(pgFilteredData.slice(start, start + size));
+  document.getElementById('pgTotal').textContent = total;
+  var ctrl = document.getElementById('pgControls'), h = '';
+  h += '<button class="page-btn" onclick="goPage(' + (pgCurrentPage - 1) + ')"' + (pgCurrentPage <= 1 ? ' disabled' : '') + '>\u2039 上一页</button>';
+  for (var p = 1; p <= pages; p++) h += '<button class="page-btn' + (p === pgCurrentPage ? ' active' : '') + '" onclick="goPage(' + p + ')">' + p + '</button>';
+  h += '<button class="page-btn" onclick="goPage(' + (pgCurrentPage + 1) + ')"' + (pgCurrentPage >= pages ? ' disabled' : '') + '>下一页 \u203A</button>';
+  ctrl.innerHTML = h;
+}
+function filterOnlyCb(cb) { if (!cb) return; cb.checked = true; }
+
+document.addEventListener('DOMContentLoaded', function(){ renderRegions(); pgFilteredData = DATA; renderPage(); });
 </script>
 </body>
 </html>
