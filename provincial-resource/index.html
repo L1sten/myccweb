@@ -1112,6 +1112,14 @@ function showDetail(idx) {
   document.getElementById('detailChannel').textContent = a.channel;
   document.getElementById('detailTime').textContent = a.time;
   document.getElementById('detailContent').innerHTML = a.content || '<p>正文内容加载中...</p>';
+  var tagEl = document.getElementById('detailTags');
+  var tagHtml = '';
+  if (a.tags && a.tags.length) a.tags.forEach(function(t) { tagHtml += '<span class="tag-item">' + t + '</span>'; });
+  tagEl.innerHTML = tagHtml;
+  var kwEl = document.getElementById('detailKeywords');
+  var kwHtml = '';
+  if (a.keywords && a.keywords.length) a.keywords.forEach(function(k) { kwHtml += '<span class="kw-item">#' + k + '</span>'; });
+  kwEl.innerHTML = kwHtml;
   document.getElementById('listView').classList.add('hidden');
   document.getElementById('detailView').classList.add('active');
   document.getElementById('sidebar').style.display = 'none';
