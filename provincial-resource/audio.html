@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><script src="../auth.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成品音频 - 媒资系统</title>
+    <style>
+        :root {
+            --color-primary: #2e65f5;
+            --color-primary-bg: rgba(46,101,245,.1);
+            --color-text1: #151a1d;
+            --color-text2: #333;
+            --color-text3: #666;
+            --color-text4: #999;
+            --color-white: #fff;
+            --color-gray1: #e2e6ed;
+            --color-gray3: #f5f7fa;
+            --color-gray5: #f6f8fa;
+            --color-gray6: #f4f6f7;
+            --radius: 4px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--color-gray3); color: var(--color-text1); font-size: 14px; line-height: 1.5;
+            -webkit-font-smoothing: antialiased; height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        /* ===== Header ===== */
+        .top-header {
+            height: 56px; flex-shrink: 0; background: var(--color-white);
+            border-bottom: 1px solid var(--color-gray1); display: flex; align-items: center; padding: 0 24px; z-index: 100;
+        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .logo { width: 32px; height: 32px; background: var(--color-primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; }
+        .sys-name { font-size: 16px; font-weight: 600; }
+        .header-nav { display: flex; align-items: center; gap: 4px; margin-left: 24px; }
+        .h-nav-item { padding: 8px 16px; font-size: 14px; color: var(--color-text3); cursor: pointer; border-radius: 6px; transition: all .15s; user-select: none; position: relative; display: flex; align-items: center; gap: 2px; }
+        .h-nav-item:hover { background: var(--color-gray3); color: var(--color-text1); }
+        .h-nav-item.active { color: var(--color-primary); font-weight: 500; }
+        .h-nav-dd { position: relative; display: flex; align-items: center; }
+        .h-nav-dd::after { content: ''; display: inline-block; width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 4px solid currentColor; margin-left: 4px; opacity: .4; vertical-align: middle; }
+        .h-nav-dd-menu { display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background: #fff; border: 1px solid var(--color-gray1); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.1); padding: 16px 0; min-width: 480px; z-index: 200; margin-top: 4px; }
+        .h-nav-dd:hover .h-nav-dd-menu { display: flex; }
+        .h-nav-dd-menu::before { content: ''; position: absolute; top: -8px; left: 0; right: 0; height: 8px; }
+        .dd-section { flex: 1; padding: 0 20px; }
+        .dd-section+.dd-section { border-left: 1px solid var(--color-gray1); }
+        .dd-title { font-size: 12px; font-weight: 600; color: var(--color-text3); margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--color-gray1); text-transform: uppercase; letter-spacing: .05em; }
+        .dd-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 13px; color: var(--color-text3); cursor: pointer; transition: color .15s; }
+        .dd-item:hover { color: var(--color-primary); }
+        .dd-item svg { width: 14px; height: 14px; flex-shrink: 0; }
+        .dd-highlight .dd-title { color: var(--color-primary); }
+        .dd-highlight .dd-item { color: var(--color-primary); font-weight: 500; }
+        .header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+        .btn-upload { height: 34px; padding: 0 14px; background: var(--color-primary); color: #fff; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .btn-upload:hover { opacity: .9; }
+        .btn-upload svg { width: 14px; height: 14px; }
+        .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg,#667eea,#764ba2); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+        /* ===== Channel Tabs ===== */
+        .channel-tabs {
+            height: 44px; flex-shrink: 0; background: var(--color-white);
+            border-bottom: 1px solid var(--color-gray1); display: flex; align-items: center; padding: 0 20px;
+        }
+        .ch-tab {
+            padding: 10px 20px; font-size: 14px; color: var(--color-text3);
+            cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; user-select: none;
+        }
+        .ch-tab:hover { color: var(--color-text1); }
+        .ch-tab.active { color: var(--color-primary); border-bottom-color: var(--color-primary); font-weight: 500; }
+
+        /* ===== Main ===== */
+        .main { display: flex; flex: 1; min-height: 0; overflow: hidden; }
+
+        /* ===== Client Sidebar ===== */
+        .sidebar { width: 240px; flex-shrink: 0; background: var(--color-white); border-right: 1px solid var(--color-gray1); overflow-y: auto; padding: 8px 0; }
+        .sidebar-head{display:flex;align-items:center;justify-content:space-between;padding:6px 16px 10px;border-bottom:1px solid var(--color-gray1);margin-bottom:4px}
+        .sidebar-head-label{font-size:12px;font-weight:600;color:var(--color-text3)}
+        .sidebar-clear{font-size:12px;color:var(--color-primary);cursor:pointer;display:none}
+        .sidebar-clear:hover{text-decoration:underline}
+        .sidebar-group { margin-bottom: 2px; }
+        .sidebar-group-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; cursor: pointer; color: #343f56; font-size: 14px; transition: background .15s; user-select: none; }
+        .sidebar-group-header:hover { background: var(--color-primary-bg); }
+        .sidebar-group-header .left { display: flex; align-items: center; gap: 8px; }
+        .sidebar-group-header .left input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--color-primary); cursor: pointer; flex-shrink: 0; }
+        .sidebar-group-header .arrow { width: 16px; height: 16px; color: var(--color-text4); transition: transform .2s; flex-shrink: 0; }
+        .sidebar-group-header.expanded .arrow { transform: rotate(90deg); }
+        .sidebar-group-header.expanded { background: var(--color-primary-bg); font-weight: 500; }
+        .sidebar-group-children { overflow: hidden; max-height: 0; transition: max-height .25s ease; }
+        .sidebar-group-children.open { max-height: 500px; }
+        .sidebar-child { display: flex; align-items: center; gap: 8px; padding: 7px 16px 7px 40px; font-size: 13px; color: var(--color-text3); cursor: pointer; transition: all .15s; }
+        .sidebar-child:hover { background: var(--color-primary-bg); color: var(--color-text1); }
+        .sidebar-child input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--color-primary); cursor: pointer; }
+        .sidebar-child.active { background: var(--color-primary-bg); color: var(--color-primary); font-weight: 500; }
+        .sidebar-child { position: relative; }
+        .sidebar-child .ctx-trigger { position: absolute; right: 8px; width: 20px; height: 20px; display: none; align-items: center; justify-content: center; cursor: pointer; }
+        .sidebar-child:hover .ctx-trigger { display: flex; }
+        .sidebar-child .ctx-trigger svg { width: 14px; height: 14px; color: var(--color-text4); }
+        .sidebar-child .ctx-trigger:hover svg { color: var(--color-primary); }
+        .sidebar-child .ctx-trigger.active { display: flex !important; }
+        .sidebar-child .ctx-trigger.active svg { color: var(--color-primary); fill: var(--color-primary); }
+
+        /* ===== Content ===== */
+        .content { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* Filter Bar */
+        .filter-bar {
+            display: flex; align-items: center; gap: 12px; padding: 10px 20px;
+            background: var(--color-white); border-bottom: 1px solid var(--color-gray1); flex-shrink: 0;
+        }
+        .date-input {
+            height: 30px; padding: 0 10px; border: 1px solid var(--color-gray1); border-radius: var(--radius);
+            font-size: 12px; outline: none; width: 140px; color: var(--color-text2);
+        }
+        .date-input::placeholder { color: var(--color-text4); }
+        .date-input:focus { border-color: var(--color-primary); }
+        .filter-sep { color: var(--color-text4); font-size: 12px; }
+        .search-input {
+            height: 30px; padding: 0 10px; border: 1px solid var(--color-gray1); border-radius: var(--radius);
+            font-size: 12px; outline: none; width: 200px; color: var(--color-text2);
+        }
+        .search-input::placeholder { color: var(--color-text4); }
+        .search-input:focus { border-color: var(--color-primary); }
+        .btn-search {
+            width: 30px; height: 30px; border-radius: 50%; background: var(--color-primary);
+            border: none; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s;
+        }
+        .btn-search:hover { opacity: .85; }
+        .filter-spacer { flex: 1; }
+        .tool-check { display: flex; align-items: center; gap: 5px; font-size: 13px; color: var(--color-text2); cursor: pointer; }
+        .tool-check input { accent-color: var(--color-primary); width: 14px; height: 14px; cursor: pointer; }
+        .tool-count { font-size: 13px; color: var(--color-text4); }
+        .tool-count strong { color: var(--color-text3); }
+        .tool-clear { font-size: 13px; color: var(--color-text4); cursor: pointer; }
+        .tool-clear:hover { color: var(--color-primary); }
+        .filter-check { display: flex; align-items: center; gap: 5px; font-size: 13px; color: var(--color-text2); cursor: pointer; }
+        .filter-check input { accent-color: var(--color-primary); width: 14px; height: 14px; cursor: pointer; }
+        .filter-clear { font-size: 13px; color: var(--color-text4); cursor: pointer; }
+        .filter-clear:hover { color: var(--color-primary); }
+
+        /* ===== Audio Table ===== */
+        .audio-table-wrap { flex: 1; overflow-y: auto; padding: 0; background: #fff; }
+        .audio-table { width: 100%; border-collapse: collapse; }
+        .audio-table thead { position: sticky; top: 0; z-index: 5; }
+        .audio-table th { padding: 10px 16px; text-align: left; font-size: 12px; font-weight: 500; color: var(--color-text4); background: var(--color-gray5); border-bottom: 1px solid var(--color-gray1); white-space: nowrap; }
+        .audio-table td { padding: 12px 16px; border-bottom: 1px solid var(--color-gray1); font-size: 13px; color: var(--color-text2); vertical-align: middle; }
+        .audio-table tr:hover td { background: var(--color-gray5); }
+        .audio-table .col-no { width: 50px; text-align: center; }
+        .audio-table .col-title { color: var(--color-primary); cursor: pointer; }
+        .audio-table .col-title:hover { text-decoration: underline; }
+        .audio-table .col-duration { width: 100px; }
+        .audio-table .col-size { width: 100px; }
+        .audio-table .col-format { width: 80px; }
+        .audio-table .col-time { width: 160px; color: var(--color-text4); font-size: 12px; }
+        .audio-table input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--color-primary); cursor: pointer; }
+
+        /* ===== Pagination ===== */
+        .pagination-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; background: var(--color-white); border-top: 1px solid var(--color-gray1); flex-shrink: 0; gap: 8px; }
+        .pagination-info { font-size: 12px; color: var(--color-text4); }
+        .pagination-info strong { color: var(--color-text3); }
+        .pagination-controls { display: flex; align-items: center; gap: 4px; }
+        .page-btn { height: 28px; min-width: 28px; padding: 0 8px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--color-gray1); border-radius: 4px; font-size: 12px; cursor: pointer; background: var(--color-white); color: var(--color-text2); transition: all .15s; }
+        .page-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+        .page-btn.active { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
+        .page-btn:disabled { opacity: .35; cursor: default; }
+        .pg-goto { margin-left: auto; display: flex; align-items: center; gap: 4px; color: var(--color-text4); font-size: 12px; }
+        .pg-goto input { width: 40px; height: 28px; border: 1px solid var(--color-gray1); border-radius: 4px; text-align: center; font-size: 12px; outline: none; }
+        .pg-select { height: 28px; padding: 0 8px; border: 1px solid var(--color-gray1); border-radius: 4px; font-size: 12px; outline: none; }
+
+        /* ===== Audio Detail ===== */
+        .audio-detail{display:none;position:fixed;inset:0;background:var(--color-gray3);z-index:300;flex-direction:column}
+        .audio-detail.active{display:flex}
+        .audio-detail-header{height:56px;background:#fff;border-bottom:1px solid var(--color-gray1);display:flex;align-items:center;padding:0 24px;gap:16px;flex-shrink:0;justify-content:center;position:relative}
+        .audio-detail-back{display:flex;align-items:center;gap:4px;cursor:pointer;font-size:14px;color:var(--color-text3);transition:color .15s;position:absolute;left:24px}
+        .audio-detail-back:hover{color:var(--color-primary)}
+        .audio-detail-back svg{width:18px;height:18px}
+        .audio-detail-actions{display:flex;gap:8px}
+        .audio-detail-actions button{height:32px;padding:0 14px;border:1px solid var(--color-gray1);border-radius:6px;font-size:12px;cursor:pointer;background:#fff;color:var(--color-text2);display:flex;align-items:center;gap:5px;transition:all .15s}
+        .audio-detail-actions button:hover{border-color:var(--color-primary);color:var(--color-primary)}
+        .audio-detail-actions button svg{width:14px;height:14px}
+        .audio-detail-body{flex:1;display:flex;overflow:hidden}
+        .audio-detail-main{flex:1;padding:32px 40px;display:flex;flex-direction:column;gap:24px;overflow-y:auto}
+        .audio-player{background:#fff;border-radius:8px;padding:24px;display:flex;align-items:center;gap:16px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+        .audio-player-icon{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .audio-player-icon svg{width:22px;height:22px;color:#fff}
+        .audio-player-controls{flex:1;display:flex;flex-direction:column;gap:8px}
+        .audio-player-progress{width:100%;height:4px;background:var(--color-gray1);border-radius:2px;position:relative;cursor:pointer}
+        .audio-player-progress-bar{height:100%;width:0%;background:var(--color-primary);border-radius:2px;transition:width .1s}
+        .audio-player-time{display:flex;justify-content:space-between;font-size:12px;color:var(--color-text4)}
+        .audio-player-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--color-primary);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:opacity .15s}
+        .audio-player-btn:hover{opacity:.85}
+        .audio-player-btn svg{width:16px;height:16px;margin-left:2px}
+        .audio-player-volume{display:flex;align-items:center;gap:8px;margin-left:8px}
+        .audio-player-volume svg{width:18px;height:18px;color:var(--color-text3)}
+        .audio-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+        .audio-info-card{background:#fff;border-radius:8px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+        .audio-info-card h4{font-size:13px;font-weight:600;color:var(--color-text1);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--color-gray1)}
+        .audio-info-row{display:flex;margin-bottom:8px;font-size:13px}
+        .audio-info-row .label{color:var(--color-text4);width:80px;flex-shrink:0}
+        .audio-info-row .value{color:var(--color-text2);flex:1}
+        .audio-detail-sidebar{width:340px;flex-shrink:0;background:#fff;border-left:1px solid var(--color-gray1);display:flex;flex-direction:column;overflow:hidden}
+        .audio-detail-tabs{display:flex;border-bottom:1px solid var(--color-gray1);flex-shrink:0}
+        .audio-detail-tab{flex:1;padding:12px 0;text-align:center;font-size:13px;color:var(--color-text4);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+        .audio-detail-tab.active{color:var(--color-primary);border-bottom-color:var(--color-primary);font-weight:500}
+        .audio-detail-info{flex:1;overflow-y:auto;padding:20px}
+        .audio-detail-info .info-row{display:flex;margin-bottom:14px;font-size:13px}
+        .audio-detail-info .info-label{color:var(--color-text4);width:70px;flex-shrink:0}
+        .audio-detail-info .info-value{color:var(--color-text2);flex:1;word-break:break-all}
+        .audio-detail-info .kw-section{margin-top:20px;padding-top:16px;border-top:1px solid var(--color-gray1)}
+        .audio-detail-info .kw-title{font-size:13px;font-weight:600;color:var(--color-text2);margin-bottom:12px}
+        .audio-detail-info .kw-tags{display:flex;flex-wrap:wrap;gap:8px}
+        .audio-detail-info .kw-tag{display:inline-block;padding:3px 12px;background:var(--color-primary-bg);color:var(--color-primary);border-radius:14px;font-size:12px}
+    </style>
+</head>
+<body>
+
+<header class="top-header">
+    <div class="header-left">
+        <div class="logo">M</div>
+        <span class="sys-name">媒资系统</span>
+    </div>
+    <nav class="header-nav">
+        <div class="h-nav-item">首页</div>
+        <div class="h-nav-item" onclick="location.href='search-center.html'">搜索中心</div>
+        <div class="h-nav-dd">
+            <div class="h-nav-item active">资源中心</div>
+            <div class="h-nav-dd-menu">
+                <div class="dd-section">
+                    <div class="dd-title">网络资源库</div>
+                    <div class="dd-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/></svg>网络稿件</div>
+                    <div class="dd-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>网络视频</div>
+                    <div class="dd-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>网络图片</div>
+                    <div class="dd-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>网络音频</div>
+                </div>
+                <div class="dd-section dd-highlight">
+                    <div class="dd-title">全省资源库</div>
+                    <div class="dd-item" onclick="location.href='index.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>成品稿件</div>
+                    <div class="dd-item" onclick="location.href='image.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>成品图片</div>
+                    <div class="dd-item" onclick="location.href='video.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>成品视频</div>
+                    <div class="dd-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>成品音频</div>
+                </div>
+            </div>
+        </div>
+        <div class="h-nav-item">素材中心</div>
+        <div class="h-nav-item">审批中心</div>
+        <div class="h-nav-item">同步中心</div>
+        <div class="h-nav-item">智能标签库</div>
+    </nav>
+    <div class="header-right">
+        <button class="btn-upload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>上传</button>
+        <div class="user-avatar">李</div>
+    </div>
+</header>
+
+<div class="channel-tabs">
+    <div class="ch-tab active" onclick="switchTab(this)">全部</div>
+    <div class="ch-tab" onclick="switchTab(this)">客户端</div>
+    <div class="ch-tab" onclick="switchTab(this)">网站</div>
+</div>
+
+<div class="main">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-head"><span class="sidebar-head-label">地域筛选</span><span class="sidebar-clear" id="sidebarClear" onclick="clearSidebar()">清空</span></div>
+        <div class="sidebar-group">
+            <div class="sidebar-group-header expanded" onclick="toggleGroup(this)">
+                <span class="left"><input type="checkbox" class="group-cb" data-group="province" onclick="event.stopPropagation()">省本级</span>
+                <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+            <div class="sidebar-group-children open">
+                <div class="sidebar-child"><input type="checkbox"> 浙报集团<span class="ctx-trigger" title="仅筛选此项" onclick="event.stopPropagation();filterOnlyCb(this.parentElement.querySelector('input[type=checkbox]'))"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></span></div>
+            </div>
+        </div>
+        <div id="regionGroups"></div>
+    </aside>
+
+    <div class="content">
+        <div class="filter-bar">
+            <label class="filter-check"><input type="checkbox" onchange="toggleAll(this)"> 全选</label>
+            <span class="filter-sep">|</span>
+            <span>已选 <strong id="selCount">0</strong> 项</span>
+            <span class="filter-sep">|</span>
+            <span class="filter-clear" onclick="clearSel()">清除</span>
+        </div>
+        <div class="audio-table-wrap">
+            <table class="audio-table">
+                <thead><tr>
+                    <th class="col-no"><input type="checkbox" onchange="toggleAll(this)"></th>
+                    <th>音频标题</th>
+                    <th class="col-duration">时长</th>
+                    <th class="col-size">大小</th>
+                    <th class="col-format">格式</th>
+                    <th class="col-time">发布时间</th>
+                </tr></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+        <div class="pagination-bar"><div class="pagination-info">共 <strong id="pgTotal">0</strong> 条</div><select class="select select-sm" id="pgSize" onchange="goPage(1)"><option>12条/页</option><option>20条/页</option><option>50条/页</option></select><div class="pagination-controls" id="pgControls"></div><div class="pg-goto">前往 <input type="text" id="pgGoto" onkeydown="if(event.key==='Enter')goPage(parseInt(this.value))"> 页</div></div>
+    </div>
+</div>
+
+<!-- Audio Detail Overlay -->
+<div class="audio-detail" id="audioDetail">
+    <div class="audio-detail-header">
+        <div class="audio-detail-back" onclick="closeAudioDetail()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>返回</div>
+        <div class="audio-detail-actions">
+            <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>下载</button>
+            <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>共享</button>
+            <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>取至个人</button>
+        </div>
+    </div>
+    <div class="audio-detail-body">
+        <div class="audio-detail-main">
+            <div class="audio-player">
+                <div class="audio-player-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+                <button class="audio-player-btn" onclick="togglePlay()"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg></button>
+                <div class="audio-player-controls">
+                    <div class="audio-player-progress"><div class="audio-player-progress-bar" id="progressBar"></div></div>
+                    <div class="audio-player-time"><span id="currentTime">00:00</span><span id="totalTime">00:00</span></div>
+                </div>
+                <div class="audio-player-volume"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></div>
+            </div>
+            <div class="audio-info-grid">
+                <div class="audio-info-card">
+                    <h4>基本信息</h4>
+                    <div class="audio-info-row"><span class="label">标题</span><span class="value" id="adTitle"></span></div>
+                    <div class="audio-info-row"><span class="label">发布站点</span><span class="value" id="adSite"></span></div>
+                    <div class="audio-info-row"><span class="label">渠道</span><span class="value" id="adChannel"></span></div>
+                    <div class="audio-info-row"><span class="label">上传时间</span><span class="value" id="adTime"></span></div>
+                </div>
+                <div class="audio-info-card">
+                    <h4>音频数据</h4>
+                    <div class="audio-info-row"><span class="label">时长</span><span class="value" id="adDuration"></span></div>
+                    <div class="audio-info-row"><span class="label">大小</span><span class="value" id="adSize"></span></div>
+                    <div class="audio-info-row"><span class="label">格式</span><span class="value" id="adFormat"></span></div>
+                </div>
+            </div>
+        </div>
+        <div class="audio-detail-sidebar">
+            <div class="audio-detail-tabs">
+                <div class="audio-detail-tab active">基本信息</div>
+            </div>
+            <div class="audio-detail-info">
+                <div class="info-row"><span class="info-label">标题</span><span class="info-value" id="adSidebarTitle"></span></div>
+                <div class="info-row"><span class="info-label">来源</span><span class="info-value" id="adSource"></span></div>
+                <div class="info-row"><span class="info-label">渠道</span><span class="info-value" id="adSidebarChannel"></span></div>
+                <div class="info-row"><span class="info-label">上传时间</span><span class="info-value" id="adSidebarTime"></span></div>
+                <div class="kw-section">
+                    <div class="kw-title">关键词</div>
+                    <div class="kw-tags" id="adKeywords"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+var DATA = [
+    { title: '浙江数字经济峰会现场录音', duration: 92, fileSize: '1.47M', format: 'mp3', time: '2026/05/01 07:00:00', source: '浙江广播电视集团', site: '中国蓝新闻客户端', channel: '客户端', region: '浙报集团', keywords: ["数字经济", "科技创新", "浙江"] },
+    { title: '建德美丽乡村建设访谈', duration: 185, fileSize: '2.95M', format: 'mp3', time: '2026/05/02 10:17:31', source: '建德市融媒体中心', site: '宜居建德客户端', channel: '客户端', region: '建德市', keywords: ["乡村振兴", "美丽乡村"] },
+    { title: '德清生态文明建设纪实', duration: 245, fileSize: '3.91M', format: 'mp3', time: '2026/05/03 13:34:02', source: '德清县融媒体中心', site: '我德清客户端', channel: '客户端', region: '德清县', keywords: ["生态文明", "绿色发展"] },
+    { title: '宁海智能制造产业报道', duration: 156, fileSize: '2.49M', format: 'mp3', time: '2026/05/04 16:51:33', source: '宁海传媒集团', site: '看宁海客户端', channel: '客户端', region: '宁海市', keywords: ["智能制造", "工业升级"] },
+    { title: '泰顺文旅融合发展纪实', duration: 198, fileSize: '3.16M', format: 'mp3', time: '2026/05/05 19:08:04', source: '泰顺县融媒体中心', site: '今日泰顺客户端', channel: '客户端', region: '泰顺县', keywords: ["文旅融合", "畲乡风情"] },
+    { title: '秀洲新区建设专题报道', duration: 132, fileSize: '2.11M', format: 'mp3', time: '2026/05/06 08:25:35', source: '秀洲区传媒中心', site: '看秀洲客户端', channel: '客户端', region: '秀洲区', keywords: ["城市建设", "新区发展"] },
+    { title: '绍兴古城保护与文化传承', duration: 278, fileSize: '4.44M', format: 'mp3', time: '2026/05/07 11:42:06', source: '绍兴市新闻传媒中心', site: '越牛新闻客户端', channel: '客户端', region: '越城区', keywords: ["古城保护", "文化传承"] },
+    { title: '武义温泉旅游产业发展', duration: 167, fileSize: '2.67M', format: 'mp3', time: '2026/05/01 14:59:37', source: '武义县融媒体中心', site: '掌上武义客户端', channel: '客户端', region: '武义县', keywords: ["温泉旅游", "休闲产业"] },
+    { title: '龙游特色产业振兴纪实', duration: 203, fileSize: '3.24M', format: 'mp3', time: '2026/05/02 17:16:08', source: '龙游传媒集团', site: '龙游通客户端', channel: '客户端', region: '龙游市', keywords: ["特色产业", "乡村振兴"] },
+    { title: '舟山海洋经济发展报道', duration: 145, fileSize: '2.32M', format: 'mp3', time: '2026/05/03 20:33:39', source: '舟山市新闻传媒中心', site: '竞舟客户端', channel: '客户端', region: '定海区', keywords: ["海洋经济", "港口发展"] },
+    { title: '玉环制造业数字化转型', duration: 189, fileSize: '3.02M', format: 'mp3', time: '2026/05/04 09:50:10', source: '玉环市传媒中心', site: '无限玉环客户端', channel: '客户端', region: '玉环市', keywords: ["制造业转型", "数字化"] },
+    { title: '景宁畲族文化传承专题', duration: 234, fileSize: '3.74M', format: 'mp3', time: '2026/05/05 12:07:41', source: '景宁畲族自治县融媒体中心', site: '中国畲乡客户端', channel: '客户端', region: '景宁县', keywords: ["畲族文化", "非遗传承"] },
+    { title: '杭州亚运遗产利用报道', duration: 112, fileSize: '1.79M', format: 'mp3', time: '2026/05/06 15:24:12', source: '浙江广播电视集团', site: '中国蓝新闻客户端', channel: '客户端', region: '浙报集团', keywords: ["亚运遗产", "全民健身"] },
+    { title: '上城南宋文化节录音', duration: 267, fileSize: '4.27M', format: 'mp3', time: '2026/05/07 18:41:43', source: '上城区融媒体中心', site: '上城发布客户端', channel: '客户端', region: '上城区', keywords: ["南宋文化", "历史街区"] },
+    { title: '德清莫干山民宿经济报道', duration: 178, fileSize: '2.84M', format: 'mp3', time: '2026/05/01 07:58:14', source: '德清县融媒体中心', site: '我德清客户端', channel: '网站', region: '德清县', keywords: ["莫干山", "民宿经济"] },
+    { title: '宁海智慧农业发展纪实', duration: 143, fileSize: '2.29M', format: 'mp3', time: '2026/05/02 10:15:45', source: '宁海传媒集团', site: '看宁海客户端', channel: '网站', region: '宁海市', keywords: ["智慧农业", "现代农业"] },
+    { title: '瑞安城市夜景灯光秀报道', duration: 95, fileSize: '1.52M', format: 'mp3', time: '2026/05/03 13:32:16', source: '瑞安市融媒体中心', site: '天瑞地安客户端', channel: '网站', region: '瑞安市', keywords: ["灯光秀", "城市夜景"] },
+    { title: '海宁钱塘江大潮现场录音', duration: 210, fileSize: '3.36M', format: 'mp3', time: '2026/05/04 16:49:47', source: '平湖市传媒中心', site: '今平湖客户端', channel: '网站', region: '平湖市', keywords: ["钱塘江大潮", "自然奇观"] },
+    { title: '诸暨珍珠产业发展报道', duration: 156, fileSize: '2.49M', format: 'mp3', time: '2026/05/05 19:06:18', source: '柯桥区融媒体中心', site: '笛扬新闻客户端', channel: '网站', region: '诸暨市', keywords: ["珍珠产业", "特色产业"] },
+    { title: '磐安中药材基地采访录音', duration: 188, fileSize: '3.01M', format: 'mp3', time: '2026/05/06 08:23:49', source: '婺城区新闻传媒中心', site: '婺城融媒客户端', channel: '网站', region: '磐安县', keywords: ["中药材", "特色农业"] },
+];
+
+function fmtDuration(s) {
+    var h = Math.floor(s / 3600);
+    var m = Math.floor((s % 3600) / 60);
+    var sec = Math.floor(s % 60);
+    if (h > 0) return h + ':' + (m < 10 ? '0' : '') + m + ':' + (sec < 10 ? '0' : '') + sec;
+    return m + ':' + (sec < 10 ? '0' : '') + sec;
+}
+
+function render(data) {
+    var tbody = document.getElementById('tableBody');
+    if (!data.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--color-text4)">暂无数据</td></tr>'; return; }
+    var h = '';
+    data.forEach(function(item, i) {
+        var idx = DATA.indexOf(item);
+        h += '<tr>';
+        h += '<td class="col-no"><input type="checkbox" data-idx="' + idx + '" onchange="updSel()"></td>';
+        h += '<td class="col-title" onclick="showAudioDetail(' + idx + ')">' + item.title + '</td>';
+        h += '<td class="col-duration">' + fmtDuration(item.duration || 0) + '</td>';
+        h += '<td class="col-size">' + (item.fileSize || '--') + '</td>';
+        h += '<td class="col-format">' + (item.format || 'mp3') + '</td>';
+        h += '<td class="col-time">' + item.time + '</td>';
+        h += '</tr>';
+    });
+    tbody.innerHTML = h;
+}
+
+function switchTab(el) { el.parentElement.querySelectorAll('.ch-tab').forEach(function(t){t.classList.remove('active')}); el.classList.add('active'); }
+
+/* ===== Sidebar Toggle & Checkbox ===== */
+var regionData = [
+  { name: '杭州市', children: ['西湖区','萧山区','桐庐县','上城区','滨江区','钱塘区','淳安县','临平区','临安区','富阳区','余杭区','建德市','拱墅区'] },
+  { name: '湖州市', children: ['吴兴区','南浔区','德清县','长兴县','安吉县'] },
+  { name: '宁波市', children: ['海曙区','江北区','北仑区','鄞州区','镇海区','奉化区','余姚市','慈溪市'] },
+  { name: '温州市', children: ['鹿城区','龙湾区','瓯海区','瑞安市','乐清市','龙港市'] },
+  { name: '嘉兴市', children: ['南湖区','秀洲区','海宁市','桐乡市','平湖市'] },
+  { name: '绍兴市', children: ['越城区','柯桥区','上虞区','诸暨市','新昌县'] },
+  { name: '金华市', children: ['婺城区','金东区','义乌市','东阳市','永康市'] },
+  { name: '衢州市', children: ['柯城区','衢江区','江山市'] },
+  { name: '舟山市', children: ['定海区','普陀区','岱山县'] },
+  { name: '台州市', children: ['椒江区','黄岩区','路桥区','温岭市','临海市'] },
+  { name: '丽水市', children: ['莲都区','龙泉市','青田县'] }
+];
+var regionMap = { '省本级': '省本级', '浙报集团': '省本级' };
+regionData.forEach(function(r) { regionMap[r.name + '本级'] = r.name; r.children.forEach(function(c) { regionMap[c] = r.name; }); });
+var funnelOnlyRegion = null;
+
+function getSelectedRegions() {
+  var regions = [];
+  document.querySelectorAll('.sidebar input[type="checkbox"]:checked').forEach(function(cb) {
+    var text = cb.parentElement.textContent.trim();
+    if (regionMap[text]) {
+      if (regions.indexOf(text) === -1) regions.push(text);
+    } else if (regionData.some(function(r) { return r.name === text; })) {
+      var city = regionData.find(function(r) { return r.name === text; });
+      if (city) {
+        if (regions.indexOf(text + '本级') === -1) regions.push(text + '本级');
+        city.children.forEach(function(c) { if (regions.indexOf(c) === -1) regions.push(c); });
+      }
+    }
+  });
+  var provCb = document.querySelector('.group-cb[data-group="province"]');
+  if (provCb && provCb.checked) { if (regions.indexOf('浙报集团') === -1) regions.push('浙报集团'); }
+  return regions;
+}
+
+function toggleGroup(el) {
+    el.classList.toggle('expanded');
+    el.nextElementSibling.classList.toggle('open');
+}
+
+function renderRegions() {
+    var container = document.getElementById('regionGroups');
+    var html = '';
+    regionData.forEach(function(r) {
+        html += '<div class="sidebar-group">';
+        html += '<div class="sidebar-group-header" onclick="toggleGroup(this)">';
+        html += '<span class="left"><input type="checkbox" class="group-cb" data-group="' + r.name + '" onclick="event.stopPropagation()">' + r.name + '</span>';
+        html += '<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>';
+        html += '</div>';
+        html += '<div class="sidebar-group-children">';
+        r.children.forEach(function(c) {
+            html += '<div class="sidebar-child"><input type="checkbox"> ' + c + '<span class="ctx-trigger" title="仅筛选此项" onclick="event.stopPropagation();filterOnlyCb(this.parentElement.querySelector(\'input[type=checkbox]\'))"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></span></div>';
+        });
+        html += '</div></div>';
+    });
+    container.innerHTML = html;
+    bindGroupCheckboxes();
+}
+
+function bindGroupCheckboxes() {
+    document.querySelectorAll('.group-cb').forEach(function(cb) {
+        cb.addEventListener('change', function() {
+            var group = cb.closest('.sidebar-group');
+            group.querySelectorAll('.sidebar-child input[type="checkbox"]').forEach(function(c) { c.checked = cb.checked; });
+            funnelOnlyRegion = null;
+        });
+    });
+    document.querySelectorAll('.sidebar-child input[type="checkbox"]').forEach(function(cb) {
+        cb.addEventListener('change', function() {
+            var group = cb.closest('.sidebar-group');
+            var groupCb = group.querySelector('.group-cb');
+            var children = group.querySelectorAll('.sidebar-child input[type="checkbox"]');
+            var allChecked = true;
+            children.forEach(function(c) { if (!c.checked) allChecked = false; });
+            if (groupCb) groupCb.checked = allChecked;
+            funnelOnlyRegion = null;
+        });
+        cb.addEventListener('click', function(e) { e.stopPropagation(); });
+    });
+}
+
+function toggleAll(cb) { document.querySelectorAll('.audio-table tbody input[type=checkbox]').forEach(function(c){c.checked=cb.checked}); updSel(); }
+function updSel() { document.getElementById('selCount').textContent = document.querySelectorAll('.audio-table tbody input[type=checkbox]:checked').length; }
+function clearSel() { document.querySelectorAll('.audio-table thead input[type=checkbox]').forEach(function(c){c.checked=false}); document.querySelectorAll('.audio-table tbody input[type=checkbox]').forEach(function(c){c.checked=false}); updSel(); }
+
+function doSearch() {
+    var kw = document.getElementById('searchInput') ? document.getElementById('searchInput').value.trim().toLowerCase() : '';
+    pgFilteredData = DATA;
+    if (kw) { pgFilteredData = pgFilteredData.filter(function(d){return d.title.toLowerCase().indexOf(kw)!==-1}); }
+    if (funnelOnlyRegion) {
+      var fr = funnelOnlyRegion;
+      if (regionData.some(function(r) { return r.name === fr; })) {
+        pgFilteredData = pgFilteredData.filter(function(d) { return d.region === fr + '本级'; });
+      } else {
+        pgFilteredData = pgFilteredData.filter(function(d) { return d.region === fr; });
+      }
+    } else {
+      var regions = getSelectedRegions();
+      if (regions.length > 0) { pgFilteredData = pgFilteredData.filter(function(d){ return regions.indexOf(d.region) !== -1; }); }
+    }
+    pgCurrentPage = 1; renderPage();
+    updSidebarClear();
+    updFunnelVisuals();
+}
+function updSidebarClear() {
+    var hasChecked = document.querySelectorAll('.sidebar input[type="checkbox"]:checked').length > 0;
+    document.getElementById('sidebarClear').style.display = hasChecked ? 'inline' : 'none';
+}
+function clearSidebar() {
+    document.querySelectorAll('.sidebar input[type="checkbox"]').forEach(function(c) { c.checked = false; });
+    funnelOnlyRegion = null;
+    doSearch();
+}
+
+/* ===== Pagination ===== */
+var pgCurrentPage = 1;
+var pgFilteredData = [];
+function getPgSize() { var sel = document.getElementById('pgSize'); return parseInt(sel.options[sel.selectedIndex].text) || 12; }
+function goPage(p) { pgCurrentPage = p; renderPage(); }
+function renderPage() {
+  var size = getPgSize(), total = pgFilteredData.length, pages = Math.max(1, Math.ceil(total / size));
+  if (pgCurrentPage > pages) pgCurrentPage = pages;
+  var start = (pgCurrentPage - 1) * size;
+  render(pgFilteredData.slice(start, start + size));
+  document.getElementById('pgTotal').textContent = total;
+  var ctrl = document.getElementById('pgControls'), h = '';
+  h += '<button class="page-btn" onclick="goPage(' + (pgCurrentPage - 1) + ')"' + (pgCurrentPage <= 1 ? ' disabled' : '') + '>\u2039 上一页</button>';
+  for (var p = 1; p <= pages; p++) h += '<button class="page-btn' + (p === pgCurrentPage ? ' active' : '') + '" onclick="goPage(' + p + ')">' + p + '</button>';
+  h += '<button class="page-btn" onclick="goPage(' + (pgCurrentPage + 1) + ')"' + (pgCurrentPage >= pages ? ' disabled' : '') + '>下一页 \u203A</button>';
+  ctrl.innerHTML = h;
+}
+function filterOnlyCb(cb) {
+    if (!cb) return;
+    cb.checked = true;
+    var text = cb.parentElement.textContent.trim();
+    funnelOnlyRegion = (funnelOnlyRegion === text) ? null : text;
+    doSearch();
+}
+
+function updFunnelVisuals() {
+    document.querySelectorAll('.sidebar-child .ctx-trigger').forEach(function(el) {
+        var text = el.parentElement.textContent.trim();
+        if (funnelOnlyRegion && funnelOnlyRegion === text) {
+            el.classList.add('active');
+        } else {
+            el.classList.remove('active');
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function(){ renderRegions(); pgFilteredData = DATA; renderPage(); });
+
+function showAudioDetail(idx) {
+    var item = DATA[idx];
+    if (!item) return;
+    document.getElementById('adTitle').textContent = item.title;
+    document.getElementById('adSite').textContent = item.site || '';
+    document.getElementById('adChannel').textContent = item.channel || '';
+    document.getElementById('adTime').textContent = item.time;
+    document.getElementById('adDuration').textContent = fmtDuration(item.duration || 0);
+    document.getElementById('adSize').textContent = item.fileSize || '--';
+    document.getElementById('adFormat').textContent = item.format || 'mp3';
+    document.getElementById('adSidebarTitle').textContent = item.title;
+    document.getElementById('adSource').textContent = item.source || '';
+    document.getElementById('adSidebarChannel').textContent = item.channel || '';
+    document.getElementById('adSidebarTime').textContent = item.time;
+    document.getElementById('totalTime').textContent = fmtDuration(item.duration || 0);
+    document.getElementById('currentTime').textContent = '0:00';
+    document.getElementById('progressBar').style.width = '0%';
+    var kwEl = document.getElementById('adKeywords');
+    var kwH = '';
+    if (item.keywords && item.keywords.length) item.keywords.forEach(function(k){ kwH += '<span class="kw-tag">' + k + '</span>'; });
+    kwEl.innerHTML = kwH;
+    document.getElementById('audioDetail').classList.add('active');
+}
+function closeAudioDetail() { document.getElementById('audioDetail').classList.remove('active'); }
+function togglePlay() { /* placeholder */ }
+</script>
+</body>
+</html>
