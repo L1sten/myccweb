@@ -152,14 +152,15 @@
         .results-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
         .r-card { background: #fff; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-card); cursor: pointer; transition: all .2s; border: 1px solid var(--border-light); }
         .r-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
-        .r-card-thumb { height: 110px; display: flex; align-items: center; justify-content: center; position: relative; }
-        .r-card-thumb svg { width: 28px; height: 28px; opacity: 0.5; }
-        .r-card-type { position: absolute; top: 6px; left: 6px; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-weight: 500; background: rgba(255,255,255,0.9); }
-        .r-card-body { padding: 8px 10px 10px; }
-        .r-card-title { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 4px; }
-        .r-card-meta { font-size: 11px; color: var(--text-3); display: flex; justify-content: space-between; }
-        .r-card-tags { display: flex; gap: 3px; margin-top: 5px; flex-wrap: wrap; }
-        .r-card-tag { padding: 0 5px; background: var(--bg); border-radius: 3px; font-size: 10px; color: var(--text-2); line-height: 18px; }
+        .r-card-thumb { height: 130px; position: relative; background: #e8e8e8; overflow: hidden; }
+        .r-card-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .r-card-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 40px; height: 40px; background: rgba(0,0,0,0.55); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .r-card-play svg { width: 18px; height: 18px; fill: #fff; }
+        .r-card-duration { position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.65); color: #fff; font-size: 10px; padding: 1px 5px; border-radius: 3px; }
+        .r-card-body { padding: 10px 12px 12px; }
+        .r-card-title { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 6px; color: var(--text-1); }
+        .r-card-meta { font-size: 11px; color: var(--text-2); display: flex; align-items: center; justify-content: space-between; }
+        .r-card-tag { background: var(--primary); color: #fff; padding: 0 6px; border-radius: 2px; font-size: 10px; line-height: 18px; }
 
         /* Pagination */
         .pagination { display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 24px; }
@@ -507,14 +508,16 @@
 
 - **展示规则**：
   - 以宫格视图展示搜索结果，每行 5 列（大屏）
-  - 每个卡片包含：缩略图区域、类型标签（图片/视频）、标题、作者、日期、标签
-  - 缩略图区域用颜色区分内容类型：图片蓝色系、视频橙色系
+  - 卡片分为缩略图区域和信息区域两部分
+  - 缩略图区域展示内容预览图，视频卡片中央叠加半透明圆形播放按钮，右下角展示视频时长标签
+  - 信息区域为白色背景，展示标题（加粗）、日期（灰色）和蓝色来源标签（如"集团库"）
+  - 日期和来源标签在同一行，日期左对齐，标签右对齐
 - **交互规则**：
   - 卡片 hover 时上浮并显示阴影
   - 点击卡片跳转至资源详情页
 - **数据规则**：
-  - **取数规则**：根据搜索关键词或图片，从媒资资源库检索匹配的资源，返回缩略图、标题、作者、入库日期、标签字段
-  - **数据筛选规则**：根据用户选择的类型（全部/图片/视频）过滤结果
+  - **取数规则**：根据搜索关键词或图片，从媒资资源库检索匹配的资源，返回缩略图、标题、入库时间、来源标签字段；视频额外返回时长字段
+  - **数据筛选规则**：根据用户选择的类型（全部/文搜图/文搜视频/图搜图/图搜视频）过滤结果
   - **数据排序规则**：按 2.2 排序规则执行
 
 ### 2.4 分页
@@ -640,27 +643,29 @@
 
         for (var i = 0; i < total; i++) {
             var t = types[i % types.length];
-            var m = TYPE_META[t];
             var qBase = q || '相似内容';
             var titles = {
-                image: [qBase + ' 新闻现场图', qBase + ' 航拍全景', qBase + ' 活动纪实', qBase + ' 历史资料'],
-                video: [qBase + ' 专题报道', qBase + ' 新闻集锦', qBase + ' 采访片段']
+                image: [qBase + ' 新闻现场图.jpg', qBase + ' 航拍全景.jpg', qBase + ' 活动纪实.jpg', qBase + ' 历史资料.jpg'],
+                video: [qBase + ' 专题报道.mp4', qBase + ' 新闻集锦.mp4', qBase + ' 采访片段.mp4']
             };
             var title = titles[t][i % titles[t].length];
-            var author = ['张记者','李编辑','王摄影','赵主编'][i % 4];
-            var date = '2025-05-' + String(10 - (i % 7)).padStart(2, '0');
-            var tags = [qBase, ['航拍','纪实','现场','专题','采访','历史'][i % 6]];
+            var date = '2026-01-05 ' + String(8 + (i % 14)).padStart(2, '0') + ':' + String((i * 17) % 60).padStart(2, '0') + ':' + String((i * 23) % 60).padStart(2, '0');
+            var tag = ['集团库','公共库','素材库'][i % 3];
+            // 使用 picsum 占位图
+            var imgSeed = 'ms' + i + t;
+            var thumbHtml = '<img src="https://picsum.photos/seed/' + imgSeed + '/320/200" alt="">';
+            if (t === 'video') {
+                var dur = String(1 + (i * 7) % 59).padStart(2, '0') + ':' + String((i * 13) % 60).padStart(2, '0');
+                thumbHtml += '<div class="r-card-play"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>';
+                thumbHtml += '<span class="r-card-duration">' + dur + '</span>';
+            }
 
             items.push(
                 '<div class="r-card">' +
-                '  <div class="r-card-thumb" style="background:' + m.bg + '">' +
-                '    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="' + m.stroke + '" stroke-width="1.5">' + m.icon + '</svg>' +
-                '    <span class="r-card-type" style="color:' + m.stroke + '">' + m.label + '</span>' +
-                '  </div>' +
+                '  <div class="r-card-thumb">' + thumbHtml + '</div>' +
                 '  <div class="r-card-body">' +
                 '    <div class="r-card-title">' + title + '</div>' +
-                '    <div class="r-card-meta"><span>' + author + '</span><span>' + date + '</span></div>' +
-                '    <div class="r-card-tags"><span class="r-card-tag">' + tags[0] + '</span><span class="r-card-tag">' + tags[1] + '</span></div>' +
+                '    <div class="r-card-meta"><span>' + date + '</span><span class="r-card-tag">' + tag + '</span></div>' +
                 '  </div>' +
                 '</div>'
             );
