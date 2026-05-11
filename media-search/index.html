@@ -267,7 +267,7 @@
                 </div>
                 <button class="search-btn" id="searchBtn" onclick="doSearch()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    搜索
+                    语义检索
                 </button>
             </div>
 
@@ -450,11 +450,11 @@
 
 - **展示规则**：
   - 页面居中展示搜索栏，胶囊形外观，宽度较大营造大气感
-  - 默认状态从左到右依次为：搜索图标、文字输入框、图片上传按钮、搜索按钮
+  - 默认状态从左到右依次为：搜索图标、文字输入框、图片上传按钮、搜索按钮（文案为"语义检索"）
   - 文字输入框 placeholder 为"输入关键词、自然语言描述搜索全部媒资"
 - **交互规则**：
   - 文字输入框获取焦点时，搜索栏阴影增强
-  - 按回车键或点击"搜索"按钮触发搜索
+  - 按回车键或点击"语义检索"按钮触发搜索
   - 点击图片上传按钮切换输入模式（见 1.3）
   - 图片上传按钮和搜索按钮始终右对齐
 
@@ -463,11 +463,11 @@
 - **展示规则**：
   - 输入端支持两种互斥模式：文字输入和图片输入
   - 文字模式：展示搜索图标 + 文字输入框 + 图片上传按钮 + 搜索按钮
-  - 图片模式：展示图片缩略图预览（右上角带红色 X 删除图标）+ 图片上传按钮 + "以图搜索"按钮，隐藏搜索图标和文字输入框
+  - 图片模式：展示图片缩略图预览（右上角带红色 X 删除图标）+ 图片上传按钮 + "多模态检索"按钮，隐藏搜索图标和文字输入框
 - **交互规则**：
   - 点击图片上传按钮进入图片模式
   - 点击缩略图右上角 X 图标退出图片模式，恢复文字输入状态
-  - 图片模式下搜索按钮文案变为"以图搜索"
+  - 图片模式下搜索按钮文案变为"多模态检索"
 - **数据规则**：
   - **取数规则**：文字输入模式下读取用户输入的关键词或自然语言描述；图片模式下读取用户上传的图片文件
   - 文字输入支持关键词精确匹配和自然语言语义理解
@@ -552,6 +552,7 @@
 - 搜索区域缩小/展开带有过渡动画
 - 卡片类元素 hover 时上浮并增强阴影
 - 页脚展示"传播大脑科技（浙江）股份有限公司 · 宁报智能媒资系统"
+
 </textarea>
 
 <script>
@@ -584,13 +585,13 @@
             input.classList.add('hidden');
             icon.style.display = 'none';
             wrap.classList.add('has-image');
-            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> 以图搜索';
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> 多模态检索';
         } else {
             preview.classList.remove('visible');
             input.classList.remove('hidden');
             icon.style.display = 'flex';
             wrap.classList.remove('has-image');
-            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> 搜索';
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> 语义检索';
             input.focus();
         }
     }
