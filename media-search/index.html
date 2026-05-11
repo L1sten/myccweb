@@ -605,7 +605,10 @@
 
         document.getElementById('hero').classList.add('collapsed');
         document.getElementById('resultsPage').classList.add('visible');
-        renderTypeBar();
+
+        // 仅首次搜索或切换输入模式时渲染类型栏
+        var bar = document.getElementById('typeBar');
+        if (bar.style.display === 'none') renderTypeBar();
 
         var modeLabel = imageMode ? '以图搜索' : '"' + q + '"';
         var resultFilter;
