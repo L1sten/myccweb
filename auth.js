@@ -21,6 +21,10 @@
       "738f8446b5099426f268e425f8f1fbd0a34531466acfd19d1d4d4317849463a1",
     "provincial-resource":
       "1052f1b0c3611bf45053e44e176f1c1a3802384e5e998694a49fd9d591452914",
+    "intl-media-lib":
+      "945e7d587a3bd600a646b3205e5775681fb4affc32c6fb8015e51e11eb8d4d09",
+    "media-search":
+      "4669e0f761940ffe21681002d85c96727f24e084a7328591cd2b50e0872d4873",
   };
 
   var projectKey = "root";

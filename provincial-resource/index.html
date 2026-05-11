@@ -232,15 +232,26 @@
         /* ========== Fetch Modal ========== */
         .fetch-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:500}
         .fetch-overlay.show{display:block}
-        .fetch-modal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:480px;background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.15);z-index:501;overflow:hidden}
+        .fetch-modal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.15);z-index:501;overflow:hidden}
         .fetch-modal.show{display:flex;flex-direction:column}
         .fetch-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border-light)}
         .fetch-header h3{font-size:15px;font-weight:600;margin:0}
-        .fetch-body{padding:24px 20px;display:flex;flex-direction:column;gap:20px}
-        .fetch-field{display:flex;flex-direction:column;gap:6px}
-        .fetch-label{font-size:13px;font-weight:500;color:var(--text)}
-        .fetch-select{width:100%}
-        .fetch-footer{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:16px 20px;border-top:1px solid var(--border-light)}
+        .fetch-cascade{display:flex;border-bottom:1px solid var(--border-light)}
+        .fetch-col{flex:1;overflow-y:auto;min-height:280px;max-height:280px;border-right:1px solid var(--border-light)}
+        .fetch-col:last-child{border-right:none}
+        .fetch-col-title{padding:10px 14px;font-size:12px;font-weight:500;color:var(--text-secondary);background:#f8f9fa;border-bottom:1px solid var(--border-light);position:sticky;top:0;z-index:1}
+        .fetch-col-item{padding:9px 14px;font-size:13px;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .1s}
+        .fetch-col-item:hover{background:var(--brand-light);color:var(--text)}
+        .fetch-col-item.active{background:var(--brand-light);color:var(--brand);font-weight:500}
+        .fetch-col-item .item-arrow{width:14px;height:14px;color:var(--text-secondary);flex-shrink:0}
+        .fetch-draft{padding:12px 14px}
+        .fetch-draft label{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--text-secondary);margin-bottom:8px}
+        .fetch-draft label:last-child{margin-bottom:0}
+        .fetch-draft label input{accent-color:var(--brand)}
+        .fetch-footer{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid var(--border-light)}
+        .fetch-selected{font-size:12px;color:var(--text-secondary)}
+        .fetch-selected strong{color:var(--brand)}
+        .fetch-actions{display:flex;gap:10px}
 
         /* ========== Toast ========== */
         .toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:600;display:flex;flex-direction:column;align-items:center;gap:8px}
@@ -427,6 +438,7 @@
 <!-- Top Controls -->
 <div class="top-controls">
     <button class="prd-toggle" id="prdToggle" onclick="togglePrdPanel()"><span class="toggle-dot"></span> PRD</button>
+    <div class="changelog-btn" onclick="downloadPrd()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span>PRD 下载</span></div>
     <div class="changelog-btn" onclick="toggleChangelog()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg><span>更新记录</span></div>
 </div>
 
@@ -638,15 +650,24 @@
   - 交互规则：未选中稿件时按钮置灰不可点击；选中后按钮可用，点击弹出取稿弹窗
 
 - **取稿弹窗**
-  - 展示规则：弹窗内包含渠道下拉选择和稿库下拉选择
+  - 展示规则：
+    - 弹窗标题为"选择取稿渠道"，右上角关闭按钮
+    - 弹窗主体为四列表格，列标题为：渠道、站点、频道及稿库、选择取至草稿箱
+    - 渠道列：树形展开，显示一级渠道节点（客户端、网站、个人创作中心），每项前带展开/折叠箭头
+    - 站点列：展开渠道后显示该渠道下的站点列表，每项前带展开/折叠箭头
+    - 频道及稿库列：展开站点后显示该站点下的频道/稿库列表，点击选中高亮
+    - 选择取至草稿箱列：显示"取至个人草稿箱"和"取至公共草稿箱"两个复选框
+    - 底部左侧显示已选渠道信息，右侧显示"取消"和"确定"按钮
   - 交互规则：
-    - 渠道为下拉单选，选中后动态加载该渠道下的稿库列表
-    - 稿库为下拉单选，选项根据所选渠道级联更新
-    - 底部显示"确认取稿"和"取消"按钮
+    - 点击渠道行展开/折叠该渠道下的站点列表
+    - 点击站点行展开/折叠该站点下的频道及稿库列表
+    - 点击频道及稿库项选中该目标，选中项高亮显示，切换选中时自动更新底部已选渠道信息
+    - 草稿箱复选框支持勾选，可多选
+    - 点击"确定"校验是否已选择渠道和稿库，未选则提示
   - 数据规则：
-    - **取数规则**：渠道列表由万媒、天目蓝云提供相关接口获取；稿库列表根据所选渠道通过对应接口动态加载
-    - **数据筛选规则**：单选
-    - **数据排序规则**：按配置顺序
+    - **取数规则**：渠道、站点、频道及稿库三级数据由天目蓝云提供相关接口获取
+    - **数据筛选规则**：渠道和稿库单选，草稿箱复选框可多选
+    - **数据排序规则**：按接口返回顺序
 
 - **确认取稿**
   - 交互规则：确认后关闭弹窗，列表刷新，显示取稿成功提示
@@ -1245,6 +1266,16 @@ var changelogData = [
   { time: '2026-05-07', desc: '构建全省资源库原型（成品稿件/图片/视频），增加取稿弹窗、批量选择、侧栏筛选、漏斗图标等功能' },
   { time: '2026-05-06', desc: '初始版本：全省资源库列表页 + 稿件详情页原型 + PRD' }
 ];
+function downloadPrd() {
+  var md = document.getElementById('prdMdSource').textContent;
+  var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '全省资源库PRD.md';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
 function toggleChangelog() {
   var o = document.getElementById('changelogOverlay'), m = document.getElementById('changelogModal'), isOpen = m.classList.contains('show');
   o.classList.toggle('show', !isOpen); m.classList.toggle('show', !isOpen);
@@ -1252,51 +1283,111 @@ function toggleChangelog() {
 }
 
 /* ========== Init ========== */
-var channelData = [
-  { name: '潮新闻', columns: ['新闻','专题','评论','图集'] },
-  { name: '浙江新闻', columns: ['要闻','社会','财经','文化'] },
-  { name: '天目新闻', columns: ['热点','深度','视频','图片'] },
-  { name: '钱江晚报', columns: ['城事','教育','健康','消费'] },
-  { name: '爱平阳客户端', columns: ['新闻','视频','图片'] },
-  { name: '上城发布', columns: ['要闻','民生','文化'] },
-  { name: '桐庐发布', columns: ['新闻','专题','视频'] },
-  { name: '余杭发布', columns: ['要闻','科技','民生'] },
-  { name: '定海山客户端', columns: ['新闻','专题','图片'] },
-  { name: '鄞州发布', columns: ['要闻','经济','民生'] },
-  { name: '嘉兴在线', columns: ['新闻','评论','专题'] },
-  { name: '义乌商报', columns: ['要闻','商贸','社会'] },
-  { name: '柯桥发布', columns: ['新闻','经济','文化'] },
-  { name: '岱山发布', columns: ['新闻','专题','图片'] },
-  { name: '东阳发布', columns: ['要闻','影视','社会'] },
-  { name: '江山发布', columns: ['新闻','民生','专题'] },
-  { name: '温岭发布', columns: ['要闻','经济','民生'] },
-  { name: '南浔发布', columns: ['新闻','文旅','专题'] },
-  { name: '乐清发布', columns: ['要闻','经济','社会'] },
-  { name: '丽水发布', columns: ['新闻','生态','文化'] },
-  { name: '柯城发布', columns: ['要闻','社会','专题'] },
-  { name: '上虞发布', columns: ['新闻','经济','文化'] }
+var fetchTreeData = [
+  { name: '客户端', sites: [
+    { name: '天目蓝云123App', columns: ['测试01','频道下发客户端了么','不同签的','并发站点1','不走端网同签的验证勿动'] },
+    { name: '开吧客户端', columns: ['新闻','视频','图片'] },
+    { name: '爱平阳客户端', columns: ['新闻','视频','图片'] }
+  ]},
+  { name: '网站', sites: [
+    { name: '读嘉（潮新闻定制）', columns: ['要闻','社会','财经'] },
+    { name: '嘉兴在线', columns: ['新闻','评论','专题'] }
+  ]},
+  { name: '个人创作中心', sites: [
+    { name: '传播大脑App3', columns: ['新闻','视频'] },
+    { name: '外来方的站点更新70110', columns: ['热点','深度'] },
+    { name: '目光资讯', columns: ['要闻','社会'] }
+  ]}
 ];
+var fetchSelected = { channel: '', site: '', column: '', draftPersonal: false, draftPublic: false };
 
 function toggleFetchModal() {
   var o = document.getElementById('fetchOverlay'), m = document.getElementById('fetchModal');
   var isOpen = m.classList.contains('show');
   o.classList.toggle('show', !isOpen); m.classList.toggle('show', !isOpen);
   if (!isOpen) {
-    var sel = document.getElementById('fetchChannel');
-    sel.innerHTML = '<option value="">请选择渠道</option>';
-    channelData.forEach(function(c) { sel.innerHTML += '<option value="' + c.name + '">' + c.name + '</option>'; });
-    document.getElementById('fetchColumn').innerHTML = '<option value="">请先选择渠道</option>';
+    fetchSelected = { channel: '', site: '', column: '', draftPersonal: false, draftPublic: false };
+    renderFetchChannels();
+    document.getElementById('fetchSiteList').innerHTML = '';
+    document.getElementById('fetchColList').innerHTML = '';
+    var dp = document.getElementById('draftPersonal'), du = document.getElementById('draftPublic');
+    if (dp) dp.checked = false;
+    if (du) du.checked = false;
+    updFetchSelInfo();
   }
 }
 
-function onChannelChange() {
-  var name = document.getElementById('fetchChannel').value;
-  var colSel = document.getElementById('fetchColumn');
-  colSel.innerHTML = '';
-  if (!name) { colSel.innerHTML = '<option value="">请先选择渠道</option>'; return; }
-  var ch = channelData.find(function(c) { return c.name === name; });
-  colSel.innerHTML = '<option value="">请选择稿库</option>';
-  if (ch) ch.columns.forEach(function(c) { colSel.innerHTML += '<option value="' + c + '">' + c + '</option>'; });
+function renderFetchChannels() {
+  var el = document.getElementById('fetchChList');
+  var html = '';
+  fetchTreeData.forEach(function(ch) {
+    var cls = fetchSelected.channel === ch.name ? ' active' : '';
+    html += '<div class="fetch-col-item' + cls + '" onclick="selectFetchCh(\'' + ch.name + '\')">' + ch.name + '<svg class="item-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>';
+  });
+  el.innerHTML = html;
+}
+
+function selectFetchCh(name) {
+  fetchSelected.channel = name;
+  fetchSelected.site = '';
+  fetchSelected.column = '';
+  renderFetchChannels();
+  renderFetchSites();
+  document.getElementById('fetchColList').innerHTML = '';
+  updFetchSelInfo();
+}
+
+function renderFetchSites() {
+  var el = document.getElementById('fetchSiteList');
+  var ch = fetchTreeData.find(function(c) { return c.name === fetchSelected.channel; });
+  if (!ch) { el.innerHTML = ''; return; }
+  var html = '';
+  ch.sites.forEach(function(s) {
+    var cls = fetchSelected.site === s.name ? ' active' : '';
+    html += '<div class="fetch-col-item' + cls + '" onclick="selectFetchSite(\'' + s.name + '\')">' + s.name + '<svg class="item-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>';
+  });
+  el.innerHTML = html;
+}
+
+function selectFetchSite(name) {
+  fetchSelected.site = name;
+  fetchSelected.column = '';
+  renderFetchSites();
+  renderFetchColumns();
+  updFetchSelInfo();
+}
+
+function renderFetchColumns() {
+  var el = document.getElementById('fetchColList');
+  var ch = fetchTreeData.find(function(c) { return c.name === fetchSelected.channel; });
+  if (!ch) { el.innerHTML = ''; return; }
+  var site = ch.sites.find(function(s) { return s.name === fetchSelected.site; });
+  if (!site) { el.innerHTML = ''; return; }
+  var html = '';
+  site.columns.forEach(function(col) {
+    var cls = fetchSelected.column === col ? ' active' : '';
+    html += '<div class="fetch-col-item' + cls + '" onclick="selectFetchCol(\'' + col + '\')">' + col + '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function selectFetchCol(name) {
+  fetchSelected.column = name;
+  renderFetchColumns();
+  updFetchSelInfo();
+}
+
+function updFetchSelInfo() {
+  var el = document.getElementById('fetchSelInfo');
+  if (fetchSelected.channel && fetchSelected.column) {
+    el.textContent = fetchSelected.channel + ' / ' + fetchSelected.site + ' / ' + fetchSelected.column;
+  } else if (fetchSelected.channel && fetchSelected.site) {
+    el.textContent = fetchSelected.channel + ' / ' + fetchSelected.site;
+  } else if (fetchSelected.channel) {
+    el.textContent = fetchSelected.channel;
+  } else {
+    el.textContent = '无';
+  }
 }
 
 function getSelectedArticles() {
@@ -1327,12 +1418,14 @@ function clearSel() {
 function confirmFetch() {
   var sel = getSelectedArticles();
   if (sel.length === 0) { showToast('请先选择稿件', true); return; }
-  var ch = document.getElementById('fetchChannel').value;
-  var col = document.getElementById('fetchColumn').value;
-  if (!ch) { showToast('请选择渠道', true); return; }
-  if (!col) { showToast('请选择稿库', true); return; }
+  if (!fetchSelected.channel || !fetchSelected.column) { showToast('请选择取稿渠道和稿库', true); return; }
+  var draftInfo = [];
+  if (fetchSelected.draftPersonal) draftInfo.push('个人草稿箱');
+  if (fetchSelected.draftPublic) draftInfo.push('公共草稿箱');
+  var msg = '取稿成功：已将 ' + sel.length + ' 篇稿件取至 ' + fetchSelected.channel + ' - ' + fetchSelected.site + ' - ' + fetchSelected.column;
+  if (draftInfo.length) msg += '（' + draftInfo.join('、') + '）';
   toggleFetchModal();
-  showToast('取稿成功：已将 ' + sel.length + ' 篇稿件取至 ' + ch + ' - ' + col);
+  showToast(msg);
 }
 
 function showToast(msg, isWarn) {
@@ -1370,26 +1463,36 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="fetch-overlay" id="fetchOverlay" onclick="toggleFetchModal()"></div>
 <div class="fetch-modal" id="fetchModal">
     <div class="fetch-header">
-        <h3>取稿</h3>
+        <h3>选择取稿渠道</h3>
         <button class="changelog-close" onclick="toggleFetchModal()">&times;</button>
     </div>
-    <div class="fetch-body">
-        <div class="fetch-field">
-            <label class="fetch-label">渠道</label>
-            <select class="input fetch-select" id="fetchChannel" onchange="onChannelChange()">
-                <option value="">请选择渠道</option>
-            </select>
+    <div class="fetch-cascade">
+        <div class="fetch-col">
+            <div class="fetch-col-title">渠道</div>
+            <div id="fetchChList"></div>
         </div>
-        <div class="fetch-field">
-            <label class="fetch-label">稿库</label>
-            <select class="input fetch-select" id="fetchColumn">
-                <option value="">请先选择渠道</option>
-            </select>
+        <div class="fetch-col">
+            <div class="fetch-col-title">站点</div>
+            <div id="fetchSiteList"></div>
+        </div>
+        <div class="fetch-col">
+            <div class="fetch-col-title">频道及稿库</div>
+            <div id="fetchColList"></div>
+        </div>
+        <div class="fetch-col" style="flex:0 0 160px">
+            <div class="fetch-col-title">选择取至草稿箱</div>
+            <div class="fetch-draft">
+                <label><input type="checkbox" id="draftPersonal" onchange="fetchSelected.draftPersonal=this.checked"> 取至个人草稿箱</label>
+                <label><input type="checkbox" id="draftPublic" onchange="fetchSelected.draftPublic=this.checked"> 取至公共草稿箱</label>
+            </div>
         </div>
     </div>
     <div class="fetch-footer">
-        <button class="btn btn-secondary btn-sm" onclick="toggleFetchModal()">取消</button>
-        <button class="btn btn-primary btn-sm" onclick="confirmFetch()">确认取稿</button>
+        <div class="fetch-selected">已选渠道：<strong id="fetchSelInfo">无</strong></div>
+        <div class="fetch-actions">
+            <button class="btn btn-secondary btn-sm" onclick="toggleFetchModal()">取消</button>
+            <button class="btn btn-primary btn-sm" onclick="confirmFetch()">确定</button>
+        </div>
     </div>
 </div>
 

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><script src="../auth.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能媒资 - 首页搜索</title>
+    <style>
+        :root {
+            --primary: #1890ff;
+            --primary-hover: #40a9ff;
+            --primary-active: #096dd9;
+            --primary-bg: #e6f7ff;
+            --success: #52c41a;
+            --warning: #faad14;
+            --purple: #722ed1;
+            --text-1: #262626;
+            --text-2: #8c8c8c;
+            --text-3: #bfbfbf;
+            --bg: #f0f2f5;
+            --bg-white: #fff;
+            --border: #e8e8e8;
+            --border-light: #f0f0f0;
+            --shadow-card: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-hover: 0 4px 12px rgba(0,0,0,0.1);
+            --radius: 8px;
+            --font: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font); background: var(--bg); color: var(--text-1); font-size: 14px; -webkit-font-smoothing: antialiased; }
+
+        /* ===== Top Nav ===== */
+        .top-nav { height: 56px; background: #fff; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; padding: 0 24px; position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+        .nav-logo { display: flex; align-items: center; gap: 10px; margin-right: 36px; }
+        .nav-logo-icon { width: 32px; height: 32px; background: var(--primary); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; }
+        .nav-logo-text { font-size: 15px; font-weight: 600; white-space: nowrap; }
+        .nav-items { display: flex; gap: 4px; flex: 1; }
+        .nav-item { padding: 7px 14px; font-size: 14px; color: var(--text-2); cursor: pointer; border-radius: 4px; transition: all .2s; white-space: nowrap; }
+        .nav-item:hover { color: var(--primary); background: var(--primary-bg); }
+        .nav-item.active { color: var(--primary); font-weight: 500; background: var(--primary-bg); }
+        .nav-right { display: flex; align-items: center; gap: 16px; }
+        .nav-btn { display: flex; align-items: center; gap: 5px; padding: 6px 16px; background: var(--primary); color: #fff; border: none; border-radius: 4px; font-size: 14px; cursor: pointer; transition: background .2s; }
+        .nav-btn:hover { background: var(--primary-hover); }
+        .nav-btn svg { width: 15px; height: 15px; }
+        .nav-user { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        .nav-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--border-light); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--text-2); }
+
+        /* ===== Search Hero ===== */
+        .hero { margin-top: 56px; background: linear-gradient(180deg, #e6f7ff 0%, #f0f5ff 60%, var(--bg) 100%); padding: 80px 24px 40px; transition: padding .3s; }
+        .hero.collapsed { padding: 16px 24px; }
+        .hero-inner { max-width: 760px; margin: 0 auto; }
+        .hero-title { text-align: center; font-size: 24px; font-weight: 600; margin-bottom: 6px; transition: all .3s; }
+        .hero.collapsed .hero-title { font-size: 0; margin: 0; height: 0; overflow: hidden; }
+        .hero-sub { text-align: center; font-size: 14px; color: var(--text-2); margin-bottom: 28px; transition: all .3s; }
+        .hero.collapsed .hero-sub { font-size: 0; margin: 0; height: 0; overflow: hidden; }
+
+        /* Search Bar */
+        .search-wrap { background: #fff; border-radius: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; align-items: center; padding: 4px 4px 4px 0; transition: box-shadow .2s; }
+        .search-wrap:focus-within { box-shadow: 0 4px 16px rgba(24,144,255,0.18); }
+        .search-wrap.has-image { padding-left: 4px; }
+        .search-icon { width: 48px; display: flex; align-items: center; justify-content: center; color: var(--text-3); flex-shrink: 0; }
+        .search-icon svg { width: 20px; height: 20px; }
+        .search-img-preview { display: none; width: 40px; height: 40px; border-radius: 8px; background: linear-gradient(135deg,#bae7ff,#91d5ff); flex-shrink: 0; margin-left: 8px; cursor: pointer; position: relative; }
+        .search-img-preview.visible { display: flex; align-items: center; justify-content: center; }
+        .search-img-preview svg { width: 20px; height: 20px; color: var(--primary); }
+        .search-img-add { position: absolute; bottom: -3px; right: -3px; width: 16px; height: 16px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
+        .search-img-add svg { width: 8px; height: 8px; color: #fff; }
+        .search-img-label { display: none; font-size: 14px; color: var(--text-1); font-weight: 500; margin-left: 10px; white-space: nowrap; }
+        .search-img-label.visible { display: inline; }
+        .search-input { flex: 1; border: none; outline: none; font-size: 15px; padding: 10px 12px; color: var(--text-1); font-family: var(--font); background: transparent; }
+        .search-input::placeholder { color: var(--text-3); }
+        .search-input.hidden { display: none; }
+        .search-actions { display: flex; align-items: center; gap: 2px; padding-right: 2px; }
+        .search-act { width: 36px; height: 36px; border: none; background: transparent; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-2); transition: all .15s; }
+        .search-act:hover { background: var(--primary-bg); color: var(--primary); }
+        .search-act svg { width: 18px; height: 18px; }
+        .search-btn { height: 36px; padding: 0 24px; background: var(--primary); color: #fff; border: none; border-radius: 20px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: background .15s; margin-left: 4px; }
+        .search-btn:hover { background: var(--primary-hover); }
+        .search-btn svg { width: 16px; height: 16px; }
+
+        /* Type Buttons (like AI assistant skill buttons) */
+        .type-bar { display: flex; justify-content: center; gap: 8px; margin-top: 16px; flex-wrap: wrap; transition: all .3s; }
+        .hero.collapsed .type-bar { margin-top: 10px; }
+        .type-btn { display: flex; align-items: center; gap: 5px; padding: 7px 16px; background: rgba(255,255,255,0.75); border: 1px solid transparent; border-radius: 20px; font-size: 13px; color: var(--text-2); cursor: pointer; transition: all .2s; }
+        .type-btn svg { width: 16px; height: 16px; }
+        .type-btn:hover { background: #fff; color: var(--text-1); border-color: var(--border); box-shadow: var(--shadow-card); }
+        .type-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .type-btn.active svg { color: #fff; }
+        .type-btn .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+        /* Hot tags */
+        .hot-tags { display: flex; justify-content: center; gap: 8px; margin-top: 14px; flex-wrap: wrap; transition: all .3s; }
+        .hero.collapsed .hot-tags { display: none; }
+        .hot-tag { padding: 3px 10px; background: rgba(255,255,255,0.6); border-radius: 12px; font-size: 12px; color: var(--text-2); cursor: pointer; transition: all .15s; }
+        .hot-tag:hover { background: #fff; color: var(--primary); }
+
+        /* ===== Results Page ===== */
+        .results-page { display: none; max-width: 1200px; margin: 0 auto; padding: 0 24px 32px; }
+        .results-page.visible { display: block; }
+
+        /* Result summary */
+        .results-summary { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--border-light); margin-bottom: 16px; }
+        .results-count { font-size: 13px; color: var(--text-2); }
+        .results-count b { color: var(--primary); font-weight: 600; }
+        .results-sort { display: flex; align-items: center; gap: 12px; }
+        .results-sort select { border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; font-size: 13px; color: var(--text-1); background: #fff; outline: none; }
+        .results-view-toggle { display: flex; gap: 2px; }
+        .view-btn { width: 30px; height: 30px; border: 1px solid var(--border); background: #fff; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-2); transition: all .15s; }
+        .view-btn.active { background: var(--primary-bg); color: var(--primary); border-color: var(--primary); }
+        .view-btn svg { width: 14px; height: 14px; }
+
+        /* Results grid */
+        .results-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+        .results-grid.list-view { grid-template-columns: 1fr; gap: 8px; }
+
+        .r-card { background: #fff; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-card); cursor: pointer; transition: all .2s; border: 1px solid var(--border-light); }
+        .r-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+        .r-card-thumb { height: 110px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .r-card-thumb svg { width: 28px; height: 28px; opacity: 0.5; }
+        .r-card-type { position: absolute; top: 6px; left: 6px; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-weight: 500; background: rgba(255,255,255,0.9); }
+        .r-card-body { padding: 8px 10px 10px; }
+        .r-card-title { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 4px; }
+        .r-card-meta { font-size: 11px; color: var(--text-3); display: flex; justify-content: space-between; }
+        .r-card-tags { display: flex; gap: 3px; margin-top: 5px; flex-wrap: wrap; }
+        .r-card-tag { padding: 0 5px; background: var(--bg); border-radius: 3px; font-size: 10px; color: var(--text-2); line-height: 18px; }
+
+        /* List view card */
+        .results-grid.list-view .r-card { display: flex; align-items: center; padding: 10px 14px; gap: 14px; }
+        .results-grid.list-view .r-card-thumb { width: 80px; height: 56px; flex-shrink: 0; border-radius: 4px; }
+        .results-grid.list-view .r-card-body { flex: 1; min-width: 0; }
+        .results-grid.list-view .r-card-type { display: none; }
+        .results-grid.list-view .r-list-type { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 500; margin-right: 6px; }
+        .results-grid.list-view .r-card-tags { display: none; }
+
+        /* Pagination */
+        .pagination { display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 24px; }
+        .page-btn { min-width: 32px; height: 32px; border: 1px solid var(--border); background: #fff; border-radius: 4px; font-size: 13px; color: var(--text-1); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; padding: 0 8px; }
+        .page-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .page-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+        /* ===== Resource Stats ===== */
+        .stats-section { max-width: 1200px; margin: 0 auto; padding: 24px 24px 0; }
+        .stats-section-title { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .stat-card { background: #fff; border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow-card); border: 1px solid var(--border-light); display: flex; align-items: center; gap: 14px; }
+        .stat-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .stat-icon.blue { background: #e6f7ff; color: #1890ff; }
+        .stat-icon.purple { background: #f3e8ff; color: #722ed1; }
+        .stat-icon.green { background: #f0fff0; color: #52c41a; }
+        .stat-icon svg { width: 22px; height: 22px; }
+        .stat-info { flex: 1; }
+        .stat-label { font-size: 13px; color: var(--text-2); margin-bottom: 2px; }
+        .stat-value { font-size: 24px; font-weight: 600; color: var(--text-1); }
+        .stat-unit { font-size: 13px; font-weight: 400; color: var(--text-2); margin-left: 4px; }
+
+        /* ===== Latest Images ===== */
+        .latest-section { max-width: 1200px; margin: 0 auto; padding: 16px 24px 0; }
+        .latest-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .latest-title { font-size: 15px; font-weight: 600; }
+        .latest-more { font-size: 13px; color: var(--text-2); cursor: pointer; transition: color .15s; }
+        .latest-more:hover { color: var(--primary); }
+        .latest-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .latest-card { background: #fff; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-card); cursor: pointer; transition: all .2s; border: 1px solid var(--border-light); }
+        .latest-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+        .latest-thumb { height: 120px; background: var(--border-light); }
+        .latest-card-title { padding: 8px 10px 10px; font-size: 13px; color: var(--text-1); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        /* ===== Trend Chart ===== */
+        .trend-section { max-width: 1200px; margin: 0 auto; padding: 16px 24px 0; }
+        .trend-card { background: #fff; border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-card); border: 1px solid var(--border-light); }
+        .trend-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .trend-title { font-size: 15px; font-weight: 600; }
+        .trend-select { border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; font-size: 13px; color: var(--text-1); background: #fff; outline: none; cursor: pointer; }
+        .trend-chart { height: 180px; position: relative; }
+        .chart-canvas { width: 100%; height: 100%; }
+        .chart-axis { display: flex; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--border-light); margin-top: 0; }
+        .chart-axis span { font-size: 11px; color: var(--text-3); }
+
+        /* ===== Bottom Modules wrapper ===== */
+        .bottom-modules { padding-bottom: 8px; }
+
+        /* Footer */
+        .page-footer { text-align: center; padding: 20px; color: var(--text-3); font-size: 12px; }
+
+        /* Responsive */
+        @media (max-width: 1024px) { .results-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 640px) { .results-grid { grid-template-columns: repeat(2, 1fr); } .hero { padding: 60px 16px 24px; } }
+    </style>
+</head>
+<body>
+
+<!-- ===== Top Nav ===== -->
+<header class="top-nav">
+    <div class="nav-logo">
+        <div class="nav-logo-icon">媒</div>
+        <span class="nav-logo-text">宁报智能媒资系统</span>
+    </div>
+    <nav class="nav-items">
+        <div class="nav-item active">首页</div>
+        <div class="nav-item">素材中心</div>
+        <div class="nav-item">资源中心</div>
+        <div class="nav-item">搜索中心</div>
+        <div class="nav-item">业务管理</div>
+    </nav>
+    <div class="nav-right">
+        <button class="nav-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            上传
+        </button>
+        <div class="nav-user"><div class="nav-avatar">管</div></div>
+    </div>
+</header>
+
+<!-- ===== Search Hero ===== -->
+<section class="hero" id="hero">
+    <div class="hero-inner">
+        <h1 class="hero-title">搜索全部媒资</h1>
+        <p class="hero-sub">精准检索 · 语义理解 · AI 多模态 — 一次搜索，全库呈现</p>
+
+        <div class="search-wrap" id="searchWrap">
+            <div class="search-img-preview" id="imgPreview">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <div class="search-img-add">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </div>
+            </div>
+            <span class="search-img-label" id="imgLabel">找相似图片</span>
+            <div class="search-icon" id="searchIcon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+            <input class="search-input" id="searchInput" type="text"
+                   placeholder="输入关键词、自然语言描述，或上传图片搜索"
+                   onkeydown="if(event.key==='Enter')doSearch()">
+            <div class="search-actions">
+                <button class="search-act" title="上传图片搜索" onclick="toggleUpload()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                </button>
+            </div>
+            <button class="search-btn" onclick="doSearch()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                搜索
+            </button>
+        </div>
+
+        <!-- Type selector buttons -->
+        <div class="type-bar" id="typeBar">
+            <button class="type-btn active" onclick="selectType(this, 'all')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                全部
+            </button>
+            <button class="type-btn" onclick="selectType(this, 'image')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                图片
+            </button>
+            <button class="type-btn" onclick="selectType(this, 'video')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                视频
+            </button>
+            <button class="type-btn" onclick="selectType(this, 'img-search')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 13l2-3 3 4 2-2"/></svg>
+                以图搜图
+            </button>
+            <button class="type-btn" onclick="selectType(this, 'img-video')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><polygon points="10 8 16 12 10 16"/></svg>
+                以图搜视频
+            </button>
+        </div>
+
+        <!-- Hot tags -->
+        <div class="hot-tags" id="hotTags">
+            <span class="hot-tag" onclick="fill('宁波三江口')">宁波三江口</span>
+            <span class="hot-tag" onclick="fill('港口物流')">港口物流</span>
+            <span class="hot-tag" onclick="fill('改革开放')">改革开放</span>
+            <span class="hot-tag" onclick="fill('文化活动')">文化活动</span>
+            <span class="hot-tag" onclick="fill('城市建设')">城市建设</span>
+            <span class="hot-tag" onclick="fill('乡村振兴')">乡村振兴</span>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Results ===== -->
+<section class="results-page" id="resultsPage">
+    <div class="results-summary">
+        <div class="results-count" id="resultsCount"></div>
+        <div class="results-sort">
+            <select id="sortSelect">
+                <option value="relevance">综合排序</option>
+                <option value="time-desc">最新优先</option>
+                <option value="time-asc">最早优先</option>
+            </select>
+            <div class="results-view-toggle">
+                <button class="view-btn active" onclick="setView('grid', this)" title="网格视图">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                </button>
+                <button class="view-btn" onclick="setView('list', this)" title="列表视图">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="results-grid" id="resultsGrid"></div>
+    <div class="pagination" id="pagination"></div>
+</section>
+
+<!-- ===== Bottom: Resource Stats + Latest Images + Trend ===== -->
+<div class="bottom-modules">
+    <!-- Resource Stats -->
+    <section class="stats-section">
+        <div class="stats-section-title">资源聚合</div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-label">图片资源总量</div>
+                    <div class="stat-value">1,942<span class="stat-unit">张</span></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon purple">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-label">视频资源总量</div>
+                    <div class="stat-value">6.47<span class="stat-unit">小时</span></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-label">音频资源总量</div>
+                    <div class="stat-value">17<span class="stat-unit">条</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trend Chart -->
+    <section class="trend-section">
+        <div class="trend-card">
+            <div class="trend-header">
+                <span class="trend-title">资源入库趋势</span>
+                <select class="trend-select">
+                    <option>近两周</option>
+                    <option>近一个月</option>
+                    <option>近三个月</option>
+                </select>
+            </div>
+            <div class="trend-chart">
+                <svg class="chart-canvas" viewBox="0 0 700 160" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#1890ff" stop-opacity="0.25"/>
+                            <stop offset="100%" stop-color="#1890ff" stop-opacity="0.02"/>
+                        </linearGradient>
+                    </defs>
+                    <line x1="0" y1="40" x2="700" y2="40" stroke="#f0f0f0" stroke-width="1"/>
+                    <line x1="0" y1="80" x2="700" y2="80" stroke="#f0f0f0" stroke-width="1"/>
+                    <line x1="0" y1="120" x2="700" y2="120" stroke="#f0f0f0" stroke-width="1"/>
+                    <path d="M0,130 L50,125 L100,120 L150,110 L200,100 L250,95 L300,80 L350,45 L400,35 L450,50 L500,70 L550,85 L600,95 L650,105 L700,110 L700,160 L0,160 Z" fill="url(#areaGrad)"/>
+                    <polyline points="0,130 50,125 100,120 150,110 200,100 250,95 300,80 350,45 400,35 450,50 500,70 550,85 600,95 650,105 700,110" fill="none" stroke="#1890ff" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+                    <circle cx="400" cy="35" r="4" fill="#fff" stroke="#1890ff" stroke-width="2"/>
+                    <text x="400" y="25" text-anchor="middle" font-size="11" fill="#1890ff" font-weight="500">52</text>
+                </svg>
+            </div>
+            <div class="chart-axis">
+                <span>04-28</span><span>05-01</span><span>05-04</span><span>05-07</span><span>05-09</span><span>05-11</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Images -->
+    <section class="latest-section">
+        <div class="latest-header">
+            <span class="latest-title">最新图片资源</span>
+            <span class="latest-more">查看更多图片 &rarr;</span>
+        </div>
+        <div class="latest-grid">
+            <div class="latest-card">
+                <div class="latest-thumb" style="background:linear-gradient(135deg,#bae7ff,#91d5ff)"></div>
+                <div class="latest-card-title">宁波三江口夜景航拍全景</div>
+            </div>
+            <div class="latest-card">
+                <div class="latest-thumb" style="background:linear-gradient(135deg,#d9f7be,#b7eb8f)"></div>
+                <div class="latest-card-title">东钱湖环湖绿道春季纪实</div>
+            </div>
+            <div class="latest-card">
+                <div class="latest-thumb" style="background:linear-gradient(135deg,#ffe7ba,#ffd591)"></div>
+                <div class="latest-card-title">2025 宁波马拉松起跑瞬间</div>
+            </div>
+            <div class="latest-card">
+                <div class="latest-thumb" style="background:linear-gradient(135deg,#e6f7ff,#bae7ff)"></div>
+                <div class="latest-card-title">宁波舟山港集装箱码头作业</div>
+            </div>
+            <div class="latest-card">
+                <div class="latest-thumb" style="background:linear-gradient(135deg,#f3e8ff,#d3adf7)"></div>
+                <div class="latest-card-title">宁波博物馆新馆建筑外观</div>
+            </div>
+            <div class="latest-card">
+                <div class="latest-thumb" style="background:linear-gradient(135deg,#fff1b8,#ffe58f)"></div>
+                <div class="latest-card-title">鄞州区文化活动中心启用</div>
+            </div>
+            <div class="latest-card">
+                <div class="latest-thumb" style="background:linear-gradient(135deg,#b7eb8f,#95de64)"></div>
+                <div class="latest-card-title">奉化水蜜桃采摘季开幕现场</div>
+            </div>
+            <div class="latest-card">
+                <div class="latest-thumb" style="background:linear-gradient(135deg,#91d5ff,#69c0ff)"></div>
+                <div class="latest-card-title">宁波老外滩历史街区改造</div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<footer class="page-footer">传播大脑科技（浙江）股份有限公司 · 宁报智能媒资系统</footer>
+
+<script>
+    var currentType = 'all';
+
+    var TYPE_META = {
+        image: { label: '图片', bg: '#e6f7ff', stroke: '#1890ff', icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>' },
+        video: { label: '视频', bg: '#fff7e6', stroke: '#fa8c16', icon: '<polygon points="23 7 16 12 23 17"/><rect x="1" y="5" width="15" height="14" rx="2"/>' }
+    };
+
+    function selectType(el, type) {
+        currentType = type;
+        document.querySelectorAll('.type-btn').forEach(function(b) { b.classList.remove('active'); });
+        el.classList.add('active');
+
+        var wrap = document.getElementById('searchWrap');
+        var input = document.getElementById('searchInput');
+        var icon = document.getElementById('searchIcon');
+        var preview = document.getElementById('imgPreview');
+        var label = document.getElementById('imgLabel');
+
+        var isImgMode = (type === 'img-search' || type === 'img-video');
+
+        // Toggle image preview mode
+        preview.classList.toggle('visible', isImgMode);
+        label.classList.toggle('visible', isImgMode);
+        input.classList.toggle('hidden', isImgMode);
+        icon.style.display = isImgMode ? 'none' : 'flex';
+        wrap.classList.toggle('has-image', isImgMode);
+
+        if (type === 'img-search') {
+            label.textContent = '找相似图片';
+        } else if (type === 'img-video') {
+            label.textContent = '找相关视频';
+        } else {
+            input.placeholder = '输入关键词、自然语言描述，或上传图片搜索';
+        }
+        if (!isImgMode) input.focus();
+    }
+
+    function toggleUpload() {
+        var btns = document.querySelectorAll('.type-btn');
+        var imgBtn = btns[btns.length - 2]; // 以图搜图
+        if (currentType === 'img-search' || currentType === 'img-video') {
+            selectType(btns[0], 'all');
+        } else {
+            selectType(imgBtn, 'img-search');
+        }
+    }
+
+    function fill(text) {
+        document.getElementById('searchInput').value = text;
+        doSearch();
+    }
+
+    function doSearch() {
+        var q = document.getElementById('searchInput').value.trim();
+        if (!q && currentType !== 'img-search') return;
+
+        document.getElementById('hero').classList.add('collapsed');
+        document.getElementById('resultsPage').classList.add('visible');
+
+        var count = currentType === 'all' ? Math.floor(Math.random() * 200 + 80) : Math.floor(Math.random() * 60 + 20);
+        document.getElementById('resultsCount').innerHTML = '共找到 <b>' + count + '</b> 条相关结果' + (q ? ' · "' + q + '"' : '');
+
+        var grid = document.getElementById('resultsGrid');
+        var types = currentType === 'all' ? ['image','video'] : [currentType === 'img-video' ? 'video' : 'image'];
+        var items = [];
+        var total = currentType === 'all' ? 15 : 12;
+
+        for (var i = 0; i < total; i++) {
+            var t = types[i % types.length];
+            var m = TYPE_META[t];
+            var titles = {
+                image: [q + ' 新闻现场图', q + ' 航拍全景', q + ' 活动纪实', q + ' 历史资料'],
+                video: [q + ' 专题报道', q + ' 新闻集锦', q + ' 采访片段'],
+                audio: [q + ' 新闻发布会', q + ' 采访录音'],
+                doc:   [q + ' 策划方案', q + ' 新闻通稿', q + ' 研究报告']
+            };
+            var title = titles[t][i % titles[t].length];
+            var author = ['张记者','李编辑','王摄影','赵主编'][i % 4];
+            var date = '2025-05-' + String(10 - (i % 7)).padStart(2, '0');
+            var tags = [q, ['航拍','纪实','现场','专题','采访','历史'][i % 6]];
+
+            items.push(
+                '<div class="r-card">' +
+                '  <div class="r-card-thumb" style="background:' + m.bg + '">' +
+                '    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="' + m.stroke + '" stroke-width="1.5">' + m.icon + '</svg>' +
+                '    <span class="r-card-type" style="color:' + m.stroke + '">' + m.label + '</span>' +
+                '  </div>' +
+                '  <div class="r-card-body">' +
+                '    <div class="r-card-title">' + title + '</div>' +
+                '    <div class="r-card-meta"><span>' + author + '</span><span>' + date + '</span></div>' +
+                '    <div class="r-card-tags"><span class="r-card-tag">' + tags[0] + '</span><span class="r-card-tag">' + tags[1] + '</span></div>' +
+                '  </div>' +
+                '</div>'
+            );
+        }
+        grid.innerHTML = items.join('');
+
+        // Pagination
+        var pag = document.getElementById('pagination');
+        var pages = '';
+        for (var p = 1; p <= 5; p++) {
+            pages += '<button class="page-btn' + (p === 1 ? ' active' : '') + '">' + p + '</button>';
+        }
+        pages += '<button class="page-btn">...</button><button class="page-btn">&gt;</button>';
+        pag.innerHTML = pages;
+    }
+
+    function setView(mode, btn) {
+        var grid = document.getElementById('resultsGrid');
+        grid.classList.toggle('list-view', mode === 'list');
+        document.querySelectorAll('.view-btn').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+    }
+
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('page-btn') && e.target.textContent.trim() !== '...') {
+            e.target.parentElement.querySelectorAll('.page-btn').forEach(function(b) { b.classList.remove('active'); });
+            e.target.classList.add('active');
+        }
+    });
+</script>
+
+</body>
+</html>
