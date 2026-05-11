@@ -11,7 +11,7 @@
 
         /* ========== App Split ========== */
         .app-split{display:flex;height:100vh;overflow:hidden}
-        .app-split .page-wrap{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+        .app-split .page-wrap{flex:1;min-width:0;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden}
         .prd-panel{width:460px;flex-shrink:0;display:flex;border-left:1px solid var(--border);transition:opacity .3s}
         .prd-panel.collapsed{width:0;opacity:0;overflow:hidden;border:none}
         .split-drag{width:4px;cursor:col-resize;flex-shrink:0;background:var(--border-light);transition:background .15s;position:relative;z-index:10}
@@ -19,7 +19,7 @@
         .split-drag::after{content:'';position:absolute;left:-3px;right:-3px;top:0;bottom:0}
 
         /* ========== Top Header ========== */
-        .top-header{height:56px;flex-shrink:0;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;z-index:100}
+        .top-header{height:56px;flex-shrink:0;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;z-index:100;position:sticky;top:0}
         .header-left{display:flex;align-items:center;gap:12px}
         .logo{width:32px;height:32px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700}
         .sys-name{font-size:16px;font-weight:600}
@@ -325,8 +325,7 @@
 
     <!-- Channel Tabs -->
     <div class="channel-tabs">
-        <div class="ch-tab active" onclick="switchChTab(this)">全部</div>
-        <div class="ch-tab" onclick="switchChTab(this)">客户端</div>
+        <div class="ch-tab active" onclick="switchChTab(this)">客户端</div>
         <div class="ch-tab" onclick="switchChTab(this)">网站</div>
     </div>
 
@@ -545,8 +544,7 @@
 
 **功能描述**：页面顶部提供渠道一级分类 Tab，用于按发布渠道筛选内容。三个子页面共用相同的 Tab 结构。
 
-- **全部**：展示所有渠道内容（默认选中）
-- **客户端**：仅展示发布于客户端的内容
+- **客户端**：展示客户端渠道内容（默认选中）
 - **网站**：仅展示发布于网站的内容
 
 **展示规则**：

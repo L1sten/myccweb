@@ -10,7 +10,7 @@
             --primary-hover: #40a9ff;
             --primary-active: #096dd9;
             --primary-bg: #e6f7ff;
-            --success: #52c41a;
+            --green: #52c41a;
             --warning: #faad14;
             --purple: #722ed1;
             --text-1: #262626;
@@ -24,12 +24,68 @@
             --shadow-hover: 0 4px 12px rgba(0,0,0,0.1);
             --radius: 8px;
             --font: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            --slate-800: #1e293b;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: var(--font); background: var(--bg); color: var(--text-1); font-size: 14px; -webkit-font-smoothing: antialiased; }
 
+        /* ===== App Split Layout ===== */
+        .app-split { display: flex; height: 100vh; overflow: hidden; }
+        .app-split .page-container { flex: 1; min-width: 0; overflow-y: auto; }
+
+        /* PRD Panel */
+        .prd-panel { width: 460px; flex-shrink: 0; display: flex; border-left: 1px solid var(--border); transition: opacity .3s; }
+        .prd-panel.collapsed { width: 0; opacity: 0; overflow: hidden; border: none; }
+        .split-drag { width: 4px; cursor: col-resize; flex-shrink: 0; background: var(--border-light); transition: background .15s; position: relative; z-index: 101; }
+        .split-drag:hover, .split-drag.dragging { background: var(--primary); }
+        .split-drag::after { content: ''; position: absolute; left: -3px; right: -3px; top: 0; bottom: 0; }
+        .prd-toc { width: 180px; border-right: 1px solid var(--border); overflow-y: auto; background: #fafafa; padding: 16px 0; }
+        .prd-toc-title { font-size: 13px; font-weight: 600; color: var(--text-1); padding: 0 14px 10px; border-bottom: 1px solid var(--border-light); margin-bottom: 6px; }
+        .prd-toc-item { padding: 6px 14px; font-size: 12px; color: var(--text-2); cursor: pointer; transition: all .15s; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .prd-toc-item:hover { color: var(--primary); background: var(--primary-bg); }
+        .prd-toc-item.level-3 { padding-left: 24px; }
+        .prd-content { flex: 1; overflow-y: auto; padding: 20px 24px; }
+        .prd-content h1 { font-size: 20px !important; font-weight: 600 !important; margin-bottom: 16px !important; color: var(--text-1) !important; }
+        .prd-content h2 { font-size: 16px !important; font-weight: 600 !important; margin: 24px 0 10px !important; color: var(--text-1) !important; }
+        .prd-content h3 { font-size: 14px !important; font-weight: 600 !important; margin: 16px 0 8px !important; color: var(--text-1) !important; }
+        .prd-content h4 { font-size: 13px !important; font-weight: 600 !important; margin: 12px 0 6px !important; color: var(--text-1) !important; }
+        .prd-content p { font-size: 13px !important; color: #444 !important; line-height: 1.7 !important; margin: 6px 0 !important; }
+        .prd-content strong { font-weight: 600 !important; color: var(--text-1) !important; }
+        .prd-content ul.prd-list { margin: 8px 0 8px 20px; padding-left: 0; }
+        .prd-content ul.prd-list > li { margin: 6px 0; list-style: disc !important; }
+        .prd-content ul.prd-nested { margin: 2px 0 2px 18px; padding-left: 0; list-style: circle !important; }
+        .prd-content ul.prd-nested li { list-style: circle !important; font-size: 13px !important; color: #555; }
+        .prd-content hr { border: none; border-top: 1px solid var(--border-light); margin: 16px 0; }
+        .prd-content table.prd-table { width: 100% !important; border-collapse: collapse !important; margin: 12px 0 !important; font-size: 13px !important; }
+        .prd-content table.prd-table th { background: #f8f9fa !important; padding: 8px 12px !important; text-align: left !important; border: 1px solid var(--border-light) !important; font-weight: 600 !important; color: var(--slate-800) !important; font-size: 12px !important; }
+        .prd-content table.prd-table td { padding: 8px 12px !important; border: 1px solid var(--border-light) !important; color: #444 !important; font-size: 13px !important; line-height: 1.6 !important; }
+
+        /* Top Controls */
+        .top-controls { position: fixed; top: 68px; right: 14px; z-index: 400; display: flex; align-items: center; gap: 8px; }
+        .prd-toggle { display: flex; align-items: center; gap: 4px; padding: 5px 12px; background: #fff; border: 1px solid var(--border-light); border-radius: 14px; font-size: 12px; color: var(--text-2); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.08); transition: all .2s; white-space: nowrap; }
+        .prd-toggle:hover { border-color: var(--primary-bg); color: var(--primary); }
+        .prd-toggle .toggle-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+        .changelog-btn { display: flex; align-items: center; gap: 5px; padding: 5px 12px; background: #fff; border: 1px solid var(--border-light); border-radius: 14px; font-size: 11px; color: var(--text-2); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.08); transition: all .2s; white-space: nowrap; }
+        .changelog-btn:hover { border-color: var(--primary-bg); color: var(--primary); }
+
+        /* Changelog Modal */
+        .changelog-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 500; }
+        .changelog-overlay.show { display: block; }
+        .changelog-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 560px; max-height: 70vh; background: #fff; border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); z-index: 501; overflow: hidden; }
+        .changelog-modal.show { display: flex; flex-direction: column; }
+        .changelog-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border-light); }
+        .changelog-header h3 { font-size: 15px; font-weight: 600; margin: 0; }
+        .changelog-close { background: none; border: none; font-size: 20px; color: var(--text-2); cursor: pointer; padding: 0 4px; line-height: 1; }
+        .changelog-close:hover { color: var(--text-1); }
+        .changelog-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
+        .changelog-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .changelog-table th { text-align: left; padding: 8px 12px; background: #f8f9fa; color: var(--text-2); font-weight: 500; border-bottom: 1px solid var(--border-light); }
+        .changelog-table td { padding: 8px 12px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+        .changelog-table tr:last-child td { border-bottom: none; }
+        .changelog-table td:first-child { white-space: nowrap; color: var(--text-2); font-size: 12px; }
+
         /* ===== Top Nav ===== */
-        .top-nav { height: 56px; background: #fff; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; padding: 0 24px; position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+        .top-nav { height: 56px; background: #fff; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; padding: 0 24px; position: sticky; top: 0; z-index: 100; }
         .nav-logo { display: flex; align-items: center; gap: 10px; margin-right: 36px; }
         .nav-logo-icon { width: 32px; height: 32px; background: var(--primary); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; }
         .nav-logo-text { font-size: 15px; font-weight: 600; white-space: nowrap; }
@@ -45,73 +101,55 @@
         .nav-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--border-light); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--text-2); }
 
         /* ===== Search Hero ===== */
-        .hero { margin-top: 56px; background: linear-gradient(180deg, #e6f7ff 0%, #f0f5ff 60%, var(--bg) 100%); padding: 80px 24px 40px; transition: padding .3s; }
-        .hero.collapsed { padding: 16px 24px; }
-        .hero-inner { max-width: 760px; margin: 0 auto; }
-        .hero-title { text-align: center; font-size: 24px; font-weight: 600; margin-bottom: 6px; transition: all .3s; }
-        .hero.collapsed .hero-title { font-size: 0; margin: 0; height: 0; overflow: hidden; }
-        .hero-sub { text-align: center; font-size: 14px; color: var(--text-2); margin-bottom: 28px; transition: all .3s; }
-        .hero.collapsed .hero-sub { font-size: 0; margin: 0; height: 0; overflow: hidden; }
+        .hero { background: linear-gradient(180deg, #e6f7ff 0%, #f0f5ff 60%, var(--bg) 100%); padding: 60px 24px 56px; transition: padding .3s; }
+        .hero.collapsed { padding: 32px 24px 28px; }
+        .hero-inner { max-width: 880px; margin: 0 auto; }
+        .hero-title { text-align: center; font-size: 32px; font-weight: 700; margin-bottom: 10px; letter-spacing: 1px; }
+        .hero.collapsed .hero-title { font-size: 22px; }
+        .hero-sub { text-align: center; font-size: 16px; color: var(--text-2); margin-bottom: 36px; letter-spacing: 0.5px; }
+        .hero.collapsed .hero-sub { font-size: 14px; margin-bottom: 20px; }
 
         /* Search Bar */
-        .search-wrap { background: #fff; border-radius: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; align-items: center; padding: 4px 4px 4px 0; transition: box-shadow .2s; }
-        .search-wrap:focus-within { box-shadow: 0 4px 16px rgba(24,144,255,0.18); }
-        .search-wrap.has-image { padding-left: 4px; }
-        .search-icon { width: 48px; display: flex; align-items: center; justify-content: center; color: var(--text-3); flex-shrink: 0; }
-        .search-icon svg { width: 20px; height: 20px; }
-        .search-img-preview { display: none; width: 40px; height: 40px; border-radius: 8px; background: linear-gradient(135deg,#bae7ff,#91d5ff); flex-shrink: 0; margin-left: 8px; cursor: pointer; position: relative; }
+        .search-wrap { background: #fff; border-radius: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.1); display: flex; align-items: center; padding: 6px 6px 6px 0; transition: box-shadow .2s; }
+        .search-wrap:focus-within { box-shadow: 0 6px 24px rgba(24,144,255,0.2); }
+        .search-wrap.has-image { padding-left: 6px; }
+        .search-icon { width: 52px; display: flex; align-items: center; justify-content: center; color: var(--text-3); flex-shrink: 0; }
+        .search-icon svg { width: 22px; height: 22px; }
+        .search-img-preview { display: none; width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg,#bae7ff,#91d5ff); flex-shrink: 0; margin-left: 10px; cursor: pointer; position: relative; }
         .search-img-preview.visible { display: flex; align-items: center; justify-content: center; }
-        .search-img-preview svg { width: 20px; height: 20px; color: var(--primary); }
-        .search-img-add { position: absolute; bottom: -3px; right: -3px; width: 16px; height: 16px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
-        .search-img-add svg { width: 8px; height: 8px; color: #fff; }
+        .search-img-preview svg { width: 22px; height: 22px; color: var(--primary); }
+        .search-img-del { position: absolute; top: -4px; right: -4px; width: 18px; height: 18px; background: #ff4d4f; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; cursor: pointer; }
+        .search-img-del svg { width: 9px; height: 9px; color: #fff; }
         .search-img-label { display: none; font-size: 14px; color: var(--text-1); font-weight: 500; margin-left: 10px; white-space: nowrap; }
         .search-img-label.visible { display: inline; }
-        .search-input { flex: 1; border: none; outline: none; font-size: 15px; padding: 10px 12px; color: var(--text-1); font-family: var(--font); background: transparent; }
+        .search-input { flex: 1; border: none; outline: none; font-size: 16px; padding: 12px 14px; color: var(--text-1); font-family: var(--font); background: transparent; }
         .search-input::placeholder { color: var(--text-3); }
         .search-input.hidden { display: none; }
-        .search-actions { display: flex; align-items: center; gap: 2px; padding-right: 2px; }
-        .search-act { width: 36px; height: 36px; border: none; background: transparent; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-2); transition: all .15s; }
+        .search-actions { display: flex; align-items: center; gap: 2px; padding-right: 2px; margin-left: auto; }
+        .search-act { width: 40px; height: 40px; border: none; background: transparent; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-2); transition: all .15s; }
         .search-act:hover { background: var(--primary-bg); color: var(--primary); }
-        .search-act svg { width: 18px; height: 18px; }
-        .search-btn { height: 36px; padding: 0 24px; background: var(--primary); color: #fff; border: none; border-radius: 20px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: background .15s; margin-left: 4px; }
+        .search-act svg { width: 20px; height: 20px; }
+        .search-btn { height: 40px; padding: 0 28px; background: var(--primary); color: #fff; border: none; border-radius: 22px; font-size: 15px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background .15s; margin-left: 6px; }
         .search-btn:hover { background: var(--primary-hover); }
-        .search-btn svg { width: 16px; height: 16px; }
+        .search-btn svg { width: 18px; height: 18px; }
 
-        /* Type Buttons (like AI assistant skill buttons) */
-        .type-bar { display: flex; justify-content: center; gap: 8px; margin-top: 16px; flex-wrap: wrap; transition: all .3s; }
-        .hero.collapsed .type-bar { margin-top: 10px; }
-        .type-btn { display: flex; align-items: center; gap: 5px; padding: 7px 16px; background: rgba(255,255,255,0.75); border: 1px solid transparent; border-radius: 20px; font-size: 13px; color: var(--text-2); cursor: pointer; transition: all .2s; }
+        /* Type Buttons */
+        .type-bar { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+        .hero.collapsed .type-bar { margin-top: 14px; }
+        .type-btn { display: flex; align-items: center; gap: 6px; padding: 9px 20px; background: rgba(255,255,255,0.75); border: 1px solid transparent; border-radius: 22px; font-size: 14px; color: var(--text-2); cursor: pointer; transition: all .2s; }
         .type-btn svg { width: 16px; height: 16px; }
         .type-btn:hover { background: #fff; color: var(--text-1); border-color: var(--border); box-shadow: var(--shadow-card); }
         .type-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
         .type-btn.active svg { color: #fff; }
-        .type-btn .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-
-        /* Hot tags */
-        .hot-tags { display: flex; justify-content: center; gap: 8px; margin-top: 14px; flex-wrap: wrap; transition: all .3s; }
-        .hero.collapsed .hot-tags { display: none; }
-        .hot-tag { padding: 3px 10px; background: rgba(255,255,255,0.6); border-radius: 12px; font-size: 12px; color: var(--text-2); cursor: pointer; transition: all .15s; }
-        .hot-tag:hover { background: #fff; color: var(--primary); }
 
         /* ===== Results Page ===== */
         .results-page { display: none; max-width: 1200px; margin: 0 auto; padding: 0 24px 32px; }
         .results-page.visible { display: block; }
-
-        /* Result summary */
         .results-summary { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--border-light); margin-bottom: 16px; }
         .results-count { font-size: 13px; color: var(--text-2); }
         .results-count b { color: var(--primary); font-weight: 600; }
         .results-sort { display: flex; align-items: center; gap: 12px; }
-        .results-sort select { border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; font-size: 13px; color: var(--text-1); background: #fff; outline: none; }
-        .results-view-toggle { display: flex; gap: 2px; }
-        .view-btn { width: 30px; height: 30px; border: 1px solid var(--border); background: #fff; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-2); transition: all .15s; }
-        .view-btn.active { background: var(--primary-bg); color: var(--primary); border-color: var(--primary); }
-        .view-btn svg { width: 14px; height: 14px; }
-
-        /* Results grid */
         .results-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
-        .results-grid.list-view { grid-template-columns: 1fr; gap: 8px; }
-
         .r-card { background: #fff; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-card); cursor: pointer; transition: all .2s; border: 1px solid var(--border-light); }
         .r-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
         .r-card-thumb { height: 110px; display: flex; align-items: center; justify-content: center; position: relative; }
@@ -122,14 +160,6 @@
         .r-card-meta { font-size: 11px; color: var(--text-3); display: flex; justify-content: space-between; }
         .r-card-tags { display: flex; gap: 3px; margin-top: 5px; flex-wrap: wrap; }
         .r-card-tag { padding: 0 5px; background: var(--bg); border-radius: 3px; font-size: 10px; color: var(--text-2); line-height: 18px; }
-
-        /* List view card */
-        .results-grid.list-view .r-card { display: flex; align-items: center; padding: 10px 14px; gap: 14px; }
-        .results-grid.list-view .r-card-thumb { width: 80px; height: 56px; flex-shrink: 0; border-radius: 4px; }
-        .results-grid.list-view .r-card-body { flex: 1; min-width: 0; }
-        .results-grid.list-view .r-card-type { display: none; }
-        .results-grid.list-view .r-list-type { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 500; margin-right: 6px; }
-        .results-grid.list-view .r-card-tags { display: none; }
 
         /* Pagination */
         .pagination { display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 24px; }
@@ -152,6 +182,17 @@
         .stat-value { font-size: 24px; font-weight: 600; color: var(--text-1); }
         .stat-unit { font-size: 13px; font-weight: 400; color: var(--text-2); margin-left: 4px; }
 
+        /* ===== Trend Chart ===== */
+        .trend-section { max-width: 1200px; margin: 0 auto; padding: 16px 24px 0; }
+        .trend-card { background: #fff; border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-card); border: 1px solid var(--border-light); }
+        .trend-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .trend-title { font-size: 15px; font-weight: 600; }
+        .trend-select { border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; font-size: 13px; color: var(--text-1); background: #fff; outline: none; cursor: pointer; }
+        .trend-chart { height: 180px; position: relative; }
+        .chart-canvas { width: 100%; height: 100%; }
+        .chart-axis { display: flex; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--border-light); margin-top: 0; }
+        .chart-axis span { font-size: 11px; color: var(--text-3); }
+
         /* ===== Latest Images ===== */
         .latest-section { max-width: 1200px; margin: 0 auto; padding: 16px 24px 0; }
         .latest-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
@@ -164,260 +205,359 @@
         .latest-thumb { height: 120px; background: var(--border-light); }
         .latest-card-title { padding: 8px 10px 10px; font-size: 13px; color: var(--text-1); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        /* ===== Trend Chart ===== */
-        .trend-section { max-width: 1200px; margin: 0 auto; padding: 16px 24px 0; }
-        .trend-card { background: #fff; border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-card); border: 1px solid var(--border-light); }
-        .trend-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-        .trend-title { font-size: 15px; font-weight: 600; }
-        .trend-select { border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; font-size: 13px; color: var(--text-1); background: #fff; outline: none; cursor: pointer; }
-        .trend-chart { height: 180px; position: relative; }
-        .chart-canvas { width: 100%; height: 100%; }
-        .chart-axis { display: flex; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--border-light); margin-top: 0; }
-        .chart-axis span { font-size: 11px; color: var(--text-3); }
-
-        /* ===== Bottom Modules wrapper ===== */
         .bottom-modules { padding-bottom: 8px; }
-
-        /* Footer */
         .page-footer { text-align: center; padding: 20px; color: var(--text-3); font-size: 12px; }
 
-        /* Responsive */
         @media (max-width: 1024px) { .results-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 640px) { .results-grid { grid-template-columns: repeat(2, 1fr); } .hero { padding: 60px 16px 24px; } }
     </style>
 </head>
 <body>
 
-<!-- ===== Top Nav ===== -->
-<header class="top-nav">
-    <div class="nav-logo">
-        <div class="nav-logo-icon">媒</div>
-        <span class="nav-logo-text">宁报智能媒资系统</span>
-    </div>
-    <nav class="nav-items">
-        <div class="nav-item active">首页</div>
-        <div class="nav-item">素材中心</div>
-        <div class="nav-item">资源中心</div>
-        <div class="nav-item">搜索中心</div>
-        <div class="nav-item">业务管理</div>
-    </nav>
-    <div class="nav-right">
-        <button class="nav-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            上传
-        </button>
-        <div class="nav-user"><div class="nav-avatar">管</div></div>
-    </div>
-</header>
+<div class="app-split">
+  <!-- Left: Prototype -->
+  <div class="page-container">
 
-<!-- ===== Search Hero ===== -->
-<section class="hero" id="hero">
-    <div class="hero-inner">
-        <h1 class="hero-title">搜索全部媒资</h1>
-        <p class="hero-sub">精准检索 · 语义理解 · AI 多模态 — 一次搜索，全库呈现</p>
+    <!-- Top Nav -->
+    <header class="top-nav">
+        <div class="nav-logo">
+            <div class="nav-logo-icon">媒</div>
+            <span class="nav-logo-text">宁报智能媒资系统</span>
+        </div>
+        <nav class="nav-items">
+            <div class="nav-item active">首页</div>
+            <div class="nav-item">素材中心</div>
+            <div class="nav-item">资源中心</div>
+            <div class="nav-item">搜索中心</div>
+            <div class="nav-item">业务管理</div>
+        </nav>
+        <div class="nav-right">
+            <button class="nav-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                上传
+            </button>
+            <div class="nav-user"><div class="nav-avatar">管</div></div>
+        </div>
+    </header>
 
-        <div class="search-wrap" id="searchWrap">
-            <div class="search-img-preview" id="imgPreview">
+    <!-- Search Hero -->
+    <section class="hero" id="hero">
+        <div class="hero-inner">
+            <h1 class="hero-title">灵感无界，触手可及</h1>
+        <p class="hero-sub">海量多模态媒资，AI赋能创意检索</p>
+
+            <div class="search-wrap" id="searchWrap">
+                <div class="search-icon" id="searchIcon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </div>
+                <div class="search-img-preview" id="imgPreview">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                <div class="search-img-add">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                <div class="search-img-del" onclick="event.stopPropagation();toggleImageMode()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </div>
             </div>
-            <span class="search-img-label" id="imgLabel">找相似图片</span>
-            <div class="search-icon" id="searchIcon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <span class="search-img-label" id="imgLabel">以图搜索</span>
+                <input class="search-input" id="searchInput" type="text"
+                       placeholder="输入关键词、自然语言描述搜索全部媒资"
+                       onkeydown="if(event.key==='Enter')doSearch()">
+                <div class="search-actions">
+                    <button class="search-act" title="上传图片搜索" onclick="toggleImageMode()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    </button>
+                </div>
+                <button class="search-btn" id="searchBtn" onclick="doSearch()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    搜索
+                </button>
             </div>
-            <input class="search-input" id="searchInput" type="text"
-                   placeholder="输入关键词、自然语言描述，或上传图片搜索"
-                   onkeydown="if(event.key==='Enter')doSearch()">
-            <div class="search-actions">
-                <button class="search-act" title="上传图片搜索" onclick="toggleUpload()">
+
+            <div class="type-bar" id="typeBar">
+                <button class="type-btn active" onclick="selectType(this, 'all')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    全部
+                </button>
+                <button class="type-btn" onclick="selectType(this, 'image')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    图片
                 </button>
-            </div>
-            <button class="search-btn" onclick="doSearch()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                搜索
-            </button>
-        </div>
-
-        <!-- Type selector buttons -->
-        <div class="type-bar" id="typeBar">
-            <button class="type-btn active" onclick="selectType(this, 'all')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                全部
-            </button>
-            <button class="type-btn" onclick="selectType(this, 'image')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                图片
-            </button>
-            <button class="type-btn" onclick="selectType(this, 'video')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-                视频
-            </button>
-            <button class="type-btn" onclick="selectType(this, 'img-search')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 13l2-3 3 4 2-2"/></svg>
-                以图搜图
-            </button>
-            <button class="type-btn" onclick="selectType(this, 'img-video')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><polygon points="10 8 16 12 10 16"/></svg>
-                以图搜视频
-            </button>
-        </div>
-
-        <!-- Hot tags -->
-        <div class="hot-tags" id="hotTags">
-            <span class="hot-tag" onclick="fill('宁波三江口')">宁波三江口</span>
-            <span class="hot-tag" onclick="fill('港口物流')">港口物流</span>
-            <span class="hot-tag" onclick="fill('改革开放')">改革开放</span>
-            <span class="hot-tag" onclick="fill('文化活动')">文化活动</span>
-            <span class="hot-tag" onclick="fill('城市建设')">城市建设</span>
-            <span class="hot-tag" onclick="fill('乡村振兴')">乡村振兴</span>
-        </div>
-    </div>
-</section>
-
-<!-- ===== Results ===== -->
-<section class="results-page" id="resultsPage">
-    <div class="results-summary">
-        <div class="results-count" id="resultsCount"></div>
-        <div class="results-sort">
-            <select id="sortSelect">
-                <option value="relevance">综合排序</option>
-                <option value="time-desc">最新优先</option>
-                <option value="time-asc">最早优先</option>
-            </select>
-            <div class="results-view-toggle">
-                <button class="view-btn active" onclick="setView('grid', this)" title="网格视图">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                </button>
-                <button class="view-btn" onclick="setView('list', this)" title="列表视图">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="results-grid" id="resultsGrid"></div>
-    <div class="pagination" id="pagination"></div>
-</section>
-
-<!-- ===== Bottom: Resource Stats + Latest Images + Trend ===== -->
-<div class="bottom-modules">
-    <!-- Resource Stats -->
-    <section class="stats-section">
-        <div class="stats-section-title">资源聚合</div>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon blue">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                </div>
-                <div class="stat-info">
-                    <div class="stat-label">图片资源总量</div>
-                    <div class="stat-value">1,942<span class="stat-unit">张</span></div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon purple">
+                <button class="type-btn" onclick="selectType(this, 'video')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-                </div>
-                <div class="stat-info">
-                    <div class="stat-label">视频资源总量</div>
-                    <div class="stat-value">6.47<span class="stat-unit">小时</span></div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon green">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-                </div>
-                <div class="stat-info">
-                    <div class="stat-label">音频资源总量</div>
-                    <div class="stat-value">17<span class="stat-unit">条</span></div>
-                </div>
+                    视频
+                </button>
             </div>
         </div>
     </section>
 
-    <!-- Trend Chart -->
-    <section class="trend-section">
-        <div class="trend-card">
-            <div class="trend-header">
-                <span class="trend-title">资源入库趋势</span>
-                <select class="trend-select">
-                    <option>近两周</option>
-                    <option>近一个月</option>
-                    <option>近三个月</option>
-                </select>
-            </div>
-            <div class="trend-chart">
-                <svg class="chart-canvas" viewBox="0 0 700 160" preserveAspectRatio="none">
-                    <defs>
-                        <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#1890ff" stop-opacity="0.25"/>
-                            <stop offset="100%" stop-color="#1890ff" stop-opacity="0.02"/>
-                        </linearGradient>
-                    </defs>
-                    <line x1="0" y1="40" x2="700" y2="40" stroke="#f0f0f0" stroke-width="1"/>
-                    <line x1="0" y1="80" x2="700" y2="80" stroke="#f0f0f0" stroke-width="1"/>
-                    <line x1="0" y1="120" x2="700" y2="120" stroke="#f0f0f0" stroke-width="1"/>
-                    <path d="M0,130 L50,125 L100,120 L150,110 L200,100 L250,95 L300,80 L350,45 L400,35 L450,50 L500,70 L550,85 L600,95 L650,105 L700,110 L700,160 L0,160 Z" fill="url(#areaGrad)"/>
-                    <polyline points="0,130 50,125 100,120 150,110 200,100 250,95 300,80 350,45 400,35 450,50 500,70 550,85 600,95 650,105 700,110" fill="none" stroke="#1890ff" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-                    <circle cx="400" cy="35" r="4" fill="#fff" stroke="#1890ff" stroke-width="2"/>
-                    <text x="400" y="25" text-anchor="middle" font-size="11" fill="#1890ff" font-weight="500">52</text>
-                </svg>
-            </div>
-            <div class="chart-axis">
-                <span>04-28</span><span>05-01</span><span>05-04</span><span>05-07</span><span>05-09</span><span>05-11</span>
-            </div>
+    <!-- Results -->
+    <section class="results-page" id="resultsPage">
+        <div class="results-summary">
+            <div class="results-count" id="resultsCount"></div>
         </div>
+        <div class="results-grid" id="resultsGrid"></div>
+        <div class="pagination" id="pagination"></div>
     </section>
 
-    <!-- Latest Images -->
-    <section class="latest-section">
-        <div class="latest-header">
-            <span class="latest-title">最新图片资源</span>
-            <span class="latest-more">查看更多图片 &rarr;</span>
-        </div>
-        <div class="latest-grid">
-            <div class="latest-card">
-                <div class="latest-thumb" style="background:linear-gradient(135deg,#bae7ff,#91d5ff)"></div>
-                <div class="latest-card-title">宁波三江口夜景航拍全景</div>
+    <!-- Bottom Modules -->
+    <div class="bottom-modules">
+        <section class="stats-section">
+            <div class="stats-section-title">资源聚合</div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-label">图片资源总量</div>
+                        <div class="stat-value">1,942<span class="stat-unit">张</span></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-label">视频资源总量</div>
+                        <div class="stat-value">6.47<span class="stat-unit">小时</span></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-label">音频资源总量</div>
+                        <div class="stat-value">17<span class="stat-unit">条</span></div>
+                    </div>
+                </div>
             </div>
-            <div class="latest-card">
-                <div class="latest-thumb" style="background:linear-gradient(135deg,#d9f7be,#b7eb8f)"></div>
-                <div class="latest-card-title">东钱湖环湖绿道春季纪实</div>
+        </section>
+
+        <section class="trend-section">
+            <div class="trend-card">
+                <div class="trend-header">
+                    <span class="trend-title">资源入库趋势</span>
+                    <select class="trend-select">
+                        <option>近两周</option>
+                        <option>近一个月</option>
+                        <option>近三个月</option>
+                    </select>
+                </div>
+                <div class="trend-chart">
+                    <svg class="chart-canvas" viewBox="0 0 700 160" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#1890ff" stop-opacity="0.25"/>
+                                <stop offset="100%" stop-color="#1890ff" stop-opacity="0.02"/>
+                            </linearGradient>
+                        </defs>
+                        <line x1="0" y1="40" x2="700" y2="40" stroke="#f0f0f0" stroke-width="1"/>
+                        <line x1="0" y1="80" x2="700" y2="80" stroke="#f0f0f0" stroke-width="1"/>
+                        <line x1="0" y1="120" x2="700" y2="120" stroke="#f0f0f0" stroke-width="1"/>
+                        <path d="M0,130 L50,125 L100,120 L150,110 L200,100 L250,95 L300,80 L350,45 L400,35 L450,50 L500,70 L550,85 L600,95 L650,105 L700,110 L700,160 L0,160 Z" fill="url(#areaGrad)"/>
+                        <polyline points="0,130 50,125 100,120 150,110 200,100 250,95 300,80 350,45 400,35 450,50 500,70 550,85 600,95 650,105 700,110" fill="none" stroke="#1890ff" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+                        <circle cx="400" cy="35" r="4" fill="#fff" stroke="#1890ff" stroke-width="2"/>
+                        <text x="400" y="25" text-anchor="middle" font-size="11" fill="#1890ff" font-weight="500">52</text>
+                    </svg>
+                </div>
+                <div class="chart-axis">
+                    <span>04-28</span><span>05-01</span><span>05-04</span><span>05-07</span><span>05-09</span><span>05-11</span>
+                </div>
             </div>
-            <div class="latest-card">
-                <div class="latest-thumb" style="background:linear-gradient(135deg,#ffe7ba,#ffd591)"></div>
-                <div class="latest-card-title">2025 宁波马拉松起跑瞬间</div>
+        </section>
+
+        <section class="latest-section">
+            <div class="latest-header">
+                <span class="latest-title">最新图片资源</span>
+                <span class="latest-more">查看更多图片 &rarr;</span>
             </div>
-            <div class="latest-card">
-                <div class="latest-thumb" style="background:linear-gradient(135deg,#e6f7ff,#bae7ff)"></div>
-                <div class="latest-card-title">宁波舟山港集装箱码头作业</div>
+            <div class="latest-grid">
+                <div class="latest-card"><div class="latest-thumb" style="background:linear-gradient(135deg,#bae7ff,#91d5ff)"></div><div class="latest-card-title">宁波三江口夜景航拍全景</div></div>
+                <div class="latest-card"><div class="latest-thumb" style="background:linear-gradient(135deg,#d9f7be,#b7eb8f)"></div><div class="latest-card-title">东钱湖环湖绿道春季纪实</div></div>
+                <div class="latest-card"><div class="latest-thumb" style="background:linear-gradient(135deg,#ffe7ba,#ffd591)"></div><div class="latest-card-title">2025 宁波马拉松起跑瞬间</div></div>
+                <div class="latest-card"><div class="latest-thumb" style="background:linear-gradient(135deg,#e6f7ff,#bae7ff)"></div><div class="latest-card-title">宁波舟山港集装箱码头作业</div></div>
+                <div class="latest-card"><div class="latest-thumb" style="background:linear-gradient(135deg,#f3e8ff,#d3adf7)"></div><div class="latest-card-title">宁波博物馆新馆建筑外观</div></div>
+                <div class="latest-card"><div class="latest-thumb" style="background:linear-gradient(135deg,#fff1b8,#ffe58f)"></div><div class="latest-card-title">鄞州区文化活动中心启用</div></div>
+                <div class="latest-card"><div class="latest-thumb" style="background:linear-gradient(135deg,#b7eb8f,#95de64)"></div><div class="latest-card-title">奉化水蜜桃采摘季开幕现场</div></div>
+                <div class="latest-card"><div class="latest-thumb" style="background:linear-gradient(135deg,#91d5ff,#69c0ff)"></div><div class="latest-card-title">宁波老外滩历史街区改造</div></div>
             </div>
-            <div class="latest-card">
-                <div class="latest-thumb" style="background:linear-gradient(135deg,#f3e8ff,#d3adf7)"></div>
-                <div class="latest-card-title">宁波博物馆新馆建筑外观</div>
-            </div>
-            <div class="latest-card">
-                <div class="latest-thumb" style="background:linear-gradient(135deg,#fff1b8,#ffe58f)"></div>
-                <div class="latest-card-title">鄞州区文化活动中心启用</div>
-            </div>
-            <div class="latest-card">
-                <div class="latest-thumb" style="background:linear-gradient(135deg,#b7eb8f,#95de64)"></div>
-                <div class="latest-card-title">奉化水蜜桃采摘季开幕现场</div>
-            </div>
-            <div class="latest-card">
-                <div class="latest-thumb" style="background:linear-gradient(135deg,#91d5ff,#69c0ff)"></div>
-                <div class="latest-card-title">宁波老外滩历史街区改造</div>
-            </div>
-        </div>
-    </section>
+        </section>
+    </div>
+
+    <footer class="page-footer">传播大脑科技（浙江）股份有限公司 · 宁报智能媒资系统</footer>
+
+  </div><!-- /.page-container -->
+
+  <!-- Split Drag -->
+  <div class="split-drag" id="splitDrag"></div>
+
+  <!-- Right: PRD Panel -->
+  <div class="prd-panel" id="prdPanel">
+      <div class="prd-toc" id="prdToc"></div>
+      <div class="prd-content" id="prdContent"></div>
+  </div>
+</div><!-- /.app-split -->
+
+<!-- Top Controls -->
+<div class="top-controls">
+    <button class="prd-toggle" id="prdToggle" onclick="togglePrdPanel()">
+        <span class="toggle-dot"></span> PRD
+    </button>
+    <div class="changelog-btn" onclick="downloadPrd()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>PRD 下载</span>
+    </div>
+    <div class="changelog-btn" onclick="toggleChangelog()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+        <span>更新记录</span>
+    </div>
 </div>
 
-<footer class="page-footer">传播大脑科技（浙江）股份有限公司 · 宁报智能媒资系统</footer>
+<!-- Changelog Modal -->
+<div class="changelog-overlay" id="changelogOverlay" onclick="toggleChangelog()"></div>
+<div class="changelog-modal" id="changelogModal">
+    <div class="changelog-header">
+        <h3>更新记录</h3>
+        <button class="changelog-close" onclick="toggleChangelog()">&times;</button>
+    </div>
+    <div class="changelog-body" id="changelogBody"></div>
+</div>
+
+<!-- PRD Source (hidden textarea for file:// compatibility) -->
+<textarea id="prdMdSource" style="display:none">
+# 智能媒资首页搜索优化 — PRD
+
+## 产品概述
+
+- **背景**：现有智能媒资系统的搜索能力分散在"精准检索""语义检索""AI 多模态检索"三个独立入口，用户需在不同模式间切换，操作路径长、效率低
+- **目标**：将三种搜索能力聚合到首页统一搜索栏，实现"一次搜索、全库呈现"，降低用户使用门槛
+- **用户角色**：记者、编辑、素材管理员
+
+---
+
+## 一、首页搜索区域
+
+### 1.1 搜索区域标题
+
+- **展示规则**：
+  - 主标题"灵感无界，触手可及"，居中展示，大字号加粗
+  - 副标题"海量多模态媒资，AI赋能创意检索"，居中展示，中等字号，浅色文字
+  - 主标题和副标题位于搜索栏上方
+- **交互规则**：
+  - 搜索触发后，标题和副标题始终保持可见，不隐藏
+  - 搜索后搜索区域整体缩小上下间距
+
+### 1.2 搜索栏
+
+- **展示规则**：
+  - 页面居中展示搜索栏，胶囊形外观，宽度较大营造大气感
+  - 默认状态从左到右依次为：搜索图标、文字输入框、图片上传按钮、搜索按钮
+  - 文字输入框 placeholder 为"输入关键词、自然语言描述搜索全部媒资"
+- **交互规则**：
+  - 文字输入框获取焦点时，搜索栏阴影增强
+  - 按回车键或点击"搜索"按钮触发搜索
+  - 点击图片上传按钮切换输入模式（见 1.3）
+  - 图片上传按钮和搜索按钮始终右对齐
+
+### 1.3 输入模式切换
+
+- **展示规则**：
+  - 输入端支持两种互斥模式：文字输入和图片输入
+  - 文字模式：展示搜索图标 + 文字输入框 + 图片上传按钮 + 搜索按钮
+  - 图片模式：展示图片缩略图预览（右上角带红色 X 删除图标）+ 图片上传按钮 + "以图搜索"按钮，隐藏搜索图标和文字输入框
+- **交互规则**：
+  - 点击图片上传按钮进入图片模式
+  - 点击缩略图右上角 X 图标退出图片模式，恢复文字输入状态
+  - 图片模式下搜索按钮文案变为"以图搜索"
+- **数据规则**：
+  - **取数规则**：文字输入模式下读取用户输入的关键词或自然语言描述；图片模式下读取用户上传的图片文件
+  - 文字输入支持关键词精确匹配和自然语言语义理解
+  - 图片输入基于图片内容进行多模态检索
+
+### 1.4 搜索类型筛选
+
+- **展示规则**：搜索栏下方展示三个药丸形按钮：全部（默认选中）、图片、视频
+- **交互规则**：
+  - 点击按钮切换筛选类型，选中按钮高亮，其余按钮恢复默认样式
+  - 类型筛选仅影响搜索结果的内容类型过滤，不改变输入模式（文字/图片）
+  - 若已有搜索结果展示中，切换类型后自动刷新结果
+- **数据规则**：
+  - **数据筛选规则**：
+    - 全部：返回图片和视频两种类型的结果
+    - 图片：仅返回图片类型结果
+    - 视频：仅返回视频类型结果
+  - 多模态检索当前仅支持图片和视频，不支持音频和文档
+
+---
+
+## 二、搜索结果页
+
+### 2.1 结果页布局
+
+- **展示规则**：
+  - 搜索触发后，搜索区域缩小上下间距，标题和副标题保留
+  - 搜索栏下方展示结果列表区域
+  - 结果列表顶部左侧展示"共找到 X 条相关结果"
+- **交互规则**：
+  - 搜索栏折叠后仍可继续输入或切换模式进行二次搜索
+  - 搜索区域缩小过程带有过渡动画
+
+### 2.2 排序规则
+
+- **展示规则**：不展示排序相关的 UI 元素
+- **数据规则**：
+  - **数据排序规则**：
+    - 一级排序：按相似度从高到低排序
+    - 二级排序：相似度相同时，按上传时间从近到远排序
+
+### 2.3 结果卡片
+
+- **展示规则**：
+  - 以宫格视图展示搜索结果，每行 5 列（大屏）
+  - 每个卡片包含：缩略图区域、类型标签（图片/视频）、标题、作者、日期、标签
+  - 缩略图区域用颜色区分内容类型：图片蓝色系、视频橙色系
+- **交互规则**：
+  - 卡片 hover 时上浮并显示阴影
+  - 点击卡片跳转至资源详情页
+- **数据规则**：
+  - **取数规则**：根据搜索关键词或图片，从媒资资源库检索匹配的资源，返回缩略图、标题、作者、入库日期、标签字段
+  - **数据筛选规则**：根据用户选择的类型（全部/图片/视频）过滤结果
+  - **数据排序规则**：按 2.2 排序规则执行
+
+### 2.4 分页
+
+- **展示规则**：结果列表下方展示分页组件，包含页码按钮和下一页按钮，当前页高亮
+- **交互规则**：
+  - 点击页码切换页面
+  - 页码切换后结果列表滚动至顶部
+
+---
+
+## 三、顶部导航栏
+
+### 3.1 导航栏结构
+
+- **展示规则**：
+  - 导航栏固定在页面顶部，包含：系统 Logo + 名称、主导航菜单、上传按钮、用户头像
+  - 导航菜单项：首页（默认选中）、素材中心、资源中心、搜索中心、业务管理
+- **交互规则**：
+  - 导航菜单项 hover 时文字变色并显示浅蓝背景
+  - 点击上传按钮触发上传流程
+  - 导航栏不越过 PRD 拖拽分隔线
+
+---
+
+## 四、全局交互规则
+
+- 所有可点击元素具备 hover 状态反馈（颜色变化或位移）
+- 搜索区域缩小/展开带有过渡动画
+- 卡片类元素 hover 时上浮并增强阴影
+- 页脚展示"传播大脑科技（浙江）股份有限公司 · 宁报智能媒资系统"
+</textarea>
 
 <script>
+    /* ===== Prototype JS ===== */
     var currentType = 'all';
+    var imageMode = false;
 
     var TYPE_META = {
         image: { label: '图片', bg: '#e6f7ff', stroke: '#1890ff', icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>' },
@@ -428,75 +568,62 @@
         currentType = type;
         document.querySelectorAll('.type-btn').forEach(function(b) { b.classList.remove('active'); });
         el.classList.add('active');
+        if (document.getElementById('resultsPage').classList.contains('visible')) doSearch();
+    }
 
+    function toggleImageMode() {
+        imageMode = !imageMode;
         var wrap = document.getElementById('searchWrap');
         var input = document.getElementById('searchInput');
         var icon = document.getElementById('searchIcon');
         var preview = document.getElementById('imgPreview');
-        var label = document.getElementById('imgLabel');
+        var btn = document.getElementById('searchBtn');
 
-        var isImgMode = (type === 'img-search' || type === 'img-video');
-
-        // Toggle image preview mode
-        preview.classList.toggle('visible', isImgMode);
-        label.classList.toggle('visible', isImgMode);
-        input.classList.toggle('hidden', isImgMode);
-        icon.style.display = isImgMode ? 'none' : 'flex';
-        wrap.classList.toggle('has-image', isImgMode);
-
-        if (type === 'img-search') {
-            label.textContent = '找相似图片';
-        } else if (type === 'img-video') {
-            label.textContent = '找相关视频';
+        if (imageMode) {
+            preview.classList.add('visible');
+            input.classList.add('hidden');
+            icon.style.display = 'none';
+            wrap.classList.add('has-image');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> 以图搜索';
         } else {
-            input.placeholder = '输入关键词、自然语言描述，或上传图片搜索';
+            preview.classList.remove('visible');
+            input.classList.remove('hidden');
+            icon.style.display = 'flex';
+            wrap.classList.remove('has-image');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> 搜索';
+            input.focus();
         }
-        if (!isImgMode) input.focus();
-    }
-
-    function toggleUpload() {
-        var btns = document.querySelectorAll('.type-btn');
-        var imgBtn = btns[btns.length - 2]; // 以图搜图
-        if (currentType === 'img-search' || currentType === 'img-video') {
-            selectType(btns[0], 'all');
-        } else {
-            selectType(imgBtn, 'img-search');
-        }
-    }
-
-    function fill(text) {
-        document.getElementById('searchInput').value = text;
-        doSearch();
     }
 
     function doSearch() {
-        var q = document.getElementById('searchInput').value.trim();
-        if (!q && currentType !== 'img-search') return;
+        var input = document.getElementById('searchInput');
+        var q = imageMode ? '' : input.value.trim();
+        if (!q && !imageMode) return;
 
         document.getElementById('hero').classList.add('collapsed');
         document.getElementById('resultsPage').classList.add('visible');
 
+        var modeLabel = imageMode ? '以图搜索' : '"' + q + '"';
         var count = currentType === 'all' ? Math.floor(Math.random() * 200 + 80) : Math.floor(Math.random() * 60 + 20);
-        document.getElementById('resultsCount').innerHTML = '共找到 <b>' + count + '</b> 条相关结果' + (q ? ' · "' + q + '"' : '');
+        document.getElementById('resultsCount').innerHTML = '共找到 <b>' + count + '</b> 条相关结果';
 
         var grid = document.getElementById('resultsGrid');
-        var types = currentType === 'all' ? ['image','video'] : [currentType === 'img-video' ? 'video' : 'image'];
+        var types = currentType === 'all' ? ['image','video'] : [currentType];
         var items = [];
         var total = currentType === 'all' ? 15 : 12;
 
         for (var i = 0; i < total; i++) {
             var t = types[i % types.length];
             var m = TYPE_META[t];
+            var qBase = q || '相似内容';
             var titles = {
-                image: [q + ' 新闻现场图', q + ' 航拍全景', q + ' 活动纪实', q + ' 历史资料'],
-                video: [q + ' 专题报道', q + ' 新闻集锦', q + ' 采访片段'],
-                audio: [q + ' 新闻发布会', q + ' 采访录音'],
-                doc:   [q + ' 策划方案', q + ' 新闻通稿', q + ' 研究报告']
+                image: [qBase + ' 新闻现场图', qBase + ' 航拍全景', qBase + ' 活动纪实', qBase + ' 历史资料'],
+                video: [qBase + ' 专题报道', qBase + ' 新闻集锦', qBase + ' 采访片段']
             };
             var title = titles[t][i % titles[t].length];
             var author = ['张记者','李编辑','王摄影','赵主编'][i % 4];
             var date = '2025-05-' + String(10 - (i % 7)).padStart(2, '0');
-            var tags = [q, ['航拍','纪实','现场','专题','采访','历史'][i % 6]];
+            var tags = [qBase, ['航拍','纪实','现场','专题','采访','历史'][i % 6]];
 
             items.push(
                 '<div class="r-card">' +
@@ -514,7 +641,6 @@
         }
         grid.innerHTML = items.join('');
 
-        // Pagination
         var pag = document.getElementById('pagination');
         var pages = '';
         for (var p = 1; p <= 5; p++) {
@@ -524,18 +650,180 @@
         pag.innerHTML = pages;
     }
 
-    function setView(mode, btn) {
-        var grid = document.getElementById('resultsGrid');
-        grid.classList.toggle('list-view', mode === 'list');
-        document.querySelectorAll('.view-btn').forEach(function(b) { b.classList.remove('active'); });
-        btn.classList.add('active');
-    }
-
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('page-btn') && e.target.textContent.trim() !== '...') {
             e.target.parentElement.querySelectorAll('.page-btn').forEach(function(b) { b.classList.remove('active'); });
             e.target.classList.add('active');
         }
+    });
+
+    /* ===== PRD Panel JS ===== */
+    function togglePrdPanel() {
+        var panel = document.getElementById('prdPanel');
+        var toggle = document.getElementById('prdToggle');
+        var dot = toggle.querySelector('.toggle-dot');
+        panel.classList.toggle('collapsed');
+        dot.style.background = panel.classList.contains('collapsed') ? '#aaa' : 'var(--green)';
+    }
+
+    function downloadPrd() {
+        var md = document.getElementById('prdMdSource').textContent;
+        var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = '智能媒资首页搜索优化PRD.md';
+        a.click();
+        URL.revokeObjectURL(a.href);
+    }
+
+    var changelogData = [
+        { time: '2026-05-11 16:12', desc: '首页搜索优化原型 + PRD 初始版本' }
+    ];
+
+    function toggleChangelog() {
+        var overlay = document.getElementById('changelogOverlay');
+        var modal = document.getElementById('changelogModal');
+        var isOpen = modal.classList.contains('show');
+        overlay.classList.toggle('show', !isOpen);
+        modal.classList.toggle('show', !isOpen);
+        if (!isOpen) renderChangelog();
+    }
+
+    function renderChangelog() {
+        var body = document.getElementById('changelogBody');
+        var html = '<table class="changelog-table"><thead><tr><th>更新时间</th><th>说明</th></tr></thead><tbody>';
+        changelogData.forEach(function(item) {
+            html += '<tr><td>' + item.time + '</td><td>' + item.desc + '</td></tr>';
+        });
+        html += '</tbody></table>';
+        body.innerHTML = html;
+    }
+
+    /* Drag resize */
+    (function() {
+        var drag = document.getElementById('splitDrag');
+        var panel = document.getElementById('prdPanel');
+        var startX, startW;
+        drag.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            startX = e.clientX;
+            startW = panel.offsetWidth;
+            drag.classList.add('dragging');
+            document.body.style.cursor = 'col-resize';
+            document.body.style.userSelect = 'none';
+            function onMove(e) {
+                var w = startW - (e.clientX - startX);
+                if (w < 200) w = 200;
+                if (w > window.innerWidth * 0.7) w = window.innerWidth * 0.7;
+                panel.style.width = w + 'px';
+            }
+            function onUp() {
+                drag.classList.remove('dragging');
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onUp);
+            }
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
+        });
+    })();
+
+    /* md2html + TOC */
+    document.addEventListener('DOMContentLoaded', function() {
+        function inlineFmt(s) { return s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>'); }
+
+        var md = document.getElementById('prdMdSource').textContent;
+        var lines = md.split('\n');
+        var h = '';
+        var inUl = false, liOpen = false, inNestedUl = false, inTable = false;
+        var tocItems = [];
+        var hIdx = 0;
+
+        for (var j = 0; j < lines.length; j++) {
+            var ln = lines[j], tr = ln.trim();
+            if (!tr) {
+                if (inNestedUl) { h += '</ul>'; inNestedUl = false; }
+                if (liOpen) { h += '</li>'; liOpen = false; }
+                if (inUl) { h += '</ul>'; inUl = false; }
+                continue;
+            }
+            if (/^---+$/.test(tr)) {
+                if (inNestedUl) { h += '</ul>'; inNestedUl = false; }
+                if (liOpen) { h += '</li>'; liOpen = false; }
+                if (inUl) { h += '</ul>'; inUl = false; }
+                h += '<hr>'; continue;
+            }
+            var hm = tr.match(/^(#{1,5})\s+(.+)$/);
+            if (hm) {
+                if (inNestedUl) { h += '</ul>'; inNestedUl = false; }
+                if (liOpen) { h += '</li>'; liOpen = false; }
+                if (inUl) { h += '</ul>'; inUl = false; }
+                hIdx++;
+                var id = 'h-' + hIdx;
+                h += '<h' + hm[1].length + ' id="' + id + '">' + inlineFmt(hm[2]) + '</h' + hm[1].length + '>';
+                tocItems.push({ level: hm[1].length, text: hm[2], id: id });
+                continue;
+            }
+            if (/^\|(.+)\|$/.test(tr)) {
+                if (inNestedUl) { h += '</ul>'; inNestedUl = false; }
+                if (liOpen) { h += '</li>'; liOpen = false; }
+                if (inUl) { h += '</ul>'; inUl = false; }
+                if (!inTable) {
+                    var nxt = (j+1 < lines.length) ? lines[j+1].trim() : '';
+                    var isSep = /^\|[\s\-:]+\|$/.test(nxt);
+                    if (isSep) {
+                        h += '<table class="prd-table"><thead><tr>';
+                        var hdrCells = tr.replace(/^\|/,'').replace(/\|$/,'').split('|');
+                        for (var ci = 0; ci < hdrCells.length; ci++) h += '<th>' + inlineFmt(hdrCells[ci].trim()) + '</th>';
+                        h += '</tr></thead><tbody>';
+                        inTable = true;
+                        j++;
+                        continue;
+                    }
+                    h += '<table class="prd-table"><tbody>';
+                    inTable = true;
+                }
+                if (/^\|[\s\-:]+\|$/.test(tr)) continue;
+                var cells = tr.replace(/^\|/,'').replace(/\|$/,'').split('|');
+                h += '<tr>';
+                for (var ci = 0; ci < cells.length; ci++) h += '<td>' + inlineFmt(cells[ci].trim()) + '</td>';
+                h += '</tr>';
+                continue;
+            }
+            if (inTable) { h += '</tbody></table>'; inTable = false; }
+            if (/^\s{2,}- /.test(ln)) {
+                if (!inNestedUl) h += '<ul class="prd-nested">';
+                inNestedUl = true;
+                h += '<li>' + inlineFmt(tr.replace(/^- /, '')) + '</li>';
+                continue;
+            }
+            if (/^- /.test(ln)) {
+                if (inNestedUl) { h += '</ul>'; inNestedUl = false; }
+                if (liOpen) h += '</li>';
+                if (!inUl) { h += '<ul class="prd-list">'; inUl = true; }
+                h += '<li>' + inlineFmt(tr.replace(/^- /, ''));
+                liOpen = true;
+                continue;
+            }
+            if (inNestedUl) { h += '</ul>'; inNestedUl = false; }
+            if (liOpen) { h += '</li>'; liOpen = false; }
+            if (inUl) { h += '</ul>'; inUl = false; }
+            h += '<p>' + inlineFmt(tr) + '</p>';
+        }
+        if (inNestedUl) h += '</ul>';
+        if (liOpen) h += '</li>';
+        if (inUl) h += '</ul>';
+        if (inTable) h += '</tbody></table>';
+
+        document.getElementById('prdContent').innerHTML = h;
+
+        var tocHtml = '<div class="prd-toc-title">目录</div>';
+        tocItems.forEach(function(item) {
+            var cls = item.level >= 3 ? 'prd-toc-item level-3' : 'prd-toc-item';
+            tocHtml += '<div class="' + cls + '" onclick="document.getElementById(\'' + item.id + '\').scrollIntoView({behavior:\'smooth\'})">' + inlineFmt(item.text) + '</div>';
+        });
+        document.getElementById('prdToc').innerHTML = tocHtml;
     });
 </script>
 

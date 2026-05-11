@@ -262,8 +262,7 @@
 </header>
 
 <div class="channel-tabs">
-    <div class="ch-tab active" onclick="switchTab(this)">全部</div>
-    <div class="ch-tab" onclick="switchTab(this)">客户端</div>
+    <div class="ch-tab active" onclick="switchTab(this)">客户端</div>
     <div class="ch-tab" onclick="switchTab(this)">网站</div>
 </div>
 
@@ -398,6 +397,7 @@ function renderRegions() {
         html += '<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>';
         html += '</div>';
         html += '<div class="sidebar-group-children">';
+        html += '<div class="sidebar-child"><input type="checkbox"> ' + r.name + '本级<span class="ctx-trigger" title="仅筛选此项" onclick="event.stopPropagation();filterOnlyCb(this.parentElement.querySelector(\'input[type=checkbox]\'))"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></span></div>';
         r.children.forEach(function(c) {
             html += '<div class="sidebar-child"><input type="checkbox"> ' + c + '<span class="ctx-trigger" title="仅筛选此项" onclick="event.stopPropagation();filterOnlyCb(this.parentElement.querySelector(\'input[type=checkbox]\'))"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></span></div>';
         });
