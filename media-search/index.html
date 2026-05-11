@@ -267,24 +267,11 @@
                 </div>
                 <button class="search-btn" id="searchBtn" onclick="doSearch()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    语义检索
+                    AI智搜
                 </button>
             </div>
 
-            <div class="type-bar" id="typeBar">
-                <button class="type-btn active" onclick="selectType(this, 'all')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    全部
-                </button>
-                <button class="type-btn" onclick="selectType(this, 'image')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                    图片
-                </button>
-                <button class="type-btn" onclick="selectType(this, 'video')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-                    视频
-                </button>
-            </div>
+            <div class="type-bar" id="typeBar" style="display:none"></div>
         </div>
     </section>
 
@@ -450,11 +437,11 @@
 
 - **展示规则**：
   - 页面居中展示搜索栏，胶囊形外观，宽度较大营造大气感
-  - 默认状态从左到右依次为：搜索图标、文字输入框、图片上传按钮、搜索按钮（文案为"语义检索"）
+  - 默认状态从左到右依次为：搜索图标、文字输入框、图片上传按钮、搜索按钮（文案统一为"AI智搜"）
   - 文字输入框 placeholder 为"输入关键词、自然语言描述搜索全部媒资"
 - **交互规则**：
   - 文字输入框获取焦点时，搜索栏阴影增强
-  - 按回车键或点击"语义检索"按钮触发搜索
+  - 按回车键或点击"AI智搜"按钮触发搜索
   - 点击图片上传按钮切换输入模式（见 1.3）
   - 图片上传按钮和搜索按钮始终右对齐
 
@@ -462,12 +449,12 @@
 
 - **展示规则**：
   - 输入端支持两种互斥模式：文字输入和图片输入
-  - 文字模式：展示搜索图标 + 文字输入框 + 图片上传按钮 + 搜索按钮
-  - 图片模式：展示图片缩略图预览（右上角带红色 X 删除图标）+ 图片上传按钮 + "多模态检索"按钮，隐藏搜索图标和文字输入框
+  - 文字模式：展示搜索图标 + 文字输入框 + 图片上传按钮 + "AI智搜"按钮
+  - 图片模式：展示图片缩略图预览（右上角带红色 X 删除图标）+ 图片上传按钮 + "AI智搜"按钮，隐藏搜索图标和文字输入框
 - **交互规则**：
   - 点击图片上传按钮进入图片模式
   - 点击缩略图右上角 X 图标退出图片模式，恢复文字输入状态
-  - 图片模式下搜索按钮文案变为"多模态检索"
+  - 搜索按钮文案统一为"AI智搜"，不随模式切换变化
 - **数据规则**：
   - **取数规则**：文字输入模式下读取用户输入的关键词或自然语言描述；图片模式下读取用户上传的图片文件
   - 文字输入支持关键词精确匹配和自然语言语义理解
@@ -475,16 +462,20 @@
 
 ### 1.4 搜索类型筛选
 
-- **展示规则**：搜索栏下方展示三个药丸形按钮：全部（默认选中）、图片、视频
+- **展示规则**：
+  - 搜索前不展示类型筛选按钮
+  - 搜索触发后，搜索栏下方展示三个药丸形按钮，默认选中"全部"
+  - 文字输入模式下展示：全部、文搜图、文搜视频
+  - 图片输入模式下展示：全部、图搜图、图搜视频
 - **交互规则**：
   - 点击按钮切换筛选类型，选中按钮高亮，其余按钮恢复默认样式
   - 类型筛选仅影响搜索结果的内容类型过滤，不改变输入模式（文字/图片）
-  - 若已有搜索结果展示中，切换类型后自动刷新结果
+  - 切换类型后自动刷新搜索结果
 - **数据规则**：
   - **数据筛选规则**：
     - 全部：返回图片和视频两种类型的结果
-    - 图片：仅返回图片类型结果
-    - 视频：仅返回视频类型结果
+    - 文搜图 / 图搜图：仅返回图片类型结果
+    - 文搜视频 / 图搜视频：仅返回视频类型结果
   - 多模态检索当前仅支持图片和视频，不支持音频和文档
 
 ---
@@ -565,6 +556,17 @@
         video: { label: '视频', bg: '#fff7e6', stroke: '#fa8c16', icon: '<polygon points="23 7 16 12 23 17"/><rect x="1" y="5" width="15" height="14" rx="2"/>' }
     };
 
+    function renderTypeBar() {
+        var bar = document.getElementById('typeBar');
+        var prefix = imageMode ? '图搜' : '文搜';
+        bar.innerHTML =
+            '<button class="type-btn active" onclick="selectType(this, \'all\')">全部</button>' +
+            '<button class="type-btn" onclick="selectType(this, \'' + prefix + '图\')">' + prefix + '图</button>' +
+            '<button class="type-btn" onclick="selectType(this, \'' + prefix + '视频\')">' + prefix + '视频</button>';
+        bar.style.display = 'flex';
+        currentType = 'all';
+    }
+
     function selectType(el, type) {
         currentType = type;
         document.querySelectorAll('.type-btn').forEach(function(b) { b.classList.remove('active'); });
@@ -585,13 +587,13 @@
             input.classList.add('hidden');
             icon.style.display = 'none';
             wrap.classList.add('has-image');
-            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> 多模态检索';
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> AI智搜';
         } else {
             preview.classList.remove('visible');
             input.classList.remove('hidden');
             icon.style.display = 'flex';
             wrap.classList.remove('has-image');
-            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> 语义检索';
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> AI智搜';
             input.focus();
         }
     }
@@ -603,13 +605,18 @@
 
         document.getElementById('hero').classList.add('collapsed');
         document.getElementById('resultsPage').classList.add('visible');
+        renderTypeBar();
 
         var modeLabel = imageMode ? '以图搜索' : '"' + q + '"';
+        var resultFilter;
+        if (currentType === 'all') resultFilter = ['image','video'];
+        else if (currentType.indexOf('图') >= 0) resultFilter = ['image'];
+        else resultFilter = ['video'];
         var count = currentType === 'all' ? Math.floor(Math.random() * 200 + 80) : Math.floor(Math.random() * 60 + 20);
         document.getElementById('resultsCount').innerHTML = '共找到 <b>' + count + '</b> 条相关结果';
 
         var grid = document.getElementById('resultsGrid');
-        var types = currentType === 'all' ? ['image','video'] : [currentType];
+        var types = resultFilter;
         var items = [];
         var total = currentType === 'all' ? 15 : 12;
 
