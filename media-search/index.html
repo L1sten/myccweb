@@ -155,13 +155,15 @@
         .r-section-label { font-size: 15px; font-weight: 600; color: var(--text-1); }
         .r-section-right { display: flex; align-items: center; gap: 12px; }
         .r-section-count { font-size: 12px; color: var(--text-2); }
-        .r-section-nav { display: flex; align-items: center; gap: 4px; }
-        .r-section-nav button { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; color: var(--text-2); }
-        .r-section-nav button:hover { border-color: var(--primary); color: var(--primary); }
-        .r-section-nav button:disabled { opacity: 0.3; cursor: not-allowed; }
-        .r-section-nav button svg { width: 14px; height: 14px; }
-        .r-section-viewport { overflow: hidden; position: relative; }
-        .r-section-track { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; transition: transform .3s ease; }
+        .r-section-viewport { position: relative; }
+        .r-section-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+        .r-section-pages { display: none; }
+        .r-section-pages.active { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+        .r-section-pager { display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 12px; }
+        .r-section-pager button { min-width: 28px; height: 28px; border: 1px solid var(--border); background: #fff; border-radius: 4px; font-size: 12px; color: var(--text-1); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; padding: 0 6px; }
+        .r-section-pager button:hover { border-color: var(--primary); color: var(--primary); }
+        .r-section-pager button.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+        .r-section-pager button:disabled { opacity: 0.3; cursor: not-allowed; }
         .results-grid-inner { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
         .r-card { background: #fff; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-card); cursor: pointer; transition: all .2s; border: 1px solid var(--border-light); }
         .r-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
@@ -171,11 +173,11 @@
         .r-card-play svg { width: 18px; height: 18px; fill: #fff; }
         .r-card-duration { position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.65); color: #fff; font-size: 10px; padding: 1px 5px; border-radius: 3px; }
         /* 稿件列表样式 */
-        .r-article-list { display: flex; flex-direction: column; }
-        .r-article-item { padding: 14px 0; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: background .15s; }
+        .r-article-list { background: #fff; border-radius: var(--radius); border: 1px solid var(--border-light); padding: 0 16px; }
+        .r-article-item { padding: 14px 4px; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: background .15s; }
         .r-article-item:last-child { border-bottom: none; }
-        .r-article-item:hover { background: var(--primary-bg); }
-        .r-article-title { font-size: 14px; font-weight: 500; color: var(--text-1); line-height: 1.6; margin-bottom: 6px; }
+        .r-article-item:hover { background: var(--primary-bg); margin: 0 -16px; padding-left: 20px; padding-right: 20px; }
+        .r-article-title { font-size: 14px; font-weight: 500; color: var(--text-1); line-height: 1.6; margin-bottom: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .r-article-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-2); }
         .r-card-body { padding: 10px 12px 12px; }
         .r-card-title { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 6px; color: var(--text-1); }
@@ -229,8 +231,8 @@
         .bottom-modules { padding-bottom: 8px; }
         .page-footer { text-align: center; padding: 20px; color: var(--text-3); font-size: 12px; }
 
-        @media (max-width: 1024px) { .r-section-track, .results-grid-inner { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 640px) { .r-section-track, .results-grid-inner { grid-template-columns: repeat(2, 1fr); } .hero { padding: 60px 16px 24px; } }
+        @media (max-width: 1024px) { .r-section-grid, .r-section-pages.active, .results-grid-inner { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 640px) { .r-section-grid, .r-section-pages.active, .results-grid-inner { grid-template-columns: repeat(2, 1fr); } .hero { padding: 60px 16px 24px; } }
     </style>
 </head>
 <body>
@@ -741,24 +743,33 @@
                     }
                     html += '</div></div>';
                 } else {
-                    // 图片/视频：滑动分页
-                    var totalPages = Math.ceil(secCount / 5);
-                    html += '<div class="r-section" data-slider="' + s + '">';
-                    html += '<div class="r-section-header">';
-                    html += '  <span class="r-section-label">' + sec.label + '</span>';
-                    html += '  <div class="r-section-right">';
-                    html += '    <span class="r-section-count">相似结果 ' + secCount + ' 条</span>';
-                    html += '    <div class="r-section-nav">';
-                    html += '      <button class="slide-prev" onclick="slideSection(this,-1)" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>';
-                    html += '      <button class="slide-next" onclick="slideSection(this,1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>';
-                    html += '    </div>';
-                    html += '  </div>';
-                    html += '</div>';
-                    html += '<div class="r-section-viewport"><div class="r-section-track">';
-                    for (var i = 0; i < Math.min(secCount, totalPages * 5); i++) {
-                        html += makeCard(sec.type, s * 20 + i, qBase);
+                    // 图片/视频：分页展示，每页10个（2行×5列）
+                    var perPage = 10;
+                    var totalItems = Math.min(secCount, 25);
+                    var totalPages = Math.ceil(totalItems / perPage);
+                    var uid = 'sec_' + s + '_' + Date.now();
+                    html += '<div class="r-section" id="' + uid + '">';
+                    html += '<div class="r-section-header"><span class="r-section-label">' + sec.label + '</span><div class="r-section-right"><span class="r-section-count">相似结果 ' + secCount + ' 条</span></div></div>';
+                    html += '<div class="r-section-viewport">';
+                    for (var pg = 0; pg < totalPages; pg++) {
+                        html += '<div class="r-section-pages' + (pg === 0 ? ' active' : '') + '" data-page="' + pg + '">';
+                        var start = pg * perPage;
+                        var end = Math.min(start + perPage, totalItems);
+                        for (var i = start; i < end; i++) {
+                            html += makeCard(sec.type, s * 20 + i, qBase);
+                        }
+                        html += '</div>';
                     }
-                    html += '</div></div></div>';
+                    html += '</div>';
+                    // 分页按钮
+                    if (totalPages > 1) {
+                        html += '<div class="r-section-pager">';
+                        for (var pg = 1; pg <= totalPages; pg++) {
+                            html += '<button class="' + (pg === 1 ? 'active' : '') + '" onclick="switchPage(this,' + pg + ')">' + pg + '</button>';
+                        }
+                        html += '</div>';
+                    }
+                    html += '</div>';
                 }
             }
         } else if (currentType.indexOf('稿件') >= 0) {
@@ -787,27 +798,15 @@
         pag.innerHTML = pages;
     }
 
-    // 图片/视频区域左右滑动分页
-    function slideSection(btn, dir) {
+    // 图片/视频区域分页切换
+    function switchPage(btn, page) {
         var section = btn.closest('.r-section');
-        var track = section.querySelector('.r-section-track');
-        var cards = track.children.length;
-        var page = parseInt(section.dataset.page || '0');
-        var cols = 5;
-        var totalPages = Math.ceil(cards / cols);
-        page += dir;
-        if (page < 0) page = 0;
-        if (page >= totalPages - 1) page = totalPages - 1;
-        section.dataset.page = page;
-        // 计算偏移量：每页偏移一整行卡片宽度（含gap）
-        var cardEl = track.children[0];
-        if (!cardEl) return;
-        var gap = 12;
-        var step = (cardEl.offsetWidth + gap) * cols;
-        track.style.transform = 'translateX(-' + (page * step) + 'px)';
-        // 更新按钮状态
-        section.querySelector('.slide-prev').disabled = (page === 0);
-        section.querySelector('.slide-next').disabled = (page >= totalPages - 1);
+        var pages = section.querySelectorAll('.r-section-pages');
+        var buttons = section.querySelectorAll('.r-section-pager button');
+        pages.forEach(function(p) { p.classList.remove('active'); });
+        buttons.forEach(function(b) { b.classList.remove('active'); });
+        pages[page - 1].classList.add('active');
+        btn.classList.add('active');
     }
 
     /* ===== PRD Panel JS ===== */
