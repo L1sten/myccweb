@@ -145,7 +145,7 @@
         /* ===== Results Page ===== */
         .results-page { display: none; max-width: 1200px; margin: 0 auto; padding: 0 24px 32px; }
         .results-page.visible { display: block; }
-        .results-summary { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--border-light); margin-bottom: 16px; }
+        .results-summary { display: none; }
         .results-count { font-size: 13px; color: var(--text-2); }
         .results-count b { color: var(--primary); font-weight: 600; }
         .results-sort { display: flex; align-items: center; gap: 12px; }
@@ -153,17 +153,20 @@
         .r-section { margin-bottom: 28px; }
         .r-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-light); }
         .r-section-label { font-size: 15px; font-weight: 600; color: var(--text-1); }
-        .r-section-right { display: flex; align-items: center; gap: 12px; }
+        .r-section-right { display: flex; align-items: center; gap: 16px; }
         .r-section-count { font-size: 12px; color: var(--text-2); }
+        .r-section-more { font-size: 12px; color: var(--primary); cursor: pointer; transition: opacity .15s; text-decoration: none; display: flex; align-items: center; gap: 2px; }
+        .r-section-more:hover { opacity: 0.7; }
+        .r-section-more svg { width: 12px; height: 12px; }
         .r-section-viewport { position: relative; }
-        .r-section-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
         .r-section-pages { display: none; }
         .r-section-pages.active { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
-        .r-section-pager { display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 12px; }
-        .r-section-pager button { min-width: 28px; height: 28px; border: 1px solid var(--border); background: #fff; border-radius: 4px; font-size: 12px; color: var(--text-1); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; padding: 0 6px; }
-        .r-section-pager button:hover { border-color: var(--primary); color: var(--primary); }
-        .r-section-pager button.active { background: var(--primary); border-color: var(--primary); color: #fff; }
-        .r-section-pager button:disabled { opacity: 0.3; cursor: not-allowed; }
+        .r-section-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.92); border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 5; transition: all .15s; color: var(--text-2); }
+        .r-section-arrow:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.18); color: var(--primary); border-color: var(--primary); }
+        .r-section-arrow.prev { left: -20px; }
+        .r-section-arrow.next { right: -20px; }
+        .r-section-arrow:disabled { opacity: 0; pointer-events: none; }
+        .r-section-arrow svg { width: 20px; height: 20px; }
         .results-grid-inner { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
         .r-card { background: #fff; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-card); cursor: pointer; transition: all .2s; border: 1px solid var(--border-light); }
         .r-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
@@ -172,8 +175,19 @@
         .r-card-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 40px; height: 40px; background: rgba(0,0,0,0.55); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .r-card-play svg { width: 18px; height: 18px; fill: #fff; }
         .r-card-duration { position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.65); color: #fff; font-size: 10px; padding: 1px 5px; border-radius: 3px; }
+        /* 资源库筛选（搜索结果页搜索框下方） */
+        .lib-filter { display: flex; align-items: center; gap: 10px; margin-top: 16px; flex-wrap: wrap; justify-content: center; }
+        .hero.collapsed .lib-filter { margin-top: 12px; }
+        .lib-filter-label { font-size: 13px; color: var(--text-2); flex-shrink: 0; }
+        .lib-filter-item { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; font-size: 13px; color: var(--text-1); padding: 4px 12px; border-radius: 14px; border: 1px solid var(--border-light); background: #fff; transition: all .15s; }
+        .lib-filter-item:hover { border-color: var(--primary); color: var(--primary); }
+        .lib-filter-item.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+        .lib-filter-item input[type="radio"] { display: none; }
         /* 稿件列表样式 */
-        .r-article-list { background: #fff; border-radius: var(--radius); border: 1px solid var(--border-light); padding: 0 16px; }
+        .r-article-list { background: #fff; border-radius: var(--radius); border: 1px solid var(--border-light); padding: 0 16px; max-height: 360px; overflow-y: auto; }
+        .r-article-list::-webkit-scrollbar { width: 6px; }
+        .r-article-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        .r-article-list::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
         .r-article-item { padding: 14px 4px; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: background .15s; }
         .r-article-item:last-child { border-bottom: none; }
         .r-article-item:hover { background: var(--primary-bg); margin: 0 -16px; padding-left: 20px; padding-right: 20px; }
@@ -245,7 +259,7 @@
     <header class="top-nav">
         <div class="nav-logo">
             <div class="nav-logo-icon">媒</div>
-            <span class="nav-logo-text">宁报智能媒资系统</span>
+            <span class="nav-logo-text">智能媒资系统</span>
         </div>
         <nav class="nav-items">
             <div class="nav-item active">首页</div>
@@ -282,7 +296,8 @@
                 <span class="search-img-label" id="imgLabel">以图搜索</span>
                 <input class="search-input" id="searchInput" type="text"
                        placeholder="输入关键词、自然语言描述搜索全部媒资"
-                       onkeydown="if(event.key==='Enter')doSearch()">
+                       onkeydown="if(event.key==='Enter')doSearch()"
+                       oninput="onInputChange()">
                 <div class="search-actions">
                     <button class="search-act" title="上传图片搜索" onclick="toggleImageMode()">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
@@ -295,6 +310,15 @@
             </div>
 
             <div class="type-bar" id="typeBar" style="display:none"></div>
+            <div class="lib-filter" id="libFilter" style="display:none">
+                <span class="lib-filter-label">资源库：</span>
+                <label class="lib-filter-item active" onclick="selectLib(this)"><input type="radio" name="libFilter" checked>全部</label>
+                <label class="lib-filter-item" onclick="selectLib(this)"><input type="radio" name="libFilter">全省资源库</label>
+                <label class="lib-filter-item" onclick="selectLib(this)"><input type="radio" name="libFilter">网络资源库</label>
+                <label class="lib-filter-item" onclick="selectLib(this)"><input type="radio" name="libFilter">个人素材库</label>
+                <label class="lib-filter-item" onclick="selectLib(this)"><input type="radio" name="libFilter">部门素材库</label>
+                <label class="lib-filter-item" onclick="selectLib(this)"><input type="radio" name="libFilter">公共素材库</label>
+            </div>
         </div>
     </section>
 
@@ -309,6 +333,23 @@
 
     <!-- Bottom Modules -->
     <div class="bottom-modules">
+        <section class="latest-section">
+            <div class="latest-header">
+                <span class="latest-title">最新图片资源</span>
+                <span class="latest-more">查看更多图片 &rarr;</span>
+            </div>
+            <div class="latest-grid">
+                <div class="latest-card"><div class="latest-thumb"><img src="https://picsum.photos/seed/lt1/400/240" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div><div class="latest-card-title">宁波三江口夜景航拍全景</div></div>
+                <div class="latest-card"><div class="latest-thumb"><img src="https://picsum.photos/seed/lt2/400/240" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div><div class="latest-card-title">东钱湖环湖绿道春季纪实</div></div>
+                <div class="latest-card"><div class="latest-thumb"><img src="https://picsum.photos/seed/lt3/400/240" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div><div class="latest-card-title">2025 宁波马拉松起跑瞬间</div></div>
+                <div class="latest-card"><div class="latest-thumb"><img src="https://picsum.photos/seed/lt4/400/240" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div><div class="latest-card-title">宁波舟山港集装箱码头作业</div></div>
+                <div class="latest-card"><div class="latest-thumb"><img src="https://picsum.photos/seed/lt5/400/240" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div><div class="latest-card-title">宁波博物馆新馆建筑外观</div></div>
+                <div class="latest-card"><div class="latest-thumb"><img src="https://picsum.photos/seed/lt6/400/240" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div><div class="latest-card-title">鄞州区文化活动中心启用</div></div>
+                <div class="latest-card"><div class="latest-thumb"><img src="https://picsum.photos/seed/lt7/400/240" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div><div class="latest-card-title">奉化水蜜桃采摘季开幕现场</div></div>
+                <div class="latest-card"><div class="latest-thumb"><img src="https://picsum.photos/seed/lt8/400/240" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div><div class="latest-card-title">宁波老外滩历史街区改造</div></div>
+            </div>
+        </section>
+
         <section class="stats-section">
             <div class="stats-section-title">资源聚合</div>
             <div class="stats-grid">
@@ -372,23 +413,6 @@
                 <div class="chart-axis">
                     <span>04-28</span><span>05-01</span><span>05-04</span><span>05-07</span><span>05-09</span><span>05-11</span>
                 </div>
-            </div>
-        </section>
-
-        <section class="latest-section">
-            <div class="latest-header">
-                <span class="latest-title">最新图片资源</span>
-                <span class="latest-more">查看更多图片 &rarr;</span>
-            </div>
-            <div class="latest-grid">
-                <div class="latest-card"><div class="latest-thumb" style="background:linear-gradient(135deg,#bae7ff,#91d5ff)"></div><div class="latest-card-title">宁波三江口夜景航拍全景</div></div>
-                <div class="latest-card"><div class="latest-thumb" style="background:linear-gradient(135deg,#d9f7be,#b7eb8f)"></div><div class="latest-card-title">东钱湖环湖绿道春季纪实</div></div>
-                <div class="latest-card"><div class="latest-thumb" style="background:linear-gradient(135deg,#ffe7ba,#ffd591)"></div><div class="latest-card-title">2025 宁波马拉松起跑瞬间</div></div>
-                <div class="latest-card"><div class="latest-thumb" style="background:linear-gradient(135deg,#e6f7ff,#bae7ff)"></div><div class="latest-card-title">宁波舟山港集装箱码头作业</div></div>
-                <div class="latest-card"><div class="latest-thumb" style="background:linear-gradient(135deg,#f3e8ff,#d3adf7)"></div><div class="latest-card-title">宁波博物馆新馆建筑外观</div></div>
-                <div class="latest-card"><div class="latest-thumb" style="background:linear-gradient(135deg,#fff1b8,#ffe58f)"></div><div class="latest-card-title">鄞州区文化活动中心启用</div></div>
-                <div class="latest-card"><div class="latest-thumb" style="background:linear-gradient(135deg,#b7eb8f,#95de64)"></div><div class="latest-card-title">奉化水蜜桃采摘季开幕现场</div></div>
-                <div class="latest-card"><div class="latest-thumb" style="background:linear-gradient(135deg,#91d5ff,#69c0ff)"></div><div class="latest-card-title">宁波老外滩历史街区改造</div></div>
             </div>
         </section>
     </div>
@@ -467,6 +491,7 @@
   - 按回车键或点击"AI智搜"按钮触发搜索
   - 点击图片上传按钮切换输入模式（见 1.3）
   - 图片上传按钮和搜索按钮始终右对齐
+  - 文字输入模式下，搜索框清空后自动返回初始状态（隐藏搜索结果、展开搜索区域、隐藏资源库筛选）
 
 ### 1.3 输入模式切换
 
@@ -476,35 +501,28 @@
   - 图片模式：展示图片缩略图预览（右上角带红色 X 删除图标）+ 图片上传按钮 + "AI智搜"按钮，隐藏搜索图标和文字输入框
 - **交互规则**：
   - 点击图片上传按钮进入图片模式，上传图片后自动触发搜索，无需手动点击"AI智搜"按钮
-  - 点击缩略图右上角 X 图标退出图片模式，恢复文字输入状态，同时清空文字搜索框、清空搜索结果、隐藏类型筛选按钮，搜索区域恢复为初始展开状态
+  - 点击缩略图右上角 X 图标退出图片模式，恢复文字输入状态，同时清空文字搜索框、清空搜索结果、隐藏资源库筛选，搜索区域恢复为初始展开状态
   - 搜索按钮文案统一为"AI智搜"，不随模式切换变化
-  - 在文字搜索结果页中点击图片上传按钮，切换为图片模式并自动搜索，类型筛选按钮同步切换为图片模式选项（全部、图搜图、图搜视频）
+  - 在文字搜索结果页中点击图片上传按钮，切换为图片模式并自动搜索
   - 在图片搜索结果页中点击 X 删除图片，退回文字输入模式，清空结果返回初始状态
 - **数据规则**：
   - **取数规则**：文字输入模式下读取用户输入的关键词或自然语言描述；图片模式下读取用户上传的图片文件
   - 文字输入支持关键词精确匹配和自然语言语义理解
   - 图片输入基于图片内容进行多模态检索
 
-### 1.4 搜索类型筛选
+### 1.4 资源库筛选
 
 - **展示规则**：
-  - 搜索前不展示类型筛选按钮
-  - 搜索触发后，搜索栏下方展示药丸形按钮，默认选中"全部"
-  - 文字输入模式下展示：全部、文搜图、文搜视频、文搜稿件
-  - 图片输入模式下展示：全部、图搜图、图搜视频（无稿件）
+  - 搜索前不展示资源库筛选
+  - 搜索触发后，搜索栏下方展示资源库筛选按钮，默认选中"全部"
+  - 筛选选项：全部、全省资源库、网络资源库、个人素材库、部门素材库、公共素材库
 - **交互规则**：
-  - 点击按钮切换筛选类型，选中按钮高亮，其余按钮恢复默认样式
-  - 类型筛选仅影响搜索结果的内容类型过滤，不改变输入模式（文字/图片）
-  - 切换类型后自动刷新搜索结果，类型栏不重新渲染，保持当前选中状态
-  - 输入模式发生变化（文字↔图片）时，类型栏重新渲染为对应模式的选项，类型重置为"全部"
+  - 点击按钮切换资源库筛选，选中按钮高亮（药丸形填充），其余按钮恢复默认样式
+  - 资源库筛选对所有类型（图片、视频、稿件）的搜索结果生效
+  - 切换资源库后自动刷新搜索结果
+  - 返回初始状态时隐藏资源库筛选
 - **数据规则**：
-  - **数据筛选规则**：
-    - 全部（文字模式）：返回图片、视频、稿件三种类型的结果，按类型分区域展示
-    - 全部（图片模式）：返回图片、视频两种类型的结果，按类型分区域展示
-    - 文搜图 / 图搜图：仅返回图片类型结果
-    - 文搜视频 / 图搜视频：仅返回视频类型结果
-    - 文搜稿件：仅返回稿件类型结果（仅文字搜索模式可用）
-  - 稿件类型仅在文字搜索模式下出现，图片搜索模式不支持稿件检索
+  - **数据筛选规则**：根据用户选择的资源库过滤结果，仅返回对应资源库中的资源
 
 ---
 
@@ -514,8 +532,7 @@
 
 - **展示规则**：
   - 搜索触发后，搜索区域缩小上下间距，标题和副标题保留
-  - 搜索栏下方展示结果列表区域
-  - 结果列表顶部左侧展示"共找到 X 条相关结果"
+  - 搜索栏下方依次展示资源库筛选、结果列表区域
 - **交互规则**：
   - 搜索栏折叠后仍可继续输入或切换模式进行二次搜索
   - 搜索区域缩小过程带有过渡动画
@@ -531,28 +548,31 @@
 ### 2.3 结果卡片
 
 - **展示规则**：
-  - "全部"类型下，搜索结果按图片、视频、稿件（仅文字搜索）分区域展示，每个区域有类型标题栏、结果条数和滑动翻页控件
-  - 图片和视频区域支持左右滑动分页，每页展示一行卡片（5列），区域标题栏右侧展示上一页/下一页按钮
-  - 稿件区域为纯文字列表样式，无缩略图，每项展示标题（加粗）、来源和日期（同行，来源左对齐，日期右对齐）
-  - 单一类型筛选下，图片和视频以宫格视图展示，稿件以列表展示
+  - 搜索结果按图片、视频、稿件（仅文字搜索）分区域展示
+  - 图片和视频区域每区域展示一行卡片（5列），最多返回 20 条结果
+  - 稿件区域为纯文字列表样式，无缩略图，最多返回 100 条结果
+  - 稿件每项展示标题（加粗）、来源和日期（同行，来源左对齐，日期右对齐）
   - 图片卡片：缩略图展示内容预览图
   - 视频卡片：缩略图展示内容预览图，中央叠加半透明圆形播放按钮，右下角展示视频时长标签
 - **交互规则**：
   - 卡片 hover 时上浮并显示阴影
   - 稿件列表项 hover 时背景变色
   - 点击卡片或稿件项跳转至资源详情页
-  - 图片/视频区域点击翻页按钮或左右滑动切换分页
+  - 图片/视频区域通过左右箭头按钮切换分页，箭头浮于卡片行两侧，垂直居中，第一页隐藏左箭头，最后一页隐藏右箭头
+  - 点击"查看更多"携带当前搜索条件和查询模式跳转至搜索中心对应频道：文字搜索模式下，图片区域"查看更多"跳转搜索中心-文搜图，视频区域跳转搜索中心-文搜视频；图片搜索模式下，图片区域跳转搜索中心-图搜图，视频区域跳转搜索中心-图搜视频
 - **数据规则**：
   - **取数规则**：根据搜索关键词或图片，从媒资资源库检索匹配的资源；图片/视频返回缩略图、标题、入库时间、来源标签字段，视频额外返回时长字段；稿件返回标题、来源、发布时间字段
-  - **数据筛选规则**：根据用户选择的类型过滤结果
+  - **数据筛选规则**：根据用户选择的资源库过滤结果
   - **数据排序规则**：各区域内部按相似度从高到低排序，相似度相同时按发布时间从近到远排序
+  - 图片和视频结果上限为 20 条，稿件结果上限为 100 条
 
-### 2.4 分页
+### 2.4 稿件列表滚动加载
 
-- **展示规则**：结果列表下方展示分页组件，包含页码按钮和下一页按钮，当前页高亮
+- **展示规则**：
+  - 稿件列表为固定高度的可滚动区域，初始展示 5 条
 - **交互规则**：
-  - 点击页码切换页面
-  - 页码切换后结果列表滚动至顶部
+  - 滚动到底部时自动加载更多稿件项（每次加载 5 条）
+  - 滚动条样式为细窄型
 
 ---
 
@@ -562,6 +582,7 @@
 
 - **展示规则**：
   - 导航栏固定在页面顶部，包含：系统 Logo + 名称、主导航菜单、上传按钮、用户头像
+  - 系统名称为"智能媒资系统"
   - 导航菜单项：首页（默认选中）、素材中心、资源中心、搜索中心、业务管理
 - **交互规则**：
   - 导航菜单项 hover 时文字变色并显示浅蓝背景
@@ -575,7 +596,7 @@
 - 所有可点击元素具备 hover 状态反馈（颜色变化或位移）
 - 搜索区域缩小/展开带有过渡动画
 - 卡片类元素 hover 时上浮并增强阴影
-- 页脚展示"传播大脑科技（浙江）股份有限公司 · 宁报智能媒资系统"
+- 页脚展示"传播大脑科技（浙江）股份有限公司 · 智能媒资系统"
 
 </textarea>
 
@@ -592,18 +613,7 @@
     };
 
     function renderTypeBar() {
-        var bar = document.getElementById('typeBar');
-        var prefix = imageMode ? '图搜' : '文搜';
-        var html = '<button class="type-btn active" onclick="selectType(this, \'all\')">全部</button>' +
-            '<button class="type-btn" onclick="selectType(this, \'' + prefix + '图\')">' + prefix + '图</button>' +
-            '<button class="type-btn" onclick="selectType(this, \'' + prefix + '视频\')">' + prefix + '视频</button>';
-        // 稿件仅文字搜索模式展示
-        if (!imageMode) {
-            html += '<button class="type-btn" onclick="selectType(this, \'文搜稿件\')">文搜稿件</button>';
-        }
-        bar.innerHTML = html;
-        bar.style.display = 'flex';
-        currentType = 'all';
+        // 不再展示类型筛选按钮
     }
 
     function selectType(el, type) {
@@ -640,7 +650,19 @@
             // 删除图片后清空结果，返回初始状态
             document.getElementById('hero').classList.remove('collapsed');
             document.getElementById('resultsPage').classList.remove('visible');
-            document.getElementById('typeBar').style.display = 'none';
+            document.getElementById('libFilter').style.display = 'none';
+            document.getElementById('resultsGrid').innerHTML = '';
+            document.getElementById('pagination').innerHTML = '';
+        }
+    }
+
+    function onInputChange() {
+        var input = document.getElementById('searchInput');
+        var rp = document.getElementById('resultsPage');
+        if (rp.classList.contains('visible') && !imageMode && !input.value.trim()) {
+            document.getElementById('hero').classList.remove('collapsed');
+            rp.classList.remove('visible');
+            document.getElementById('libFilter').style.display = 'none';
             document.getElementById('resultsGrid').innerHTML = '';
             document.getElementById('pagination').innerHTML = '';
         }
@@ -653,22 +675,7 @@
 
         document.getElementById('hero').classList.add('collapsed');
         document.getElementById('resultsPage').classList.add('visible');
-
-        // 输入模式发生变化时重新渲染类型栏并重置类型
-        if (imageMode !== lastImageMode) {
-            renderTypeBar();
-            lastImageMode = imageMode;
-        }
-
-        var modeLabel = imageMode ? '以图搜索' : '"' + q + '"';
-        var resultFilter;
-        if (currentType === 'all') {
-            resultFilter = imageMode ? ['image','video'] : ['image','video','article'];
-        } else if (currentType.indexOf('图') >= 0) resultFilter = ['image'];
-        else if (currentType.indexOf('视频') >= 0) resultFilter = ['video'];
-        else if (currentType.indexOf('稿件') >= 0) resultFilter = ['article'];
-        var count = currentType === 'all' ? Math.floor(Math.random() * 200 + 80) : Math.floor(Math.random() * 60 + 20);
-        document.getElementById('resultsCount').innerHTML = '共找到 <b>' + count + '</b> 条相关结果';
+        document.getElementById('libFilter').style.display = 'flex';
 
         var grid = document.getElementById('resultsGrid');
         var html = '';
@@ -719,94 +726,117 @@
 
         var qBase = q || '相似内容';
 
-        if (currentType === 'all') {
-            // 全部类型：按区域分组展示
-            var sections = imageMode ? [
-                { type: 'image', label: '图片' },
-                { type: 'video', label: '视频' }
-            ] : [
-                { type: 'image', label: '图片' },
-                { type: 'video', label: '视频' },
-                { type: 'article', label: '稿件' }
-            ];
-            for (var s = 0; s < sections.length; s++) {
-                var sec = sections[s];
-                var secCount = 10 + Math.floor(Math.random() * 15);
+        // 按区域分组展示
+        var sections = imageMode ? [
+            { type: 'image', label: '图片' },
+            { type: 'video', label: '视频' }
+        ] : [
+            { type: 'image', label: '图片' },
+            { type: 'video', label: '视频' },
+            { type: 'article', label: '稿件' }
+        ];
+        for (var s = 0; s < sections.length; s++) {
+            var sec = sections[s];
+            var secCount = 10 + Math.floor(Math.random() * 15);
 
-                if (sec.type === 'article') {
-                    // 稿件：列表样式
-                    html += '<div class="r-section">';
-                    html += '<div class="r-section-header"><span class="r-section-label">' + sec.label + '</span><span class="r-section-count">相似结果 ' + secCount + ' 条</span></div>';
-                    html += '<div class="r-article-list">';
-                    for (var i = 0; i < 5; i++) {
-                        html += makeArticle(s * 10 + i, qBase);
-                    }
-                    html += '</div></div>';
-                } else {
-                    // 图片/视频：分页展示，每页10个（2行×5列）
-                    var perPage = 10;
-                    var totalItems = Math.min(secCount, 25);
-                    var totalPages = Math.ceil(totalItems / perPage);
-                    var uid = 'sec_' + s + '_' + Date.now();
-                    html += '<div class="r-section" id="' + uid + '">';
-                    html += '<div class="r-section-header"><span class="r-section-label">' + sec.label + '</span><div class="r-section-right"><span class="r-section-count">相似结果 ' + secCount + ' 条</span></div></div>';
-                    html += '<div class="r-section-viewport">';
-                    for (var pg = 0; pg < totalPages; pg++) {
-                        html += '<div class="r-section-pages' + (pg === 0 ? ' active' : '') + '" data-page="' + pg + '">';
-                        var start = pg * perPage;
-                        var end = Math.min(start + perPage, totalItems);
-                        for (var i = start; i < end; i++) {
-                            html += makeCard(sec.type, s * 20 + i, qBase);
-                        }
-                        html += '</div>';
-                    }
-                    html += '</div>';
-                    // 分页按钮
-                    if (totalPages > 1) {
-                        html += '<div class="r-section-pager">';
-                        for (var pg = 1; pg <= totalPages; pg++) {
-                            html += '<button class="' + (pg === 1 ? 'active' : '') + '" onclick="switchPage(this,' + pg + ')">' + pg + '</button>';
-                        }
-                        html += '</div>';
+            if (sec.type === 'article') {
+                // 稿件：列表 + 滚动加载
+                var artTotal = 100;
+                var artUid = 'art_' + s + '_' + Date.now();
+                html += '<div class="r-section" id="' + artUid + '">';
+                html += '<div class="r-section-header"><span class="r-section-label">' + sec.label + '</span></div>';
+                html += '<div class="r-article-list" data-loaded="5" data-total="' + artTotal + '" onscroll="scrollArticles(this)">';
+                for (var i = 0; i < artTotal; i++) {
+                    html += makeArticle(i, qBase);
+                }
+                html += '</div></div>';
+            } else {
+                // 图片/视频：每页5个（1行），左右箭头分页
+                var perPage = 5;
+                var totalItems = Math.min(secCount, 20);
+                var totalPages = Math.ceil(totalItems / perPage);
+                var uid = 'sec_' + s + '_' + Date.now();
+                var moreLabel = imageMode ? '图搜' + sec.label : '文搜' + sec.label;
+                if (sec.label === '图片') moreLabel = imageMode ? '图搜图' : '文搜图';
+                else if (sec.label === '视频') moreLabel = imageMode ? '图搜视频' : '文搜视频';
+                html += '<div class="r-section" id="' + uid + '" data-total="' + totalPages + '" data-cur="0">';
+                html += '<div class="r-section-header">';
+                html += '  <span class="r-section-label">' + sec.label + '</span>';
+                html += '  <div class="r-section-right">';
+                html += '    <span class="r-section-more" onclick="viewMore(\'' + moreLabel + '\')">查看更多 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span>';
+                html += '  </div>';
+                html += '</div>';
+                html += '<div class="r-section-viewport">';
+                html += '<button class="r-section-arrow prev" disabled onclick="arrowPage(this,-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>';
+                for (var pg = 0; pg < totalPages; pg++) {
+                    html += '<div class="r-section-pages' + (pg === 0 ? ' active' : '') + '">';
+                    var start = pg * perPage;
+                    var end = Math.min(start + perPage, totalItems);
+                    for (var i = start; i < end; i++) {
+                        html += makeCard(sec.type, s * 20 + i, qBase);
                     }
                     html += '</div>';
                 }
+                html += '<button class="r-section-arrow next"' + (totalPages <= 1 ? ' disabled' : '') + ' onclick="arrowPage(this,1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>';
+                html += '</div></div>';
             }
-        } else if (currentType.indexOf('稿件') >= 0) {
-            // 单一稿件类型
-            html += '<div class="r-article-list">';
-            for (var i = 0; i < 12; i++) {
-                html += makeArticle(i, qBase);
-            }
-            html += '</div>';
-        } else {
-            // 单一媒体类型：直接展示
-            html += '<div class="results-grid-inner">';
-            for (var i = 0; i < 12; i++) {
-                html += makeCard(resultFilter[0], i, qBase);
-            }
-            html += '</div>';
         }
         grid.innerHTML = html;
 
-        var pag = document.getElementById('pagination');
-        var pages = '';
-        for (var p = 1; p <= 5; p++) {
-            pages += '<button class="page-btn' + (p === 1 ? ' active' : '') + '">' + p + '</button>';
-        }
-        pages += '<button class="page-btn">...</button><button class="page-btn">&gt;</button>';
-        pag.innerHTML = pages;
+        // 初始化稿件列表：隐藏第5条之后的项，滚动加载更多
+        document.querySelectorAll('.r-article-list').forEach(function(list) {
+            var items = list.querySelectorAll('.r-article-item');
+            for (var i = 5; i < items.length; i++) {
+                items[i].style.display = 'none';
+            }
+        });
+
+        pag.innerHTML = '';
     }
 
-    // 图片/视频区域分页切换
-    function switchPage(btn, page) {
+    // 图片/视频区域箭头分页
+    function arrowPage(btn, dir) {
         var section = btn.closest('.r-section');
         var pages = section.querySelectorAll('.r-section-pages');
-        var buttons = section.querySelectorAll('.r-section-pager button');
-        pages.forEach(function(p) { p.classList.remove('active'); });
-        buttons.forEach(function(b) { b.classList.remove('active'); });
-        pages[page - 1].classList.add('active');
-        btn.classList.add('active');
+        var total = pages.length;
+        var cur = parseInt(section.dataset.cur || '0');
+        var next = cur + dir;
+        if (next < 0 || next >= total) return;
+        pages[cur].classList.remove('active');
+        pages[next].classList.add('active');
+        section.dataset.cur = next;
+        section.querySelector('.prev').disabled = (next === 0);
+        section.querySelector('.next').disabled = (next >= total - 1);
+    }
+
+    // 稿件列表滚动加载更多
+    function scrollArticles(list) {
+        var loaded = parseInt(list.dataset.loaded || '5');
+        var total = parseInt(list.dataset.total || '0');
+        if (loaded >= total) return;
+        var threshold = 60;
+        if (list.scrollTop + list.clientHeight >= list.scrollHeight - threshold) {
+            var items = list.querySelectorAll('.r-article-item');
+            var show = Math.min(loaded + 5, total);
+            for (var i = loaded; i < show; i++) {
+                if (items[i]) items[i].style.display = '';
+            }
+            list.dataset.loaded = show;
+        }
+    }
+
+    // 资源库筛选（原型模拟）
+    function selectLib(label) {
+        var filter = document.getElementById('libFilter');
+        filter.querySelectorAll('.lib-filter-item').forEach(function(item) {
+            item.classList.remove('active');
+        });
+        label.classList.add('active');
+    }
+
+    // 查看更多：跳转搜索中心（原型仅 alert 提示）
+    function viewMore(label) {
+        alert('跳转至搜索中心 - ' + label);
     }
 
     /* ===== PRD Panel JS ===== */
