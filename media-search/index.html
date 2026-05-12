@@ -149,7 +149,13 @@
         .results-count { font-size: 13px; color: var(--text-2); }
         .results-count b { color: var(--primary); font-weight: 600; }
         .results-sort { display: flex; align-items: center; gap: 12px; }
-        .results-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+        .results-grid { }
+        .r-section { margin-bottom: 24px; }
+        .r-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-light); }
+        .r-section-label { font-size: 15px; font-weight: 600; color: var(--text-1); }
+        .r-section-count { font-size: 12px; color: var(--text-2); }
+        .r-section-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+        .results-grid-inner { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
         .r-card { background: #fff; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-card); cursor: pointer; transition: all .2s; border: 1px solid var(--border-light); }
         .r-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
         .r-card-thumb { height: 130px; position: relative; background: #e8e8e8; overflow: hidden; }
@@ -157,6 +163,7 @@
         .r-card-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 40px; height: 40px; background: rgba(0,0,0,0.55); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .r-card-play svg { width: 18px; height: 18px; fill: #fff; }
         .r-card-duration { position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.65); color: #fff; font-size: 10px; padding: 1px 5px; border-radius: 3px; }
+        .r-card-article-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); background: #f6ffed; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .r-card-body { padding: 10px 12px 12px; }
         .r-card-title { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 6px; color: var(--text-1); }
         .r-card-meta { font-size: 11px; color: var(--text-2); display: flex; align-items: center; justify-content: space-between; }
@@ -209,8 +216,8 @@
         .bottom-modules { padding-bottom: 8px; }
         .page-footer { text-align: center; padding: 20px; color: var(--text-3); font-size: 12px; }
 
-        @media (max-width: 1024px) { .results-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 640px) { .results-grid { grid-template-columns: repeat(2, 1fr); } .hero { padding: 60px 16px 24px; } }
+        @media (max-width: 1024px) { .r-section-grid, .results-grid-inner { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 640px) { .r-section-grid, .results-grid-inner { grid-template-columns: repeat(2, 1fr); } .hero { padding: 60px 16px 24px; } }
     </style>
 </head>
 <body>
@@ -467,9 +474,9 @@
 
 - **展示规则**：
   - 搜索前不展示类型筛选按钮
-  - 搜索触发后，搜索栏下方展示三个药丸形按钮，默认选中"全部"
-  - 文字输入模式下展示：全部、文搜图、文搜视频
-  - 图片输入模式下展示：全部、图搜图、图搜视频
+  - 搜索触发后，搜索栏下方展示药丸形按钮，默认选中"全部"
+  - 文字输入模式下展示：全部、文搜图、文搜视频、文搜稿件
+  - 图片输入模式下展示：全部、图搜图、图搜视频（无稿件）
 - **交互规则**：
   - 点击按钮切换筛选类型，选中按钮高亮，其余按钮恢复默认样式
   - 类型筛选仅影响搜索结果的内容类型过滤，不改变输入模式（文字/图片）
@@ -477,10 +484,12 @@
   - 输入模式发生变化（文字↔图片）时，类型栏重新渲染为对应模式的选项，类型重置为"全部"
 - **数据规则**：
   - **数据筛选规则**：
-    - 全部：返回图片和视频两种类型的结果
+    - 全部（文字模式）：返回图片、视频、稿件三种类型的结果，按类型分区域展示
+    - 全部（图片模式）：返回图片、视频两种类型的结果，按类型分区域展示
     - 文搜图 / 图搜图：仅返回图片类型结果
     - 文搜视频 / 图搜视频：仅返回视频类型结果
-  - 多模态检索当前仅支持图片和视频，不支持音频和文档
+    - 文搜稿件：仅返回稿件类型结果（仅文字搜索模式可用）
+  - 稿件类型仅在文字搜索模式下出现，图片搜索模式不支持稿件检索
 
 ---
 
@@ -507,9 +516,12 @@
 ### 2.3 结果卡片
 
 - **展示规则**：
-  - 以宫格视图展示搜索结果，每行 5 列（大屏）
+  - "全部"类型下，搜索结果按图片、视频、稿件（仅文字搜索）分区域展示，每个区域有类型标题栏和结果条数
+  - 单一类型筛选下，以宫格视图展示搜索结果，每行 5 列（大屏）
   - 卡片分为缩略图区域和信息区域两部分
-  - 缩略图区域展示内容预览图，视频卡片中央叠加半透明圆形播放按钮，右下角展示视频时长标签
+  - 图片卡片：缩略图展示内容预览图
+  - 视频卡片：缩略图展示内容预览图，中央叠加半透明圆形播放按钮，右下角展示视频时长标签
+  - 稿件卡片：缩略图区域展示文档图标占位符
   - 信息区域为白色背景，展示标题（加粗）、日期（灰色）和蓝色来源标签（如"集团库"）
   - 日期和来源标签在同一行，日期左对齐，标签右对齐
 - **交互规则**：
@@ -517,8 +529,8 @@
   - 点击卡片跳转至资源详情页
 - **数据规则**：
   - **取数规则**：根据搜索关键词或图片，从媒资资源库检索匹配的资源，返回缩略图、标题、入库时间、来源标签字段；视频额外返回时长字段
-  - **数据筛选规则**：根据用户选择的类型（全部/文搜图/文搜视频/图搜图/图搜视频）过滤结果
-  - **数据排序规则**：按 2.2 排序规则执行
+  - **数据筛选规则**：根据用户选择的类型过滤结果
+  - **数据排序规则**：各区域内部按相似度从高到低排序，相似度相同时按发布时间从近到远排序
 
 ### 2.4 分页
 
@@ -560,16 +572,21 @@
 
     var TYPE_META = {
         image: { label: '图片', bg: '#e6f7ff', stroke: '#1890ff', icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>' },
-        video: { label: '视频', bg: '#fff7e6', stroke: '#fa8c16', icon: '<polygon points="23 7 16 12 23 17"/><rect x="1" y="5" width="15" height="14" rx="2"/>' }
+        video: { label: '视频', bg: '#fff7e6', stroke: '#fa8c16', icon: '<polygon points="23 7 16 12 23 17"/><rect x="1" y="5" width="15" height="14" rx="2"/>' },
+        article: { label: '稿件', bg: '#f6ffed', stroke: '#52c41a' }
     };
 
     function renderTypeBar() {
         var bar = document.getElementById('typeBar');
         var prefix = imageMode ? '图搜' : '文搜';
-        bar.innerHTML =
-            '<button class="type-btn active" onclick="selectType(this, \'all\')">全部</button>' +
+        var html = '<button class="type-btn active" onclick="selectType(this, \'all\')">全部</button>' +
             '<button class="type-btn" onclick="selectType(this, \'' + prefix + '图\')">' + prefix + '图</button>' +
             '<button class="type-btn" onclick="selectType(this, \'' + prefix + '视频\')">' + prefix + '视频</button>';
+        // 稿件仅文字搜索模式展示
+        if (!imageMode) {
+            html += '<button class="type-btn" onclick="selectType(this, \'文搜稿件\')">文搜稿件</button>';
+        }
+        bar.innerHTML = html;
         bar.style.display = 'flex';
         currentType = 'all';
     }
@@ -630,47 +647,80 @@
 
         var modeLabel = imageMode ? '以图搜索' : '"' + q + '"';
         var resultFilter;
-        if (currentType === 'all') resultFilter = ['image','video'];
-        else if (currentType.indexOf('图') >= 0) resultFilter = ['image'];
-        else resultFilter = ['video'];
+        if (currentType === 'all') {
+            resultFilter = imageMode ? ['image','video'] : ['image','video','article'];
+        } else if (currentType.indexOf('图') >= 0) resultFilter = ['image'];
+        else if (currentType.indexOf('视频') >= 0) resultFilter = ['video'];
+        else if (currentType.indexOf('稿件') >= 0) resultFilter = ['article'];
         var count = currentType === 'all' ? Math.floor(Math.random() * 200 + 80) : Math.floor(Math.random() * 60 + 20);
         document.getElementById('resultsCount').innerHTML = '共找到 <b>' + count + '</b> 条相关结果';
 
         var grid = document.getElementById('resultsGrid');
-        var types = resultFilter;
-        var items = [];
-        var total = currentType === 'all' ? 15 : 12;
+        var html = '';
 
-        for (var i = 0; i < total; i++) {
-            var t = types[i % types.length];
-            var qBase = q || '相似内容';
+        // 生成单个卡片的辅助函数
+        function makeCard(t, i, qBase) {
             var titles = {
                 image: [qBase + ' 新闻现场图.jpg', qBase + ' 航拍全景.jpg', qBase + ' 活动纪实.jpg', qBase + ' 历史资料.jpg'],
-                video: [qBase + ' 专题报道.mp4', qBase + ' 新闻集锦.mp4', qBase + ' 采访片段.mp4']
+                video: [qBase + ' 专题报道.mp4', qBase + ' 新闻集锦.mp4', qBase + ' 采访片段.mp4'],
+                article: [qBase + ' 新闻通稿.doc', qBase + ' 深度报道.doc', qBase + ' 专题稿件.doc']
             };
             var title = titles[t][i % titles[t].length];
             var date = '2026-01-05 ' + String(8 + (i % 14)).padStart(2, '0') + ':' + String((i * 17) % 60).padStart(2, '0') + ':' + String((i * 23) % 60).padStart(2, '0');
             var tag = ['集团库','公共库','素材库'][i % 3];
-            // 使用 picsum 占位图
             var imgSeed = 'ms' + i + t;
-            var thumbHtml = '<img src="https://picsum.photos/seed/' + imgSeed + '/320/200" alt="">';
-            if (t === 'video') {
-                var dur = String(1 + (i * 7) % 59).padStart(2, '0') + ':' + String((i * 13) % 60).padStart(2, '0');
-                thumbHtml += '<div class="r-card-play"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>';
-                thumbHtml += '<span class="r-card-duration">' + dur + '</span>';
+            var thumbHtml = '';
+            if (t === 'article') {
+                thumbHtml = '<div class="r-card-article-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#52c41a" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>';
+            } else {
+                thumbHtml = '<img src="https://picsum.photos/seed/' + imgSeed + '/320/200" alt="">';
+                if (t === 'video') {
+                    var dur = String(1 + (i * 7) % 59).padStart(2, '0') + ':' + String((i * 13) % 60).padStart(2, '0');
+                    thumbHtml += '<div class="r-card-play"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>';
+                    thumbHtml += '<span class="r-card-duration">' + dur + '</span>';
+                }
             }
-
-            items.push(
-                '<div class="r-card">' +
+            return '<div class="r-card">' +
                 '  <div class="r-card-thumb">' + thumbHtml + '</div>' +
                 '  <div class="r-card-body">' +
                 '    <div class="r-card-title">' + title + '</div>' +
                 '    <div class="r-card-meta"><span>' + date + '</span><span class="r-card-tag">' + tag + '</span></div>' +
                 '  </div>' +
-                '</div>'
-            );
+                '</div>';
         }
-        grid.innerHTML = items.join('');
+
+        var qBase = q || '相似内容';
+
+        if (currentType === 'all') {
+            // 全部类型：按区域分组展示
+            var sections = imageMode ? [
+                { type: 'image', label: '图片' },
+                { type: 'video', label: '视频' }
+            ] : [
+                { type: 'image', label: '图片' },
+                { type: 'video', label: '视频' },
+                { type: 'article', label: '稿件' }
+            ];
+            for (var s = 0; s < sections.length; s++) {
+                var sec = sections[s];
+                var secCount = 5 + Math.floor(Math.random() * 8);
+                html += '<div class="r-section">';
+                html += '<div class="r-section-header"><span class="r-section-label">' + sec.label + '</span><span class="r-section-count">相似结果 ' + secCount + ' 条</span></div>';
+                html += '<div class="r-section-grid">';
+                for (var i = 0; i < 5; i++) {
+                    html += makeCard(sec.type, s * 10 + i, qBase);
+                }
+                html += '</div></div>';
+            }
+        } else {
+            // 单一类型：直接展示
+            html += '<div class="results-grid-inner">';
+            for (var i = 0; i < 12; i++) {
+                html += makeCard(resultFilter[0], i, qBase);
+            }
+            html += '</div>';
+        }
+        grid.innerHTML = html;
 
         var pag = document.getElementById('pagination');
         var pages = '';
