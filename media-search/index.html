@@ -150,11 +150,18 @@
         .results-count b { color: var(--primary); font-weight: 600; }
         .results-sort { display: flex; align-items: center; gap: 12px; }
         .results-grid { }
-        .r-section { margin-bottom: 24px; }
+        .r-section { margin-bottom: 28px; }
         .r-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-light); }
         .r-section-label { font-size: 15px; font-weight: 600; color: var(--text-1); }
+        .r-section-right { display: flex; align-items: center; gap: 12px; }
         .r-section-count { font-size: 12px; color: var(--text-2); }
-        .r-section-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+        .r-section-nav { display: flex; align-items: center; gap: 4px; }
+        .r-section-nav button { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; color: var(--text-2); }
+        .r-section-nav button:hover { border-color: var(--primary); color: var(--primary); }
+        .r-section-nav button:disabled { opacity: 0.3; cursor: not-allowed; }
+        .r-section-nav button svg { width: 14px; height: 14px; }
+        .r-section-viewport { overflow: hidden; position: relative; }
+        .r-section-track { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; transition: transform .3s ease; }
         .results-grid-inner { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
         .r-card { background: #fff; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-card); cursor: pointer; transition: all .2s; border: 1px solid var(--border-light); }
         .r-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
@@ -163,7 +170,13 @@
         .r-card-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 40px; height: 40px; background: rgba(0,0,0,0.55); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .r-card-play svg { width: 18px; height: 18px; fill: #fff; }
         .r-card-duration { position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.65); color: #fff; font-size: 10px; padding: 1px 5px; border-radius: 3px; }
-        .r-card-article-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); background: #f6ffed; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        /* 稿件列表样式 */
+        .r-article-list { display: flex; flex-direction: column; }
+        .r-article-item { padding: 14px 0; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: background .15s; }
+        .r-article-item:last-child { border-bottom: none; }
+        .r-article-item:hover { background: var(--primary-bg); }
+        .r-article-title { font-size: 14px; font-weight: 500; color: var(--text-1); line-height: 1.6; margin-bottom: 6px; }
+        .r-article-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-2); }
         .r-card-body { padding: 10px 12px 12px; }
         .r-card-title { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 6px; color: var(--text-1); }
         .r-card-meta { font-size: 11px; color: var(--text-2); display: flex; align-items: center; justify-content: space-between; }
@@ -216,8 +229,8 @@
         .bottom-modules { padding-bottom: 8px; }
         .page-footer { text-align: center; padding: 20px; color: var(--text-3); font-size: 12px; }
 
-        @media (max-width: 1024px) { .r-section-grid, .results-grid-inner { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 640px) { .r-section-grid, .results-grid-inner { grid-template-columns: repeat(2, 1fr); } .hero { padding: 60px 16px 24px; } }
+        @media (max-width: 1024px) { .r-section-track, .results-grid-inner { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 640px) { .r-section-track, .results-grid-inner { grid-template-columns: repeat(2, 1fr); } .hero { padding: 60px 16px 24px; } }
     </style>
 </head>
 <body>
@@ -516,19 +529,19 @@
 ### 2.3 结果卡片
 
 - **展示规则**：
-  - "全部"类型下，搜索结果按图片、视频、稿件（仅文字搜索）分区域展示，每个区域有类型标题栏和结果条数
-  - 单一类型筛选下，以宫格视图展示搜索结果，每行 5 列（大屏）
-  - 卡片分为缩略图区域和信息区域两部分
+  - "全部"类型下，搜索结果按图片、视频、稿件（仅文字搜索）分区域展示，每个区域有类型标题栏、结果条数和滑动翻页控件
+  - 图片和视频区域支持左右滑动分页，每页展示一行卡片（5列），区域标题栏右侧展示上一页/下一页按钮
+  - 稿件区域为纯文字列表样式，无缩略图，每项展示标题（加粗）、来源和日期（同行，来源左对齐，日期右对齐）
+  - 单一类型筛选下，图片和视频以宫格视图展示，稿件以列表展示
   - 图片卡片：缩略图展示内容预览图
   - 视频卡片：缩略图展示内容预览图，中央叠加半透明圆形播放按钮，右下角展示视频时长标签
-  - 稿件卡片：缩略图区域展示文档图标占位符
-  - 信息区域为白色背景，展示标题（加粗）、日期（灰色）和蓝色来源标签（如"集团库"）
-  - 日期和来源标签在同一行，日期左对齐，标签右对齐
 - **交互规则**：
   - 卡片 hover 时上浮并显示阴影
-  - 点击卡片跳转至资源详情页
+  - 稿件列表项 hover 时背景变色
+  - 点击卡片或稿件项跳转至资源详情页
+  - 图片/视频区域点击翻页按钮或左右滑动切换分页
 - **数据规则**：
-  - **取数规则**：根据搜索关键词或图片，从媒资资源库检索匹配的资源，返回缩略图、标题、入库时间、来源标签字段；视频额外返回时长字段
+  - **取数规则**：根据搜索关键词或图片，从媒资资源库检索匹配的资源；图片/视频返回缩略图、标题、入库时间、来源标签字段，视频额外返回时长字段；稿件返回标题、来源、发布时间字段
   - **数据筛选规则**：根据用户选择的类型过滤结果
   - **数据排序规则**：各区域内部按相似度从高到低排序，相似度相同时按发布时间从近到远排序
 
@@ -658,27 +671,21 @@
         var grid = document.getElementById('resultsGrid');
         var html = '';
 
-        // 生成单个卡片的辅助函数
+        // 生成媒体卡片的辅助函数
         function makeCard(t, i, qBase) {
             var titles = {
                 image: [qBase + ' 新闻现场图.jpg', qBase + ' 航拍全景.jpg', qBase + ' 活动纪实.jpg', qBase + ' 历史资料.jpg'],
-                video: [qBase + ' 专题报道.mp4', qBase + ' 新闻集锦.mp4', qBase + ' 采访片段.mp4'],
-                article: [qBase + ' 新闻通稿.doc', qBase + ' 深度报道.doc', qBase + ' 专题稿件.doc']
+                video: [qBase + ' 专题报道.mp4', qBase + ' 新闻集锦.mp4', qBase + ' 采访片段.mp4']
             };
             var title = titles[t][i % titles[t].length];
             var date = '2026-01-05 ' + String(8 + (i % 14)).padStart(2, '0') + ':' + String((i * 17) % 60).padStart(2, '0') + ':' + String((i * 23) % 60).padStart(2, '0');
             var tag = ['集团库','公共库','素材库'][i % 3];
             var imgSeed = 'ms' + i + t;
-            var thumbHtml = '';
-            if (t === 'article') {
-                thumbHtml = '<div class="r-card-article-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#52c41a" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>';
-            } else {
-                thumbHtml = '<img src="https://picsum.photos/seed/' + imgSeed + '/320/200" alt="">';
-                if (t === 'video') {
-                    var dur = String(1 + (i * 7) % 59).padStart(2, '0') + ':' + String((i * 13) % 60).padStart(2, '0');
-                    thumbHtml += '<div class="r-card-play"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>';
-                    thumbHtml += '<span class="r-card-duration">' + dur + '</span>';
-                }
+            var thumbHtml = '<img src="https://picsum.photos/seed/' + imgSeed + '/320/200" alt="">';
+            if (t === 'video') {
+                var dur = String(1 + (i * 7) % 59).padStart(2, '0') + ':' + String((i * 13) % 60).padStart(2, '0');
+                thumbHtml += '<div class="r-card-play"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>';
+                thumbHtml += '<span class="r-card-duration">' + dur + '</span>';
             }
             return '<div class="r-card">' +
                 '  <div class="r-card-thumb">' + thumbHtml + '</div>' +
@@ -686,6 +693,25 @@
                 '    <div class="r-card-title">' + title + '</div>' +
                 '    <div class="r-card-meta"><span>' + date + '</span><span class="r-card-tag">' + tag + '</span></div>' +
                 '  </div>' +
+                '</div>';
+        }
+
+        // 生成稿件列表项
+        function makeArticle(i, qBase) {
+            var titles = [
+                '博物馆：联结世界的桥梁——诸暨市博物馆5·18国际博物馆日活动抢先看',
+                qBase + ' 深度报道：城市文化建设新篇章',
+                qBase + ' 专题稿件：乡村振兴路上的故事',
+                qBase + ' 新闻通稿：全市经济工作会议召开',
+                qBase + ' 评论：新媒体时代的新闻传播'
+            ];
+            var sources = ['西施眼客户端','宁波日报','浙江新闻','新华社客户端','人民日报客户端'];
+            var title = titles[i % titles.length];
+            var source = sources[i % sources.length];
+            var date = '2026-01-05 ' + String(8 + (i % 14)).padStart(2, '0') + ':' + String((i * 17) % 60).padStart(2, '0') + ':' + String((i * 23) % 60).padStart(2, '0');
+            return '<div class="r-article-item">' +
+                '  <div class="r-article-title">' + title + '</div>' +
+                '  <div class="r-article-meta"><span>来源：' + source + '</span><span>' + date + '</span></div>' +
                 '</div>';
         }
 
@@ -703,17 +729,47 @@
             ];
             for (var s = 0; s < sections.length; s++) {
                 var sec = sections[s];
-                var secCount = 5 + Math.floor(Math.random() * 8);
-                html += '<div class="r-section">';
-                html += '<div class="r-section-header"><span class="r-section-label">' + sec.label + '</span><span class="r-section-count">相似结果 ' + secCount + ' 条</span></div>';
-                html += '<div class="r-section-grid">';
-                for (var i = 0; i < 5; i++) {
-                    html += makeCard(sec.type, s * 10 + i, qBase);
+                var secCount = 10 + Math.floor(Math.random() * 15);
+
+                if (sec.type === 'article') {
+                    // 稿件：列表样式
+                    html += '<div class="r-section">';
+                    html += '<div class="r-section-header"><span class="r-section-label">' + sec.label + '</span><span class="r-section-count">相似结果 ' + secCount + ' 条</span></div>';
+                    html += '<div class="r-article-list">';
+                    for (var i = 0; i < 5; i++) {
+                        html += makeArticle(s * 10 + i, qBase);
+                    }
+                    html += '</div></div>';
+                } else {
+                    // 图片/视频：滑动分页
+                    var totalPages = Math.ceil(secCount / 5);
+                    html += '<div class="r-section" data-slider="' + s + '">';
+                    html += '<div class="r-section-header">';
+                    html += '  <span class="r-section-label">' + sec.label + '</span>';
+                    html += '  <div class="r-section-right">';
+                    html += '    <span class="r-section-count">相似结果 ' + secCount + ' 条</span>';
+                    html += '    <div class="r-section-nav">';
+                    html += '      <button class="slide-prev" onclick="slideSection(this,-1)" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>';
+                    html += '      <button class="slide-next" onclick="slideSection(this,1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>';
+                    html += '    </div>';
+                    html += '  </div>';
+                    html += '</div>';
+                    html += '<div class="r-section-viewport"><div class="r-section-track">';
+                    for (var i = 0; i < Math.min(secCount, totalPages * 5); i++) {
+                        html += makeCard(sec.type, s * 20 + i, qBase);
+                    }
+                    html += '</div></div></div>';
                 }
-                html += '</div></div>';
             }
+        } else if (currentType.indexOf('稿件') >= 0) {
+            // 单一稿件类型
+            html += '<div class="r-article-list">';
+            for (var i = 0; i < 12; i++) {
+                html += makeArticle(i, qBase);
+            }
+            html += '</div>';
         } else {
-            // 单一类型：直接展示
+            // 单一媒体类型：直接展示
             html += '<div class="results-grid-inner">';
             for (var i = 0; i < 12; i++) {
                 html += makeCard(resultFilter[0], i, qBase);
@@ -731,12 +787,28 @@
         pag.innerHTML = pages;
     }
 
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('page-btn') && e.target.textContent.trim() !== '...') {
-            e.target.parentElement.querySelectorAll('.page-btn').forEach(function(b) { b.classList.remove('active'); });
-            e.target.classList.add('active');
-        }
-    });
+    // 图片/视频区域左右滑动分页
+    function slideSection(btn, dir) {
+        var section = btn.closest('.r-section');
+        var track = section.querySelector('.r-section-track');
+        var cards = track.children.length;
+        var page = parseInt(section.dataset.page || '0');
+        var cols = 5;
+        var totalPages = Math.ceil(cards / cols);
+        page += dir;
+        if (page < 0) page = 0;
+        if (page >= totalPages - 1) page = totalPages - 1;
+        section.dataset.page = page;
+        // 计算偏移量：每页偏移一整行卡片宽度（含gap）
+        var cardEl = track.children[0];
+        if (!cardEl) return;
+        var gap = 12;
+        var step = (cardEl.offsetWidth + gap) * cols;
+        track.style.transform = 'translateX(-' + (page * step) + 'px)';
+        // 更新按钮状态
+        section.querySelector('.slide-prev').disabled = (page === 0);
+        section.querySelector('.slide-next').disabled = (page >= totalPages - 1);
+    }
 
     /* ===== PRD Panel JS ===== */
     function togglePrdPanel() {
