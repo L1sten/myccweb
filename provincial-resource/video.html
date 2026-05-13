@@ -274,9 +274,7 @@
                 <span class="left"><input type="checkbox" class="group-cb" data-group="province" onclick="event.stopPropagation()">省本级</span>
                 <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </div>
-            <div class="sidebar-group-children open">
-                <div class="sidebar-child"><input type="checkbox"> 浙报集团<span class="ctx-trigger" title="仅筛选此项" onclick="event.stopPropagation();filterOnlyCb(this.parentElement.querySelector('input[type=checkbox]'))"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></span></div>
-            </div>
+            
         </div>
         <div id="regionGroups"></div>
     </aside>
@@ -359,7 +357,7 @@ var regionData = [
   { name: '台州市', children: ['椒江区','黄岩区','路桥区','温岭市','临海市'] },
   { name: '丽水市', children: ['莲都区','龙泉市','青田县'] }
 ];
-var regionMap = { '省本级': '省本级', '浙报集团': '省本级' };
+var regionMap = { '省本级': '省本级' };
 regionData.forEach(function(r) { regionMap[r.name + '本级'] = r.name; r.children.forEach(function(c) { regionMap[c] = r.name; }); });
 var funnelOnlyRegion = null;
 

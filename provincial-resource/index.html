@@ -335,15 +335,13 @@
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-head"><span class="sidebar-head-label">地域筛选</span><span class="sidebar-clear" id="sidebarClear" onclick="clearSidebar()">清空</span></div>
-            <!-- Level 2: 省本级 -->
+            
             <div class="sidebar-group">
                 <div class="sidebar-group-header expanded">
                     <span class="left"><input type="checkbox" class="group-cb" data-group="province">省本级</span>
                     <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="toggleGroup(this.closest('.sidebar-group-header'))"><path d="m9 18 6-6-6-6"/></svg>
                 </div>
-                <div class="sidebar-group-children open">
-                    <div class="sidebar-child"><input type="checkbox">浙报集团<span class="ctx-trigger" title="仅筛选此项" onclick="event.stopPropagation();filterOnlyCb(this.parentElement.querySelector('input[type=checkbox]'))"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></span></div>
-                </div>
+                
             </div>
             <!-- Level 2: 11地市 -->
             <div class="sidebar-group" id="regionGroups">
@@ -570,7 +568,7 @@
 - 每个分组节点前有复选框和展开/折叠箭头图标
 - 展开后显示子节点列表，每个子节点前有复选框
 - 子节点列表：
-  - 省本级下：浙报集团
+  - 省本级为独立复选框，无下级子节点
   - 各地级市下：市本级（固定为第一个子项）+ 该市所辖区县
 - 子节点悬停时右侧显示漏斗图标
 - 漏斗图标悬停时展示提示文字"仅筛选此项"
@@ -584,7 +582,7 @@
 - 选中后自动刷新列表
 
 **数据规则**：
-- **取数规则**：根据内容的"发布站点"关联到对应区县级地域（如"萧山发布客户端"→"萧山区"，"开吧客户端"→"杭州市本级"），省本级内容关联到"浙报集团"
+- **取数规则**：根据内容的"发布站点"关联到对应区县级地域（如"萧山发布客户端"→"萧山区"，"开吧客户端"→"杭州市本级"），省本级内容按发布站点归属直接匹配
 - **数据筛选规则**：按区县级地域精确匹配，勾选子节点时仅匹配该区县，勾选地级市分组节点时匹配该市下所有子项（含市本级），多选取并集（OR 逻辑），与其他筛选条件取交集
 - **数据排序规则**：不影响排序
 
@@ -893,7 +891,7 @@ var articles = [
 ];
 
 /* ========== Region Filter Logic ========== */
-var regionMap = { '省本级': '省本级', '浙报集团': '省本级' };
+var regionMap = { '省本级': '省本级' };
 regionData.forEach(function(r) { regionMap[r.name + '本级'] = r.name + '本级'; r.children.forEach(function(c) { regionMap[c] = c; }); });
 
 var funnelOnlyRegion = null;
@@ -1217,7 +1215,7 @@ function md2html(md) {
     if(hm){if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}h+='<h'+hm[1].length+' id="h-'+j+'">'+inlineFmt(hm[2])+'</h'+hm[1].length+'>';continue}
     if(/^\|(.+)\|$/.test(tr)){if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}if(!inTable){var nxt=(j+1<lines.length)?lines[j+1].trim():'';if(/^\|[\s\-:]+\|$/.test(nxt)){h+='<table class="prd-table"><thead><tr>';var hc=tr.replace(/^\|/,'').replace(/\|$/,'').split('|');for(var ci=0;ci<hc.length;ci++)h+='<th>'+inlineFmt(hc[ci].trim())+'</th>';h+='</tr></thead><tbody>';inTable=true;j++;continue}h+='<table class="prd-table"><tbody>';inTable=true}if(/^\|[\s\-:]+\|$/.test(tr))continue;var cells=tr.replace(/^\|/,'').replace(/\|$/,'').split('|');h+='<tr>';for(var ci=0;ci<cells.length;ci++)h+='<td>'+inlineFmt(cells[ci].trim())+'</td>';h+='</tr>';continue}
     if(inTable){h+='</tbody></table>';inTable=false}
-    if(/^\s{2,}- /.test(ln)){if(!inNestedUl)h+='<ul class="prd-nested">';inNestedUl=true;h+='<li>'+inlineFmt(tr.replace(/^- /,''))+'</li>';continue}
+    if(/^\s{2 }- /.test(ln)){if(!inNestedUl)h+='<ul class="prd-nested">';inNestedUl=true;h+='<li>'+inlineFmt(tr.replace(/^- /,''))+'</li>';continue}
     if(/^- /.test(ln)){if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen)h+='</li>';if(!inUl){h+='<ul class="prd-list">';inUl=true}h+='<li>'+inlineFmt(tr.replace(/^- /,''));liOpen=true;continue}
     if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}
     h+='<p>'+inlineFmt(tr)+'</p>';
