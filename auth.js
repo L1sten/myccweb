@@ -46,18 +46,35 @@
   document.head.appendChild(hideStyle);
 
   document.addEventListener("DOMContentLoaded", function () {
+    var authStyle = document.createElement("style");
+    authStyle.textContent =
+      "#cc-auth-gate{position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(90deg,rgba(24,33,47,.045) 1px,transparent 1px),linear-gradient(rgba(24,33,47,.045) 1px,transparent 1px),radial-gradient(circle at 22% 18%,rgba(15,118,110,.14),transparent 24rem),radial-gradient(circle at 78% 22%,rgba(185,74,60,.13),transparent 24rem),#f7f3ea;background-size:42px 42px,42px 42px,auto,auto,auto;font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;color:#18212f;box-sizing:border-box}" +
+      "#cc-auth-gate *{box-sizing:border-box}" +
+      ".cc-auth-panel{width:min(360px,100%);padding:28px;background:rgba(255,250,240,.86);border:1px solid #ded5c4;border-radius:8px;box-shadow:0 18px 55px rgba(56,44,25,.12);text-align:left}" +
+      ".cc-auth-mark{display:inline-grid;place-items:center;width:42px;height:42px;margin-bottom:22px;border:1px solid rgba(15,118,110,.32);border-radius:8px;background:linear-gradient(135deg,rgba(15,118,110,.13),rgba(185,74,60,.1));color:#0f766e;font-size:12px;font-weight:820;letter-spacing:.08em}" +
+      ".cc-auth-title{margin:0 0 18px;color:#18212f;font-size:1.18rem;line-height:1.35;font-weight:760;letter-spacing:0}" +
+      ".cc-auth-field{display:block;width:100%;padding:.78rem .95rem;border:1px solid #ded5c4;border-radius:8px;background:#fffef8;color:#18212f;font-size:1rem;line-height:1.4;outline:none;transition:border-color .18s ease,box-shadow .18s ease}" +
+      ".cc-auth-field::placeholder{color:#8b785f}" +
+      ".cc-auth-field:focus{border-color:#0f766e;box-shadow:0 0 0 3px rgba(15,118,110,.16)}" +
+      ".cc-auth-btn{display:block;width:100%;min-height:46px;margin-top:16px;padding:.72rem 1rem;border:0;border-radius:8px;background:#18212f;color:#fffef8;font-size:1rem;font-weight:760;cursor:pointer;transition:transform .18s ease,background .18s ease,box-shadow .18s ease}" +
+      ".cc-auth-btn:hover{background:#0f766e;box-shadow:0 12px 24px rgba(15,118,110,.18);transform:translateY(-1px)}" +
+      ".cc-auth-btn:active{transform:translateY(0);box-shadow:none}" +
+      ".cc-auth-btn:focus-visible{outline:3px solid rgba(15,118,110,.28);outline-offset:3px}" +
+      ".cc-auth-error{display:none;margin:12px 0 0;color:#b94a3c;font-size:.88rem;line-height:1.45}" +
+      "@media (max-width:480px){#cc-auth-gate{align-items:flex-start;padding-top:30vh}.cc-auth-panel{padding:24px}.cc-auth-title{font-size:1.08rem}}" +
+      "@media (prefers-reduced-motion:reduce){#cc-auth-gate *{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}";
+    document.head.appendChild(authStyle);
+
     var gate = document.createElement("div");
     gate.id = "cc-auth-gate";
     gate.innerHTML =
-      '<div style="position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;background:#0f172a;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif">' +
-      '<div style="text-align:center;padding:2rem">' +
-      '<div style="font-size:2.5rem;margin-bottom:1rem">&#128274;</div>' +
-      '<p style="color:#e2e8f0;font-size:1.25rem;margin-bottom:1.5rem;font-weight:500">请输入访问密码</p>' +
-      '<input type="password" id="cc-auth-pwd" placeholder="密码" style="padding:0.75rem 1rem;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);color:#e2e8f0;font-size:1rem;width:260px;outline:none;display:block;margin:0 auto" />' +
-      '<br>' +
-      '<button id="cc-auth-btn" style="padding:0.7rem 2.5rem;border-radius:8px;border:none;background:linear-gradient(135deg,#60a5fa,#a78bfa);color:#fff;font-size:1rem;cursor:pointer;font-weight:500">确认</button>' +
-      '<p id="cc-auth-err" style="color:#ef4444;margin-top:1rem;font-size:0.875rem;display:none">密码错误，请重试</p>' +
-      "</div></div>";
+      '<div class="cc-auth-panel">' +
+      '<div class="cc-auth-mark" aria-hidden="true">CC</div>' +
+      '<p class="cc-auth-title">请输入访问密码</p>' +
+      '<input type="password" id="cc-auth-pwd" class="cc-auth-field" placeholder="密码" aria-label="访问密码" />' +
+      '<button id="cc-auth-btn" class="cc-auth-btn" type="button">确认</button>' +
+      '<p id="cc-auth-err" class="cc-auth-error" role="alert">密码错误，请重试</p>' +
+      "</div>";
     document.body.prepend(gate);
     hideStyle.remove();
 
@@ -75,6 +92,7 @@
       if (hash === HASH) {
         sessionStorage.setItem(authKey, "1");
         gate.remove();
+        authStyle.remove();
       } else {
         errEl.style.display = "block";
         pwdInput.value = "";
