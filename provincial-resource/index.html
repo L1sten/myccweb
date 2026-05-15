@@ -137,6 +137,9 @@
         .col-source,.col-product,.col-time{color:var(--text-secondary);white-space:nowrap;font-size:12px}
         .col-type{white-space:nowrap}
         .col-wordcount{text-align:right;white-space:nowrap}
+        .col-op{text-align:center;white-space:nowrap}
+        .btn-row-fetch{height:26px;padding:0 12px;border:1px solid var(--border);border-radius:4px;font-size:12px;cursor:pointer;background:#fff;color:var(--text-secondary);transition:all .15s}
+        .btn-row-fetch:hover{border-color:var(--brand);color:var(--brand)}
         .date-group{padding:8px 14px;font-size:12px;font-weight:500;color:var(--text);background:#fafbfc;border-bottom:1px solid var(--border-light)}
 
         /* ========== Pagination ========== */
@@ -393,9 +396,8 @@
     <div class="art-detail-header">
         <div class="art-detail-back" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>返回</div>
         <div class="art-detail-actions">
-            <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>取至个人</button>
-            <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>共享</button>
-            <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>下载</button>
+            <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>取稿</button>
+            <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>阅读原文</button>
         </div>
     </div>
     <div class="art-detail-body">
@@ -614,7 +616,7 @@
 
 #### 稿件列表
 
-- **列表表头**：复选框（全选）、稿件标题、来源、稿件类型、字数、发布站点、发布时间
+- **列表表头**：复选框（全选）、稿件标题、来源、稿件类型、字数、发布站点、发布时间、操作
 
 - **复选框**
   - 展示规则：每行一个复选框，表头有全选复选框
@@ -638,6 +640,10 @@
 
 - **发布时间**
   - 展示规则：格式 YYYY/MM/DD HH:mm:ss
+
+- **操作**
+  - 展示规则：每行显示"取稿"按钮
+  - 交互规则：点击弹出取稿弹窗（与批量取稿弹窗相同）
 
 #### 批量取稿
 
@@ -753,7 +759,7 @@
 
 **展示规则**：
 - 全屏遮罩层，不影响列表页状态
-- 顶部工具栏：返回按钮（左侧）+ 操作按钮居中展示（下载、共享、取至个人）
+- 顶部工具栏：返回按钮（左侧）+ 操作按钮居中展示（查看、下载、取至个人）
 - 左侧主区域：
   - 音频播放器（音符图标 + 播放按钮 + 进度条 + 时间显示 + 音量图标）
   - 信息面板分为两列：基本信息（标题、发布站点、渠道、上传时间）+ 音频数据（时长、大小、格式）
@@ -774,7 +780,7 @@
 
 **展示规则**：
 - 全屏遮罩层，不影响列表页状态
-- 顶部工具栏：返回按钮（左侧）+ 操作按钮居中展示（取至个人、共享、下载）
+- 顶部工具栏：返回按钮（左侧）+ 操作按钮居中展示（取稿、阅读原文）
 - 左侧主区域：稿件标题 + 元信息（发布站点、渠道、发布时间）+ 正文内容
 - 右侧辅助区：分两个区域，上方为"标签"区域（浅灰背景圆角标签），下方为"关键词"区域（蓝色 # 前缀文字）
 
@@ -793,7 +799,7 @@
 
 **展示规则**：
 - 全屏遮罩层，不影响列表页状态
-- 顶部工具栏：返回按钮 + 操作按钮（下载、共享、取至个人、以图搜图、图搜视频）
+- 顶部工具栏：返回按钮 + 操作按钮（查看、下载、取至个人）
 - 左侧主区域：图片大图预览 + 底部文件信息（大小、格式、尺寸）
 - 右侧信息面板：
   - 基本信息 Tab：标题、来源、渠道、上传时间
@@ -814,7 +820,7 @@
 
 **展示规则**：
 - 全屏遮罩层，不影响列表页状态
-- 顶部工具栏：返回按钮 + 操作按钮（下载、共享、取至个人、封面图搜图、封面图搜视频）
+- 顶部工具栏：返回按钮 + 操作按钮（查看、下载、取至个人）
 - 左侧主区域：视频封面预览（居中播放按钮叠加）+ 底部文件信息（时长、大小、格式）
 - 右侧信息面板：
   - 基本信息 Tab：标题、来源、渠道、上传时间
@@ -1027,7 +1033,7 @@ function clearSidebar() {
 function renderFilteredTable(data, offset) {
   if (!offset) offset = 0;
   if (data.length === 0) { document.getElementById('tableWrapper').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted-foreground)">暂无数据</div>'; return; }
-  var html = '<table><thead><tr><th class="col-check"><input type="checkbox" onchange="toggleAllRows(this)"></th><th class="col-no">序号</th><th class="col-title">稿件标题</th><th>来源</th><th class="col-type">类型</th><th class="col-wordcount" style="text-align:right">字数</th><th>发布站点</th><th>发布时间</th></tr></thead><tbody>';
+  var html = '<table><thead><tr><th class="col-check"><input type="checkbox" onchange="toggleAllRows(this)"></th><th class="col-no">序号</th><th class="col-title">稿件标题</th><th>来源</th><th class="col-type">类型</th><th class="col-wordcount" style="text-align:right">字数</th><th>发布站点</th><th>发布时间</th><th class="col-op">操作</th></tr></thead><tbody>';
   data.forEach(function(a, i) {
     html += '<tr><td class="col-check"><input type="checkbox" class="row-cb" data-idx="' + articles.indexOf(a) + '" onchange="updSel()"></td>';
     html += '<td class="col-no">' + (offset + i + 1) + '</td>';
@@ -1036,7 +1042,8 @@ function renderFilteredTable(data, offset) {
     html += '<td class="col-type">' + a.type + '</td>';
     html += '<td class="col-wordcount">' + a.wc + '</td>';
     html += '<td class="col-product">' + a.product + '</td>';
-    html += '<td class="col-time">' + a.time + '</td></tr>';
+    html += '<td class="col-time">' + a.time + '</td>';
+    html += '<td class="col-op"><button class="btn-row-fetch" onclick="singleFetch()">取稿</button></td></tr>';
   });
   html += '</tbody></table>';
   document.getElementById('tableWrapper').innerHTML = html;
@@ -1424,6 +1431,8 @@ function toggleAllRows(cb) {
   document.querySelectorAll('.row-cb').forEach(function(c) { c.checked = cb.checked; });
   updSel();
 }
+
+function singleFetch() { openFetchModal(); }
 
 function updSel() {
   var count = document.querySelectorAll('.row-cb:checked').length;
