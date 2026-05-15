@@ -1233,27 +1233,47 @@ function goBack() {
 /* ========== PRD ========== */
 function inlineFmt(s) { return s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>'); }
 function md2html(md) {
-  var lines = md.split('\n'), h = '', inUl = false, liOpen = false, inNestedUl = false, inTable = false, inCode = false, codeLines = '';
+  var lines = md.split('\n'), h = '', listStack = [], liOpenStack = [], inTable = false, inCode = false, codeLines = '';
+  function closeLists(targetDepth) {
+    while (listStack.length > targetDepth) {
+      if (liOpenStack.pop()) h += '</li>';
+      h += '</ul>';
+      listStack.pop();
+    }
+  }
+  function closeAllLists() { closeLists(0); }
+  function openListItem(depth, text) {
+    if (inTable) { h += '</tbody></table>'; inTable = false; }
+    while (listStack.length < depth + 1) {
+      h += listStack.length === 0 ? '<ul class="prd-list">' : '<ul class="prd-nested prd-level-' + listStack.length + '">';
+      listStack.push(true);
+      liOpenStack.push(false);
+    }
+    closeLists(depth + 1);
+    if (liOpenStack[depth]) h += '</li>';
+    liOpenStack[depth] = true;
+    h += '<li>' + inlineFmt(text);
+  }
   for (var j = 0; j < lines.length; j++) {
     var ln = lines[j], tr = ln.trim();
     if (tr.startsWith('```')) {
       if (inCode) { h += '<pre style="background:#f8f9fa;padding:12px;border-radius:6px;font-size:12px;overflow-x:auto;margin:10px 0"><code>' + codeLines + '</code></pre>'; inCode = false; codeLines = ''; continue; }
-      if (inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}
+      closeAllLists();
       inCode=true;codeLines='';continue;
     }
     if (inCode){codeLines+=(codeLines?'\n':'')+ln.replace(/</g,'&lt;');continue}
-    if (!tr){if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}continue}
-    if (/^---+$/.test(tr)){if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}h+='<hr>';continue}
+    if (!tr){closeAllLists();continue}
+    if (/^---+$/.test(tr)){closeAllLists();h+='<hr>';continue}
     var hm=tr.match(/^(#{1,5})\s+(.+)$/);
-    if(hm){if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}h+='<h'+hm[1].length+' id="h-'+j+'">'+inlineFmt(hm[2])+'</h'+hm[1].length+'>';continue}
-    if(/^\|(.+)\|$/.test(tr)){if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}if(!inTable){var nxt=(j+1<lines.length)?lines[j+1].trim():'';if(/^\|[\s\-:]+\|$/.test(nxt)){h+='<table class="prd-table"><thead><tr>';var hc=tr.replace(/^\|/,'').replace(/\|$/,'').split('|');for(var ci=0;ci<hc.length;ci++)h+='<th>'+inlineFmt(hc[ci].trim())+'</th>';h+='</tr></thead><tbody>';inTable=true;j++;continue}h+='<table class="prd-table"><tbody>';inTable=true}if(/^\|[\s\-:]+\|$/.test(tr))continue;var cells=tr.replace(/^\|/,'').replace(/\|$/,'').split('|');h+='<tr>';for(var ci=0;ci<cells.length;ci++)h+='<td>'+inlineFmt(cells[ci].trim())+'</td>';h+='</tr>';continue}
+    if(hm){closeAllLists();h+='<h'+hm[1].length+' id="h-'+j+'">'+inlineFmt(hm[2])+'</h'+hm[1].length+'>';continue}
+    if(/^\|(.+)\|$/.test(tr)){closeAllLists();if(!inTable){var nxt=(j+1<lines.length)?lines[j+1].trim():'';if(/^\|[\s\-:]+\|$/.test(nxt)){h+='<table class="prd-table"><thead><tr>';var hc=tr.replace(/^\|/,'').replace(/\|$/,'').split('|');for(var ci=0;ci<hc.length;ci++)h+='<th>'+inlineFmt(hc[ci].trim())+'</th>';h+='</tr></thead><tbody>';inTable=true;j++;continue}h+='<table class="prd-table"><tbody>';inTable=true}if(/^\|[\s\-:]+\|$/.test(tr))continue;var cells=tr.replace(/^\|/,'').replace(/\|$/,'').split('|');h+='<tr>';for(var ci=0;ci<cells.length;ci++)h+='<td>'+inlineFmt(cells[ci].trim())+'</td>';h+='</tr>';continue}
     if(inTable){h+='</tbody></table>';inTable=false}
-    if(/^\s{2 }- /.test(ln)){if(!inNestedUl)h+='<ul class="prd-nested">';inNestedUl=true;h+='<li>'+inlineFmt(tr.replace(/^- /,''))+'</li>';continue}
-    if(/^- /.test(ln)){if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen)h+='</li>';if(!inUl){h+='<ul class="prd-list">';inUl=true}h+='<li>'+inlineFmt(tr.replace(/^- /,''));liOpen=true;continue}
-    if(inNestedUl){h+='</ul>';inNestedUl=false}if(liOpen){h+='</li>';liOpen=false}if(inUl){h+='</ul>';inUl=false}
+    var lm = ln.match(/^(\s*)- (.+)$/);
+    if(lm){openListItem(Math.floor(lm[1].replace(/\t/g,'  ').length / 2), lm[2]);continue}
+    closeAllLists();
     h+='<p>'+inlineFmt(tr)+'</p>';
   }
-  if(inNestedUl)h+='</ul>';if(liOpen)h+='</li>';if(inUl)h+='</ul>';if(inTable)h+='</tbody></table>';if(inCode)h+='<pre style="background:#f8f9fa;padding:12px;border-radius:6px;font-size:12px"><code>'+codeLines+'</code></pre>';
+  closeAllLists();if(inTable)h+='</tbody></table>';if(inCode)h+='<pre style="background:#f8f9fa;padding:12px;border-radius:6px;font-size:12px"><code>'+codeLines+'</code></pre>';
   return h;
 }
 function buildToc(md) {
@@ -1289,6 +1309,7 @@ function togglePrdPanel() {
 
 /* ========== Changelog ========== */
 var changelogData = [
+  { time: '2026-05-15 15:51', desc: '修复内嵌 PRD 多级列表渲染，取稿弹窗规则不再显示为普通短横线文本' },
   { time: '2026-05-15 15:32', desc: '同步 PRD 渠道 Tab 与地域筛选取数规则到 HTML 面板' },
   { time: '2026-05-07', desc: '地域筛选改为区县级关联、统一漏斗逻辑、PRD 去除"共享"概念' },
   { time: '2026-05-07', desc: '使用真实站点数据填充测试数据，漏斗图标增加 hover 提示，PRD v1.2 合规重写' },
