@@ -6,106 +6,452 @@
     <title>My CC Web</title>
     <script src="auth.js"></script>
     <style>
+        :root {
+            --ink: #18212f;
+            --muted: #687385;
+            --paper: #f7f3ea;
+            --surface: #fffaf0;
+            --surface-strong: #fffef8;
+            --line: #ded5c4;
+            --teal: #0f766e;
+            --blue: #315b86;
+            --red: #b94a3c;
+            --gold: #b98216;
+            --green: #5f7f43;
+            --shadow: 0 18px 55px rgba(56, 44, 25, 0.12);
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0f172a;
-            color: #e2e8f0;
+            font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background:
+                linear-gradient(90deg, rgba(24, 33, 47, 0.035) 1px, transparent 1px),
+                linear-gradient(rgba(24, 33, 47, 0.035) 1px, transparent 1px),
+                radial-gradient(circle at 14% 8%, rgba(15, 118, 110, 0.11), transparent 28rem),
+                radial-gradient(circle at 88% 18%, rgba(185, 74, 60, 0.12), transparent 26rem),
+                var(--paper);
+            background-size: 42px 42px, 42px 42px, auto, auto, auto;
+            color: var(--ink);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            line-height: 1.5;
         }
+
+        a {
+            color: inherit;
+        }
+
+        .shell {
+            width: min(1180px, calc(100% - 36px));
+            margin: 0 auto;
+            padding: clamp(28px, 5vw, 64px) 0;
+        }
+
+        .masthead {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: clamp(22px, 4vw, 56px);
+            align-items: end;
+            margin-bottom: clamp(22px, 4vw, 38px);
+            border-bottom: 1px solid var(--line);
+            padding-bottom: clamp(20px, 4vw, 36px);
+        }
+
         h1 {
-            font-size: 2rem;
-            font-weight: 600;
-            margin-bottom: 2rem;
-            background: linear-gradient(135deg, #60a5fa, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            max-width: 760px;
+            font-size: clamp(2.4rem, 7vw, 6.6rem);
+            line-height: 0.92;
+            font-weight: 820;
+            letter-spacing: 0;
+            text-wrap: balance;
         }
-        .projects {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            width: 100%;
-            max-width: 480px;
-            padding: 0 1.5rem;
+
+        .eyebrow {
+            width: fit-content;
+            margin-bottom: 16px;
+            color: var(--teal);
+            font-size: 0.78rem;
+            font-weight: 760;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
         }
-        .project-card {
+
+        .intro {
+            max-width: 520px;
+            color: var(--muted);
+            font-size: clamp(1rem, 1.5vw, 1.12rem);
+            margin-top: 18px;
+        }
+
+        .index-note {
+            min-width: 180px;
+            padding: 18px;
+            background: rgba(255, 250, 240, 0.72);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .index-note strong {
             display: block;
-            padding: 1.25rem 1.5rem;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
+            font-size: 2.35rem;
+            line-height: 1;
+            color: var(--red);
+        }
+
+        .index-note span {
+            display: block;
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 14px;
+        }
+
+        .project-card {
+            position: relative;
+            display: grid;
+            grid-column: span 4;
+            min-height: 168px;
+            padding: 20px;
+            overflow: hidden;
+            background: color-mix(in srgb, var(--surface) 88%, white);
+            border: 1px solid color-mix(in srgb, var(--accent, var(--blue)) 22%, var(--line));
+            border-radius: 8px;
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.72) inset;
             text-decoration: none;
-            color: #e2e8f0;
-            transition: all 0.2s;
+            transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+            isolation: isolate;
         }
+
+        .project-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(135deg, color-mix(in srgb, var(--accent, var(--blue)) 15%, transparent), transparent 42%),
+                linear-gradient(to top, rgba(255, 255, 255, 0.68), transparent 58%);
+            opacity: 0.78;
+            z-index: -1;
+        }
+
+        .project-card::after {
+            content: "";
+            position: absolute;
+            width: 92px;
+            height: 92px;
+            right: -24px;
+            bottom: -28px;
+            border: 1px solid color-mix(in srgb, var(--accent, var(--blue)) 36%, transparent);
+            border-radius: 50%;
+            box-shadow: -30px -24px 0 -24px color-mix(in srgb, var(--accent, var(--blue)) 46%, transparent);
+            opacity: 0.72;
+            z-index: -1;
+        }
+
         .project-card:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: rgba(96,165,250,0.4);
-            transform: translateY(-2px);
+            background: var(--surface-strong);
+            border-color: color-mix(in srgb, var(--accent, var(--blue)) 52%, var(--line));
+            box-shadow: 0 20px 50px rgba(46, 36, 20, 0.14);
+            transform: translateY(-3px);
         }
+
+        .project-card:focus-visible {
+            outline: 3px solid color-mix(in srgb, var(--accent, var(--teal)) 58%, white);
+            outline-offset: 4px;
+        }
+
+        .project-card:nth-child(1),
+        .project-card:nth-child(2) {
+            grid-column: span 6;
+            min-height: 188px;
+        }
+
+        .project-card:nth-child(3n + 1) { --accent: var(--teal); }
+        .project-card:nth-child(3n + 2) { --accent: var(--red); }
+        .project-card:nth-child(3n) { --accent: var(--blue); }
+        .project-card:nth-child(5n) { --accent: var(--gold); }
+        .project-card:nth-child(7n) { --accent: var(--green); }
+
+        .project-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 28px;
+            color: color-mix(in srgb, var(--accent, var(--blue)) 86%, var(--ink));
+            font-size: 0.74rem;
+            font-weight: 780;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .project-number {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .project-type {
+            max-width: 58%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
         .project-card h2 {
-            font-size: 1.1rem;
-            font-weight: 500;
-            margin-bottom: 0.3rem;
+            align-self: end;
+            max-width: calc(100% - 56px);
+            font-size: clamp(1.08rem, 1.45vw, 1.38rem);
+            line-height: 1.25;
+            font-weight: 760;
+            letter-spacing: 0;
+            text-wrap: balance;
         }
+
         .project-card p {
-            font-size: 0.85rem;
-            color: #94a3b8;
+            max-width: calc(100% - 62px);
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 0.92rem;
+            line-height: 1.55;
+        }
+
+        #cc-auth-gate > div {
+            background:
+                linear-gradient(90deg, rgba(24, 33, 47, 0.045) 1px, transparent 1px),
+                linear-gradient(rgba(24, 33, 47, 0.045) 1px, transparent 1px),
+                radial-gradient(circle at 22% 18%, rgba(15, 118, 110, 0.14), transparent 24rem),
+                radial-gradient(circle at 78% 22%, rgba(185, 74, 60, 0.13), transparent 24rem),
+                var(--paper) !important;
+            background-size: 42px 42px, 42px 42px, auto, auto, auto !important;
+            font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif !important;
+        }
+
+        #cc-auth-gate > div > div {
+            width: min(360px, calc(100% - 40px));
+            padding: 28px !important;
+            background: rgba(255, 250, 240, 0.82);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            text-align: left !important;
+        }
+
+        #cc-auth-gate p {
+            color: var(--ink) !important;
+            font-weight: 760 !important;
+        }
+
+        #cc-auth-pwd {
+            width: 100% !important;
+            border-color: var(--line) !important;
+            background: var(--surface-strong) !important;
+            color: var(--ink) !important;
+        }
+
+        #cc-auth-pwd:focus {
+            border-color: var(--teal) !important;
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.16);
+        }
+
+        #cc-auth-btn {
+            width: 100%;
+            background: var(--ink) !important;
+            color: var(--surface-strong) !important;
+            font-weight: 760 !important;
+            transition: transform 180ms ease, background 180ms ease;
+        }
+
+        #cc-auth-btn:hover {
+            background: var(--teal) !important;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 860px) {
+            .masthead {
+                grid-template-columns: 1fr;
+            }
+
+            .index-note {
+                width: fit-content;
+            }
+
+            .project-card,
+            .project-card:nth-child(1),
+            .project-card:nth-child(2) {
+                grid-column: span 6;
+            }
+        }
+
+        @media (max-width: 620px) {
+            .shell {
+                width: min(100% - 28px, 1180px);
+                padding-top: 28px;
+            }
+
+            .projects {
+                grid-template-columns: 1fr;
+            }
+
+            .project-card,
+            .project-card:nth-child(1),
+            .project-card:nth-child(2) {
+                grid-column: 1;
+                min-height: 150px;
+                padding: 18px;
+            }
+
+            .project-card::after {
+                right: -44px;
+                bottom: -44px;
+                opacity: 0.54;
+            }
+
+            .project-card h2,
+            .project-card p {
+                max-width: calc(100% - 34px);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>My CC Web</h1>
-    <div class="projects">
-        <a href="./network-resource/" class="project-card">
-            <h2>Network Resource Management</h2>
-            <p>网络资源管理系统</p>
-        </a>
-        <a href="./hzzl/" class="project-card">
-            <h2>HZZL 杭州会展智能体</h2>
-            <p>杭州会展智能体管理平台（含嵌入式 PRD）</p>
-        </a>
-        <a href="./ai-pm-workflow/" class="project-card">
-            <h2>AI 赋能产品经理</h2>
-            <p>从需求到上线的全流程实战 — PPT 分享</p>
-        </a>
-        <a href="./zhejiang-police/" class="project-card">
-            <h2>浙江公安主题填报系统</h2>
-            <p>移动端主题填报原型 + PRD（政务蓝 · 水墨浙江风格）</p>
-        </a>
-        <a href="./yuqing-report/" class="project-card">
-            <h2>舆情报送与管理系统</h2>
-            <p>省级舆情上报 · 汇总查看 · 报告管理原型 + PRD（政务蓝风格）</p>
-        </a>
-        <a href="./ai-report-center/" class="project-card">
-            <h2>AI 智能报告生成</h2>
-            <p>舆情监测平台 AI 报告配置 · 候选主题确认 · 报告预览原型 + PRD</p>
-        </a>
-        <a href="./broadcast-player/" class="project-card">
-            <h2>传播投手</h2>
-            <p>移动端传播播放页面设计 — 传播需求发布 · 服务流程 · 管理后台</p>
-        </a>
-        <a href="./chuanchuan-toushou/" class="project-card">
-            <h2>传播投手 - 需求管理系统</h2>
-            <p>管理后台需求列表 + 详情页原型 + PRD</p>
-        </a>
-        <a href="./police-media/" class="project-card">
-            <h2>公安融媒宣传管理平台</h2>
-            <p>公安融媒宣传管理平台</p>
-        </a>
-        <a href="./provincial-resource/" class="project-card">
-            <h2>全省资源库</h2>
-            <p>资源中心新增全省资源库模块（成品类稿件汇聚平台）+ PRD</p>
-        </a>
-        <a href="./media-search/" class="project-card">
-            <h2>智能媒资首页搜索优化</h2>
-            <p>搜索能力聚合展示（精准检索 + 语义检索 + 多模态 AI 检索）</p>
-        </a>
-    </div>
+    <main class="shell">
+        <header class="masthead">
+            <div>
+                <div class="eyebrow">Prototype Directory</div>
+                <h1>My CC Web</h1>
+                <p class="intro">集中访问原型、PRD 与演示页面，面向产品评审、方案沟通和阶段性交付。</p>
+            </div>
+            <div class="index-note" aria-label="当前项目数量">
+                <strong>11</strong>
+                <span>Active entries</span>
+            </div>
+        </header>
+
+        <section class="projects" aria-label="项目列表">
+            <a href="./network-resource/" class="project-card">
+                <div class="project-meta">
+                    <span class="project-number">01</span>
+                    <span class="project-type">System</span>
+                </div>
+                <div>
+                    <h2>Network Resource Management</h2>
+                    <p>网络资源管理系统</p>
+                </div>
+            </a>
+            <a href="./hzzl/" class="project-card">
+                <div class="project-meta">
+                    <span class="project-number">02</span>
+                    <span class="project-type">Agent</span>
+                </div>
+                <div>
+                    <h2>HZZL 杭州会展智能体</h2>
+                    <p>杭州会展智能体管理平台（含嵌入式 PRD）</p>
+                </div>
+            </a>
+            <a href="./ai-pm-workflow/" class="project-card">
+                <div class="project-meta">
+                    <span class="project-number">03</span>
+                    <span class="project-type">Deck</span>
+                </div>
+                <div>
+                    <h2>AI 赋能产品经理</h2>
+                    <p>从需求到上线的全流程实战 — PPT 分享</p>
+                </div>
+            </a>
+            <a href="./zhejiang-police/" class="project-card">
+                <div class="project-meta">
+                    <span class="project-number">04</span>
+                    <span class="project-type">Mobile</span>
+                </div>
+                <div>
+                    <h2>浙江公安主题填报系统</h2>
+                    <p>移动端主题填报原型 + PRD（政务蓝 · 水墨浙江风格）</p>
+                </div>
+            </a>
+            <a href="./yuqing-report/" class="project-card">
+                <div class="project-meta">
+                    <span class="project-number">05</span>
+                    <span class="project-type">Gov</span>
+                </div>
+                <div>
+                    <h2>舆情报送与管理系统</h2>
+                    <p>省级舆情上报 · 汇总查看 · 报告管理原型 + PRD（政务蓝风格）</p>
+                </div>
+            </a>
+            <a href="./ai-report-center/" class="project-card">
+                <div class="project-meta">
+                    <span class="project-number">06</span>
+                    <span class="project-type">AI</span>
+                </div>
+                <div>
+                    <h2>AI 智能报告生成</h2>
+                    <p>舆情监测平台 AI 报告配置 · 候选主题确认 · 报告预览原型 + PRD</p>
+                </div>
+            </a>
+            <a href="./broadcast-player/" class="project-card">
+                <div class="project-meta">
+                    <span class="project-number">07</span>
+                    <span class="project-type">Mobile</span>
+                </div>
+                <div>
+                    <h2>传播投手</h2>
+                    <p>移动端传播播放页面设计 — 传播需求发布 · 服务流程 · 管理后台</p>
+                </div>
+            </a>
+            <a href="./chuanchuan-toushou/" class="project-card">
+                <div class="project-meta">
+                    <span class="project-number">08</span>
+                    <span class="project-type">Admin</span>
+                </div>
+                <div>
+                    <h2>传播投手 - 需求管理系统</h2>
+                    <p>管理后台需求列表 + 详情页原型 + PRD</p>
+                </div>
+            </a>
+            <a href="./police-media/" class="project-card">
+                <div class="project-meta">
+                    <span class="project-number">09</span>
+                    <span class="project-type">Media</span>
+                </div>
+                <div>
+                    <h2>公安融媒宣传管理平台</h2>
+                    <p>公安融媒宣传管理平台</p>
+                </div>
+            </a>
+            <a href="./provincial-resource/" class="project-card">
+                <div class="project-meta">
+                    <span class="project-number">10</span>
+                    <span class="project-type">Resource</span>
+                </div>
+                <div>
+                    <h2>全省资源库</h2>
+                    <p>资源中心新增全省资源库模块（成品类稿件汇聚平台）+ PRD</p>
+                </div>
+            </a>
+            <a href="./media-search/" class="project-card">
+                <div class="project-meta">
+                    <span class="project-number">11</span>
+                    <span class="project-type">Search</span>
+                </div>
+                <div>
+                    <h2>智能媒资首页搜索优化</h2>
+                    <p>搜索能力聚合展示（精准检索 + 语义检索 + 多模态 AI 检索）</p>
+                </div>
+            </a>
+        </section>
+    </main>
 </body>
 </html>
