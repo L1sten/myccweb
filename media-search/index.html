@@ -184,15 +184,21 @@
         .lib-filter-item.active { background: var(--primary); border-color: var(--primary); color: #fff; }
         .lib-filter-item input[type="radio"] { display: none; }
         /* 稿件列表样式 */
-        .r-article-list { background: #fff; border-radius: var(--radius); border: 1px solid var(--border-light); padding: 0 16px; max-height: 360px; overflow-y: auto; }
+        .r-article-list { background: #fff; border-radius: var(--radius); border: 1px solid var(--border-light); padding: 0 16px; max-height: 680px; overflow-y: auto; }
         .r-article-list::-webkit-scrollbar { width: 6px; }
         .r-article-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
         .r-article-list::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
-        .r-article-item { padding: 14px 4px; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: background .15s; }
+        .r-article-item { padding: 18px 0 16px; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: background .15s; }
         .r-article-item:last-child { border-bottom: none; }
-        .r-article-item:hover { background: var(--primary-bg); margin: 0 -16px; padding-left: 20px; padding-right: 20px; }
-        .r-article-title { font-size: 14px; font-weight: 500; color: var(--text-1); line-height: 1.6; margin-bottom: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .r-article-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-2); }
+        .r-article-item:hover { background: #f8fbff; margin: 0 -16px; padding-left: 16px; padding-right: 16px; }
+        .r-article-title { font-size: 18px; font-weight: 700; color: #0b376b; line-height: 1.35; margin-bottom: 12px; letter-spacing: 0; }
+        .r-article-hit { color: #f5222d; }
+        .r-article-row { display: grid; grid-template-columns: 142px minmax(0, 1fr); gap: 14px; align-items: start; }
+        .r-article-thumb { width: 142px; height: 86px; border-radius: 5px; overflow: hidden; background: #eef2f7; }
+        .r-article-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .r-article-summary { color: #62676f; font-size: 16px; font-weight: 600; line-height: 1.75; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .r-article-meta { display: flex; justify-content: space-between; gap: 16px; margin-top: 14px; font-size: 14px; color: #9a9a9a; font-weight: 600; }
+        .r-article-time { margin-left: auto; white-space: nowrap; }
         .r-card-body { padding: 10px 12px 12px; }
         .r-card-title { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 6px; color: var(--text-1); }
         .r-card-meta { font-size: 11px; color: var(--text-2); display: flex; align-items: center; justify-content: space-between; }
@@ -206,28 +212,58 @@
 
         /* ===== Resource Stats ===== */
         .stats-section { max-width: 1200px; margin: 0 auto; padding: 24px 24px 0; }
-        .stats-section-title { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .stat-card { background: #fff; border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow-card); border: 1px solid var(--border-light); display: flex; align-items: center; gap: 14px; }
-        .stat-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .stat-icon.blue { background: #e6f7ff; color: #1890ff; }
-        .stat-icon.purple { background: #f3e8ff; color: #722ed1; }
-        .stat-icon.green { background: #f0fff0; color: #52c41a; }
-        .stat-icon svg { width: 22px; height: 22px; }
-        .stat-info { flex: 1; }
-        .stat-label { font-size: 13px; color: var(--text-2); margin-bottom: 2px; }
-        .stat-value { font-size: 24px; font-weight: 600; color: var(--text-1); }
+        .stats-card { background: #fff; border: 1px solid var(--border-light); border-radius: var(--radius); box-shadow: var(--shadow-card); overflow: hidden; }
+        .stats-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 20px 14px; border-bottom: 1px solid var(--border-light); }
+        .stats-section-title { font-size: 15px; font-weight: 600; color: var(--text-1); }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 18px 20px 20px; }
+        .stat-card { position: relative; min-height: 96px; border-radius: 6px; padding: 14px 14px 12px; background: linear-gradient(180deg, #fff 0%, #fbfdff 100%); border: 1px solid var(--border-light); overflow: hidden; isolation: isolate; transition: transform .15s, box-shadow .15s, border-color .15s; }
+        .stat-card::before { content: ""; position: absolute; inset: 0; z-index: -2; opacity: .72; background: linear-gradient(135deg, rgba(24, 144, 255, .08), transparent 42%), repeating-linear-gradient(135deg, transparent 0, transparent 12px, rgba(24, 144, 255, .05) 12px, rgba(24, 144, 255, .05) 13px); }
+        .stat-card::after { content: ""; position: absolute; right: -18px; bottom: -22px; z-index: -1; width: 100px; height: 74px; border: 1px solid rgba(24, 144, 255, .22); border-radius: 10px; transform: rotate(-8deg); background: linear-gradient(135deg, transparent 49%, rgba(24, 144, 255, .18) 50%, transparent 51%), linear-gradient(28deg, transparent 57%, rgba(24, 144, 255, .16) 58%, transparent 59%); }
+        .stat-card:hover { transform: translateY(-2px); border-color: #d6e8ff; box-shadow: 0 10px 22px rgba(24, 144, 255, .10); }
+        .stat-card:nth-child(2)::before { background: linear-gradient(135deg, rgba(114, 46, 209, .08), transparent 42%), repeating-linear-gradient(90deg, rgba(114, 46, 209, .07) 0, rgba(114, 46, 209, .07) 2px, transparent 2px, transparent 16px); }
+        .stat-card:nth-child(2)::after { width: 106px; height: 66px; border-color: rgba(114, 46, 209, .22); border-radius: 8px; background: linear-gradient(90deg, rgba(114, 46, 209, .16) 0 10px, transparent 10px calc(100% - 10px), rgba(114, 46, 209, .16) calc(100% - 10px)), repeating-linear-gradient(0deg, transparent 0 8px, rgba(114, 46, 209, .18) 8px 10px); }
+        .stat-card:nth-child(3)::before { background: linear-gradient(135deg, rgba(19, 194, 194, .08), transparent 42%), repeating-linear-gradient(90deg, transparent 0, transparent 18px, rgba(19, 194, 194, .07) 18px, rgba(19, 194, 194, .07) 20px); }
+        .stat-card:nth-child(3)::after { width: 112px; height: 58px; border: 0; border-radius: 0; transform: rotate(-6deg); background: linear-gradient(90deg, transparent 0 4%, rgba(19, 194, 194, .24) 4% 10%, transparent 10% 18%, rgba(19, 194, 194, .18) 18% 25%, transparent 25% 34%, rgba(19, 194, 194, .28) 34% 43%, transparent 43% 54%, rgba(19, 194, 194, .16) 54% 62%, transparent 62% 70%, rgba(19, 194, 194, .24) 70% 78%, transparent 78%); }
+        .stat-icon { position: absolute; right: 14px; top: 18px; width: 7px; height: 7px; border-radius: 50%; }
+        .stat-icon.blue { background: #1890ff; color: #1890ff; }
+        .stat-icon.purple { background: #722ed1; color: #722ed1; }
+        .stat-icon.green { background: #13c2c2; color: #13c2c2; }
+        .stat-icon svg { display: none; }
+        .stat-info { min-width: 0; }
+        .stat-label { padding-right: 18px; margin-bottom: 14px; font-size: 12px; color: var(--text-2); white-space: nowrap; }
+        .stat-value { display: flex; align-items: baseline; gap: 4px; font-size: 25px; line-height: 1; font-weight: 700; color: var(--text-1); white-space: nowrap; }
         .stat-unit { font-size: 13px; font-weight: 400; color: var(--text-2); margin-left: 4px; }
 
         /* ===== Trend Chart ===== */
         .trend-section { max-width: 1200px; margin: 0 auto; padding: 16px 24px 0; }
-        .trend-card { background: #fff; border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-card); border: 1px solid var(--border-light); }
-        .trend-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-        .trend-title { font-size: 15px; font-weight: 600; }
-        .trend-select { border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; font-size: 13px; color: var(--text-1); background: #fff; outline: none; cursor: pointer; }
-        .trend-chart { height: 180px; position: relative; }
-        .chart-canvas { width: 100%; height: 100%; }
-        .chart-axis { display: flex; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--border-light); margin-top: 0; }
+        .trend-card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow-card); border: 1px solid var(--border-light); overflow: hidden; }
+        .trend-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 20px 14px; border-bottom: 1px solid var(--border-light); }
+        .trend-title { font-size: 15px; font-weight: 600; color: var(--text-1); }
+        .trend-select { min-width: 92px; border: 1px solid var(--border); border-radius: 4px; padding: 5px 28px 5px 10px; font-size: 12px; color: var(--text-1); background: #fff; outline: none; cursor: pointer; }
+        .trend-chart { padding: 18px 20px 20px; }
+        .resource-chart-head { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-bottom: 12px; }
+        .resource-chart-title { font-size: 13px; font-weight: 600; color: var(--text-1); }
+        .resource-legend { display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--text-2); }
+        .resource-legend span { display: inline-flex; align-items: center; gap: 5px; }
+        .resource-legend i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .resource-legend i.line { width: 18px; height: 3px; border-radius: 99px; background: #8eeabd; }
+        .resource-bars { height: 172px; position: relative; display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; padding: 18px 4px 0; background: repeating-linear-gradient(to top, transparent 0, transparent 38px, #f4f6f8 39px); border-bottom: 1px solid var(--border-light); }
+        .resource-day { flex: 1; min-width: 0; position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 7px; }
+        .resource-day::after { content: attr(data-tip); position: absolute; left: 50%; bottom: 154px; z-index: 5; transform: translateX(-50%) translateY(4px); width: max-content; max-width: 180px; padding: 7px 9px; border-radius: 4px; background: rgba(24, 31, 43, 0.92); color: #fff; font-size: 11px; line-height: 1.55; white-space: pre-line; opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s; box-shadow: 0 6px 16px rgba(0,0,0,.18); }
+        .resource-day:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .resource-stack { width: min(28px, 62%); height: 118px; display: flex; flex-direction: column-reverse; justify-content: flex-start; border-radius: 5px 5px 0 0; overflow: hidden; background: #f5f5f5; box-shadow: 0 8px 16px rgba(24, 144, 255, .12); transition: transform .15s, filter .15s; }
+        .resource-day:hover .resource-stack { transform: translateY(-3px); filter: saturate(1.08); }
+        .resource-stack span { display: block; }
+        .resource-stack .img { background: #1890ff; }
+        .resource-stack .video { background: #9254de; }
+        .resource-stack .audio { background: #00b050; }
+        .resource-day-label { font-size: 11px; color: var(--text-3); white-space: nowrap; }
+        .resource-line-svg { position: absolute; inset: 12px 4px 26px; z-index: 3; width: calc(100% - 8px); height: calc(100% - 38px); pointer-events: none; overflow: visible; }
+        .resource-line-path { fill: none; stroke: #8eeabd; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 4px 8px rgba(82, 196, 26, .18)); }
+        .resource-line-dot { fill: #fff; stroke: #8eeabd; stroke-width: 2; opacity: 0; transition: opacity .15s; }
+        .resource-bars:hover .resource-line-dot { opacity: 1; }
+        .chart-canvas { width: 100%; height: 100%; display: block; overflow: visible; }
+        .chart-axis { display: flex; justify-content: space-between; padding: 0 20px 16px; border-top: 1px solid var(--border-light); margin-top: 0; }
         .chart-axis span { font-size: 11px; color: var(--text-3); }
 
         /* ===== Latest Images ===== */
@@ -245,8 +281,25 @@
         .bottom-modules { padding-bottom: 8px; }
         .page-footer { text-align: center; padding: 20px; color: var(--text-3); font-size: 12px; }
 
-        @media (max-width: 1024px) { .r-section-grid, .r-section-pages.active, .results-grid-inner { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 640px) { .r-section-grid, .r-section-pages.active, .results-grid-inner { grid-template-columns: repeat(2, 1fr); } .hero { padding: 60px 16px 24px; } }
+        @media (max-width: 1024px) {
+            .r-section-grid, .r-section-pages.active, .results-grid-inner { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 640px) {
+            .r-section-grid, .r-section-pages.active, .results-grid-inner { grid-template-columns: repeat(2, 1fr); }
+            .hero { padding: 60px 16px 24px; }
+            .latest-section, .stats-section, .trend-section { padding-left: 16px; padding-right: 16px; }
+            .latest-grid, .stats-grid { grid-template-columns: 1fr; }
+            .resource-chart-head { align-items: flex-start; flex-direction: column; }
+            .resource-legend { flex-wrap: wrap; }
+            .resource-bars { overflow-x: auto; justify-content: flex-start; }
+            .resource-day { min-width: 44px; }
+            .r-article-title { font-size: 16px; }
+            .r-article-row { grid-template-columns: 112px minmax(0, 1fr); gap: 10px; }
+            .r-article-thumb { width: 112px; height: 72px; }
+            .r-article-summary { font-size: 14px; line-height: 1.6; }
+            .r-article-meta { flex-direction: column; gap: 4px; font-size: 12px; }
+            .r-article-time { margin-left: 0; }
+        }
     </style>
 </head>
 <body>
@@ -349,33 +402,37 @@
         </section>
 
         <section class="stats-section">
-            <div class="stats-section-title">资源聚合</div>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon blue">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                    </div>
-                    <div class="stat-info">
-                        <div class="stat-label">图片资源总量</div>
-                        <div class="stat-value">1,942<span class="stat-unit">张</span></div>
-                    </div>
+            <div class="stats-card">
+                <div class="stats-header">
+                    <span class="stats-section-title">资源聚合</span>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon purple">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">图片资源总量</div>
+                            <div class="stat-value">1,942<span class="stat-unit">张</span></div>
+                        </div>
                     </div>
-                    <div class="stat-info">
-                        <div class="stat-label">视频资源总量</div>
-                        <div class="stat-value">6.47<span class="stat-unit">小时</span></div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">视频资源总量</div>
+                            <div class="stat-value">6.47<span class="stat-unit">小时</span></div>
+                        </div>
                     </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon green">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-                    </div>
-                    <div class="stat-info">
-                        <div class="stat-label">音频资源总量</div>
-                        <div class="stat-value">17<span class="stat-unit">条</span></div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">音频资源总量</div>
+                            <div class="stat-value">17<span class="stat-unit">条</span></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -385,34 +442,26 @@
             <div class="trend-card">
                 <div class="trend-header">
                     <span class="trend-title">资源入库趋势</span>
-                    <select class="trend-select">
-                        <option>近两周</option>
-                        <option>近一个月</option>
-                        <option>近三个月</option>
+                    <select class="trend-select" id="resourceTrendRange" onchange="renderResourceTrend(this.value)">
+                        <option value="last14">近两周</option>
+                        <option value="month">近一个月</option>
+                        <option value="quarter">近三个月</option>
                     </select>
                 </div>
                 <div class="trend-chart">
-                    <svg class="chart-canvas" viewBox="0 0 700 160" preserveAspectRatio="none">
-                        <defs>
-                            <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stop-color="#1890ff" stop-opacity="0.25"/>
-                                <stop offset="100%" stop-color="#1890ff" stop-opacity="0.02"/>
-                            </linearGradient>
-                        </defs>
-                        <line x1="0" y1="40" x2="700" y2="40" stroke="#f0f0f0" stroke-width="1"/>
-                        <line x1="0" y1="80" x2="700" y2="80" stroke="#f0f0f0" stroke-width="1"/>
-                        <line x1="0" y1="120" x2="700" y2="120" stroke="#f0f0f0" stroke-width="1"/>
-                        <path d="M0,130 L50,125 L100,120 L150,110 L200,100 L250,95 L300,80 L350,45 L400,35 L450,50 L500,70 L550,85 L600,95 L650,105 L700,110 L700,160 L0,160 Z" fill="url(#areaGrad)"/>
-                        <polyline points="0,130 50,125 100,120 150,110 200,100 250,95 300,80 350,45 400,35 450,50 500,70 550,85 600,95 650,105 700,110" fill="none" stroke="#1890ff" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-                        <circle cx="400" cy="35" r="4" fill="#fff" stroke="#1890ff" stroke-width="2"/>
-                        <text x="400" y="25" text-anchor="middle" font-size="11" fill="#1890ff" font-weight="500">52</text>
-                    </svg>
-                </div>
-                <div class="chart-axis">
-                    <span>04-28</span><span>05-01</span><span>05-04</span><span>05-07</span><span>05-09</span><span>05-11</span>
+                    <div class="resource-chart-head">
+                        <div class="resource-legend">
+                            <span><i style="background:#1890ff"></i>图片</span>
+                            <span><i style="background:#9254de"></i>视频</span>
+                            <span><i style="background:#00b050"></i>音频</span>
+                            <span><i class="line"></i>总量趋势</span>
+                        </div>
+                    </div>
+                    <div class="resource-bars" id="resourceTrendBars"></div>
                 </div>
             </div>
         </section>
+
     </div>
 
     <footer class="page-footer">传播大脑科技（浙江）股份有限公司 · 宁报智能媒资系统</footer>
@@ -471,8 +520,8 @@
 ### 1.1 搜索区域标题
 
 - **展示规则**：
-  - 主标题"灵感无界，触手可及"，居中展示，大字号加粗
-  - 副标题"海量多模态媒资，AI赋能创意检索"，居中展示，中等字号，浅色文字
+  - 主标题文案为"灵感无界，触手可及"
+  - 副标题文案为"海量多模态媒资，AI赋能创意检索"
   - 主标题和副标题位于搜索栏上方
 - **交互规则**：
   - 搜索触发后，标题和副标题始终保持可见，不隐藏
@@ -481,7 +530,7 @@
 ### 1.2 搜索栏
 
 - **展示规则**：
-  - 页面居中展示搜索栏，胶囊形外观，宽度较大营造大气感
+  - 首页提供统一搜索栏作为主要搜索入口
   - 默认状态从左到右依次为：搜索图标、文字输入框、图片上传按钮、搜索按钮（文案统一为"AI智搜"）
   - 文字输入框 placeholder 为"输入关键词、自然语言描述搜索全部媒资"
 - **交互规则**：
@@ -515,7 +564,7 @@
   - 搜索触发后，搜索栏下方展示资源库筛选按钮，默认选中"全部"
   - 筛选选项：全部、媒资素材库、全省资源库、网络资源库
 - **交互规则**：
-  - 点击按钮切换资源库筛选，选中按钮高亮（药丸形填充），其余按钮恢复默认样式
+  - 点击按钮切换资源库筛选，当前选中项需有明确状态标识
   - 资源库筛选对所有类型（图片、视频、稿件）的搜索结果生效
   - 切换资源库后自动刷新搜索结果
   - 返回初始状态时隐藏资源库筛选
@@ -548,18 +597,20 @@
 - **展示规则**：
   - 搜索结果按图片、视频、稿件（仅文字搜索）分区域展示
   - 图片和视频区域每区域展示一行卡片（5列），最多返回 20 条结果
-  - 稿件区域为纯文字列表样式，无缩略图，最多返回 100 条结果
-  - 稿件每项展示标题（加粗）、来源和日期（同行，来源左对齐，日期右对齐）
+  - 稿件区域为图文列表，最多返回 100 条结果
+  - 稿件每项展示标题，命中关键词需突出标识
+  - 稿件标题下方展示缩略图和摘要正文
+  - 稿件底部展示来源和发布时间
   - 图片卡片：缩略图展示内容预览图
-  - 视频卡片：缩略图展示内容预览图，中央叠加半透明圆形播放按钮，右下角展示视频时长标签
+  - 视频卡片：缩略图展示内容预览图，并展示视频播放标识和视频时长
 - **交互规则**：
   - 卡片 hover 时上浮并显示阴影
   - 稿件列表项 hover 时背景变色
   - 点击卡片或稿件项跳转至资源详情页
-  - 图片/视频区域通过左右箭头按钮切换分页，箭头浮于卡片行两侧，垂直居中，第一页隐藏左箭头，最后一页隐藏右箭头
+  - 图片/视频区域通过左右箭头按钮切换分页，第一页隐藏左箭头，最后一页隐藏右箭头
   - 点击"查看更多"携带当前搜索条件和查询模式跳转至搜索中心对应频道：文字搜索模式下，图片区域"查看更多"跳转搜索中心-文搜图，视频区域跳转搜索中心-文搜视频；图片搜索模式下，图片区域跳转搜索中心-图搜图，视频区域跳转搜索中心-图搜视频
 - **数据规则**：
-  - **取数规则**：根据搜索关键词或图片，从媒资资源库检索匹配的资源；图片/视频返回缩略图、标题、入库时间、来源标签字段，视频额外返回时长字段；稿件返回标题、来源、发布时间字段
+  - **取数规则**：根据搜索关键词或图片，从媒资资源库检索匹配的资源；图片/视频返回缩略图、标题、入库时间、来源标签字段，视频额外返回时长字段；稿件返回标题、摘要、缩略图、来源、发布时间字段
   - **数据筛选规则**：根据用户选择的资源库过滤结果
   - **数据排序规则**：各区域内部按相似度从高到低排序，相似度相同时按发布时间从近到远排序
   - 图片和视频结果上限为 20 条，稿件结果上限为 100 条
@@ -570,13 +621,35 @@
   - 稿件列表为固定高度的可滚动区域，初始展示 5 条
 - **交互规则**：
   - 滚动到底部时自动加载更多稿件项（每次加载 5 条）
-  - 滚动条样式为细窄型
 
 ---
 
-## 三、顶部导航栏
+## 三、首页底部资源统计
 
-### 3.1 导航栏结构
+### 3.1 资源聚合与资源入库趋势
+
+- **展示规则**：
+  - “资源聚合”展示图片资源总量、视频资源总量、音频资源总量，字段和统计口径保持既有规则不变
+  - “资源入库趋势”按图片、视频、音频进行堆叠柱状展示，并叠加总量趋势折线
+  - 图例展示图片、视频、音频、总量趋势 4 类说明
+  - 页面底部仅保留资源聚合与资源入库趋势，不展示成品资源相关模块
+- **时间筛选规则**：
+  - 默认选择“近两周”
+  - 支持“近两周”“近一个月”“近三个月”三个范围
+  - 切换时间范围后，趋势图按所选范围刷新横轴刻度、堆叠柱和总量折线
+- **交互规则**：
+  - 鼠标悬浮到某个时间点时，展示该时间点的图片、视频、音频新增数量和总量
+  - 悬浮时对应柱体轻微上移并增强饱和度，折线点位显示，辅助用户识别当前时间点
+- **统计口径**：
+  - 资源入库趋势沿用原资源趋势统计范围，不使用成品资源的专属统计口径
+  - 统计字段以资源入库时间为准
+  - 每个时间粒度内分别统计图片、视频、音频 3 类资源新增数量
+  - 总量趋势为同一时间粒度内图片、视频、音频新增数量之和
+  - 无数据日期或时间点展示为 0，保证趋势横轴连续
+
+## 四、顶部导航栏
+
+### 4.1 导航栏结构
 
 - **展示规则**：
   - 导航栏固定在页面顶部，包含：系统 Logo + 名称、主导航菜单、上传按钮、用户头像
@@ -589,7 +662,7 @@
 
 ---
 
-## 四、全局交互规则
+## 五、全局交互规则
 
 - 所有可点击元素具备 hover 状态反馈（颜色变化或位移）
 - 搜索区域缩小/展开带有过渡动画
@@ -705,20 +778,45 @@
 
         // 生成稿件列表项
         function makeArticle(i, qBase) {
+            function escapeHtml(str) {
+                return String(str).replace(/[&<>"']/g, function(ch) {
+                    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch];
+                });
+            }
+            function highlight(text, keyword) {
+                var safeText = escapeHtml(text);
+                var key = String(keyword || '').trim();
+                if (!key) return safeText;
+                var safeKey = escapeHtml(key);
+                return safeText.split(safeKey).join('<span class="r-article-hit">' + safeKey + '</span>');
+            }
             var titles = [
-                '博物馆：联结世界的桥梁——诸暨市博物馆5·18国际博物馆日活动抢先看',
-                qBase + ' 深度报道：城市文化建设新篇章',
-                qBase + ' 专题稿件：乡村振兴路上的故事',
-                qBase + ' 新闻通稿：全市经济工作会议召开',
-                qBase + ' 评论：新媒体时代的新闻传播'
+                '独家视频 | ' + qBase + '相关专题报道持续更新',
+                '时政快讯 | ' + qBase + '重点稿件入库完成',
+                '深度观察 | 从' + qBase + '看城市传播新动向',
+                '现场直击 | ' + qBase + '新闻素材集中发布',
+                '评论 | 新媒体时代的' + qBase + '内容传播'
             ];
-            var sources = ['西施眼客户端','宁波日报','浙江新闻','新华社客户端','人民日报客户端'];
+            var summaries = [
+                '5月14日上午，相关活动在北京举行。记者从现场获悉，' + qBase + '相关成品稿件、图片和视频资源已完成整理入库，可供编辑快速检索复用。',
+                '围绕' + qBase + '的多组报道素材同步上线，包含现场图片、视频片段、文字稿件和采访摘要，满足专题报道与二次编辑需求。',
+                '本组稿件聚焦' + qBase + '相关背景、现场进展和传播反馈，提炼关键信息点，方便业务部门快速完成内容选题和组合发布。',
+                '新闻现场采集素材已按时间线归档，' + qBase + '相关内容覆盖通稿、短视频、图片集和资料片段，支持跨库调用。',
+                '围绕' + qBase + '的成品内容持续补充，系统按发布时间和相似度排序，优先展示近期入库且可复用度较高的稿件。'
+            ];
+            var sources = ['新闻','宁波日报','浙江新闻','新华社客户端','人民日报客户端'];
             var title = titles[i % titles.length];
+            var summary = summaries[i % summaries.length];
             var source = sources[i % sources.length];
-            var date = '2026-01-05 ' + String(8 + (i % 14)).padStart(2, '0') + ':' + String((i * 17) % 60).padStart(2, '0') + ':' + String((i * 23) % 60).padStart(2, '0');
+            var date = '2026-05-' + String(14 + (i % 2)).padStart(2, '0') + ' ' + String(9 + (i % 4)).padStart(2, '0') + ':' + String((28 + i * 7) % 60).padStart(2, '0') + ':' + String((29 + i * 13) % 60).padStart(2, '0');
+            var thumbSeed = 'article' + i + qBase;
             return '<div class="r-article-item">' +
-                '  <div class="r-article-title">' + title + '</div>' +
-                '  <div class="r-article-meta"><span>来源：' + source + '</span><span>' + date + '</span></div>' +
+                '  <div class="r-article-title">' + highlight(title, qBase) + '</div>' +
+                '  <div class="r-article-row">' +
+                '    <div class="r-article-thumb"><img src="https://picsum.photos/seed/' + encodeURIComponent(thumbSeed) + '/284/172" alt=""></div>' +
+                '    <div class="r-article-summary">' + highlight(summary, qBase) + '</div>' +
+                '  </div>' +
+                '  <div class="r-article-meta"><span>来源：' + escapeHtml(source) + '</span><span class="r-article-time">发布时间：' + date + '</span></div>' +
                 '</div>';
         }
 
@@ -837,6 +935,95 @@
         alert('跳转至搜索中心 - ' + label);
     }
 
+    var resourceTrendData = {
+        last14: [
+            { label: '05-02', img: 18, video: 2, audio: 1 },
+            { label: '05-03', img: 20, video: 1, audio: 0 },
+            { label: '05-04', img: 17, video: 1, audio: 1 },
+            { label: '05-05', img: 24, video: 2, audio: 1 },
+            { label: '05-06', img: 26, video: 2, audio: 2 },
+            { label: '05-07', img: 28, video: 1, audio: 0 },
+            { label: '05-08', img: 34, video: 3, audio: 1 },
+            { label: '05-09', img: 38, video: 3, audio: 2 },
+            { label: '05-10', img: 22, video: 1, audio: 0 },
+            { label: '05-11', img: 36, video: 2, audio: 1 },
+            { label: '05-12', img: 39, video: 3, audio: 1 },
+            { label: '05-13', img: 35, video: 2, audio: 2 },
+            { label: '05-14', img: 41, video: 3, audio: 1 },
+            { label: '05-15', img: 29, video: 2, audio: 1 }
+        ],
+        month: [
+            { label: '04-16', img: 22, video: 1, audio: 1 },
+            { label: '04-20', img: 25, video: 2, audio: 1 },
+            { label: '04-24', img: 28, video: 2, audio: 1 },
+            { label: '04-28', img: 30, video: 2, audio: 2 },
+            { label: '05-02', img: 18, video: 2, audio: 1 },
+            { label: '05-06', img: 26, video: 2, audio: 2 },
+            { label: '05-10', img: 22, video: 1, audio: 0 },
+            { label: '05-14', img: 41, video: 3, audio: 1 }
+        ],
+        quarter: [
+            { label: '2月上', img: 64, video: 6, audio: 3 },
+            { label: '2月下', img: 72, video: 5, audio: 4 },
+            { label: '3月上', img: 88, video: 8, audio: 5 },
+            { label: '3月下', img: 94, video: 9, audio: 4 },
+            { label: '4月上', img: 82, video: 7, audio: 4 },
+            { label: '4月下', img: 98, video: 8, audio: 6 },
+            { label: '5月上', img: 87, video: 6, audio: 3 },
+            { label: '5月中', img: 105, video: 9, audio: 5 }
+        ]
+    };
+
+    function buildSmoothPath(points) {
+        if (!points.length) return '';
+        var path = 'M ' + points[0].x + ' ' + points[0].y;
+        for (var i = 0; i < points.length - 1; i++) {
+            var current = points[i];
+            var next = points[i + 1];
+            var midX = (current.x + next.x) / 2;
+            path += ' C ' + midX + ' ' + current.y + ', ' + midX + ' ' + next.y + ', ' + next.x + ' ' + next.y;
+        }
+        return path;
+    }
+
+    function renderResourceTrend(range) {
+        var wrap = document.getElementById('resourceTrendBars');
+        if (!wrap) return;
+        var data = resourceTrendData[range || 'last14'] || resourceTrendData.last14;
+        var totals = data.map(function(item) { return item.img + item.video + item.audio; });
+        var maxTotal = Math.max.apply(null, totals);
+        var points = data.map(function(item, index) {
+            var x = data.length === 1 ? 50 : 4 + (index * 92 / (data.length - 1));
+            var total = item.img + item.video + item.audio;
+            var y = 84 - (total / maxTotal * 62);
+            return { x: Number(x.toFixed(2)), y: Number(y.toFixed(2)), total: total };
+        });
+        var html = '';
+        data.forEach(function(item, index) {
+            var total = totals[index];
+            var imgH = item.img ? Math.max(6, item.img / maxTotal * 100) : 0;
+            var videoH = item.video ? Math.max(3, item.video / maxTotal * 100) : 0;
+            var audioH = item.audio ? Math.max(3, item.audio / maxTotal * 100) : 0;
+            var tip = item.label + '&#10;图片 ' + item.img + ' / 视频 ' + item.video + ' / 音频 ' + item.audio + '&#10;总量 ' + total;
+            html += '<div class="resource-day" data-tip="' + tip + '">';
+            html += '<div class="resource-stack">';
+            html += '<span class="img" style="height:' + imgH + '%"></span>';
+            html += '<span class="video" style="height:' + videoH + '%"></span>';
+            html += '<span class="audio" style="height:' + audioH + '%"></span>';
+            html += '</div><span class="resource-day-label">' + item.label + '</span></div>';
+        });
+        var circles = points.map(function(point) {
+            return '<circle class="resource-line-dot" cx="' + point.x + '" cy="' + point.y + '" r="1.6"></circle>';
+        }).join('');
+        html += '<svg class="resource-line-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">';
+        html += '<path class="resource-line-path" d="' + buildSmoothPath(points) + '"></path>' + circles + '</svg>';
+        wrap.innerHTML = html;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        renderResourceTrend('last14');
+    });
+
     /* ===== PRD Panel JS ===== */
     function togglePrdPanel() {
         var panel = document.getElementById('prdPanel');
@@ -857,6 +1044,17 @@
     }
 
     var changelogData = [
+        { time: '2026-05-18 16:53', desc: '移除首页底部成品资源概览与成品资源入库趋势模块，并同步清理PRD描述' },
+        { time: '2026-05-18 14:28', desc: '资源聚合三张总量卡增加图片框、视频胶片和音频波形背景元素' },
+        { time: '2026-05-18 14:28', desc: '去除资源入库趋势图内“图片 / 视频 / 音频入库结构”文案' },
+        { time: '2026-05-18 12:03', desc: '资源入库趋势改为图片、视频、音频堆叠柱状展示，并增加总量折线与悬浮明细，PRD同步' },
+        { time: '2026-05-18 10:53', desc: '资源聚合和资源入库趋势统一为成品资源概览风格，字段与统计口径保持不变' },
+        { time: '2026-05-15 18:41', desc: '成品资源入库趋势增加总量折线、悬浮提示和近两周/今年切换交互，PRD同步' },
+        { time: '2026-05-15 16:52', desc: '移除PRD中的接口请求和返回字段描述，并将该PRD编写规范沉淀到myccweb-deploy skill' },
+        { time: '2026-05-15 16:44', desc: '细化首页底部成品资源统计PRD，明确成品资源仅统计全省资源库及指标取数口径' },
+        { time: '2026-05-15 16:20', desc: '搜索结果页稿件列表优化为图文新闻条目，新增关键词高亮、摘要、缩略图和发布时间布局' },
+        { time: '2026-05-15 15:02', desc: '成品资源概览模块文案精简，趋势标题改为成品资源入库趋势，时间筛选调整为近两周/今年' },
+        { time: '2026-05-15 14:55', desc: '保留原资源聚合和入库趋势，在其下方新增成品资源概览模块，PRD同步' },
         { time: '2026-05-11 16:12', desc: '首页搜索优化原型 + PRD 初始版本' }
     ];
 
