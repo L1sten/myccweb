@@ -1329,9 +1329,7 @@ function renderDetailSide() {
     return;
   }
   body.innerHTML = '<div class="sidebar-section"><div class="section-label">稿件信息</div>' +
-      sideField(a.type === '视频稿' ? '稿件GUID' : '稿件ID', a.id || '') + '</div>' +
-    '<div class="sidebar-section"><div class="section-label">稿件信息</div>' +
-        sideField(a.type === '视频稿' ? '稿件GUID' : '稿件ID', a.id || '') + '</div>';
+      sideField(a.type === '视频稿' ? '稿件GUID' : '稿件ID', a.id || '') + '</div>';
 }
 
 function switchDetailInfoTab(tab) {
