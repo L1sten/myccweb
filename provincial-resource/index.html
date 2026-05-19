@@ -458,8 +458,7 @@
         </div>
         <div class="art-detail-sidebar">
             <div class="detail-side-tabs">
-                <button class="detail-side-tab active" data-tab="basic" onclick="switchDetailInfoTab('basic')">基本信息</button>
-                <button class="detail-side-tab" data-tab="attr" onclick="switchDetailInfoTab('attr')">属性信息</button>
+                <button class="detail-side-tab active" data-tab="struct">结构化信息</button>
             </div>
             <div class="detail-side-body" id="detailSideBody"></div>
         </div>
@@ -830,14 +829,12 @@
 - 图集稿详情：展示正文说明 + 图集轮播区，轮播区包含主图、当前序号、左右切换按钮和缩略图列表
 - 视频稿详情：展示视频播放区 + 正文说明，视频播放区包含封面、播放按钮、进度条、时间和基础播放控件
 - 链接稿详情：展示外链地址，点击后打开原始页面
-- 右侧信息面板分为"基本信息"和"属性信息"两个 Tab
-- 基本信息 Tab 展示稿件信息；属性信息 Tab 展示关键词和摘要
-- 图集稿、视频稿、链接稿、新闻稿的属性信息字段保持一致
+- 右侧信息面板展示结构化信息，包含稿件信息、关键词和摘要
+- 图集稿、视频稿、链接稿、新闻稿的结构化信息字段保持一致
 
 **交互规则**：
 - 点击稿件标题时，根据该行稿件类型进入对应详情模板
 - 点击返回按钮关闭详情页
-- 点击右侧信息面板 Tab 时切换基本信息和属性信息
 - 点击图集缩略图或左右切换按钮时切换当前展示图片
 - 点击链接稿正文中的 URL 时在新窗口打开
 
@@ -855,7 +852,7 @@
 - 顶部工具栏：返回按钮（左侧）+ 操作按钮居中展示（查看、下载、取至个人）
 - 左侧主区域：图片大图预览 + 底部文件信息（大小、格式、尺寸）
 - 右侧信息面板：
-  - 基本信息 Tab：标题、来源、渠道、上传时间
+  - 结构化信息：标题、来源、渠道、上传时间
   - 关键词区域：展示图片已识别的关键词标签
 
 **交互规则**：
@@ -876,7 +873,7 @@
 - 顶部工具栏：返回按钮（左侧）+ 操作按钮居中展示（查看、下载、取至个人）
 - 左侧主区域：视频封面预览（居中播放按钮叠加）+ 底部文件信息（时长、大小、格式）
 - 右侧信息面板：
-  - 基本信息 Tab：标题、来源、渠道、上传时间
+  - 结构化信息：标题、来源、渠道、上传时间
   - 关键词区域：展示视频已识别的关键词标签
 
 **交互规则**：
@@ -1319,17 +1316,11 @@ function renderDetailSide() {
   if (!detailActiveArticle) return;
   var a = detailActiveArticle;
   var body = document.getElementById('detailSideBody');
-  document.querySelectorAll('.detail-side-tab').forEach(function(tab) {
-    tab.classList.toggle('active', tab.getAttribute('data-tab') === detailActiveTab);
-  });
-  if (detailActiveTab === 'attr') {
-    var kw = a.keywords && a.keywords.length ? '<div class="kw-list">' + a.keywords.map(function(k) { return '<span class="kw-item">#' + k + '</span>'; }).join('') + '</div>' : '<div class="side-empty">暂无关键词</div>';
-    body.innerHTML = '<div class="sidebar-section"><div class="section-label">关键词</div>' + kw + '</div>' +
-      '<div class="sidebar-section"><div class="section-label">摘要</div><div class="side-field-value">' + (a.summary || '<span class="side-empty">暂无摘要</span>') + '</div></div>';
-    return;
-  }
+  var kw = a.keywords && a.keywords.length ? '<div class="kw-list">' + a.keywords.map(function(k) { return '<span class="kw-item">#' + k + '</span>'; }).join('') + '</div>' : '<div class="side-empty">暂无关键词</div>';
   body.innerHTML = '<div class="sidebar-section"><div class="section-label">稿件信息</div>' +
-      sideField(a.type === '视频稿' ? '稿件GUID' : '稿件ID', a.id || '') + '</div>';
+      sideField(a.type === '视频稿' ? '稿件GUID' : '稿件ID', a.id || '') + '</div>' +
+    '<div class="sidebar-section"><div class="section-label">关键词</div>' + kw + '</div>' +
+    '<div class="sidebar-section"><div class="section-label">摘要</div><div class="side-field-value">' + (a.summary || '<span class="side-empty">暂无摘要</span>') + '</div></div>';
 }
 
 function switchDetailInfoTab(tab) {
@@ -1340,7 +1331,6 @@ function switchDetailInfoTab(tab) {
 function showDetail(idx) {
   var a = articles[idx];
   detailActiveArticle = a;
-  detailActiveTab = 'basic';
   document.getElementById('detailPageTitle').textContent = detailKindLabel(a.type) + '-稿件详情';
   document.getElementById('detailTitle').textContent = a.title;
   document.getElementById('detailMeta').innerHTML = detailMetaHtml(a);
