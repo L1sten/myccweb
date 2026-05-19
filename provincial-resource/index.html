@@ -158,33 +158,66 @@
         .list-view{display:flex;flex:1;flex-direction:column;overflow:hidden}
         .list-view.hidden{display:none}
         /* ========== Detail Overlay ========== */
-        .art-detail{display:none;position:fixed;inset:0;background:var(--color-gray3,var(--secondary));z-index:300;flex-direction:column}
+        .art-detail{display:none;position:fixed;inset:0;background:var(--color-gray3,var(--secondary));z-index:700;flex-direction:column}
         .art-detail.active{display:flex}
         .art-detail-header{height:56px;background:#fff;border-bottom:1px solid var(--border-light);display:flex;align-items:center;padding:0 24px;gap:16px;flex-shrink:0;justify-content:center;position:relative}
         .art-detail-back{display:flex;align-items:center;gap:4px;cursor:pointer;font-size:14px;color:var(--text-secondary);transition:color .15s;position:absolute;left:24px}
         .art-detail-back:hover{color:var(--brand)}
         .art-detail-back svg{width:18px;height:18px}
+        .art-detail-page-title{position:absolute;left:104px;font-size:15px;font-weight:600;color:var(--text)}
         .art-detail-actions{display:flex;gap:8px}
         .art-detail-actions button{height:32px;padding:0 14px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;background:#fff;color:var(--text-secondary);display:flex;align-items:center;gap:5px;transition:all .15s}
         .art-detail-actions button:hover{border-color:var(--brand);color:var(--brand)}
         .art-detail-actions button svg{width:14px;height:14px}
         .art-detail-body{flex:1;display:flex;overflow:hidden}
-        .art-detail-main{flex:1;overflow-y:auto;padding:32px 40px;background:#fff}
-        .art-detail-main .detail-title{font-size:22px;font-weight:600;color:var(--foreground);margin-bottom:12px;line-height:1.4}
-        .art-detail-main .detail-meta{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--text-secondary);margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border-light)}
+        .art-detail-main{flex:1;overflow-y:auto;padding:32px 40px 88px;background:#e9eef6;display:flex;justify-content:center}
+        .detail-paper{width:min(860px,100%);background:#fff;padding:32px 36px;min-height:100%;box-shadow:0 0 0 1px rgba(226,232,240,.7)}
+        .art-detail-main .detail-title{font-size:21px;font-weight:700;color:var(--foreground);margin-bottom:24px;line-height:1.45;text-align:center}
+        .art-detail-main .detail-meta{display:grid;grid-template-columns:1fr 1fr;gap:16px 48px;font-size:14px;color:var(--text);margin-bottom:26px;padding:22px;background:#f6f7f9;border:none}
+        .art-detail-main .detail-meta span{min-width:0}
         .art-detail-main .detail-meta .label{color:var(--text);font-weight:500}
-        .art-detail-main .detail-content{font-size:15px;line-height:1.8;color:var(--text)}
+        .art-detail-main .detail-content{font-size:16px;line-height:1.9;color:var(--text)}
         .art-detail-main .detail-content p{margin-bottom:16px}
         .art-detail-main .detail-content .source-note{font-size:13px;color:var(--text-secondary);margin-top:20px;padding-top:16px;border-top:1px solid var(--border-light)}
+        .detail-link{display:inline-block;color:#1677ff;text-decoration:none;word-break:break-all;font-size:16px;margin-top:8px}
+        .detail-link:hover{text-decoration:underline}
+        .detail-gallery{background:#f6f7f9;padding:28px 18px;margin-top:24px}
+        .gallery-stage{position:relative;max-width:640px;margin:0 auto;background:#111}
+        .gallery-stage img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+        .gallery-counter{position:absolute;right:12px;top:12px;background:rgba(0,0,0,.58);color:#fff;border-radius:3px;padding:4px 10px;font-size:14px;font-weight:600}
+        .gallery-caption{position:absolute;left:0;right:0;bottom:0;color:#fff;background:linear-gradient(180deg,transparent,rgba(0,0,0,.65));padding:38px 18px 14px;font-size:15px;font-weight:600;line-height:1.5}
+        .gallery-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:none;background:rgba(0,0,0,.35);color:#fff;font-size:28px;line-height:1;cursor:pointer}
+        .gallery-nav.prev{left:-58px}
+        .gallery-nav.next{right:-58px}
+        .gallery-thumbs{display:flex;gap:10px;justify-content:center;margin-top:14px;overflow-x:auto;padding-bottom:4px}
+        .gallery-thumbs img{width:64px;height:48px;object-fit:cover;border-radius:3px;border:2px solid transparent}
+        .gallery-thumbs img.active{border-color:var(--brand)}
+        .video-box{background:#f6f7f9;padding:36px;margin:24px 0}
+        .video-frame{position:relative;max-width:720px;margin:0 auto;background:#111}
+        .video-frame img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;filter:brightness(.82)}
+        .video-play{position:absolute;left:22px;bottom:34px;width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:16px solid #fff}
+        .video-time{position:absolute;left:58px;bottom:29px;color:#fff;font-size:14px}
+        .video-bar{position:absolute;left:22px;right:22px;bottom:18px;height:3px;background:rgba(255,255,255,.35)}
+        .video-bar::before{content:'';display:block;width:24%;height:100%;background:#fff}
+        .video-tools{position:absolute;right:22px;bottom:28px;color:#fff;font-size:18px;letter-spacing:12px}
         .art-detail-sidebar{width:340px;flex-shrink:0;background:#fff;border-left:1px solid var(--border-light);display:flex;flex-direction:column;overflow:hidden}
-        .art-detail-sidebar .sidebar-section{padding:20px}
-        .art-detail-sidebar .sidebar-section+.sidebar-section{border-top:1px solid var(--border-light)}
-        .art-detail-sidebar .section-label{font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px}
+        .detail-side-tabs{height:60px;display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border-light)}
+        .detail-side-tab{border:none;background:#fff;font-size:15px;font-weight:600;color:var(--text);cursor:pointer;position:relative}
+        .detail-side-tab.active{color:#1677ff}
+        .detail-side-tab.active::after{content:'';position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:38px;height:3px;background:#3b82f6}
+        .detail-side-body{padding:28px 18px;overflow-y:auto}
+        .art-detail-sidebar .sidebar-section{padding:0 0 22px;margin-bottom:22px;border-bottom:1px solid var(--border-light)}
+        .art-detail-sidebar .section-label{font-size:16px;font-weight:600;color:var(--text);margin-bottom:16px;border-left:3px solid var(--brand);padding-left:14px}
+        .side-field{margin:14px 0}
+        .side-field-label{font-size:13px;color:#8ea0bb;margin-bottom:8px}
+        .side-field-value{font-size:14px;color:var(--text);line-height:1.6;word-break:break-word}
+        .side-empty{font-size:14px;color:#b8b8b8;line-height:1.6}
         .art-detail-sidebar .tag-list{display:flex;flex-wrap:wrap;gap:8px}
         .art-detail-sidebar .tag-item{display:inline-block;padding:4px 12px;background:var(--secondary);border:1px solid var(--border-light);border-radius:14px;font-size:12px;color:var(--text-secondary);white-space:nowrap}
         .art-detail-sidebar .kw-list{display:flex;flex-wrap:wrap;gap:4px 12px}
         .art-detail-sidebar .kw-item{font-size:13px;color:var(--brand);cursor:pointer;line-height:1.8}
         .art-detail-sidebar .kw-item:hover{text-decoration:underline}
+        .art-detail-footer{height:64px;background:#fff;border-top:1px solid var(--border-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 
         /* ========== PRD Panel ========== */
         .prd-toc{width:180px;border-right:1px solid var(--border);overflow-y:auto;background:#fafafa;padding:16px 0}
@@ -280,6 +313,20 @@
         .sidebar-ctx.show{display:block}
         .sidebar-ctx-item{padding:7px 16px;font-size:13px;color:var(--text);cursor:pointer;white-space:nowrap;transition:background .1s}
         .sidebar-ctx-item:hover{background:var(--brand-light);color:var(--brand)}
+        @media (max-width:900px){
+            .app-split .page-wrap{width:100%}
+            .split-drag{display:none}
+            .prd-panel{position:fixed;right:0;top:0;bottom:0;width:min(92vw,460px);z-index:650;background:#fff;box-shadow:-12px 0 32px rgba(15,23,42,.16)}
+            .prd-panel.collapsed{width:0;opacity:0;overflow:hidden;border:none;box-shadow:none}
+            .art-detail-body{flex-direction:column;overflow:auto}
+            .art-detail-main{padding:20px 16px 24px;display:block;overflow:visible}
+            .detail-paper{width:100%;min-height:auto;padding:24px 18px}
+            .detail-meta{grid-template-columns:1fr!important}
+            .art-detail-sidebar{width:100%;border-left:0;border-top:1px solid var(--border-light);max-height:none}
+            .gallery-nav.prev{left:10px}
+            .gallery-nav.next{right:10px}
+            .art-detail-page-title{left:92px;right:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        }
     </style>
 </head>
 <body>
@@ -361,7 +408,7 @@
                     <div class="toolbar-left">
                         <div class="filter-bar">
                             <div class="filter-item"><span class="filter-label">日期</span><input type="date" class="input input-sm" value="2026-04-06"><span style="color:var(--text-secondary);font-size:12px">至</span><input type="date" class="input input-sm" value="2026-05-06"></div>
-                            <div class="filter-item"><span class="filter-label">稿件类型</span><select class="select select-sm"><option>全部类型</option><option>新闻</option><option>评论</option><option>专题</option><option>图集</option></select></div>
+                            <div class="filter-item"><span class="filter-label">稿件类型</span><select class="select select-sm" id="typeFilter" onchange="filterAndRender()"><option>全部类型</option><option>新闻</option><option>评论</option><option>专题</option><option>图集</option><option>视频稿</option><option>链接稿</option></select></div>
                         </div>
                     </div>
                     <div class="toolbar-right">
@@ -395,6 +442,7 @@
 <div class="art-detail" id="artDetail">
     <div class="art-detail-header">
         <div class="art-detail-back" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>返回</div>
+        <div class="art-detail-page-title" id="detailPageTitle">稿件详情</div>
         <div class="art-detail-actions">
             <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>取稿</button>
             <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>阅读原文</button>
@@ -402,25 +450,21 @@
     </div>
     <div class="art-detail-body">
         <div class="art-detail-main">
-            <div class="detail-title" id="detailTitle"></div>
-            <div class="detail-meta">
-                <span><span class="label">发布站点：</span><span id="detailSite"></span></span>
-                <span><span class="label">渠道：</span><span id="detailChannel"></span></span>
-                <span><span class="label">发布时间：</span><span id="detailTime"></span></span>
+            <div class="detail-paper">
+                <div class="detail-title" id="detailTitle"></div>
+                <div class="detail-meta" id="detailMeta"></div>
+                <div class="detail-content" id="detailContent"></div>
             </div>
-            <div class="detail-content" id="detailContent"></div>
         </div>
         <div class="art-detail-sidebar">
-            <div class="sidebar-section">
-                <div class="section-label">标签</div>
-                <div class="tag-list" id="detailTags"></div>
+            <div class="detail-side-tabs">
+                <button class="detail-side-tab active" data-tab="basic" onclick="switchDetailInfoTab('basic')">基本信息</button>
+                <button class="detail-side-tab" data-tab="attr" onclick="switchDetailInfoTab('attr')">属性信息</button>
             </div>
-            <div class="sidebar-section">
-                <div class="section-label">关键词</div>
-                <div class="kw-list" id="detailKeywords"></div>
-            </div>
+            <div class="detail-side-body" id="detailSideBody"></div>
         </div>
     </div>
+    <div class="art-detail-footer"><button class="btn btn-primary" onclick="toggleFetchModal()">取稿</button></div>
 </div>
 
 <!-- Split Drag -->
@@ -602,7 +646,7 @@
 - **稿件类型**
   - 展示规则：下拉选择
   - 交互规则：选中后自动刷新列表
-  - 数据规则：选项为全部稿件、新闻、评论、专题、图集；匹配稿件的"稿件类型"字段，精确匹配
+  - 数据规则：选项为全部稿件、新闻、评论、专题、图集、视频稿、链接稿；匹配稿件的"稿件类型"字段，精确匹配
 
 - **排序**
   - 展示规则：下拉选择
@@ -776,21 +820,30 @@
 
 ### 3.9 稿件详情页
 
-**功能描述**：展示单篇稿件的完整内容。
+**功能描述**：从成品稿件列表点击稿件标题进入稿件详情页，并根据稿件类型展示对应详情模板。
 
 **展示规则**：
 - 全屏遮罩层，不影响列表页状态
 - 顶部工具栏：返回按钮（左侧）+ 操作按钮居中展示（取稿、阅读原文）
-- 左侧主区域：稿件标题 + 元信息（发布站点、渠道、发布时间）+ 正文内容
-- 右侧辅助区：分两个区域，上方为"标签"区域（浅灰背景圆角标签），下方为"关键词"区域（蓝色 # 前缀文字）
+- 左侧主区域统一包含稿件标题、稿件基础元信息和类型化正文内容
+- 新闻稿详情：展示新闻正文，可包含正文图片
+- 图集稿详情：展示正文说明 + 图集轮播区，轮播区包含主图、当前序号、左右切换按钮和缩略图列表
+- 视频稿详情：展示视频播放区 + 正文说明，视频播放区包含封面、播放按钮、进度条、时间和基础播放控件
+- 链接稿详情：展示外链地址，点击后打开原始页面
+- 右侧信息面板分为"基本信息"和"属性信息"两个 Tab
+- 基本信息 Tab 展示共享信息、作者信息、编辑信息；属性信息 Tab 展示关键词和摘要
+- 图集稿、视频稿、链接稿、新闻稿的属性信息字段保持一致
 
 **交互规则**：
-- 点击稿件标题进入详情页
+- 点击稿件标题时，根据该行稿件类型进入对应详情模板
 - 点击返回按钮关闭详情页
+- 点击右侧信息面板 Tab 时切换基本信息和属性信息
+- 点击图集缩略图或左右切换按钮时切换当前展示图片
+- 点击链接稿正文中的 URL 时在新窗口打开
 
 **数据规则**：
-- **取数规则**：读取稿件的标签和关键词字段，每篇稿件包含 2-4 个标签和 2-5 个已识别关键词
-- **数据筛选规则**：无额外筛选
+- **取数规则**：读取稿件标题、稿件类型、署名作者、共享时间、字数、责任编辑、稿件 ID、作者信息、编辑信息、关键词、摘要及类型化内容字段；图集稿额外读取图片列表，视频稿额外读取视频封面和时长，链接稿额外读取原文链接
+- **数据筛选规则**：无额外筛选；进入详情时仅读取当前列表行对应稿件
 - **数据排序规则**：无排序
 
 ### 3.10 图片详情页
@@ -871,7 +924,6 @@
 - 三个子页面共用顶部导航、渠道 Tab、左侧地域筛选和分页交互
 - 右上角提供 PRD 切换按钮（绿色圆点 + "PRD"文字）和更新记录按钮
 - PRD 面板支持拖拽调整宽度
-
 </textarea>
 
 <script>
@@ -892,6 +944,10 @@ var regionData = [
 
 /* ========== Article Mock Data ========== */
 var articles = [
+  { title: '钱报朋友圈·福利 | “营造江南”开展在即等你打卡，5组德寿宫夜游门票免费送', source: '钱江晚报', region: '省本级', type: '新闻', wc: 1487, product: '钱报朋友圈', time: '2026/05/19 09:50:39', channel: '客户端', id: '31669367', author: '记者 詹程开', editor: '', shareUser: '钱江晚报>全媒体新闻中心>詹程开', responsibleEditor: '', signedAuthor: '记者 詹程开', summary: '', tags: ['钱报朋友圈'], keywords: ['营造江南', '德寿宫', '夜游门票'], content: '<p>【圈子】钱报朋友圈</p><p>2026年“5·18国际博物馆日”，一场“营造江南：杭州与宁波的宋代官式建筑美学”展正式发布预告，并同步启动“5·28宋代斗拱搭建活动”公众招募，以特殊的“建筑语言”开展杭甬双城对话。</p><p>本次展览是落实“杭甬双城联动，构建协同格局”工作部署的重要文化实践。通过并置展示“杭州德寿宫遗址出土的南宋皇家建筑构件”与“宁波保国寺大殿模型”，实现杭甬两座宋韵名城在空间、材料与匠意层面的共振。</p><p>展览首次将“宫殿”与“佛殿”两大官式美学体系同台呈现：杭州德寿宫代表皇家宫苑的堂皇气象，宁波保国寺大殿则以“法式例证”的木构奇迹展现江南厅堂式佛殿的理性与灵性。</p><img src="img/c57e0677-74ea-40fb-9efe-42ecfe368d56_m.png" alt="德寿宫展览配图" style="width:100%;margin-top:20px;display:block;">' },
+  { title: '“黄河入画 滨州出彩”2026全国主流媒体行滨州行活动举行', source: '潮闻天下传媒（浙江）集团有限公司', region: '省本级', type: '图集', wc: 237, product: '潮新闻客户端', time: '2026/04/11 09:24:59', channel: '客户端', id: '31600429', author: '记者 黄玉环', editor: '董静波', shareUser: '潮闻天下传媒（浙江）集团有限公司>报纸编辑中心>黄玉环', responsibleEditor: '董静波', signedAuthor: '记者 黄玉环', summary: '', tags: ['黄河入画', '滨州出彩'], keywords: [], galleryImages: ['img/4d8c8075-0daa-435f-a509-9b65880a4769_m.jpg','img/4f309388-b9a0-4f53-a81f-52a7b420f924_m.jpg','img/b90bfe95-5904-4c50-82cc-1041830e3671_m.jpg','img/6a461d0e-5448-4551-8a85-760682cfc1c5_m.jpg','img/2aa99f62-ba7c-4e36-9bf3-cffb1870b89c_m.jpg','img/80077534-66d6-4bb6-b2b9-173fdc244dc0_m.jpg'], content: '<p>4月7日至11日，“2025年度全国晚报优秀新闻摄影作品评选暨2026年全国主流媒体滨州行活动”在山东滨州举行。来自北京、上海、天津、广东、江苏、浙江、河北、河南、安徽、福建、陕西、内蒙古、山东等地的近30家主流媒体、近40位总编和记者们齐聚渤海之滨、黄河之州，沿着黄河足迹沉浸式探访滨州。</p><p>以黄河为脉，向未来而行。此次媒体行，让全国主流媒体全方位见证了滨州在黄河流域生态保护和高质量发展中的生动实践。</p>' },
+  { title: '（21日早班请发，配合大报政治新闻部报道）法治浙江建设20年：这些“全国第一”藏不住了！', source: '浙江日报', region: '省本级', type: '链接稿', wc: 0, product: '浙江日报客户端', time: '2026/04/20 19:12:35', channel: '客户端', id: '31616981', author: '钱祎', editor: '王驭时', shareUser: '浙江日报>全媒体政治新闻部>钱祎', responsibleEditor: '王驭时', signedAuthor: '', summary: '', tags: ['法治浙江'], keywords: [], originalUrl: 'https://i.tidenews.com.cn/sy/resources/j0402h/index.html', content: '' },
+  { title: '越剧120周年 历久弥新的越剧百花园', source: '嵊州市融媒体中心', region: '越城区', type: '视频稿', wc: 650, product: '爱嵊州客户端', time: '2026/05/19 06:03:35', channel: '客户端', id: '2056496016215986176', author: '编辑：何东铭', editor: '何东铭', shareUser: '嵊州市融媒体中心>爱嵊州客户端>何东铭', responsibleEditor: '何东铭', signedAuthor: '编辑：何东铭', summary: '', tags: ['越剧', '非遗传承'], keywords: ['越剧', '百花园', '文化传承'], duration: '9:00', videoPoster: 'img/191fe758-19a1-446f-8cae-16cb1c8c0660_m.png', content: '<p>120年前，浙江嵊州东王村中传唱出的质朴旋律，如今已成长为仅次于京剧、享有“第二国剧”美誉的越剧。百余年来，一代代越剧人薪火相传，谱写出一曲又一曲华章。</p><p>在越剧诞生120周年之际，CGTN《戏曲中国行》专访国家级非物质文化遗产项目越剧代表性传承人吴凤花，探寻“范派唱腔”的传承之路，聆听来自江南水乡的悠扬韵律。</p>' },
   { title: '浙江省数字经济增加值突破4万亿元大关', source: '浙江广播电视集团', region: '省本级', type: '图集', wc: 702, product: '中国蓝新闻客户端', time: '2026/05/06 15:15:14', channel: '客户端', tags: ["数字经济", "高质量发展"], keywords: ['数字经济', '高质量发展', '核心产业'], content: '<p>浙江省2026年一季度经济运行情况新闻发布会召开，数字经济核心产业增加值同比增长12.3%，成为推动全省经济高质量发展的重要引擎。</p><div class="source-note">来源：中国蓝新闻客户端</div>' },
   { title: '潮新闻：浙江省共同富裕示范区建设取得阶段性成果', source: '浙江日报报业集团', region: '省本级', type: '新闻', wc: 3371, product: '潮新闻客户端', time: '2026/05/06 09:37:27', channel: '客户端', tags: ["共同富裕", "示范区建设"], keywords: ['共同富裕', '示范区', '最佳实践'], content: '<p>浙江省共同富裕示范区建设推进会召开，发布首批最佳实践案例，涵盖收入分配、公共服务、精神文化等多个领域。</p><div class="source-note">来源：潮新闻客户端</div>' },
   { title: '中国蓝新闻报道：亚运场馆赛后利用成效显著', source: '浙江广播电视集团', region: '省本级', type: '新闻', wc: 983, product: '中国蓝新闻客户端', time: '2026/05/02 14:32:38', channel: '客户端', tags: ["亚运遗产", "全民健身"], keywords: ['亚运场馆', '赛后利用', '全民健身'], content: '<p>杭州亚运会场馆赛后利用一周年评估报告发布，各场馆累计举办赛事活动超过500场，接待市民超过800万人次。</p><div class="source-note">来源：中国蓝新闻客户端</div>' },
@@ -995,8 +1051,16 @@ function getCurrentChannel() {
   return ch === '全部' ? '' : ch;
 }
 
+function getCurrentType() {
+  var sel = document.getElementById('typeFilter');
+  if (!sel) return '';
+  var type = sel.options[sel.selectedIndex].text;
+  return type === '全部类型' ? '' : type;
+}
+
 function filterAndRender() {
   var channel = getCurrentChannel();
+  var type = getCurrentType();
   var filtered = articles;
   if (funnelOnlyRegion) {
     var fr = funnelOnlyRegion;
@@ -1010,6 +1074,7 @@ function filterAndRender() {
     if (regions.length > 0) filtered = filtered.filter(function(a) { return regions.indexOf(a.region) !== -1; });
   }
   if (channel) filtered = filtered.filter(function(a) { return a.channel === channel; });
+  if (type) filtered = filtered.filter(function(a) { return a.type === type; });
   pgFilteredData = filtered;
   pgCurrentPage = 1;
   renderPage();
@@ -1035,7 +1100,7 @@ function renderFilteredTable(data, offset) {
   data.forEach(function(a, i) {
     html += '<tr><td class="col-check"><input type="checkbox" class="row-cb" data-idx="' + articles.indexOf(a) + '" onchange="updSel()"></td>';
     html += '<td class="col-no">' + (offset + i + 1) + '</td>';
-    html += '<td class="col-title"><a href="#" onclick="showDetail(articles.indexOf(this._a));return false" id="a' + i + '">' + a.title + '</a></td>';
+    html += '<td class="col-title"><a href="#" onclick="showDetail(' + articles.indexOf(a) + ');return false">' + a.title + '</a></td>';
     html += '<td class="col-source">' + a.source + '</td>';
     html += '<td class="col-type">' + a.type + '</td>';
     html += '<td class="col-wordcount">' + a.wc + '</td>';
@@ -1045,30 +1110,7 @@ function renderFilteredTable(data, offset) {
   });
   html += '</tbody></table>';
   document.getElementById('tableWrapper').innerHTML = html;
-  data.forEach(function(a, i) { var el = document.getElementById('a' + i); if (el) el._a = a; });
   updSel();
-}
-
-function showDetail(idx) {
-  var a = idx >= 0 ? articles[idx] : articles[0];
-  document.getElementById('detailTitle').textContent = a.title;
-  document.getElementById('detailSite').textContent = a.product;
-  document.getElementById('detailChannel').textContent = a.channel;
-  document.getElementById('detailTime').textContent = a.time;
-  document.getElementById('detailContent').innerHTML = a.content;
-  var tagEl = document.getElementById('detailTags');
-  var tagHtml = '';
-  if (a.tags && a.tags.length) {
-    a.tags.forEach(function(t) { tagHtml += '<span class="tag-item">' + t + '</span>'; });
-  }
-  tagEl.innerHTML = tagHtml;
-  var kwEl = document.getElementById('detailKeywords');
-  var kwHtml = '';
-  if (a.keywords && a.keywords.length) {
-    a.keywords.forEach(function(k) { kwHtml += '<span class="kw-item">#' + k + '</span>'; });
-  }
-  kwEl.innerHTML = kwHtml;
-  document.getElementById('artDetail').classList.add('active');
 }
 function renderRegions() {
   var container = document.getElementById('regionGroups');
@@ -1209,21 +1251,106 @@ function renderTable() {
 }
 
 /* ========== Detail ========== */
+var detailActiveArticle = null;
+var detailActiveTab = 'basic';
+
+function detailKindLabel(type) {
+  if (type === '图集') return '图集稿';
+  if (type === '视频稿') return '视频稿';
+  if (type === '链接稿') return '链接稿';
+  return '新闻稿';
+}
+
+function detailMetaHtml(a) {
+  var fields = [
+    ['署名作者', a.signedAuthor || a.author || ''],
+    ['共享时间', a.time || ''],
+    ['字数', a.wc || 0],
+    ['责任编辑', a.responsibleEditor || a.editor || '']
+  ];
+  return fields.map(function(f) {
+    return '<span><span class="label">' + f[0] + '：</span>' + (f[1] || '') + '</span>';
+  }).join('');
+}
+
+function renderGalleryDetail(a) {
+  var imgs = a.galleryImages && a.galleryImages.length ? a.galleryImages : ['img/c57e0677-74ea-40fb-9efe-42ecfe368d56_m.png','img/4d8c8075-0daa-435f-a509-9b65880a4769_m.jpg','img/b90bfe95-5904-4c50-82cc-1041830e3671_m.jpg'];
+  var thumbs = imgs.map(function(src, i) {
+    return '<img class="' + (i === 0 ? 'active' : '') + '" src="' + src + '" alt="图集缩略图' + (i + 1) + '">';
+  }).join('');
+  return (a.content || '') +
+    '<div class="detail-gallery">' +
+      '<div class="gallery-stage">' +
+        '<button class="gallery-nav prev" aria-label="上一张">‹</button>' +
+        '<img src="' + imgs[0] + '" alt="' + a.title + '">' +
+        '<div class="gallery-counter">1 / ' + imgs.length + '</div>' +
+        '<div class="gallery-caption">' + a.title + '</div>' +
+        '<button class="gallery-nav next" aria-label="下一张">›</button>' +
+      '</div>' +
+      '<div class="gallery-thumbs">' + thumbs + '</div>' +
+    '</div>';
+}
+
+function renderVideoDetail(a) {
+  var poster = a.videoPoster || 'img/191fe758-19a1-446f-8cae-16cb1c8c0660_m.png';
+  return '<div class="video-box"><div class="video-frame">' +
+      '<img src="' + poster + '" alt="' + a.title + '">' +
+      '<div class="video-play"></div><div class="video-time">0:00 / ' + (a.duration || '9:00') + '</div>' +
+      '<div class="video-tools">⌕ ⋮</div><div class="video-bar"></div>' +
+    '</div></div>' + (a.content || '');
+}
+
+function renderLinkDetail(a) {
+  var url = a.originalUrl || '#';
+  return '<a class="detail-link" href="' + url + '" target="_blank">' + url + '</a>';
+}
+
+function renderDetailContent(a) {
+  if (a.type === '图集') return renderGalleryDetail(a);
+  if (a.type === '视频稿') return renderVideoDetail(a);
+  if (a.type === '链接稿') return renderLinkDetail(a);
+  return a.content || '<p>正文内容加载中...</p>';
+}
+
+function sideField(label, value) {
+  return '<div class="side-field"><div class="side-field-label">' + label + '</div><div class="side-field-value">' + (value || '<span class="side-empty">暂无' + label + '</span>') + '</div></div>';
+}
+
+function renderDetailSide() {
+  if (!detailActiveArticle) return;
+  var a = detailActiveArticle;
+  var body = document.getElementById('detailSideBody');
+  document.querySelectorAll('.detail-side-tab').forEach(function(tab) {
+    tab.classList.toggle('active', tab.getAttribute('data-tab') === detailActiveTab);
+  });
+  if (detailActiveTab === 'attr') {
+    var kw = a.keywords && a.keywords.length ? '<div class="kw-list">' + a.keywords.map(function(k) { return '<span class="kw-item">#' + k + '</span>'; }).join('') + '</div>' : '<div class="side-empty">暂无关键词</div>';
+    body.innerHTML = '<div class="sidebar-section"><div class="section-label">关键词</div>' + kw + '</div>' +
+      '<div class="sidebar-section"><div class="section-label">摘要</div><div class="side-field-value">' + (a.summary || '<span class="side-empty">暂无摘要</span>') + '</div></div>';
+    return;
+  }
+  body.innerHTML = '<div class="sidebar-section"><div class="section-label">共享信息</div>' +
+      sideField(a.type === '视频稿' ? '稿件GUID' : '稿件ID', a.id || '') + '</div>' +
+    '<div class="sidebar-section"><div class="section-label">作者信息</div>' +
+      '<div class="side-field-value">' + (a.shareUser || a.source || '') + '</div></div>' +
+    '<div class="sidebar-section"><div class="section-label">编辑信息</div>' +
+      '<div class="side-field-value">' + (a.editor ? (a.source + '>' + a.editor) : '<span class="side-empty">暂无编辑信息</span>') + '</div></div>';
+}
+
+function switchDetailInfoTab(tab) {
+  detailActiveTab = tab;
+  renderDetailSide();
+}
+
 function showDetail(idx) {
   var a = articles[idx];
+  detailActiveArticle = a;
+  detailActiveTab = 'basic';
+  document.getElementById('detailPageTitle').textContent = detailKindLabel(a.type) + '-稿件详情';
   document.getElementById('detailTitle').textContent = a.title;
-  document.getElementById('detailSite').textContent = a.product;
-  document.getElementById('detailChannel').textContent = a.channel;
-  document.getElementById('detailTime').textContent = a.time;
-  document.getElementById('detailContent').innerHTML = a.content || '<p>正文内容加载中...</p>';
-  var tagEl = document.getElementById('detailTags');
-  var tagHtml = '';
-  if (a.tags && a.tags.length) a.tags.forEach(function(t) { tagHtml += '<span class="tag-item">' + t + '</span>'; });
-  tagEl.innerHTML = tagHtml;
-  var kwEl = document.getElementById('detailKeywords');
-  var kwHtml = '';
-  if (a.keywords && a.keywords.length) a.keywords.forEach(function(k) { kwHtml += '<span class="kw-item">#' + k + '</span>'; });
-  kwEl.innerHTML = kwHtml;
+  document.getElementById('detailMeta').innerHTML = detailMetaHtml(a);
+  document.getElementById('detailContent').innerHTML = renderDetailContent(a);
+  renderDetailSide();
   document.getElementById('artDetail').classList.add('active');
 }
 function goBack() {
@@ -1309,6 +1436,7 @@ function togglePrdPanel() {
 
 /* ========== Changelog ========== */
 var changelogData = [
+  { time: '2026-05-19 10:40', desc: '稿件列表支持新闻稿、图集稿、视频稿、链接稿跳转到对应详情页模板，右侧信息面板统一基本信息/属性信息字段' },
   { time: '2026-05-15 15:51', desc: '修复内嵌 PRD 多级列表渲染，取稿弹窗规则不再显示为普通短横线文本' },
   { time: '2026-05-15 15:32', desc: '同步 PRD 渠道 Tab 与地域筛选取数规则到 HTML 面板' },
   { time: '2026-05-07', desc: '地域筛选改为区县级关联、统一漏斗逻辑、PRD 去除"共享"概念' },
@@ -1491,6 +1619,7 @@ function showToast(msg, isWarn) {
   setTimeout(function() { toast.classList.add('out'); setTimeout(function() { toast.remove(); }, 300); }, 3000);
 }
 document.addEventListener('DOMContentLoaded', function() {
+  if (window.innerWidth < 900) document.getElementById('prdPanel').classList.add('collapsed');
   renderRegions();
   filterAndRender();
   document.getElementById('ctxFilterOnly').addEventListener('click', function() {
