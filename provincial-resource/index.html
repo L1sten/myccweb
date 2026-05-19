@@ -829,7 +829,7 @@
 - 图集稿详情：展示正文说明 + 图集轮播区，轮播区包含主图、当前序号、左右切换按钮和缩略图列表
 - 视频稿详情：展示视频播放区 + 正文说明，视频播放区包含封面、播放按钮、进度条、时间和基础播放控件
 - 链接稿详情：展示外链地址，点击后打开原始页面
-- 右侧信息面板展示结构化信息，包含稿件信息、关键词和摘要
+- 右侧信息面板展示结构化信息，包含关键词和摘要
 - 图集稿、视频稿、链接稿、新闻稿的结构化信息字段保持一致
 
 **交互规则**：
@@ -1317,9 +1317,7 @@ function renderDetailSide() {
   var a = detailActiveArticle;
   var body = document.getElementById('detailSideBody');
   var kw = a.keywords && a.keywords.length ? '<div class="kw-list">' + a.keywords.map(function(k) { return '<span class="kw-item">#' + k + '</span>'; }).join('') + '</div>' : '<div class="side-empty">暂无关键词</div>';
-  body.innerHTML = '<div class="sidebar-section"><div class="section-label">稿件信息</div>' +
-      sideField(a.type === '视频稿' ? '稿件GUID' : '稿件ID', a.id || '') + '</div>' +
-    '<div class="sidebar-section"><div class="section-label">关键词</div>' + kw + '</div>' +
+  body.innerHTML = '<div class="sidebar-section"><div class="section-label">关键词</div>' + kw + '</div>' +
     '<div class="sidebar-section"><div class="section-label">摘要</div><div class="side-field-value">' + (a.summary || '<span class="side-empty">暂无摘要</span>') + '</div></div>';
 }
 
