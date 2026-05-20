@@ -289,7 +289,7 @@
         .fetch-selected strong{color:var(--brand)}
         .fetch-selected{flex:1;min-width:0;display:flex;align-items:center;gap:8px}
         .fetch-selected-list{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0}
-        .fetch-selected-chip{display:inline-flex;align-items:center;gap:6px;max-width:260px;padding:4px 8px;border:1px solid var(--border-light);border-radius:999px;background:var(--brand-light);color:var(--brand);font-size:12px;line-height:1.2}
+        .fetch-selected-chip{display:inline-flex;align-items:center;gap:6px;max-width:360px;padding:4px 8px;border:1px solid var(--border-light);border-radius:999px;background:var(--brand-light);color:var(--brand);font-size:12px;line-height:1.2}
         .fetch-selected-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
         .fetch-selected-chip button{border:0;background:transparent;color:var(--brand);cursor:pointer;font-size:14px;line-height:1;padding:0}
         .fetch-selected-empty{color:var(--muted-foreground)}
@@ -702,9 +702,9 @@
     - 弹窗主体为四列表格，列标题为：渠道、站点、频道及稿库、选择取至草稿箱
     - 渠道列：树形展开，显示一级渠道节点（客户端、网站、个人创作中心），每项前带展开/折叠箭头
     - 站点列：展开渠道后显示该渠道下的站点列表，每项前带展开/折叠箭头
-    - 频道及稿库列：展开站点后显示该站点下的频道/稿库列表，已选目标高亮显示
+    - 频道及稿库列：展开站点后显示该站点下的频道/稿库列表，已选目标高亮显示，不额外展示"已选"文字
     - 选择取至草稿箱列：显示"取至个人草稿箱"和"取至公共草稿箱"两个复选框
-    - 底部左侧以标签列表显示已选取稿目标，每个标签包含渠道、站点、频道及稿库，并支持移除
+    - 底部左侧以标签列表显示已选取稿目标，每个标签包含渠道、站点、频道及稿库、草稿箱去向（个人草稿箱/公共草稿箱/未选择草稿箱），并支持移除
     - 底部右侧显示"取消"和"确定"按钮
   - 交互规则：
     - 点击渠道行展开/折叠该渠道下的站点列表
@@ -712,15 +712,15 @@
     - 点击频道及稿库项将当前"渠道/站点/频道及稿库"加入已选目标，已选项高亮显示；再次点击同一项取消选择
     - 用户可切换到其他渠道或站点继续选择，底部已选目标保留并持续累积
     - 点击底部已选目标标签的移除按钮时，仅移除该目标，不影响其他已选目标
-    - 草稿箱复选框支持勾选，可多选
-    - 点击"确定"校验是否至少已选择一个取稿目标，未选则提示
+    - 草稿箱复选框支持勾选，可多选；勾选状态变化后，底部已选目标标签同步更新草稿箱去向
+    - 点击"确定"校验是否至少已选择一个取稿目标和一个草稿箱去向，未选则提示
   - 数据规则：
     - **取数规则**：渠道、站点、频道及稿库三级数据由天目蓝云提供相关接口获取
-    - **数据筛选规则**：取稿目标可多选，每个目标由渠道、站点、频道及稿库组成；草稿箱复选框可多选
+    - **数据筛选规则**：取稿目标可多选，每个目标由渠道、站点、频道及稿库、草稿箱去向组成；草稿箱复选框可多选
     - **数据排序规则**：按接口返回顺序
 
 - **确认取稿**
-  - 交互规则：确认后关闭弹窗，列表刷新，显示取稿成功提示；提示内容包含稿件数量、取稿目标数量和各目标名称
+  - 交互规则：确认后关闭弹窗，列表刷新，显示取稿成功提示；提示内容包含稿件数量、取稿目标数量、各目标名称和对应草稿箱去向
 
 #### 分页
 
@@ -926,6 +926,7 @@
 - 三个子页面共用顶部导航、渠道 Tab、左侧地域筛选和分页交互
 - 右上角提供 PRD 切换按钮（绿色圆点 + "PRD"文字）和更新记录按钮
 - PRD 面板支持拖拽调整宽度
+
 </textarea>
 
 <script>
@@ -1424,6 +1425,7 @@ function togglePrdPanel() {
 
 /* ========== Changelog ========== */
 var changelogData = [
+  { time: '2026-05-20 12:04', desc: '取稿弹窗去除频道项"已选"文案，底部目标标签和成功 toast 精确展示个人/公共草稿箱去向' },
   { time: '2026-05-20 11:34', desc: '取稿弹窗支持跨渠道选择多个取稿目标，底部展示目标标签并在成功 toast 中汇总多个去向' },
   { time: '2026-05-19 10:40', desc: '稿件列表支持新闻稿、图集稿、视频稿、链接稿跳转到对应详情页模板，右侧信息面板统一基本信息/属性信息字段' },
   { time: '2026-05-15 15:51', desc: '修复内嵌 PRD 多级列表渲染，取稿弹窗规则不再显示为普通短横线文本' },
@@ -1494,6 +1496,28 @@ function isFetchTargetSelected(channel, site, column) {
   return fetchSelected.targets.some(function(t) { return fetchTargetKey(t) === key; });
 }
 
+function getFetchDraftInfo() {
+  var draftInfo = [];
+  if (fetchSelected.draftPersonal) draftInfo.push('个人草稿箱');
+  if (fetchSelected.draftPublic) draftInfo.push('公共草稿箱');
+  return draftInfo;
+}
+
+function getFetchDraftLabel() {
+  var draftInfo = getFetchDraftInfo();
+  return draftInfo.length ? draftInfo.join('、') : '未选择草稿箱';
+}
+
+function getFetchTargetLabel(target, separator) {
+  var sep = separator || ' / ';
+  return [target.channel, target.site, target.column, getFetchDraftLabel()].join(sep);
+}
+
+function updateFetchDraft(field, checked) {
+  fetchSelected[field] = checked;
+  updFetchSelInfo();
+}
+
 function renderFetchChannels() {
   var el = document.getElementById('fetchChList');
   var html = '';
@@ -1544,7 +1568,7 @@ function renderFetchColumns() {
   site.columns.forEach(function(col) {
     var selected = isFetchTargetSelected(fetchSelected.channel, fetchSelected.site, col);
     var cls = (fetchSelected.column === col || selected) ? ' active' : '';
-    html += '<div class="fetch-col-item' + cls + '" onclick="selectFetchCol(\'' + col + '\')"><span>' + col + '</span>' + (selected ? '<span>已选</span>' : '') + '</div>';
+    html += '<div class="fetch-col-item' + cls + '" onclick="selectFetchCol(\'' + col + '\')"><span>' + col + '</span></div>';
   });
   el.innerHTML = html;
 }
@@ -1573,7 +1597,8 @@ function updFetchSelInfo() {
   var el = document.getElementById('fetchSelInfo');
   if (fetchSelected.targets.length) {
     el.innerHTML = '<span class="fetch-selected-list">' + fetchSelected.targets.map(function(t, idx) {
-      return '<span class="fetch-selected-chip"><span>' + t.channel + ' / ' + t.site + ' / ' + t.column + '</span><button type="button" onclick="removeFetchTarget(' + idx + ')">×</button></span>';
+      var label = getFetchTargetLabel(t);
+      return '<span class="fetch-selected-chip" title="' + label + '"><span>' + label + '</span><button type="button" onclick="removeFetchTarget(' + idx + ')">×</button></span>';
     }).join('') + '</span>';
     return;
   }
@@ -1612,12 +1637,9 @@ function confirmFetch() {
   var sel = getSelectedArticles();
   if (sel.length === 0) { showToast('请先选择稿件', true); return; }
   if (fetchSelected.targets.length === 0) { showToast('请至少选择一个取稿渠道和稿库', true); return; }
-  var draftInfo = [];
-  if (fetchSelected.draftPersonal) draftInfo.push('个人草稿箱');
-  if (fetchSelected.draftPublic) draftInfo.push('公共草稿箱');
-  var targetText = fetchSelected.targets.map(function(t) { return t.channel + ' - ' + t.site + ' - ' + t.column; }).join('；');
+  if (getFetchDraftInfo().length === 0) { showToast('请选择取至个人草稿箱或公共草稿箱', true); return; }
+  var targetText = fetchSelected.targets.map(function(t) { return getFetchTargetLabel(t, ' - '); }).join('；');
   var msg = '取稿成功：已将 ' + sel.length + ' 篇稿件取至 ' + fetchSelected.targets.length + ' 个目标：' + targetText;
-  if (draftInfo.length) msg += '（' + draftInfo.join('、') + '）';
   toggleFetchModal();
   showToast(msg);
 }
@@ -1677,13 +1699,13 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="fetch-col" style="flex:0 0 160px">
             <div class="fetch-col-title">选择取至草稿箱</div>
             <div class="fetch-draft">
-                <label><input type="checkbox" id="draftPersonal" onchange="fetchSelected.draftPersonal=this.checked"> 取至个人草稿箱</label>
-                <label><input type="checkbox" id="draftPublic" onchange="fetchSelected.draftPublic=this.checked"> 取至公共草稿箱</label>
+                <label><input type="checkbox" id="draftPersonal" onchange="updateFetchDraft('draftPersonal', this.checked)"> 取至个人草稿箱</label>
+                <label><input type="checkbox" id="draftPublic" onchange="updateFetchDraft('draftPublic', this.checked)"> 取至公共草稿箱</label>
             </div>
         </div>
     </div>
     <div class="fetch-footer">
-        <div class="fetch-selected">已选渠道：<strong id="fetchSelInfo">无</strong></div>
+        <div class="fetch-selected">已选目标：<strong id="fetchSelInfo">无</strong></div>
         <div class="fetch-actions">
             <button class="btn btn-secondary btn-sm" onclick="toggleFetchModal()">取消</button>
             <button class="btn btn-primary btn-sm" onclick="confirmFetch()">确定</button>
