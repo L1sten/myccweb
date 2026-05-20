@@ -287,11 +287,17 @@
         .fetch-footer{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid var(--border-light)}
         .fetch-selected{font-size:12px;color:var(--text-secondary)}
         .fetch-selected strong{color:var(--brand)}
+        .fetch-selected{flex:1;min-width:0;display:flex;align-items:center;gap:8px}
+        .fetch-selected-list{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0}
+        .fetch-selected-chip{display:inline-flex;align-items:center;gap:6px;max-width:260px;padding:4px 8px;border:1px solid var(--border-light);border-radius:999px;background:var(--brand-light);color:var(--brand);font-size:12px;line-height:1.2}
+        .fetch-selected-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .fetch-selected-chip button{border:0;background:transparent;color:var(--brand);cursor:pointer;font-size:14px;line-height:1;padding:0}
+        .fetch-selected-empty{color:var(--muted-foreground)}
         .fetch-actions{display:flex;gap:10px}
 
         /* ========== Toast ========== */
         .toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:600;display:flex;flex-direction:column;align-items:center;gap:8px}
-        .toast{padding:10px 24px;background:#fff;border:1px solid var(--border-light);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);font-size:14px;color:var(--text);display:flex;align-items:center;gap:8px;animation:toastIn .25s ease-out}
+        .toast{max-width:min(860px,86vw);padding:10px 24px;background:#fff;border:1px solid var(--border-light);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);font-size:14px;color:var(--text);display:flex;align-items:flex-start;gap:8px;animation:toastIn .25s ease-out;line-height:1.6}
         .toast.out{animation:toastOut .25s ease-in forwards}
         .toast .toast-icon{width:18px;height:18px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0}
         .toast .toast-icon::after{content:'';display:block;width:5px;height:9px;border-bottom:2px solid #fff;border-right:2px solid #fff;transform:rotate(45deg);margin-top:-2px}
@@ -696,22 +702,25 @@
     - 弹窗主体为四列表格，列标题为：渠道、站点、频道及稿库、选择取至草稿箱
     - 渠道列：树形展开，显示一级渠道节点（客户端、网站、个人创作中心），每项前带展开/折叠箭头
     - 站点列：展开渠道后显示该渠道下的站点列表，每项前带展开/折叠箭头
-    - 频道及稿库列：展开站点后显示该站点下的频道/稿库列表，点击选中高亮
+    - 频道及稿库列：展开站点后显示该站点下的频道/稿库列表，已选目标高亮显示
     - 选择取至草稿箱列：显示"取至个人草稿箱"和"取至公共草稿箱"两个复选框
-    - 底部左侧显示已选渠道信息，右侧显示"取消"和"确定"按钮
+    - 底部左侧以标签列表显示已选取稿目标，每个标签包含渠道、站点、频道及稿库，并支持移除
+    - 底部右侧显示"取消"和"确定"按钮
   - 交互规则：
     - 点击渠道行展开/折叠该渠道下的站点列表
     - 点击站点行展开/折叠该站点下的频道及稿库列表
-    - 点击频道及稿库项选中该目标，选中项高亮显示，切换选中时自动更新底部已选渠道信息
+    - 点击频道及稿库项将当前"渠道/站点/频道及稿库"加入已选目标，已选项高亮显示；再次点击同一项取消选择
+    - 用户可切换到其他渠道或站点继续选择，底部已选目标保留并持续累积
+    - 点击底部已选目标标签的移除按钮时，仅移除该目标，不影响其他已选目标
     - 草稿箱复选框支持勾选，可多选
-    - 点击"确定"校验是否已选择渠道和稿库，未选则提示
+    - 点击"确定"校验是否至少已选择一个取稿目标，未选则提示
   - 数据规则：
     - **取数规则**：渠道、站点、频道及稿库三级数据由天目蓝云提供相关接口获取
-    - **数据筛选规则**：渠道和稿库单选，草稿箱复选框可多选
+    - **数据筛选规则**：取稿目标可多选，每个目标由渠道、站点、频道及稿库组成；草稿箱复选框可多选
     - **数据排序规则**：按接口返回顺序
 
 - **确认取稿**
-  - 交互规则：确认后关闭弹窗，列表刷新，显示取稿成功提示
+  - 交互规则：确认后关闭弹窗，列表刷新，显示取稿成功提示；提示内容包含稿件数量、取稿目标数量和各目标名称
 
 #### 分页
 
@@ -1415,6 +1424,7 @@ function togglePrdPanel() {
 
 /* ========== Changelog ========== */
 var changelogData = [
+  { time: '2026-05-20 11:34', desc: '取稿弹窗支持跨渠道选择多个取稿目标，底部展示目标标签并在成功 toast 中汇总多个去向' },
   { time: '2026-05-19 10:40', desc: '稿件列表支持新闻稿、图集稿、视频稿、链接稿跳转到对应详情页模板，右侧信息面板统一基本信息/属性信息字段' },
   { time: '2026-05-15 15:51', desc: '修复内嵌 PRD 多级列表渲染，取稿弹窗规则不再显示为普通短横线文本' },
   { time: '2026-05-15 15:32', desc: '同步 PRD 渠道 Tab 与地域筛选取数规则到 HTML 面板' },
@@ -1457,14 +1467,14 @@ var fetchTreeData = [
     { name: '目光资讯', columns: ['要闻','社会'] }
   ]}
 ];
-var fetchSelected = { channel: '', site: '', column: '', draftPersonal: false, draftPublic: false };
+var fetchSelected = { channel: '', site: '', column: '', targets: [], draftPersonal: false, draftPublic: false };
 
 function toggleFetchModal() {
   var o = document.getElementById('fetchOverlay'), m = document.getElementById('fetchModal');
   var isOpen = m.classList.contains('show');
   o.classList.toggle('show', !isOpen); m.classList.toggle('show', !isOpen);
   if (!isOpen) {
-    fetchSelected = { channel: '', site: '', column: '', draftPersonal: false, draftPublic: false };
+    fetchSelected = { channel: '', site: '', column: '', targets: [], draftPersonal: false, draftPublic: false };
     renderFetchChannels();
     document.getElementById('fetchSiteList').innerHTML = '';
     document.getElementById('fetchColList').innerHTML = '';
@@ -1473,6 +1483,15 @@ function toggleFetchModal() {
     if (du) du.checked = false;
     updFetchSelInfo();
   }
+}
+
+function fetchTargetKey(target) {
+  return target.channel + '|' + target.site + '|' + target.column;
+}
+
+function isFetchTargetSelected(channel, site, column) {
+  var key = channel + '|' + site + '|' + column;
+  return fetchSelected.targets.some(function(t) { return fetchTargetKey(t) === key; });
 }
 
 function renderFetchChannels() {
@@ -1523,29 +1542,43 @@ function renderFetchColumns() {
   if (!site) { el.innerHTML = ''; return; }
   var html = '';
   site.columns.forEach(function(col) {
-    var cls = fetchSelected.column === col ? ' active' : '';
-    html += '<div class="fetch-col-item' + cls + '" onclick="selectFetchCol(\'' + col + '\')">' + col + '</div>';
+    var selected = isFetchTargetSelected(fetchSelected.channel, fetchSelected.site, col);
+    var cls = (fetchSelected.column === col || selected) ? ' active' : '';
+    html += '<div class="fetch-col-item' + cls + '" onclick="selectFetchCol(\'' + col + '\')"><span>' + col + '</span>' + (selected ? '<span>已选</span>' : '') + '</div>';
   });
   el.innerHTML = html;
 }
 
 function selectFetchCol(name) {
   fetchSelected.column = name;
+  var target = { channel: fetchSelected.channel, site: fetchSelected.site, column: name };
+  var key = fetchTargetKey(target);
+  var existing = fetchSelected.targets.findIndex(function(t) { return fetchTargetKey(t) === key; });
+  if (existing >= 0) {
+    fetchSelected.targets.splice(existing, 1);
+  } else {
+    fetchSelected.targets.push(target);
+  }
+  renderFetchColumns();
+  updFetchSelInfo();
+}
+
+function removeFetchTarget(idx) {
+  fetchSelected.targets.splice(idx, 1);
   renderFetchColumns();
   updFetchSelInfo();
 }
 
 function updFetchSelInfo() {
   var el = document.getElementById('fetchSelInfo');
-  if (fetchSelected.channel && fetchSelected.column) {
-    el.textContent = fetchSelected.channel + ' / ' + fetchSelected.site + ' / ' + fetchSelected.column;
-  } else if (fetchSelected.channel && fetchSelected.site) {
-    el.textContent = fetchSelected.channel + ' / ' + fetchSelected.site;
-  } else if (fetchSelected.channel) {
-    el.textContent = fetchSelected.channel;
-  } else {
-    el.textContent = '无';
+  if (fetchSelected.targets.length) {
+    el.innerHTML = '<span class="fetch-selected-list">' + fetchSelected.targets.map(function(t, idx) {
+      return '<span class="fetch-selected-chip"><span>' + t.channel + ' / ' + t.site + ' / ' + t.column + '</span><button type="button" onclick="removeFetchTarget(' + idx + ')">×</button></span>';
+    }).join('') + '</span>';
+    return;
   }
+  var current = fetchSelected.channel && fetchSelected.site ? fetchSelected.channel + ' / ' + fetchSelected.site : (fetchSelected.channel || '无');
+  el.innerHTML = '<span class="fetch-selected-empty">' + current + '</span>';
 }
 
 function getSelectedArticles() {
@@ -1578,11 +1611,12 @@ function clearSel() {
 function confirmFetch() {
   var sel = getSelectedArticles();
   if (sel.length === 0) { showToast('请先选择稿件', true); return; }
-  if (!fetchSelected.channel || !fetchSelected.column) { showToast('请选择取稿渠道和稿库', true); return; }
+  if (fetchSelected.targets.length === 0) { showToast('请至少选择一个取稿渠道和稿库', true); return; }
   var draftInfo = [];
   if (fetchSelected.draftPersonal) draftInfo.push('个人草稿箱');
   if (fetchSelected.draftPublic) draftInfo.push('公共草稿箱');
-  var msg = '取稿成功：已将 ' + sel.length + ' 篇稿件取至 ' + fetchSelected.channel + ' - ' + fetchSelected.site + ' - ' + fetchSelected.column;
+  var targetText = fetchSelected.targets.map(function(t) { return t.channel + ' - ' + t.site + ' - ' + t.column; }).join('；');
+  var msg = '取稿成功：已将 ' + sel.length + ' 篇稿件取至 ' + fetchSelected.targets.length + ' 个目标：' + targetText;
   if (draftInfo.length) msg += '（' + draftInfo.join('、') + '）';
   toggleFetchModal();
   showToast(msg);
