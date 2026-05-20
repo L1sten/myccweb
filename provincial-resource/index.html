@@ -702,9 +702,9 @@
     - 弹窗主体为四列表格，列标题为：渠道、站点、频道及稿库、选择取至草稿箱
     - 渠道列：树形展开，显示一级渠道节点（客户端、网站、个人创作中心），每项前带展开/折叠箭头
     - 站点列：展开渠道后显示该渠道下的站点列表，每项前带展开/折叠箭头
-    - 频道及稿库列：展开站点后显示该站点下的频道/稿库列表，已选目标高亮显示，不额外展示"已选"文字
+    - 频道及稿库列：展开站点后显示该站点下的频道/稿库列表，已选目标高亮显示
     - 选择取至草稿箱列：显示"取至个人草稿箱"和"取至公共草稿箱"两个复选框
-    - 底部左侧以标签列表显示已选取稿目标，每个标签包含渠道、站点、频道及稿库、草稿箱去向（个人草稿箱/公共草稿箱/未选择草稿箱），并支持移除
+    - 底部左侧以标签列表显示已选取稿目标，每个标签包含渠道、站点、频道及稿库；已选择草稿箱时同步展示草稿箱去向（个人草稿箱/公共草稿箱），并支持移除
     - 底部右侧显示"取消"和"确定"按钮
   - 交互规则：
     - 点击渠道行展开/折叠该渠道下的站点列表
@@ -1425,7 +1425,7 @@ function togglePrdPanel() {
 
 /* ========== Changelog ========== */
 var changelogData = [
-  { time: '2026-05-20 12:04', desc: '取稿弹窗去除频道项"已选"文案，底部目标标签和成功 toast 精确展示个人/公共草稿箱去向' },
+  { time: '2026-05-20 12:04', desc: '取稿弹窗底部目标标签和成功 toast 支持展示个人/公共草稿箱去向' },
   { time: '2026-05-20 11:34', desc: '取稿弹窗支持跨渠道选择多个取稿目标，底部展示目标标签并在成功 toast 中汇总多个去向' },
   { time: '2026-05-19 10:40', desc: '稿件列表支持新闻稿、图集稿、视频稿、链接稿跳转到对应详情页模板，右侧信息面板统一基本信息/属性信息字段' },
   { time: '2026-05-15 15:51', desc: '修复内嵌 PRD 多级列表渲染，取稿弹窗规则不再显示为普通短横线文本' },
@@ -1505,12 +1505,15 @@ function getFetchDraftInfo() {
 
 function getFetchDraftLabel() {
   var draftInfo = getFetchDraftInfo();
-  return draftInfo.length ? draftInfo.join('、') : '未选择草稿箱';
+  return draftInfo.length ? draftInfo.join('、') : '';
 }
 
 function getFetchTargetLabel(target, separator) {
   var sep = separator || ' / ';
-  return [target.channel, target.site, target.column, getFetchDraftLabel()].join(sep);
+  var parts = [target.channel, target.site, target.column];
+  var draftLabel = getFetchDraftLabel();
+  if (draftLabel) parts.push(draftLabel);
+  return parts.join(sep);
 }
 
 function updateFetchDraft(field, checked) {
