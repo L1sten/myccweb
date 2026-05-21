@@ -414,7 +414,7 @@
                     <div class="toolbar-left">
                         <div class="filter-bar">
                             <div class="filter-item"><span class="filter-label">日期</span><input type="date" class="input input-sm" value="2026-04-06"><span style="color:var(--text-secondary);font-size:12px">至</span><input type="date" class="input input-sm" value="2026-05-06"></div>
-                            <div class="filter-item"><span class="filter-label">稿件类型</span><select class="select select-sm" id="typeFilter" onchange="filterAndRender()"><option>全部类型</option><option>新闻</option><option>评论</option><option>专题</option><option>图集</option><option>视频稿</option><option>链接稿</option></select></div>
+                            <div class="filter-item"><span class="filter-label">稿件类型</span><select class="select select-sm" id="typeFilter" onchange="filterAndRender()"><option>全部</option><option>新闻</option><option>图集</option><option>视频</option><option>链接</option></select></div>
                         </div>
                     </div>
                     <div class="toolbar-right">
@@ -647,7 +647,7 @@
 - **稿件类型**
   - 展示规则：下拉选择
   - 交互规则：选中后自动刷新列表
-  - 数据规则：选项为全部稿件、新闻、评论、专题、图集、视频稿、链接稿；匹配稿件的"稿件类型"字段，精确匹配
+  - 数据规则：选项固定为全部、新闻、图集、视频、链接；匹配稿件的"稿件类型"字段，视频匹配视频稿，链接匹配链接稿
 
 - **排序**
   - 展示规则：下拉选择
@@ -1058,7 +1058,10 @@ function getCurrentType() {
   var sel = document.getElementById('typeFilter');
   if (!sel) return '';
   var type = sel.options[sel.selectedIndex].text;
-  return type === '全部类型' ? '' : type;
+  if (type === '全部') return '';
+  if (type === '视频') return '视频稿';
+  if (type === '链接') return '链接稿';
+  return type;
 }
 
 function filterAndRender() {
@@ -1425,6 +1428,7 @@ function togglePrdPanel() {
 
 /* ========== Changelog ========== */
 var changelogData = [
+  { time: '2026-05-21 10:24', desc: '稿件类型筛选项固定为全部、新闻、图集、视频、链接' },
   { time: '2026-05-20 12:04', desc: '取稿弹窗底部目标标签和成功 toast 支持展示个人/公共草稿箱去向' },
   { time: '2026-05-20 11:34', desc: '取稿弹窗支持跨渠道选择多个取稿目标，底部展示目标标签并在成功 toast 中汇总多个去向' },
   { time: '2026-05-19 10:40', desc: '稿件列表支持新闻稿、图集稿、视频稿、链接稿跳转到对应详情页模板，右侧信息面板统一基本信息/属性信息字段' },
