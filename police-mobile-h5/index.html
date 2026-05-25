@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>公安移动端 H5 异常处置与数据报告</title>
+<script src="../auth.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --primary:#155dfc;
+  --primary-deep:#0b3db8;
+  --primary-soft:#eff6ff;
+  --primary-wash:#f5f8ff;
+  --ink:#101828;
+  --text:#1e2939;
+  --muted:#6a7282;
+  --subtle:#99a1af;
+  --line:#e5e7eb;
+  --line-soft:#f3f4f6;
+  --app-bg:#f9fafb;
+  --panel:#fff;
+  --danger:#f54900;
+  --danger-ink:#9f2d00;
+  --danger-soft:#fff7ed;
+  --danger-line:#ffedd4;
+  --green:#008236;
+  --green-soft:#dcfce7;
+  --amber:#a65f00;
+  --amber-soft:#fef9c2;
+  --shadow-card:0 1px 1.5px rgba(0,0,0,.10),0 1px 1px rgba(0,0,0,.10);
+  --shadow-float:0 10px 30px rgba(15,23,42,.09),0 1px 1px rgba(15,23,42,.04);
+  --shadow-panel:0 18px 46px rgba(16,24,40,.16);
+  --border:#e2e8f0;
+  --border-light:#f0f0f0;
+}
+html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:var(--text);background:#eef0f3}
+button,input,textarea{font:inherit}
+button{border:0;background:none;cursor:pointer}
+.app-split{display:flex;height:100vh;overflow:hidden}
+.page-container{flex:1;min-width:0;overflow:auto;background:
+  linear-gradient(90deg,rgba(21,93,252,.035) 1px,transparent 1px),
+  linear-gradient(rgba(15,23,42,.035) 1px,transparent 1px),
+  linear-gradient(135deg,#f7f9fd 0%,#e9edf5 100%);background-size:36px 36px,36px 36px,auto}
+.stage{min-height:100%;display:flex;align-items:center;justify-content:center;padding:36px 24px}
+.prototype-shell{display:grid;grid-template-columns:auto minmax(260px,340px);gap:30px;align-items:center}
+.phone-frame{position:relative;width:393px;height:852px;border-radius:40px;background:linear-gradient(145deg,#0b1220,#192235);padding:10px;box-shadow:0 36px 90px rgba(15,23,42,.30),0 0 0 1px rgba(255,255,255,.36) inset}
+.phone-frame::before{content:"";position:absolute;left:50%;top:9px;transform:translateX(-50%);width:104px;height:5px;border-radius:999px;background:rgba(255,255,255,.16);z-index:3}
+.phone-screen{position:relative;width:100%;height:100%;overflow:hidden;border-radius:30px;background:linear-gradient(180deg,#f7faff 0,#f9fafb 155px,#f5f6f8 100%)}
+.app-top{position:absolute;top:0;left:0;right:0;height:64px;background:rgba(255,255,255,.92);border-bottom:1px solid rgba(229,231,235,.72);z-index:5;padding:13px 16px 0;backdrop-filter:blur(18px)}
+.app-top.detail{height:57px;padding:0;border-bottom:1px solid var(--line-soft);box-shadow:var(--shadow-card)}
+.app-main{position:absolute;left:0;right:0;top:64px;bottom:64px;overflow-y:auto;background:transparent;-webkit-overflow-scrolling:touch}
+.app-main.detail{top:57px}
+.app-main::-webkit-scrollbar{width:0}
+.bottom-nav{position:absolute;left:0;right:0;bottom:0;height:64px;background:rgba(255,255,255,.94);border-top:1px solid rgba(229,231,235,.84);box-shadow:0 -8px 28px rgba(15,23,42,.05);display:grid;grid-template-columns:1fr 1fr;z-index:6;backdrop-filter:blur(18px)}
+.nav-btn{display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:center;color:#8a96a8;font-size:10px;font-weight:650;letter-spacing:.12px;position:relative}
+.nav-btn svg{width:22px;height:22px;stroke:currentColor}
+.nav-btn.active{color:var(--primary)}
+.nav-btn.active::before{content:"";position:absolute;top:6px;width:34px;height:34px;border-radius:999px;background:var(--primary-soft);z-index:-1}
+.segmented{height:38px;background:rgba(236,239,245,.82);border:1px solid rgba(226,232,240,.78);border-radius:12px;display:grid;align-items:center;position:relative;padding:3px;box-shadow:0 1px 0 rgba(255,255,255,.68) inset}
+.segmented.three{grid-template-columns:1fr 1fr 1fr}
+.segmented .seg-btn{height:30px;margin:0;border-radius:9px;color:#243041;font-size:12px;font-weight:750;transition:background .18s ease,color .18s ease,box-shadow .18s ease,transform .18s ease}
+.segmented .seg-btn.active{background:#fff;color:#0f172a;box-shadow:0 8px 18px rgba(15,23,42,.08),0 1px 1px rgba(15,23,42,.08)}
+.segmented .seg-btn:active{transform:scale(.98)}
+.report-top{display:grid;grid-template-columns:1fr 40px;gap:8px}
+.calendar-btn{height:38px;display:grid;place-items:center;color:var(--muted);background:#fff;border:1px solid rgba(226,232,240,.9);border-radius:12px;box-shadow:0 1px 1px rgba(15,23,42,.04)}
+.calendar-btn svg{width:19px;height:19px;stroke:currentColor}
+.detail-header{height:57px;display:flex;align-items:center;gap:8px;padding:0 16px 0 12px;background:#fff}
+.back-btn{width:32px;height:32px;border-radius:999px;display:grid;place-items:center;color:var(--text)}
+.back-btn svg{width:22px;height:22px;stroke:currentColor}
+.detail-title{font-size:16px;font-weight:600;letter-spacing:-.31px;color:#1e2939}
+.count-text{padding:14px 16px 8px;font-size:12px;line-height:16px;color:var(--muted);display:flex;align-items:center;justify-content:space-between}
+.count-text::after{content:"待处理";height:20px;padding:0 8px;border-radius:999px;background:#eef4ff;color:var(--primary);font-size:11px;font-weight:700;display:inline-flex;align-items:center}
+.card-list{display:flex;flex-direction:column;gap:12px;padding:0 12px 22px}
+.exception-card,.report-card{background:rgba(255,255,255,.96);border:1px solid rgba(226,232,240,.75);border-radius:14px;box-shadow:var(--shadow-float);overflow:hidden}
+.exception-card{padding:16px;position:relative;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.exception-card:active{transform:scale(.992)}
+.card-head{display:flex;align-items:center;gap:8px;min-height:22px}
+.account{font-size:14px;line-height:20px;font-weight:800;letter-spacing:-.15px;color:var(--ink)}
+.badge{display:inline-flex;align-items:center;justify-content:center;gap:4px;height:22px;padding:0 8px;border-radius:999px;font-size:10px;line-height:15px;letter-spacing:.12px;white-space:nowrap;font-weight:650}
+.badge svg{width:12px;height:12px;fill:currentColor;stroke:currentColor}
+.badge.wechat{background:var(--green-soft);color:var(--green)}
+.badge.weibo{background:var(--amber-soft);color:var(--amber)}
+.badge.douyin{background:#1e2939;color:#fff}
+.card-status{margin-left:auto;font-size:11px;color:#64748b;background:#f8fafc;border:1px solid #eef2f7;border-radius:999px;padding:3px 8px;font-weight:650}
+.summary-box{margin-top:14px;min-height:58px;background:linear-gradient(180deg,#f8fafc,#f5f7fb);border:1px solid #f0f3f8;border-radius:10px;display:flex;align-items:center;gap:10px;padding:12px;color:#1e2939}
+.summary-box.clickable{cursor:pointer}
+.summary-box.clickable:active{background:#f2f6ff}
+.summary-icon{width:28px;height:28px;border-radius:10px;background:#fff7ed;border:1px solid #ffedd4;display:grid;place-items:center;flex:0 0 auto}
+.summary-icon svg{width:15px;height:15px;stroke:var(--danger);margin:0}
+.summary-main{min-width:0;font-size:14px;line-height:20px;font-weight:600;letter-spacing:-.15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.summary-sub{margin-top:4px;font-size:12px;line-height:16px;color:var(--muted);font-weight:400}
+.comment-link{color:var(--primary)}
+.comment-monitor{padding:10px 12px 22px}
+.comment-tools{position:sticky;top:0;z-index:2;margin:0 -12px 12px;padding:10px 12px 12px;background:linear-gradient(180deg,rgba(249,250,251,.98),rgba(249,250,251,.92));border-bottom:1px solid rgba(229,231,235,.72);backdrop-filter:blur(14px)}
+.comment-platforms{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px}
+.comment-platforms::-webkit-scrollbar{display:none}
+.platform-filter{height:32px;padding:0 13px;border-radius:8px;background:#fff;border:1px solid #dde3ee;color:#374151;font-size:13px;font-weight:750;white-space:nowrap;box-shadow:0 1px 1px rgba(15,23,42,.03)}
+.platform-filter.active{background:#2f8cff;border-color:#2f8cff;color:#fff;box-shadow:0 8px 16px rgba(47,140,255,.20)}
+.comment-search{height:36px;display:flex;align-items:center;gap:8px;padding:0 12px;border:1px solid #d8dee9;border-radius:8px;background:#fff;color:#9aa3b2}
+.comment-search svg{width:16px;height:16px;stroke:currentColor;flex:0 0 auto}
+.comment-search input{min-width:0;flex:1;border:0;outline:0;background:transparent;color:#111827;font-size:13px}
+.comment-search input::placeholder{color:#9aa3b2}
+.comment-list-head{display:flex;align-items:center;justify-content:space-between;margin:0 0 10px;color:#667085;font-size:12px}
+.comment-list-head strong{color:#101828;font-size:13px}
+.comment-card-list{display:flex;flex-direction:column;gap:10px}
+.comment-monitor-card{background:rgba(255,255,255,.98);border:1px solid rgba(226,232,240,.86);border-radius:14px;box-shadow:var(--shadow-float);padding:13px 13px 12px;overflow:hidden;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
+.comment-monitor-card:active{transform:scale(.992)}
+.comment-card-head{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center}
+.comment-index{width:24px;height:24px;border-radius:999px;background:#f4f7fb;color:#475467;font-size:12px;font-weight:800;display:grid;place-items:center}
+.comment-account{min-width:0}
+.comment-account-name{font-size:14px;line-height:19px;font-weight:800;color:#101828;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.comment-account-meta{display:flex;align-items:center;gap:6px;margin-top:4px}
+.comment-platform-tag,.ai-result-tag,.comment-status{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;font-size:11px;font-weight:750;white-space:nowrap}
+.comment-platform-tag.douyin{background:#fff1f2;color:#ff1f35}
+.comment-platform-tag.weibo{background:#fff7ed;color:#f54900}
+.comment-platform-tag.video{background:#eff6ff;color:#155dfc}
+.comment-platform-tag.news{background:#fff8e1;color:#f5a000}
+.comment-time{color:#8a96a8;font-size:11px;white-space:nowrap}
+.comment-status.pending{background:#fff7e8;color:#f59e0b}
+.comment-status.done{background:#f0fdf4;color:#16a34a}
+.comment-body{margin-top:12px;padding:12px;border-radius:10px;background:#f8fafc;border:1px solid #eef2f7}
+.comment-body p{margin:0;color:#283445;font-size:13px;line-height:21px;text-wrap:pretty}
+.comment-ai-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
+.ai-result-tag{background:#fff1f2;color:#ff1f35}
+.ai-result-tag.warn{background:#fff1f2;color:#ff1f35}
+.ai-result-tag.result{background:#fff1f2;color:#ff3b30}
+.comment-action-row{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-top:12px;padding-top:11px;border-top:1px solid #f1f4f8}
+.comment-action{color:#2f8cff;font-size:13px;font-weight:800}
+.comment-action.muted{color:#64748b}
+.comment-empty{height:160px;display:grid;place-items:center;color:#9aa3b2;font-size:13px}
+.time-line{display:flex;align-items:center;gap:5px;margin-top:12px;color:#8a96a8;font-size:12px;line-height:16px}
+.time-line svg{width:12px;height:12px;stroke:currentColor}
+.action-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;padding-top:13px;border-top:1px solid #f1f4f8}
+.h5-btn{height:40px;border-radius:11px;font-size:13px;font-weight:750;text-align:center;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:transform .16s ease,box-shadow .16s ease,background .16s ease}
+.h5-btn svg{width:15px;height:15px;stroke:currentColor}
+.h5-btn.secondary{background:#fff;border:1px solid rgba(15,23,42,.12);color:#111827;box-shadow:0 1px 0 rgba(255,255,255,.8) inset}
+.h5-btn.primary{background:linear-gradient(180deg,#2267ff,#155dfc);color:#fff;box-shadow:0 8px 16px rgba(21,93,252,.22)}
+.h5-btn:active{transform:translateY(1px) scale(.99);box-shadow:none}
+.report-list{display:flex;flex-direction:column;gap:8px;padding:12px 10px 18px}
+.report-card{position:relative;padding:18px 16px 16px;min-height:136px}
+.report-unread{position:absolute;right:12px;top:12px;width:9px;height:9px;background:#ff1f35;border-radius:999px;box-shadow:0 0 0 4px #fff1f2}
+.report-title{font-size:14px;line-height:20px;color:var(--ink);font-weight:800;letter-spacing:-.15px}
+.report-date{margin-top:8px;font-size:13px;line-height:18px;color:var(--muted)}
+.report-actions{display:flex;justify-content:flex-end;gap:24px;margin-top:28px;padding-top:10px;border-top:1px solid var(--line-soft)}
+.mini-action{display:flex;flex-direction:column;align-items:center;gap:4px;color:#8b95a5;font-size:10px;line-height:14px}
+.mini-action svg{width:18px;height:18px;stroke:currentColor}
+.more-text{height:48px;display:grid;place-items:center;color:var(--subtle);font-size:12px}
+.report-preview-list{background:#fff;min-height:100%;padding:156px 16px 20px}
+.report-row{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;padding:12px 0;border-bottom:1px solid var(--line-soft)}
+.report-row-title{font-size:14px;line-height:20px;color:var(--primary)}
+.report-row-metric{font-size:12px;line-height:20px;color:#4a5565;white-space:nowrap}
+.detail-content{display:flex;flex-direction:column;gap:8px;padding-bottom:18px}
+.detail-card{background:#fff;box-shadow:var(--shadow-float);padding:16px}
+.detail-name{font-size:16px;line-height:24px;font-weight:800;color:var(--ink);letter-spacing:-.31px}
+.detail-meta{display:flex;align-items:center;gap:8px;margin-top:8px}
+.detail-badge{height:20px;padding:0 6px;display:inline-flex;align-items:center;border-radius:4px;background:#f3f4f6;color:#4a5565;font-size:12px}
+.detail-date{font-size:12px;color:var(--muted)}
+.alert-box{margin-top:12px;border-radius:14px;border:1px solid var(--danger-line);background:linear-gradient(180deg,#fff8f0,#fff3e8);min-height:70px;padding:13px 12px 12px 42px;position:relative}
+.alert-box.red{border-color:#ffe2e2;background:#fff1f2}
+.alert-box svg{position:absolute;left:14px;top:15px;width:17px;height:17px;stroke:var(--danger)}
+.alert-title{font-size:14px;line-height:20px;font-weight:700;color:var(--danger-ink)}
+.alert-desc{margin-top:4px;font-size:12px;line-height:16px;color:var(--danger)}
+.filter-strip{display:flex;gap:8px;overflow-x:auto;background:#fff;padding:12px 16px;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
+.filter-chip{height:28px;padding:0 12px;border-radius:8px;background:#f8fafc;border:1px solid var(--line-soft);font-size:12px;color:#4a5565;white-space:nowrap}
+.filter-chip.active{background:var(--primary-soft);color:var(--primary);border-color:#dbeafe}
+.issue-list{display:flex;flex-direction:column;gap:12px;padding:12px 16px}
+.issue-card{background:#fff;border:1px solid rgba(226,232,240,.8);border-radius:14px;box-shadow:var(--shadow-float);padding:14px}
+.issue-type{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#1e2939}
+.dot{width:7px;height:7px;border-radius:999px;background:#16a34a}
+.dot.blue{background:#2b7fff}
+.before-after{margin-top:18px;text-align:center;color:#cbd5e1}
+.issue-text{margin-top:10px;font-size:14px;line-height:24px;color:#4a5565}
+.bad{color:#ef4444;background:#fff1f2;border-radius:4px;padding:1px 3px;font-weight:700}
+.good{color:#16a34a;background:#ecfdf5;border-radius:4px;padding:1px 3px;font-weight:700}
+.issue-note{margin-top:12px;background:#f8fafc;border-radius:4px;padding:10px 12px;font-size:12px;line-height:18px;color:#6a7282}
+.snapshot-card{background:#fff;box-shadow:var(--shadow-float);padding:16px}
+.snapshot-title{font-size:14px;line-height:20px;font-weight:800;color:var(--ink)}
+.comment-detail-panel{background:#fff;border:1px solid rgba(226,232,240,.88);border-radius:14px;box-shadow:var(--shadow-float);padding:14px}
+.comment-detail-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
+.comment-detail-content{margin-top:12px;background:#f8fafc;border:1px solid #eef2f7;border-radius:10px;padding:12px;color:#283445;font-size:14px;line-height:22px}
+.comment-detail-label{font-size:12px;color:#8a96a8}
+.comment-source-card{margin-top:12px;border-radius:12px;border:1px solid #eef2f7;background:#fff;overflow:hidden}
+.comment-source-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid #f1f4f8}
+.comment-source-title{font-size:13px;font-weight:800;color:#111827}
+.comment-source-body{padding:12px;color:#4b5563;font-size:13px;line-height:20px}
+.weibo-shot{margin-top:12px;border:1px solid var(--line-soft);border-radius:10px;overflow:hidden;background:#fff}
+.weibo-status{height:44px;background:#f2f3f5;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 16px;color:#111827}
+.weibo-status .time{font-weight:700}
+.weibo-title{text-align:center;font-size:15px;font-weight:800;line-height:16px}
+.weibo-title span{display:block;font-size:10px;font-weight:500;color:#6b7280}
+.weibo-more{text-align:right;font-size:18px}
+.weibo-head{display:flex;align-items:center;gap:10px;padding:10px 14px 8px}
+.weibo-logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#ffd93d,#ff7a1a);display:grid;place-items:center;color:#b91c1c;font-weight:900}
+.weibo-account{font-size:13px;font-weight:800;color:#4a5565}
+.weibo-account span{display:block;font-size:10px;font-weight:400;color:#9ca3af}
+.open-app{margin-left:auto;height:28px;padding:0 14px;border-radius:999px;background:#ff9f1a;color:#fff;font-size:12px;font-weight:700}
+.weibo-body{padding:0 14px 10px;color:#4b5563;font-size:13px;line-height:20px}
+.verify-mark{display:inline-flex;align-items:center;height:16px;margin-left:4px;padding:0 5px;border-radius:999px;background:#e0edff;color:#155dfc;font-size:10px;font-weight:750;vertical-align:1px}
+.topic{color:#3478bd}
+.video-still{height:238px;margin:10px 14px;background:linear-gradient(180deg,#c7e5ff 0%,#7fb5d5 40%,#c9b08d 72%,#6d4e34 100%);position:relative;overflow:hidden}
+.video-still::before{content:"老人提醒舵不慎陷入滩涂\\A一场与潮水拔河的救援";white-space:pre;position:absolute;left:16px;top:22px;color:#ffe600;text-shadow:2px 2px 0 #202124,0 0 3px #202124;font-size:20px;line-height:28px;font-weight:900}
+.play{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);width:0;height:0;border-top:18px solid transparent;border-bottom:18px solid transparent;border-left:28px solid rgba(255,255,255,.92)}
+.weibo-open{display:block;margin:-22px 16px 12px auto;width:108px;height:32px;border-radius:999px;background:#ff9f1a;color:#fff;font-size:13px;font-weight:700;position:relative;z-index:1}
+.weibo-stats{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--line-soft);font-size:12px;color:#6b7280;text-align:center;padding:8px 0}
+.dispose-overlay{position:absolute;inset:0;background:rgba(15,23,42,.58);z-index:20;display:none;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(4px)}
+.dispose-overlay.show{display:flex}
+.dispose-modal{width:100%;max-width:354px;max-height:90%;overflow:auto;background:#fff;border-radius:18px;box-shadow:var(--shadow-panel);padding:24px}
+.modal-head{display:flex;align-items:center;justify-content:center;position:relative;padding-bottom:20px;border-bottom:1px solid var(--line-soft)}
+.modal-head h3{margin:0;font-size:18px;color:#111827}
+.modal-close{position:absolute;right:-4px;top:-6px;width:28px;height:28px;color:#4b5563;font-size:22px}
+.modal-section-title{margin:24px 0 12px;font-size:14px;font-weight:800;color:#111827}
+.radio-list{display:flex;flex-direction:column;gap:12px}
+.radio-item{display:flex;gap:8px;align-items:center;font-size:14px;color:#1f2937}
+.radio-item input{accent-color:var(--primary)}
+.dispose-textarea-wrap{position:relative;margin-top:16px}
+.dispose-textarea{width:100%;height:128px;border:0;background:#fafafa;border-radius:8px;padding:12px 12px 28px;resize:none;outline:1px solid transparent;color:#111827;font-size:13px}
+.dispose-textarea:focus{outline-color:#dbeafe;background:#fff}
+.counter{position:absolute;right:10px;bottom:8px;color:#9ca3af;font-size:12px}
+.history{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.history-row{display:grid;grid-template-columns:1fr auto;gap:10px;font-size:12px;line-height:20px;color:#4a5565}
+.history-row strong{display:block;color:#1e2939;font-weight:500}
+.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:22px}
+.toast{position:absolute;left:50%;bottom:78px;transform:translateX(-50%) translateY(14px);padding:8px 12px;border-radius:999px;background:rgba(17,24,39,.92);color:#fff;font-size:12px;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;z-index:30;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.side-note{max-width:340px}
+.side-note h1{margin:0;font-size:28px;line-height:1.14;color:#111827;letter-spacing:0;text-wrap:pretty}
+.side-note p{margin:12px 0 0;color:#64748b;font-size:14px;line-height:1.7}
+.side-note .figma-tag{display:inline-flex;margin-bottom:14px;height:28px;align-items:center;padding:0 10px;border-radius:999px;background:#e0edff;color:#155dfc;font-size:12px;font-weight:750}
+.prd-panel{width:460px;flex-shrink:0;display:flex;border-left:1px solid var(--border);transition:opacity .3s;background:#fff}
+.prd-panel.collapsed{width:0!important;opacity:0;overflow:hidden;border:none}
+.split-drag{width:4px;cursor:col-resize;flex-shrink:0;background:var(--border-light);transition:background .15s;position:relative;z-index:10}
+.split-drag:hover,.split-drag.dragging{background:var(--primary)}
+.split-drag::after{content:'';position:absolute;left:-3px;right:-3px;top:0;bottom:0}
+.prd-toc{width:180px;border-right:1px solid var(--border);overflow-y:auto;background:#fafafa;flex-shrink:0}
+.prd-toc-title{padding:14px 16px 8px;font-size:12px;font-weight:700;color:#64748b}
+.prd-toc-item{display:block;padding:6px 16px;font-size:12px;color:#64748b;cursor:pointer;border-left:2px solid transparent;line-height:1.45}
+.prd-toc-item:hover,.prd-toc-item.active{color:var(--primary);background:#eff6ff;border-left-color:var(--primary)}
+.prd-toc-item.sub{padding-left:28px;font-size:11px}
+.prd-content{flex:1;overflow-y:auto;padding:64px 24px 24px}
+.prd-content h1{font-size:22px!important;font-weight:700!important;margin:0 0 16px!important;color:#111827!important;line-height:1.35!important}
+.prd-content h2{font-size:17px!important;font-weight:700!important;margin:24px 0 12px!important;color:#111827!important;padding-bottom:8px!important;border-bottom:1px solid var(--border-light)!important}
+.prd-content h3{font-size:15px!important;font-weight:700!important;margin:20px 0 8px!important;color:#1f2937!important}
+.prd-content h4{font-size:13px!important;font-weight:700!important;margin:16px 0 6px!important;color:#374151!important}
+.prd-content p{font-size:13px!important;line-height:1.75!important;margin:8px 0!important;color:#444!important}
+.prd-content strong{font-weight:700!important;color:#111827!important}
+.prd-content ul.prd-list{margin:8px 0 8px 20px!important;padding-left:0!important}
+.prd-content ul.prd-list>li{margin:6px 0!important;list-style:disc!important;font-size:13px!important;line-height:1.7!important;color:#444!important}
+.prd-content ul.prd-nested{margin:2px 0 2px 18px!important;padding-left:0!important;list-style:circle!important}
+.prd-content ul.prd-nested li{list-style:circle!important;font-size:13px!important;color:#555!important;line-height:1.65!important}
+.prd-content hr{border:none!important;border-top:1px solid var(--border-light)!important;margin:16px 0!important}
+.prd-content table.prd-table{width:100%!important;border-collapse:collapse!important;margin:12px 0!important;font-size:13px!important}
+.prd-content table.prd-table th{background:#f8f9fa!important;padding:8px 12px!important;text-align:left!important;border:1px solid var(--border-light)!important;font-weight:600!important;color:#1f2937!important;font-size:12px!important}
+.prd-content table.prd-table td{padding:8px 12px!important;border:1px solid var(--border-light)!important;color:#444!important;font-size:13px!important;line-height:1.6!important}
+.top-controls{position:fixed;top:16px;right:14px;z-index:400;display:flex;align-items:center;gap:8px}
+.prd-toggle,.changelog-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;background:#fff;border:1px solid var(--border-light);border-radius:14px;font-size:12px;color:#64748b;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.08);white-space:nowrap}
+.changelog-btn{font-size:11px}
+.prd-toggle:hover,.changelog-btn:hover{border-color:#bfdbfe;color:var(--primary)}
+.toggle-dot{width:6px;height:6px;border-radius:50%;background:#52c41a;flex-shrink:0}
+.changelog-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:500}
+.changelog-overlay.show{display:block}
+.changelog-modal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:560px;max-height:70vh;background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.15);z-index:501;overflow:hidden}
+.changelog-modal.show{display:flex;flex-direction:column}
+.changelog-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border-light)}
+.changelog-header h3{font-size:15px;font-weight:600;margin:0}
+.changelog-close{background:none;border:none;font-size:20px;color:#64748b;cursor:pointer;padding:0 4px;line-height:1}
+.changelog-body{flex:1;overflow-y:auto;padding:16px 20px}
+.changelog-table{width:100%;border-collapse:collapse;font-size:13px}
+.changelog-table th{text-align:left;padding:8px 12px;background:#f8f9fa;color:#64748b;font-weight:500;border-bottom:1px solid var(--border-light)}
+.changelog-table td{padding:8px 12px;border-bottom:1px solid var(--border-light);vertical-align:top}
+.changelog-table td:first-child{white-space:nowrap;color:#64748b;font-size:12px}
+@media(max-width:980px){
+  .prototype-shell{grid-template-columns:1fr}
+  .side-note{display:none}
+  .prd-panel{display:none}
+  .split-drag{display:none}
+  .top-controls{display:none}
+  .stage{padding:0}
+  .phone-frame{width:100vw;height:100vh;border-radius:0;padding:0;background:transparent;box-shadow:none}
+  .phone-screen{border-radius:0}
+}
+</style>
+</head>
+<body>
+<div class="app-split">
+  <div class="page-container">
+    <div class="stage">
+      <div class="prototype-shell">
+        <div class="phone-frame" aria-label="公安移动端 H5 原型">
+          <div class="phone-screen">
+            <div class="app-top" id="appTop"></div>
+            <main class="app-main" id="appMain"></main>
+            <nav class="bottom-nav" id="appBottom"></nav>
+            <div class="toast" id="toast"></div>
+            <div class="dispose-overlay" id="disposeOverlay" onclick="closeDispose(event)">
+              <div class="dispose-modal" role="dialog" aria-modal="true" aria-labelledby="disposeTitle" onclick="event.stopPropagation()">
+                <div class="modal-head">
+                  <h3 id="disposeTitle">处置</h3>
+                  <button class="modal-close" type="button" onclick="hideDispose()" aria-label="关闭">×</button>
+                </div>
+                <div class="modal-section-title">处置结果</div>
+                <div class="radio-list">
+                  <label class="radio-item"><input type="radio" name="result" value="已核查并处理该异常" checked> 已核查并处理该异常</label>
+                  <label class="radio-item"><input type="radio" name="result" value="已核实并反馈上级部门"> 已核实并反馈上级部门</label>
+                  <label class="radio-item"><input type="radio" name="result" value="已核实无此异常"> 已核实无此异常</label>
+                </div>
+                <div class="dispose-textarea-wrap">
+                  <textarea class="dispose-textarea" id="disposeText" maxlength="200" placeholder="请输入处置结果" oninput="updateCounter()"></textarea>
+                  <span class="counter" id="disposeCounter">0 / 200</span>
+                </div>
+                <div class="history">
+                  <div class="history-row"><span><strong>浙江省公安厅 - 测试账号</strong>已核实并反馈上级部门</span><span>2025-12-19 16:31:29</span></div>
+                  <div class="history-row"><span><strong>浙江省公安厅 - 测试账号</strong>已核查并处理该异常</span><span>2025-12-19 16:31:18</span></div>
+                </div>
+                <div class="modal-actions">
+                  <button class="h5-btn secondary" type="button" onclick="hideDispose()">取消</button>
+                  <button class="h5-btn primary" type="button" onclick="confirmDispose()">确定</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <aside class="side-note">
+          <span class="figma-tag">Figma-based H5</span>
+          <h1>公安移动端异常处置工作台</h1>
+          <p>按你提供的 Figma 地址复刻核心页面：数据报告、数据异常、巡检异常、评论异常、处置弹窗，以及两类详情页。右侧 PRD 与原型并列，方便产品和开发一起核对规则。</p>
+        </aside>
+      </div>
+    </div>
+  </div>
+  <div class="split-drag" id="splitDrag"></div>
+  <aside class="prd-panel" id="prdPanel">
+    <div class="prd-toc" id="prdToc"></div>
+    <div class="prd-content" id="prdContent"></div>
+  </aside>
+</div>
+
+<div class="top-controls">
+  <button class="prd-toggle" id="prdToggle" type="button" onclick="togglePrdPanel()"><span class="toggle-dot"></span>PRD</button>
+  <button class="changelog-btn" type="button" onclick="downloadPrd()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    <span>PRD 下载</span>
+  </button>
+  <button class="changelog-btn" type="button" onclick="toggleChangelog()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+    <span>更新记录</span>
+  </button>
+</div>
+<div class="changelog-overlay" id="changelogOverlay" onclick="toggleChangelog()"></div>
+<div class="changelog-modal" id="changelogModal">
+  <div class="changelog-header">
+    <h3>更新记录</h3>
+    <button class="changelog-close" onclick="toggleChangelog()">&times;</button>
+  </div>
+  <div class="changelog-body" id="changelogBody"></div>
+</div>
+
+<textarea id="prdMdSource" style="display:none">
+# 公安移动端 H5 异常处置与数据报告 产品需求文档
+
+## 1. 产品概述
+
+### 1.1 背景
+
+公安新媒体矩阵在微信、微博、抖音等渠道持续发布内容，需要在移动端快速查看数据报告，并及时处理数据异常、巡检异常和评论异常。Figma 原型展示了一个面向手机访问的 H5 工具，围绕“数据报告”和“待处理异常”两个入口组织工作。
+
+### 1.2 产品目标
+
+- 为公安宣传和新媒体运营人员提供移动端数据报告查看入口。
+- 将待处理异常按数据异常、巡检异常、评论异常分类展示，便于快速判断优先级。
+- 支持异常忽略、异常处置、处置记录回看，形成移动端轻量闭环。
+- 支持从异常列表进入详情页，查看巡检命中问题或评论原文快照。
+
+### 1.3 用户角色
+
+- **省级公安宣传管理员**：查看全省矩阵账号报告和异常，统筹异常处置。
+- **市县级矩阵账号负责人**：处理本账号相关异常，查看本账号报告。
+- **内容巡检人员**：关注表述、错别字、空格、时政重点词等巡检异常，并给出处置意见。
+
+### 1.4 设计参考
+
+- 设计来源：用户提供的 Figma 文件 `Untitled`。
+- 移动端尺寸：以 393px 宽手机 H5 为核心展示尺寸。
+- 视觉风格：浅灰页面背景、白色卡片、蓝色主操作按钮、紧凑型分段控件、底部双 Tab 导航。
+
+---
+
+## 2. 信息架构
+
+### 2.1 一级导航
+
+- 数据报告
+- 待处理异常
+
+### 2.2 待处理异常二级分类
+
+- 数据异常
+- 巡检异常
+- 评论异常
+
+### 2.3 关键页面
+
+- 数据报告列表页
+- 待处理异常列表页
+- 异常处置弹窗
+- 表述异常详情页
+- 评论异常详情页
+
+---
+
+## 3. 数据报告
+
+### 3.1 周期筛选
+
+- **展示规则**
+  - 页面顶部展示分段控件，包含“日报”“周报”“月报”三个选项。
+  - 默认选中“日报”。
+  - 右侧展示日期选择入口。
+- **交互规则**
+  - 点击周期选项后切换高亮状态，并刷新报告列表。
+  - 点击日期入口后进入日期选择流程；原型中以提示反馈代替真实选择器。
+- **数据规则**
+  - **取数规则**：读取当前用户权限范围内已生成的数据报告。
+  - **数据筛选规则**：按日报、周报、月报筛选报告类型；日期筛选限定报告所属日期或周期。
+  - **数据排序规则**：默认按报告日期倒序排列，最新报告排在最前。
+
+### 3.2 报告卡片
+
+- **展示规则**
+  - 列表以卡片形式展示报告名称、报告日期、未读标识、预览入口和下载入口。
+  - 报告名称示例为“新媒体健康度分析日报”。
+  - 未读报告在卡片右上角展示红色角标。
+- **交互规则**
+  - 点击“预览”进入报告预览页。
+  - 点击“下载”触发文件下载反馈。
+  - 已读报告不展示未读角标。
+- **数据规则**
+  - **取数规则**：从报告库读取当前用户可见的报告记录。
+  - **数据筛选规则**：报告列表受周期筛选、日期筛选和用户权限范围共同约束。
+  - **数据排序规则**：按报告生成时间倒序排列；同一天多份报告按更新时间倒序排列。
+
+### 3.3 报告预览页
+
+- **展示规则**
+  - 预览页以列表展示报告条目标题及核心指标，例如阅读数、在看数、点赞数、转发数。
+  - 标题使用蓝色链接样式，指标在右侧展示。
+- **交互规则**
+  - 点击返回回到数据报告列表。
+  - 点击报告条目可进入原文或详情；原型中以提示反馈代替外链跳转。
+- **数据规则**
+  - **取数规则**：读取所选报告下的明细内容和指标数据。
+  - **数据筛选规则**：仅展示当前报告范围内的内容条目。
+  - **数据排序规则**：默认按报告中的推荐顺序展示；无推荐顺序时按阅读数倒序展示。
+
+---
+
+## 4. 待处理异常
+
+### 4.1 底部导航
+
+- **展示规则**
+  - 底部固定展示“数据报告”和“待处理异常”两个入口。
+  - 当前入口使用蓝色图标和文字高亮。
+- **交互规则**
+  - 点击“数据报告”切换至报告列表。
+  - 点击“待处理异常”切换至异常列表，并保持最近一次选择的异常分类。
+- **数据规则**
+  - **取数规则**：导航不直接取数，切换后由对应页面读取数据。
+  - **数据筛选规则**：切换页面时保留当前页面的分类状态。
+  - **数据排序规则**：导航本身无排序规则。
+
+### 4.2 异常分类切换
+
+- **展示规则**
+  - 顶部展示“数据异常”“巡检异常”“评论异常”三个分段选项。
+  - 默认选中“数据异常”。
+  - 列表顶部展示“共 6 项数据”。
+- **交互规则**
+  - 点击分类后切换选中态，并刷新列表卡片内容。
+  - 切换分类时列表回到顶部。
+- **数据规则**
+  - **取数规则**：读取当前用户权限范围内状态为待处理的异常。
+  - **数据筛选规则**：按异常类型精确筛选；仅展示待处理状态数据。
+  - **数据排序规则**：按异常发现时间倒序排列。
+
+### 4.3 异常卡片通用规则
+
+- **展示规则**
+  - 每张卡片展示账号名称、平台标签、异常摘要、发现时间、忽略按钮和处置按钮。
+  - 平台标签包含微信、微博、抖音，不同平台使用不同底色。
+  - 异常摘要区域使用浅灰背景，左侧展示告警图标。
+- **交互规则**
+  - 点击“忽略”后将该异常标记为无需处理，并从当前列表移除。
+  - 点击“处置”打开处置弹窗。
+  - 点击异常摘要进入详情页；评论异常进入评论异常详情，巡检异常进入表述异常详情。
+- **数据规则**
+  - **取数规则**：从异常中心读取账号、平台、异常摘要、异常类型、发现时间和处置状态。
+  - **数据筛选规则**：受异常分类、用户权限、处置状态共同约束。
+  - **数据排序规则**：默认按发现时间倒序排列；同一时间按异常等级从高到低排列。
+
+### 4.4 数据异常
+
+- **展示规则**
+  - 摘要内容展示异常指标和波动比例，例如“阅读数 -859.88%”。
+  - 负向和正向异常均展示为待处理项。
+- **交互规则**
+  - 点击摘要进入数据异常关联报告或指标详情；原型中以提示反馈代替详情页。
+  - 处置成功后该卡片从数据异常列表移除。
+- **数据规则**
+  - **取数规则**：读取矩阵账号数据监测结果中超过阈值的指标波动。
+  - **数据筛选规则**：仅展示达到异常阈值且未处理的指标项；平台、账号权限按当前用户范围过滤。
+  - **数据排序规则**：按异常发现时间倒序排列；同一时间按波动绝对值从大到小排列。
+
+### 4.5 巡检异常
+
+- **展示规则**
+  - 摘要内容展示稿件标题，下一行展示异常类型，例如“表述异常”。
+  - 长标题单行省略。
+- **交互规则**
+  - 点击摘要进入表述异常详情页，查看命中问题、修改建议和上下文。
+  - 可直接忽略或处置。
+- **数据规则**
+  - **取数规则**：读取内容巡检系统识别出的待处理异常稿件。
+  - **数据筛选规则**：仅展示巡检结论为异常且尚未处理的数据；可按异常类型归类。
+  - **数据排序规则**：按巡检完成时间倒序排列。
+
+### 4.6 评论异常
+
+- **展示规则**
+  - 评论异常参考 Web 端评论监测表格，在移动端转为卡片列表。
+  - 顶部提供平台筛选：全部、抖音、微博、视频号、新闻号。
+  - 提供评论内容搜索入口，支持按账号、正文内容、AI 识别结果检索。
+  - 每张卡片展示序号、平台、账号、正文内容、评论时间、AI 识别结果、处理状态和操作按钮。
+  - AI 识别结果包含“质疑执法”“质疑处理结果”等风险标签。
+  - 状态包含“未处理”和“已处理”，未处理使用橙色标签，已处理使用绿色标签。
+- **交互规则**
+  - 点击评论卡片跳转原文地址。
+  - 评论异常操作按钮与数据异常、巡检异常保持一致，展示“忽略”和“处置”。
+  - 点击“忽略”或“处置”时不触发卡片跳转。
+  - 点击平台筛选后刷新评论列表，并回到列表顶部。
+- **数据规则**
+  - **取数规则**：读取评论监测模型识别出的疑似负面或风险评论。
+  - **数据筛选规则**：按平台、账号权限、评论内容、AI 识别结果和处理状态过滤。
+  - **数据排序规则**：移动端与 Web 端评论监测列表保持一致排序，默认按评论发现时间倒序排列。
+
+---
+
+## 5. 异常处置
+
+### 5.1 处置弹窗
+
+- **展示规则**
+  - 弹窗居中展示，背景增加半透明遮罩。
+  - 标题为“处置”，包含关闭按钮。
+  - 处置结果提供三个单选项：已核查并处理该异常、已核实并反馈上级部门、已核实无此异常。
+  - 文本框提示为“请输入处置结果”，右下角展示字数统计。
+  - 下方展示历史处置记录，包含操作单位、账号、处置结论和处置时间。
+  - 底部展示“取消”和“确定”两个按钮。
+- **交互规则**
+  - 点击关闭、取消或遮罩关闭弹窗，不保存操作。
+  - 必须选择处置结果后才允许确定。
+  - 文本框最多输入 200 字，超出后阻止继续输入。
+  - 点击确定后保存处置记录，关闭弹窗，并将当前异常标记为已处置。
+- **数据规则**
+  - **取数规则**：打开弹窗时读取当前异常的历史处置记录。
+  - **数据筛选规则**：仅展示当前异常对应的处置记录。
+  - **数据排序规则**：历史处置记录按处置时间倒序排列。
+
+### 5.2 状态流转
+
+- **展示规则**
+  - 待处理状态显示“忽略”和“处置”按钮。
+  - 已处置或无需处理状态不在待处理列表展示。
+- **交互规则**
+  - 忽略：待处理变为无需处理。
+  - 确定处置：待处理变为已处置。
+  - 状态变更后刷新列表计数。
+- **数据规则**
+  - **取数规则**：状态来自异常中心的处置状态。
+  - **数据筛选规则**：待处理列表仅展示状态为待处理的数据。
+  - **数据排序规则**：状态变化不改变历史记录排序。
+
+---
+
+## 6. 表述异常详情
+
+### 6.1 详情头部
+
+- **展示规则**
+  - 顶部展示返回按钮和标题“表述异常详情”。
+  - 内容区展示账号名称、平台、发现时间和红色异常提示卡。
+- **交互规则**
+  - 点击返回回到巡检异常列表。
+  - 异常提示卡仅用于说明，不可点击。
+- **数据规则**
+  - **取数规则**：读取所选巡检异常的账号、平台、发现时间和异常结论。
+  - **数据筛选规则**：仅读取当前异常记录。
+  - **数据排序规则**：详情头部无排序。
+
+### 6.2 问题分类与建议
+
+- **展示规则**
+  - 展示筛选标签：全部、时政重点词、错别字、空格检查。
+  - 问题卡展示问题类型、原文片段、建议替换文本和说明。
+  - 原文问题词使用红色强调，建议文本使用绿色强调。
+- **交互规则**
+  - 点击标签后筛选问题卡。
+  - 点击返回图标回到上一页。
+- **数据规则**
+  - **取数规则**：读取内容巡检结果中的问题明细和修改建议。
+  - **数据筛选规则**：按问题分类筛选；“全部”展示所有问题。
+  - **数据排序规则**：按问题在正文中出现的顺序排列。
+
+---
+
+## 7. 评论异常详情
+
+### 7.1 异常概览
+
+- **展示规则**
+  - 顶部展示返回按钮和标题“评论异常详情”。
+  - 内容区展示账号名称、平台、发现时间和橙色异常提示卡。
+  - 异常提示文案为“检测到评论区存在疑似负面内容”。
+- **交互规则**
+  - 点击返回回到评论异常列表。
+  - 异常提示卡不可点击。
+- **数据规则**
+  - **取数规则**：读取所选评论异常的账号、平台、发现时间和异常结论。
+  - **数据筛选规则**：仅读取当前评论异常记录。
+  - **数据排序规则**：详情概览无排序。
+
+### 7.2 原文快照
+
+- **展示规则**
+  - 展示“原文快照”标题。
+  - 快照区域展示微博正文样式，包括账号信息、正文、图片/视频区域、互动数据。
+- **交互规则**
+  - 点击“微博内打开”尝试跳转原文；原型中以提示反馈代替真实跳转。
+  - 快照内容仅用于查看，不支持编辑。
+- **数据规则**
+  - **取数规则**：读取评论异常关联的原文快照或采集截图。
+  - **数据筛选规则**：仅展示当前异常关联原文。
+  - **数据排序规则**：原文快照无排序。
+
+---
+
+## 8. 全局规则
+
+### 8.1 空状态与加载
+
+- **展示规则**
+  - 列表为空时展示“没有更多了”或空状态提示。
+  - 原型中默认展示演示数据。
+- **交互规则**
+  - 筛选后无数据时保留当前筛选状态。
+- **数据规则**
+  - **取数规则**：根据当前页面和筛选条件读取数据。
+  - **数据筛选规则**：多筛选条件取交集。
+  - **数据排序规则**：空状态不展示排序结果。
+
+### 8.2 权限范围
+
+- **展示规则**
+  - 用户仅看到自己权限范围内的报告和异常。
+- **交互规则**
+  - 无权限数据不可见，不展示禁用项。
+- **数据规则**
+  - **取数规则**：按登录用户所属单位、角色和账号负责人关系读取数据。
+  - **数据筛选规则**：权限过滤优先于页面筛选。
+  - **数据排序规则**：权限过滤后再执行页面排序。
+
+### 8.3 移动端适配
+
+- **展示规则**
+  - 页面以手机 H5 为主要使用场景，内容纵向滚动。
+  - 底部导航固定在屏幕底部。
+- **交互规则**
+  - 主操作按钮保持可触达。
+  - 详情页返回按钮固定在顶部导航内。
+- **数据规则**
+  - **取数规则**：移动端与桌面端使用一致业务数据口径。
+  - **数据筛选规则**：移动端不减少业务筛选条件。
+  - **数据排序规则**：移动端与桌面端保持一致排序口径。
+</textarea>
+
+<script>
+var state={view:'exceptions',exceptionType:'data',period:'day',issueFilter:'all',commentPlatform:'all',commentSearch:'',activeCard:null,activeCommentId:null};
+var reports=[
+  {title:'新媒体健康度分析日报',date:'2025-12-19',unread:true},
+  {title:'新媒体健康度分析日报',date:'2025-12-18',unread:true},
+  {title:'新媒体健康度分析日报',date:'2025-12-17',unread:true},
+  {title:'新媒体健康度分析日报',date:'2025-12-16',unread:false},
+  {title:'新媒体健康度分析日报',date:'2025-12-15',unread:false}
+];
+var exceptions={
+  data:[
+    {id:'d1',account:'浙江公安',platform:'wechat',summary:'阅读数 -859.88%'},
+    {id:'d2',account:'浙江高速交警',platform:'weibo',summary:'阅读数 +396.64%'},
+    {id:'d3',account:'浙江公安',platform:'douyin',summary:'阅读数 -379.58%'},
+    {id:'d4',account:'浙江高速交警',platform:'wechat',summary:'阅读数 +224.31%'},
+    {id:'d5',account:'浙江公安',platform:'weibo',summary:'阅读数 -694.06%'},
+    {id:'d6',account:'浙江高速交警',platform:'douyin',summary:'阅读数 +13.74%'}
+  ],
+  inspect:[
+    {id:'i1',account:'浙江公安',platform:'wechat',summary:'王小洪会见古巴内务部部长...',sub:'表述异常'},
+    {id:'i2',account:'浙江高速交警',platform:'weibo',summary:'王小洪会见古巴内务部部长...',sub:'表述异常'},
+    {id:'i3',account:'浙江公安',platform:'douyin',summary:'王小洪会见古巴内务部部长...',sub:'表述异常'},
+    {id:'i4',account:'浙江高速交警',platform:'wechat',summary:'王小洪会见古巴内务部部长...',sub:'表述异常'},
+    {id:'i5',account:'浙江公安',platform:'weibo',summary:'王小洪会见古巴内务部部长...',sub:'表述异常'},
+    {id:'i6',account:'浙江高速交警',platform:'douyin',summary:'王小洪会见古巴内务部部长...',sub:'表述异常'}
+  ],
+  comment:[
+    {id:'c1',no:1,account:'抖音_小胖子',platform:'douyin',summary:'抢劫啊，必须按抢劫论处，如果不按抢劫论处，那大家都去街上拿别人东西，被抓住之后…',aiResult:'质疑执法',status:'未处理',time:'2026-05-23 20:38:49'},
+    {id:'c2',no:2,account:'抖音_霜序',platform:'douyin',summary:'想知道西湖区分局的聂神探咋样了？',aiResult:'质疑处理结果',status:'未处理',time:'2026-05-24 13:07:07'},
+    {id:'c3',no:3,account:'抖音_文周玟舟',platform:'douyin',summary:'@晶晶璎璎记这位小姑娘被抢劫威胁恐吓流泪][流泪][流泪]了太吓人[泪奔]',aiResult:'质疑执法',status:'未处理',time:'2026-05-24 12:38:29'},
+    {id:'c4',no:4,account:'抖音_陈星朗',platform:'douyin',summary:'聂神探这事是真是假啊？？？',aiResult:'质疑处理结果',status:'未处理',time:'2026-05-24 00:18:17'},
+    {id:'c5',no:5,account:'抖音_十年夜光杯',platform:'douyin',summary:'@晶晶璎璎记这位小姑娘被威胁了 @杭州公安',aiResult:'质疑执法',status:'未处理',time:'2026-05-23 20:16:06'},
+    {id:'c6',no:6,account:'企鹅号_细雨和小寒',platform:'news',summary:'为什么不顺藤摸瓜抓到骗子呢？',aiResult:'质疑执法',status:'已处理',time:'2026-05-23 21:39:22'},
+    {id:'c7',no:7,account:'企鹅号_健行天下',platform:'news',summary:'没继续寄些烂钱，然后顺藤摸瓜抓这骗子，让他继续坑人？',aiResult:'质疑执法',status:'已处理',time:'2026-05-23 18:31:23'},
+    {id:'c8',no:8,account:'艾瑞斯200208',platform:'weibo',summary:'请问不是明星的普通人交通肇事逃逸和顶包怎么处罚？',aiResult:'质疑处理结果',status:'未处理',time:'2026-05-23 14:13:42'},
+    {id:'c9',no:9,account:'抖音_小林同学不焦虑',platform:'douyin',summary:'主持人的胸徽和警号好像方向粘反了哦',aiResult:'质疑执法',status:'未处理',time:'2026-05-21 20:53:34'}
+  ]
+};
+var removed={};
+var periodLabels={day:'日报',week:'周报',month:'月报'};
+var exceptionLabels={data:'数据异常',inspect:'巡检异常',comment:'评论异常'};
+var platformLabels={wechat:'微信',weibo:'微博',douyin:'抖音',video:'视频号',news:'新闻号',all:'全部'};
+var changelogData=[
+  {time:'2026-05-25 16:26',desc:'部署到 GitHub Pages，发布公安移动端 H5 原型与 PRD。'},
+  {time:'2026-05-25 15:34',desc:'调整评论异常交互：操作按钮统一为“忽略 / 处置”，点击评论卡片跳转原文地址。'},
+  {time:'2026-05-25 15:26',desc:'参考 Web 端评论监测表格优化移动端评论异常：新增平台筛选、搜索、AI 识别结果、处理状态和移动卡片详情。'},
+  {time:'2026-05-25 14:14',desc:'使用 web-design-engineer 优化 H5 视觉层，新增自绘 SVG 图标、卡片层级、导航与处置弹窗细节。'},
+  {time:'2026-05-25 11:48',desc:'按用户提供的 Figma 地址创建公安移动端 H5 原型，编写并嵌入 PRD，补充首页入口与访问密码配置。'}
+];
+function iconAlert(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>'}
+function iconClock(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>'}
+function iconDoc(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h6"/></svg>'}
+function iconNotice(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>'}
+function iconEye(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="3"/></svg>'}
+function iconDownload(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>'}
+function iconCalendar(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg>'}
+function iconBack(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M15 18 9 12l6-6"/></svg>'}
+function iconIgnore(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m8.8 8.8 6.4 6.4"/></svg>'}
+function iconDispose(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 11l2 2 4-5"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8"/></svg>'}
+function iconTrend(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 17h16"/><path d="M6 14l4-5 4 3 4-7"/><path d="M18 5h-4"/><path d="M18 5v4"/></svg>'}
+function iconTextScan(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 7V5a1 1 0 0 1 1-1h2"/><path d="M17 4h2a1 1 0 0 1 1 1v2"/><path d="M20 17v2a1 1 0 0 1-1 1h-2"/><path d="M7 20H5a1 1 0 0 1-1-1v-2"/><path d="M8 9h8"/><path d="M8 13h6"/></svg>'}
+function iconCommentRisk(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M21 12a8 8 0 0 1-8 8H7l-4 3 1.4-5.2A8 8 0 1 1 21 12Z"/><path d="M12 7v5"/><path d="M12 15h.01"/></svg>'}
+function iconSearch(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg>'}
+function platformIcon(platform){
+  if(platform==='wechat')return '<svg viewBox="0 0 24 24"><path d="M9.7 5.2c-4 0-7.2 2.6-7.2 5.9 0 1.9 1.1 3.6 2.8 4.6l-.7 2.2 2.5-1.3c.8.2 1.7.4 2.6.4 4 0 7.2-2.6 7.2-5.9s-3.2-5.9-7.2-5.9Zm-2.5 4.9a.8.8 0 1 1 0-1.6.8.8 0 0 1 0 1.6Zm5 0a.8.8 0 1 1 0-1.6.8.8 0 0 1 0 1.6Z"/><path d="M16.3 10.5c3 0 5.2 1.9 5.2 4.3 0 1.4-.8 2.7-2.1 3.4l.5 1.6-1.8-.9c-.6.2-1.2.2-1.8.2-2.9 0-5.2-1.9-5.2-4.3s2.3-4.3 5.2-4.3Z" opacity=".72"/></svg>';
+  if(platform==='weibo')return '<svg viewBox="0 0 24 24"><path d="M10.9 18.8c-4.2.4-7.8-1.3-8.1-3.8-.3-2.4 2.9-4.8 7.1-5.2 4.2-.5 7.8 1.2 8.1 3.7.3 2.5-2.9 4.8-7.1 5.3Zm-.6-3.1c1.8-.2 3.1-1.2 3-2.3-.1-1.1-1.7-1.8-3.5-1.6-1.8.2-3.1 1.2-3 2.3.1 1.1 1.7 1.8 3.5 1.6Z"/><path d="M17.5 5.1c2 .4 3.5 1.9 3.9 3.8"/><path d="M17.8 2.8c3.1.5 5.6 2.9 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+  if(platform==='video')return '<svg viewBox="0 0 24 24"><path d="M4 7.5A3.5 3.5 0 0 1 7.5 4h9A3.5 3.5 0 0 1 20 7.5v9a3.5 3.5 0 0 1-3.5 3.5h-9A3.5 3.5 0 0 1 4 16.5v-9Z"/><path d="m10 8 6 4-6 4V8Z" fill="#fff" opacity=".9"/></svg>';
+  if(platform==='news')return '<svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2V4Z"/><path d="M8 8h8M8 12h8M8 16h5" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  return '<svg viewBox="0 0 24 24"><path d="M14.4 3.5c.7 2.6 2.2 4.1 4.8 4.6v3.3c-1.8 0-3.3-.5-4.6-1.4v5.2c0 3.2-2.2 5.3-5.1 5.3-2.7 0-4.7-1.9-4.7-4.4 0-2.7 2.1-4.6 5.2-4.6.4 0 .8 0 1.1.1v3.2c-.3-.1-.6-.2-1-.2-1.2 0-2 .6-2 1.5s.7 1.5 1.6 1.5c1 0 1.7-.7 1.7-2.2V3.5h3Z"/></svg>';
+}
+function summaryIcon(type){return type==='data'?iconTrend():(type==='inspect'?iconTextScan():iconCommentRisk())}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function render(){
+  var top=document.getElementById('appTop'),main=document.getElementById('appMain'),bottom=document.getElementById('appBottom');
+  top.className='app-top';main.className='app-main';
+  if(state.view==='report'){top.innerHTML=renderReportTop();main.innerHTML=renderReportList()}
+  if(state.view==='exceptions'){top.innerHTML=renderExceptionTop();main.innerHTML=renderExceptionList()}
+  if(state.view==='reportPreview'){top.className='app-top detail';main.className='app-main detail';top.innerHTML=renderDetailHeader('数据报告预览',functionName('backReport'));main.innerHTML=renderReportPreview()}
+  if(state.view==='expressionDetail'){top.className='app-top detail';main.className='app-main detail';top.innerHTML=renderDetailHeader('表述异常详情',functionName('backExceptions'));main.innerHTML=renderExpressionDetail()}
+  if(state.view==='commentDetail'){top.className='app-top detail';main.className='app-main detail';top.innerHTML=renderDetailHeader('评论异常详情',functionName('backExceptions'));main.innerHTML=renderCommentDetail()}
+  bottom.innerHTML=renderBottom();
+}
+function functionName(name){return name+'()'}
+function renderReportTop(){
+  var keys=['day','week','month'];
+  var html='<div class="report-top"><div class="segmented three">';
+  keys.forEach(function(k){html+="<button class=\"seg-btn "+(state.period===k?'active':'')+"\" onclick=\"setPeriod('"+k+"')\">"+periodLabels[k]+"</button>"});
+  html+="</div><button class=\"calendar-btn\" onclick=\"toast('日期选择器待接入')\" aria-label=\"日期选择\">"+iconCalendar()+"</button></div>";
+  return html;
+}
+function renderExceptionTop(){
+  var keys=['data','inspect','comment'];
+  var html='<div class="segmented three">';
+  keys.forEach(function(k){html+="<button class=\"seg-btn "+(state.exceptionType===k?'active':'')+"\" onclick=\"setExceptionType('"+k+"')\">"+exceptionLabels[k]+"</button>"});
+  html+='</div>';
+  return html;
+}
+function renderDetailHeader(title,handler){
+  return '<div class="detail-header"><button class="back-btn" onclick="'+handler+'" aria-label="返回">'+iconBack()+'</button><div class="detail-title">'+title+'</div></div>';
+}
+function renderBottom(){
+  return '<button class="nav-btn '+(state.view==='report'||state.view==='reportPreview'?'active':'')+'" onclick="goReport()">'+iconDoc()+'<span>数据报告</span></button><button class="nav-btn '+(state.view==='exceptions'||state.view==='expressionDetail'||state.view==='commentDetail'?'active':'')+'" onclick="goExceptions()">'+iconNotice()+'<span>待处理异常</span></button>';
+}
+function renderReportList(){
+  var html='<div class="report-list">';
+  reports.forEach(function(r,i){
+    html+="<article class=\"report-card\"><div class=\"report-title\">"+r.title+"</div><div class=\"report-date\">"+r.date+"</div>"+(r.unread?'<span class="report-unread" aria-label="未读"></span>':'')+"<div class=\"report-actions\"><button class=\"mini-action\" onclick=\"showReportPreview()\">"+iconEye()+"<span>预览</span></button><button class=\"mini-action\" onclick=\"toast('已生成下载任务')\">"+iconDownload()+"<span>下载</span></button></div></article>";
+  });
+  html+='<div class="more-text">没有更多了</div></div>';
+  return html;
+}
+function renderReportPreview(){
+  var rows=[
+    ['学习贯彻党的二十届四中全会精神·公安局长访谈｜罗杰：接续奋斗...', '阅读数：0'],
+    ['全省公安机关夏季行动侦工作现场会召开', '在看数：0'],
+    ['2025最美“浙警”候选人｜王宗智：扎根公安科技领域的工匠', '点赞数：0'],
+    ['2025最美“浙警”候选人｜每天清晨，他以“枪声”作铃', '转发数：0'],
+    ['一瓶辣椒酱，价值10万！来浙江旅游的男子报警了……', '阅读数：0']
+  ];
+  var html='<div class="report-preview-list">';
+  rows.forEach(function(r){html+="<div class=\"report-row\"><button class=\"report-row-title\" onclick=\"toast('打开原文详情')\">"+r[0]+"</button><div class=\"report-row-metric\">"+r[1]+"</div></div>"});
+  html+='</div>';
+  return html;
+}
+function getVisibleComments(){
+  var q=state.commentSearch.trim().toLowerCase();
+  return exceptions.comment.filter(function(item){
+    if(removed[item.id])return false;
+    if(state.commentPlatform!=='all'&&item.platform!==state.commentPlatform)return false;
+    if(!q)return true;
+    return (item.account+' '+item.summary+' '+item.aiResult+' '+platformLabels[item.platform]).toLowerCase().indexOf(q)>-1;
+  });
+}
+function findComment(id){return exceptions.comment.filter(function(item){return item.id===id})[0]}
+function commentOriginalUrl(item){
+  var q=encodeURIComponent(item.account+' '+item.summary.slice(0,18));
+  if(item.platform==='douyin')return 'https://www.douyin.com/search/'+q;
+  if(item.platform==='weibo')return 'https://s.weibo.com/weibo?q='+q;
+  if(item.platform==='news')return 'https://new.qq.com/search?query='+q;
+  if(item.platform==='video')return 'https://channels.weixin.qq.com/';
+  return 'https://www.baidu.com/s?wd='+q;
+}
+function openCommentOriginal(id){
+  var item=findComment(id);
+  if(!item)return;
+  var url=commentOriginalUrl(item);
+  var win=window.open(url,'_blank','noopener');
+  if(!win)window.location.href=url;
+}
+function renderExceptionList(){
+  if(state.exceptionType==='comment')return renderCommentMonitorList();
+  var list=exceptions[state.exceptionType].filter(function(item){return !removed[item.id]});
+  var html='<div class="count-text">共 '+list.length+' 项数据</div><div class="card-list">';
+  list.forEach(function(item){html+=renderExceptionCard(item,state.exceptionType)});
+  html+='<div class="more-text">没有更多了</div></div>';
+  return html;
+}
+function renderCommentMonitorList(){
+  var list=getVisibleComments();
+  var html='<div class="comment-monitor"><div class="comment-tools"><div class="comment-platforms">';
+  var filters=['all','douyin','weibo','video','news'];
+  filters.forEach(function(k){html+="<button class=\"platform-filter "+(state.commentPlatform===k?'active':'')+"\" onclick=\"setCommentPlatform('"+k+"')\">"+platformLabels[k]+"</button>"});
+  html+='</div><label class="comment-search">'+iconSearch()+'<input value="'+escapeHtml(state.commentSearch)+'" placeholder="搜索评论内容" oninput="setCommentSearch(this.value)"></label></div>';
+  html+='<div class="comment-list-head" id="commentListHead">'+renderCommentListHead(list)+'</div><div class="comment-card-list" id="commentCards">'+renderCommentCards(list)+'</div></div>';
+  return html;
+}
+function renderCommentListHead(list){
+  var pending=list.filter(function(item){return item.status==='未处理'}).length;
+  return '<span><strong>评论监测</strong> 共 '+list.length+' 条</span><span>未处理 '+pending+'</span>';
+}
+function renderCommentCards(list){
+  var html='';
+  if(list.length){list.forEach(function(item){html+=renderCommentMonitorCard(item)})}else{html='<div class="comment-empty">暂无匹配评论</div>'}
+  return html;
+}
+function renderCommentMonitorCard(item){
+  var statusClass=item.status==='已处理'?'done':'pending';
+  return '<article class="comment-monitor-card" onclick="openCommentOriginal(\''+item.id+'\')"><div class="comment-card-head"><div class="comment-index">'+item.no+'</div><div class="comment-account"><div class="comment-account-name">'+escapeHtml(item.account)+'</div><div class="comment-account-meta"><span class="comment-platform-tag '+item.platform+'">'+platformLabels[item.platform]+'</span><span class="comment-time">'+escapeHtml(item.time)+'</span></div></div><span class="comment-status '+statusClass+'">'+item.status+'</span></div><div class="comment-body"><p>'+escapeHtml(item.summary)+'</p></div><div class="comment-ai-row"><span class="ai-result-tag '+(item.aiResult.indexOf('处理')>-1?'result':'warn')+'">'+escapeHtml(item.aiResult)+'</span></div><div class="action-row"><button class="h5-btn secondary" onclick="event.stopPropagation();ignoreItem(\''+item.id+'\')">'+iconIgnore()+'忽略</button><button class="h5-btn primary" onclick="event.stopPropagation();showDispose(\''+item.id+'\')">'+iconDispose()+'处置</button></div></article>';
+}
+function renderExceptionCard(item,type){
+  var summaryClass=type==='data'?'':' clickable';
+  var click=type==='inspect'?' onclick="showExpressionDetail()"':(type==='comment'?' onclick="showCommentDetail()"':' onclick="toast(\'数据指标详情待接入\')"');
+  var summaryText=type==='comment'?'<span class="comment-link">'+escapeHtml(item.summary)+'</span>':escapeHtml(item.summary);
+  var sub=item.sub?'<div class="summary-sub">'+escapeHtml(item.sub)+'</div>':'';
+  return "<article class=\"exception-card\"><div class=\"card-head\"><div class=\"account\">"+escapeHtml(item.account)+"</div><span class=\"badge "+item.platform+"\">"+platformIcon(item.platform)+platformLabels[item.platform]+"</span><span class=\"card-status\">待处理</span></div><div class=\"summary-box"+summaryClass+"\""+click+"><span class=\"summary-icon\">"+summaryIcon(type)+"</span><div><div class=\"summary-main\">"+summaryText+"</div>"+sub+"</div></div><div class=\"time-line\">"+iconClock()+"<span>2025-09-11 15:43:21</span></div><div class=\"action-row\"><button class=\"h5-btn secondary\" onclick=\"ignoreItem('"+item.id+"')\">"+iconIgnore()+"忽略</button><button class=\"h5-btn primary\" onclick=\"showDispose('"+item.id+"')\">"+iconDispose()+"处置</button></div></article>";
+}
+function renderExpressionDetail(){
+  var issues=[
+    {type:'时政重点词',kind:'time',before:'铭记历史、缅怀先烈、珍爱和平开创未来',after:'铭记历史、缅怀先烈、珍爱和平、开创未来',note:'本文疑似存在时政词表述不准确问题，建议使用规范的时政表述。'},
+    {type:'错别字、词',kind:'word',before:'蹭厉奋发',after:'踔厉奋发',note:'文本疑似存在字词书写错误，建议再次核对。'}
+  ];
+  var filtered=issues.filter(function(i){return state.issueFilter==='all'||state.issueFilter===i.kind});
+  var html='<div class="detail-content"><section class="detail-card"><div class="detail-name">浙江公安</div><div class="detail-meta"><span class="detail-badge">微信</span><span class="detail-date">2025-09-11 15:43:21</span></div><div class="alert-box red">'+iconAlert()+'<div class="alert-title">表述异常</div><div class="alert-desc">检测到文中存在多处表述不当，建议修改</div></div></section>';
+  html+="<div class=\"filter-strip\"><button class=\"filter-chip "+(state.issueFilter==='all'?'active':'')+"\" onclick=\"setIssueFilter('all')\">全部 4</button><button class=\"filter-chip "+(state.issueFilter==='time'?'active':'')+"\" onclick=\"setIssueFilter('time')\">时政重点词 1</button><button class=\"filter-chip "+(state.issueFilter==='word'?'active':'')+"\" onclick=\"setIssueFilter('word')\">错别字、词 1</button><button class=\"filter-chip\">空格检查 2</button></div><div class=\"issue-list\">";
+  filtered.forEach(function(i){html+='<article class="issue-card"><div class="issue-type"><span class="dot '+(i.kind==='word'?'blue':'')+'"></span>'+i.type+'</div><div class="issue-text">'+markIssue(i.before,'bad')+'</div><div class="before-after">↓</div><div class="issue-text">'+markIssue(i.after,'good')+'</div><div class="issue-note">'+i.note+'</div></article>'});
+  html+='</div></div>';
+  return html;
+}
+function markIssue(text,klass){
+  if(text.indexOf('珍爱和平')>-1){return '铭记历史、缅怀先烈、<span class="'+klass+'">珍爱和平'+(klass==='good'?'、开创未来':'开创未来')+'</span>'}
+  return '<span class="'+klass+'">'+text+'</span>';
+}
+function renderCommentDetail(){
+  var item=exceptions.comment.filter(function(c){return c.id===state.activeCommentId})[0]||exceptions.comment[0];
+  var statusClass=item.status==='已处理'?'done':'pending';
+  return '<div class="detail-content"><section class="detail-card"><div class="detail-name">'+escapeHtml(item.account)+'</div><div class="detail-meta"><span class="comment-platform-tag '+item.platform+'">'+platformLabels[item.platform]+'</span><span class="detail-date">'+escapeHtml(item.time)+'</span><span class="comment-status '+statusClass+'">'+item.status+'</span></div><div class="alert-box">'+iconAlert()+'<div class="alert-title">'+escapeHtml(item.aiResult)+'</div><div class="alert-desc">AI 识别该评论存在舆情风险，建议核查后处置</div></div></section><section class="snapshot-card"><div class="snapshot-title">评论内容</div><div class="comment-detail-panel"><div class="comment-detail-row"><span class="comment-detail-label">正文内容</span><span class="ai-result-tag '+(item.aiResult.indexOf('处理')>-1?'result':'warn')+'">'+escapeHtml(item.aiResult)+'</span></div><div class="comment-detail-content">'+escapeHtml(item.summary)+'</div><div class="comment-action-row"><button class="comment-action" onclick="toast(\'打开原评论\')">查看原文</button>'+(item.status==='未处理'?'<button class="comment-action muted" onclick="ignoreItem(\''+item.id+'\')">忽略</button>':'')+'<button class="comment-action" onclick="showDispose(\''+item.id+'\')">处置</button></div></div><div class="comment-source-card"><div class="comment-source-head"><div class="comment-source-title">关联正文快照</div><span class="comment-platform-tag '+item.platform+'">'+platformLabels[item.platform]+'</span></div><div class="comment-source-body"><strong>杭州公安</strong> 发布的涉民生服务内容下出现该评论。移动端详情用于快速核查评论语境，完整互动链路可在 Web 端继续查看。</div></div></section></div>';
+}
+function setPeriod(p){state.period=p;render()}
+function setExceptionType(t){state.exceptionType=t;render();document.getElementById('appMain').scrollTop=0}
+function setCommentPlatform(p){state.commentPlatform=p;render();document.getElementById('appMain').scrollTop=0}
+function setCommentSearch(v){state.commentSearch=v;var list=getVisibleComments();document.getElementById('commentListHead').innerHTML=renderCommentListHead(list);document.getElementById('commentCards').innerHTML=renderCommentCards(list)}
+function goReport(){state.view='report';render()}
+function goExceptions(){state.view='exceptions';render()}
+function showReportPreview(){state.view='reportPreview';render()}
+function backReport(){state.view='report';render()}
+function backExceptions(){state.view='exceptions';render()}
+function showExpressionDetail(){state.view='expressionDetail';state.issueFilter='all';render()}
+function showCommentDetail(id){state.activeCommentId=id||state.activeCommentId||'c1';state.view='commentDetail';render()}
+function setIssueFilter(f){state.issueFilter=f;render()}
+function ignoreItem(id){removed[id]=true;toast('已忽略该异常');render()}
+function showDispose(id){state.activeCard=id;document.getElementById('disposeOverlay').classList.add('show')}
+function hideDispose(){document.getElementById('disposeOverlay').classList.remove('show')}
+function closeDispose(e){if(e.target.id==='disposeOverlay')hideDispose()}
+function updateCounter(){document.getElementById('disposeCounter').textContent=document.getElementById('disposeText').value.length+' / 200'}
+function confirmDispose(){if(state.activeCard){removed[state.activeCard]=true}hideDispose();document.getElementById('disposeText').value='';updateCounter();toast('处置已提交');render()}
+function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(function(){el.classList.remove('show')},1600)}
+function togglePrdPanel(){var panel=document.getElementById('prdPanel');var dot=document.querySelector('#prdToggle .toggle-dot');panel.classList.toggle('collapsed');dot.style.background=panel.classList.contains('collapsed')?'#aaa':'#52c41a'}
+function downloadPrd(){var md=document.getElementById('prdMdSource').textContent.trim();var blob=new Blob([md],{type:'text/markdown;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='公安移动端H5异常处置与数据报告PRD.md';a.click();URL.revokeObjectURL(a.href)}
+function toggleChangelog(){var overlay=document.getElementById('changelogOverlay');var modal=document.getElementById('changelogModal');var open=modal.classList.contains('show');overlay.classList.toggle('show',!open);modal.classList.toggle('show',!open);if(!open)renderChangelog()}
+function renderChangelog(){var body=document.getElementById('changelogBody');var html='<table class="changelog-table"><thead><tr><th>更新时间</th><th>说明</th></tr></thead><tbody>';changelogData.forEach(function(item){html+='<tr><td>'+item.time+'</td><td>'+item.desc+'</td></tr>'});html+='</tbody></table>';body.innerHTML=html}
+function inlineFmt(s){return s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')}
+function renderMarkdown(md){
+  md=escapeHtml(md);
+  var lines=md.split('\n'),h='',listStack=[],liOpenStack=[],inTable=false,heads=[];
+  function closeLists(targetDepth){while(listStack.length>targetDepth){if(liOpenStack.pop())h+='</li>';h+='</ul>';listStack.pop()}}
+  function closeAllLists(){closeLists(0)}
+  function openListItem(depth,text){if(inTable){h+='</tbody></table>';inTable=false}while(listStack.length<depth+1){h+=listStack.length===0?'<ul class="prd-list">':'<ul class="prd-nested prd-level-'+listStack.length+'">';listStack.push(true);liOpenStack.push(false)}closeLists(depth+1);if(liOpenStack[depth])h+='</li>';liOpenStack[depth]=true;h+='<li>'+inlineFmt(text)}
+  for(var j=0;j<lines.length;j++){
+    var ln=lines[j],tr=ln.trim();
+    if(!tr){closeAllLists();continue}
+    if(/^---+$/.test(tr)){closeAllLists();h+='<hr>';continue}
+    var hm=tr.match(/^(#{1,5})\s+(.+)$/);
+    if(hm){closeAllLists();var id='h-'+heads.length;heads.push({id:id,text:hm[2],level:hm[1].length});h+='<h'+hm[1].length+' id="'+id+'">'+inlineFmt(hm[2])+'</h'+hm[1].length+'>';continue}
+    if(/^\|(.+)\|$/.test(tr)){closeAllLists();if(!inTable){var nxt=(j+1<lines.length)?lines[j+1].trim():'';var isSep=/^\|[\s\-:]+\|$/.test(nxt);if(isSep){h+='<table class="prd-table"><thead><tr>';var hdrCells=tr.replace(/^\|/,'').replace(/\|$/,'').split('|');for(var ci=0;ci<hdrCells.length;ci++)h+='<th>'+inlineFmt(hdrCells[ci].trim())+'</th>';h+='</tr></thead><tbody>';inTable=true;j++;continue}h+='<table class="prd-table"><tbody>';inTable=true}if(/^\|[\s\-:]+\|$/.test(tr))continue;var cells=tr.replace(/^\|/,'').replace(/\|$/,'').split('|');h+='<tr>';for(var ci2=0;ci2<cells.length;ci2++)h+='<td>'+inlineFmt(cells[ci2].trim())+'</td>';h+='</tr>';continue}
+    if(inTable){h+='</tbody></table>';inTable=false}
+    var lm=ln.match(/^(\s*)- (.+)$/);
+    if(lm){openListItem(Math.floor(lm[1].replace(/\t/g,'  ').length/2),lm[2]);continue}
+    closeAllLists();h+='<p>'+inlineFmt(tr)+'</p>'
+  }
+  closeAllLists();if(inTable)h+='</tbody></table>';
+  return {html:h,heads:heads};
+}
+function initPrd(){
+  var md=document.getElementById('prdMdSource').textContent.trim();
+  var rendered=renderMarkdown(md);
+  document.getElementById('prdContent').innerHTML=rendered.html;
+  var toc='<div class="prd-toc-title">目录</div>';
+  rendered.heads.forEach(function(head){toc+="<div class=\"prd-toc-item "+(head.level>2?'sub':'')+"\" onclick=\"document.getElementById('"+head.id+"').scrollIntoView({behavior:'smooth',block:'start'})\">"+head.text+"</div>"});
+  document.getElementById('prdToc').innerHTML=toc;
+}
+(function initDrag(){
+  var drag=document.getElementById('splitDrag'),panel=document.getElementById('prdPanel'),startX,startW;
+  drag.addEventListener('mousedown',function(e){e.preventDefault();startX=e.clientX;startW=panel.offsetWidth;drag.classList.add('dragging');document.body.style.cursor='col-resize';document.body.style.userSelect='none';function onMove(ev){var w=startW-(ev.clientX-startX);if(w<280)w=280;if(w>window.innerWidth*.7)w=window.innerWidth*.7;panel.style.width=w+'px'}function onUp(){drag.classList.remove('dragging');document.body.style.cursor='';document.body.style.userSelect='';document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp)}document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',onUp)})
+})();
+document.addEventListener('DOMContentLoaded',function(){render();initPrd()});
+</script>
+</body>
+</html>
