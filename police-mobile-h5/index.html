@@ -8,108 +8,115 @@
 <style>
 *,*::before,*::after{box-sizing:border-box}
 :root{
-  --primary:#155dfc;
-  --primary-deep:#0b3db8;
-  --primary-soft:#eff6ff;
-  --primary-wash:#f5f8ff;
-  --ink:#101828;
-  --text:#1e2939;
-  --muted:#6a7282;
-  --subtle:#99a1af;
-  --line:#e5e7eb;
-  --line-soft:#f3f4f6;
-  --app-bg:#f9fafb;
+  --primary:#0052d9;
+  --primary-deep:#003cab;
+  --primary-soft:#e8f1ff;
+  --primary-wash:#f4f7ff;
+  --ink:#1d2129;
+  --text:#344054;
+  --muted:#667085;
+  --subtle:#98a2b3;
+  --line:#e5e6eb;
+  --line-soft:#f2f3f5;
+  --app-bg:#f5f7fa;
   --panel:#fff;
-  --danger:#f54900;
-  --danger-ink:#9f2d00;
-  --danger-soft:#fff7ed;
-  --danger-line:#ffedd4;
-  --green:#008236;
-  --green-soft:#dcfce7;
-  --amber:#a65f00;
-  --amber-soft:#fef9c2;
-  --shadow-card:0 1px 1.5px rgba(0,0,0,.10),0 1px 1px rgba(0,0,0,.10);
-  --shadow-float:0 10px 30px rgba(15,23,42,.09),0 1px 1px rgba(15,23,42,.04);
-  --shadow-panel:0 18px 46px rgba(16,24,40,.16);
-  --border:#e2e8f0;
-  --border-light:#f0f0f0;
+  --danger:#f53f3f;
+  --danger-ink:#b42318;
+  --danger-soft:#fff1f0;
+  --danger-line:#ffd5d2;
+  --green:#00a870;
+  --green-soft:#e8f8f0;
+  --amber:#ff7d00;
+  --amber-soft:#fff3e0;
+  --shadow-card:0 1px 2px rgba(16,24,40,.04);
+  --shadow-float:0 8px 22px rgba(16,24,40,.07),0 1px 2px rgba(16,24,40,.04);
+  --shadow-panel:0 22px 54px rgba(16,24,40,.18);
+  --border:#dfe3eb;
+  --border-light:#edf0f5;
 }
-html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:var(--text);background:#eef0f3}
+html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:var(--text);background:#eef2f6}
 button,input,textarea{font:inherit}
 button{border:0;background:none;cursor:pointer}
 .app-split{display:flex;height:100vh;overflow:hidden}
 .page-container{flex:1;min-width:0;overflow:auto;background:
-  linear-gradient(90deg,rgba(21,93,252,.035) 1px,transparent 1px),
-  linear-gradient(rgba(15,23,42,.035) 1px,transparent 1px),
-  linear-gradient(135deg,#f7f9fd 0%,#e9edf5 100%);background-size:36px 36px,36px 36px,auto}
+  linear-gradient(90deg,rgba(0,82,217,.026) 1px,transparent 1px),
+  linear-gradient(rgba(29,33,41,.026) 1px,transparent 1px),
+  linear-gradient(135deg,#f7f9fc 0%,#edf1f7 100%);background-size:40px 40px,40px 40px,auto}
 .stage{min-height:100%;display:flex;align-items:center;justify-content:center;padding:36px 24px}
-.prototype-shell{display:grid;grid-template-columns:auto minmax(260px,340px);gap:30px;align-items:center}
-.phone-frame{position:relative;width:393px;height:852px;border-radius:40px;background:linear-gradient(145deg,#0b1220,#192235);padding:10px;box-shadow:0 36px 90px rgba(15,23,42,.30),0 0 0 1px rgba(255,255,255,.36) inset}
+.prototype-shell{display:grid;grid-template-columns:auto;gap:0;align-items:center}
+.phone-frame{position:relative;width:393px;height:852px;border-radius:40px;background:linear-gradient(145deg,#111827,#253041);padding:10px;box-shadow:0 32px 76px rgba(29,33,41,.24),0 0 0 1px rgba(255,255,255,.32) inset}
 .phone-frame::before{content:"";position:absolute;left:50%;top:9px;transform:translateX(-50%);width:104px;height:5px;border-radius:999px;background:rgba(255,255,255,.16);z-index:3}
-.phone-screen{position:relative;width:100%;height:100%;overflow:hidden;border-radius:30px;background:linear-gradient(180deg,#f7faff 0,#f9fafb 155px,#f5f6f8 100%)}
-.app-top{position:absolute;top:0;left:0;right:0;height:64px;background:rgba(255,255,255,.92);border-bottom:1px solid rgba(229,231,235,.72);z-index:5;padding:13px 16px 0;backdrop-filter:blur(18px)}
+.phone-screen{position:relative;width:100%;height:100%;overflow:hidden;border-radius:30px;background:var(--app-bg)}
+.app-top{position:absolute;top:0;left:0;right:0;height:64px;background:rgba(255,255,255,.97);border-bottom:1px solid rgba(223,227,235,.88);z-index:5;padding:12px 16px 0;backdrop-filter:blur(16px)}
 .app-top.detail{height:57px;padding:0;border-bottom:1px solid var(--line-soft);box-shadow:var(--shadow-card)}
-.app-main{position:absolute;left:0;right:0;top:64px;bottom:64px;overflow-y:auto;background:transparent;-webkit-overflow-scrolling:touch}
+.app-main{position:absolute;left:0;right:0;top:64px;bottom:66px;overflow-y:auto;background:transparent;-webkit-overflow-scrolling:touch}
 .app-main.detail{top:57px}
 .app-main::-webkit-scrollbar{width:0}
-.bottom-nav{position:absolute;left:0;right:0;bottom:0;height:64px;background:rgba(255,255,255,.94);border-top:1px solid rgba(229,231,235,.84);box-shadow:0 -8px 28px rgba(15,23,42,.05);display:grid;grid-template-columns:1fr 1fr;z-index:6;backdrop-filter:blur(18px)}
-.nav-btn{display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:center;color:#8a96a8;font-size:10px;font-weight:650;letter-spacing:.12px;position:relative}
-.nav-btn svg{width:22px;height:22px;stroke:currentColor}
+.bottom-nav{position:absolute;left:0;right:0;bottom:0;height:66px;background:rgba(255,255,255,.97);border-top:1px solid rgba(223,227,235,.92);box-shadow:0 -8px 18px rgba(16,24,40,.04);display:grid;grid-template-columns:repeat(3,1fr);z-index:6;backdrop-filter:blur(16px)}
+.nav-btn{display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;color:#7a8699;font-size:10px;font-weight:650;letter-spacing:0;position:relative}
+.nav-btn svg{width:21px;height:21px;stroke:currentColor}
 .nav-btn.active{color:var(--primary)}
-.nav-btn.active::before{content:"";position:absolute;top:6px;width:34px;height:34px;border-radius:999px;background:var(--primary-soft);z-index:-1}
-.segmented{height:38px;background:rgba(236,239,245,.82);border:1px solid rgba(226,232,240,.78);border-radius:12px;display:grid;align-items:center;position:relative;padding:3px;box-shadow:0 1px 0 rgba(255,255,255,.68) inset}
+.nav-btn.inert{cursor:default}
+.nav-btn.active::before{content:"";position:absolute;top:0;width:32px;height:3px;border-radius:0 0 3px 3px;background:var(--primary);z-index:1}
+.segmented{height:40px;background:#f2f4f8;border:1px solid rgba(223,227,235,.92);border-radius:10px;display:grid;align-items:center;position:relative;padding:3px;box-shadow:0 1px 0 rgba(255,255,255,.74) inset}
 .segmented.three{grid-template-columns:1fr 1fr 1fr}
-.segmented .seg-btn{height:30px;margin:0;border-radius:9px;color:#243041;font-size:12px;font-weight:750;transition:background .18s ease,color .18s ease,box-shadow .18s ease,transform .18s ease}
-.segmented .seg-btn.active{background:#fff;color:#0f172a;box-shadow:0 8px 18px rgba(15,23,42,.08),0 1px 1px rgba(15,23,42,.08)}
+.segmented .seg-btn{height:32px;margin:0;border-radius:8px;color:#4e5969;font-size:12px;font-weight:750;transition:background .18s ease,color .18s ease,box-shadow .18s ease,transform .18s ease}
+.segmented .seg-btn.active{background:#fff;color:#1d2129;box-shadow:0 6px 14px rgba(16,24,40,.08),0 0 0 1px rgba(223,227,235,.85)}
 .segmented .seg-btn:active{transform:scale(.98)}
 .report-top{display:grid;grid-template-columns:1fr 40px;gap:8px}
-.calendar-btn{height:38px;display:grid;place-items:center;color:var(--muted);background:#fff;border:1px solid rgba(226,232,240,.9);border-radius:12px;box-shadow:0 1px 1px rgba(15,23,42,.04)}
+.calendar-btn{height:40px;display:grid;place-items:center;color:var(--muted);background:#fff;border:1px solid rgba(223,227,235,.94);border-radius:10px;box-shadow:var(--shadow-card)}
 .calendar-btn svg{width:19px;height:19px;stroke:currentColor}
 .detail-header{height:57px;display:flex;align-items:center;gap:8px;padding:0 16px 0 12px;background:#fff}
 .back-btn{width:32px;height:32px;border-radius:999px;display:grid;place-items:center;color:var(--text)}
 .back-btn svg{width:22px;height:22px;stroke:currentColor}
 .detail-title{font-size:16px;font-weight:600;letter-spacing:-.31px;color:#1e2939}
-.count-text{padding:14px 16px 8px;font-size:12px;line-height:16px;color:var(--muted);display:flex;align-items:center;justify-content:space-between}
-.count-text::after{content:"待处理";height:20px;padding:0 8px;border-radius:999px;background:#eef4ff;color:var(--primary);font-size:11px;font-weight:700;display:inline-flex;align-items:center}
-.card-list{display:flex;flex-direction:column;gap:12px;padding:0 12px 22px}
-.exception-card,.report-card{background:rgba(255,255,255,.96);border:1px solid rgba(226,232,240,.75);border-radius:14px;box-shadow:var(--shadow-float);overflow:hidden}
-.exception-card{padding:16px;position:relative;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.count-text{padding:13px 16px 8px;font-size:12px;line-height:16px;color:#667085;font-weight:650;display:flex;align-items:center;justify-content:flex-start}
+.exception-date-panel{padding:12px 12px 0}
+.exception-date-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;color:#667085;font-size:12px}
+.exception-date-head strong{color:#1d2129;font-size:13px;font-weight:800}
+.date-clear{height:24px;padding:0 10px;border-radius:8px;background:var(--primary-soft);color:var(--primary);font-size:12px;font-weight:800}
+.date-filter{height:40px;display:grid;grid-template-columns:1fr;gap:8px;align-items:center}
+.date-filter.picked{grid-template-columns:34px 1fr 34px}
+.date-step{height:34px;border-radius:8px;background:#fff;border:1px solid rgba(223,227,235,.94);color:#667085;display:grid;place-items:center;box-shadow:var(--shadow-card)}
+.date-step:disabled{color:#c9cdd4;background:#f7f8fa;cursor:not-allowed;box-shadow:none}
+.date-step svg{width:17px;height:17px;stroke:currentColor}
+.date-picker{position:relative;height:38px;border-radius:9px;background:#fff;border:1px solid rgba(190,198,214,.95);display:flex;align-items:center;justify-content:center;gap:8px;color:#1d2129;font-size:13px;font-weight:800;box-shadow:var(--shadow-card)}
+.date-picker svg{width:17px;height:17px;stroke:var(--primary)}
+.date-picker input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.card-list{display:flex;flex-direction:column;gap:10px;padding:0 12px 24px}
+.exception-card,.report-card{background:#fff;border:1px solid rgba(223,227,235,.94);border-radius:12px;box-shadow:var(--shadow-float);overflow:hidden}
+.exception-card{padding:14px;position:relative;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
 .exception-card:active{transform:scale(.992)}
-.card-head{display:flex;align-items:center;gap:8px;min-height:22px}
-.account{font-size:14px;line-height:20px;font-weight:800;letter-spacing:-.15px;color:var(--ink)}
-.badge{display:inline-flex;align-items:center;justify-content:center;gap:4px;height:22px;padding:0 8px;border-radius:999px;font-size:10px;line-height:15px;letter-spacing:.12px;white-space:nowrap;font-weight:650}
+.card-head{display:flex;align-items:center;gap:7px;min-height:22px}
+.account{font-size:15px;line-height:21px;font-weight:800;letter-spacing:0;color:var(--ink)}
+.badge{display:inline-flex;align-items:center;justify-content:center;gap:4px;height:22px;padding:0 8px;border-radius:6px;font-size:10px;line-height:15px;letter-spacing:0;white-space:nowrap;font-weight:750}
 .badge svg{width:12px;height:12px;fill:currentColor;stroke:currentColor}
 .badge.wechat{background:var(--green-soft);color:var(--green)}
 .badge.weibo{background:var(--amber-soft);color:var(--amber)}
-.badge.douyin{background:#1e2939;color:#fff}
-.card-status{margin-left:auto;font-size:11px;color:#64748b;background:#f8fafc;border:1px solid #eef2f7;border-radius:999px;padding:3px 8px;font-weight:650}
-.summary-box{margin-top:14px;min-height:58px;background:linear-gradient(180deg,#f8fafc,#f5f7fb);border:1px solid #f0f3f8;border-radius:10px;display:flex;align-items:center;gap:10px;padding:12px;color:#1e2939}
+.badge.douyin{background:#1d2129;color:#fff}
+.card-status{margin-left:auto;font-size:11px;color:#ff7d00;background:#fff3e0;border:1px solid #ffe0b8;border-radius:6px;padding:3px 8px;font-weight:750}
+.summary-box{margin-top:13px;min-height:58px;background:#f7f9fc;border:1px solid #edf0f5;border-radius:9px;display:flex;align-items:center;gap:10px;padding:11px;color:#1d2129}
 .summary-box.clickable{cursor:pointer}
-.summary-box.clickable:active{background:#f2f6ff}
-.summary-icon{width:28px;height:28px;border-radius:10px;background:#fff7ed;border:1px solid #ffedd4;display:grid;place-items:center;flex:0 0 auto}
-.summary-icon svg{width:15px;height:15px;stroke:var(--danger);margin:0}
-.summary-main{min-width:0;font-size:14px;line-height:20px;font-weight:600;letter-spacing:-.15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.summary-box.clickable:active{background:#f1f6ff}
+.summary-icon{width:30px;height:30px;border-radius:8px;background:#fff3e0;border:1px solid #ffe0b8;display:grid;place-items:center;flex:0 0 auto}
+.summary-icon svg{width:15px;height:15px;stroke:var(--amber);margin:0}
+.summary-main{min-width:0;font-size:14px;line-height:20px;font-weight:650;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.summary-main .metric-name{color:#4e5969;font-weight:700}
+.summary-main .metric-value{margin-left:8px;font-size:17px;font-weight:850;color:#ff7d00}
+.summary-main .metric-value.negative{color:#f53f3f}
+.summary-main .risk-text{font-weight:750;color:#1d2129}
 .summary-sub{margin-top:4px;font-size:12px;line-height:16px;color:var(--muted);font-weight:400}
 .comment-link{color:var(--primary)}
-.comment-monitor{padding:10px 12px 22px}
-.comment-tools{position:sticky;top:0;z-index:2;margin:0 -12px 12px;padding:10px 12px 12px;background:linear-gradient(180deg,rgba(249,250,251,.98),rgba(249,250,251,.92));border-bottom:1px solid rgba(229,231,235,.72);backdrop-filter:blur(14px)}
-.comment-platforms{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px}
-.comment-platforms::-webkit-scrollbar{display:none}
-.platform-filter{height:32px;padding:0 13px;border-radius:8px;background:#fff;border:1px solid #dde3ee;color:#374151;font-size:13px;font-weight:750;white-space:nowrap;box-shadow:0 1px 1px rgba(15,23,42,.03)}
-.platform-filter.active{background:#2f8cff;border-color:#2f8cff;color:#fff;box-shadow:0 8px 16px rgba(47,140,255,.20)}
-.comment-search{height:36px;display:flex;align-items:center;gap:8px;padding:0 12px;border:1px solid #d8dee9;border-radius:8px;background:#fff;color:#9aa3b2}
-.comment-search svg{width:16px;height:16px;stroke:currentColor;flex:0 0 auto}
-.comment-search input{min-width:0;flex:1;border:0;outline:0;background:transparent;color:#111827;font-size:13px}
-.comment-search input::placeholder{color:#9aa3b2}
+.comment-monitor{padding:0 12px 22px}
 .comment-list-head{display:flex;align-items:center;justify-content:space-between;margin:0 0 10px;color:#667085;font-size:12px}
 .comment-list-head strong{color:#101828;font-size:13px}
 .comment-card-list{display:flex;flex-direction:column;gap:10px}
-.comment-monitor-card{background:rgba(255,255,255,.98);border:1px solid rgba(226,232,240,.86);border-radius:14px;box-shadow:var(--shadow-float);padding:13px 13px 12px;overflow:hidden;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
+.comment-monitor-card{background:#fff;border:1px solid rgba(223,227,235,.94);border-radius:12px;box-shadow:var(--shadow-float);padding:13px 13px 12px;overflow:hidden;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
 .comment-monitor-card:active{transform:scale(.992)}
 .comment-card-head{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center}
-.comment-index{width:24px;height:24px;border-radius:999px;background:#f4f7fb;color:#475467;font-size:12px;font-weight:800;display:grid;place-items:center}
+.comment-index{width:26px;height:26px;border-radius:8px;background:#f2f5fa;color:#4e5969;font-size:12px;font-weight:850;display:grid;place-items:center}
 .comment-account{min-width:0}
-.comment-account-name{font-size:14px;line-height:19px;font-weight:800;color:#101828;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.comment-account-name{font-size:14px;line-height:19px;font-weight:800;color:#1d2129;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .comment-account-meta{display:flex;align-items:center;gap:6px;margin-top:4px}
 .comment-platform-tag,.ai-result-tag,.comment-status{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;font-size:11px;font-weight:750;white-space:nowrap}
 .comment-platform-tag.douyin{background:#fff1f2;color:#ff1f35}
@@ -117,39 +124,40 @@ button{border:0;background:none;cursor:pointer}
 .comment-platform-tag.video{background:#eff6ff;color:#155dfc}
 .comment-platform-tag.news{background:#fff8e1;color:#f5a000}
 .comment-time{color:#8a96a8;font-size:11px;white-space:nowrap}
-.comment-status.pending{background:#fff7e8;color:#f59e0b}
+.comment-status.pending{background:#fff3e0;color:#ff7d00}
 .comment-status.done{background:#f0fdf4;color:#16a34a}
-.comment-body{margin-top:12px;padding:12px;border-radius:10px;background:#f8fafc;border:1px solid #eef2f7}
-.comment-body p{margin:0;color:#283445;font-size:13px;line-height:21px;text-wrap:pretty}
+.comment-body{margin-top:12px;padding:11px;border-radius:9px;background:#f7f9fc;border:1px solid #edf0f5}
+.comment-body p{margin:0;color:#344054;font-size:13px;line-height:21px;text-wrap:pretty}
 .comment-ai-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
-.ai-result-tag{background:#fff1f2;color:#ff1f35}
-.ai-result-tag.warn{background:#fff1f2;color:#ff1f35}
-.ai-result-tag.result{background:#fff1f2;color:#ff3b30}
+.ai-result-tag{background:#fff1f0;color:#f53f3f}
+.ai-result-tag.warn{background:#fff1f0;color:#f53f3f}
+.ai-result-tag.result{background:#fff1f0;color:#f53f3f}
+.source-hint{height:22px;display:inline-flex;align-items:center;padding:0 8px;border-radius:6px;background:#f2f5fa;color:#667085;font-size:11px;font-weight:750}
 .comment-action-row{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-top:12px;padding-top:11px;border-top:1px solid #f1f4f8}
 .comment-action{color:#2f8cff;font-size:13px;font-weight:800}
 .comment-action.muted{color:#64748b}
 .comment-empty{height:160px;display:grid;place-items:center;color:#9aa3b2;font-size:13px}
-.time-line{display:flex;align-items:center;gap:5px;margin-top:12px;color:#8a96a8;font-size:12px;line-height:16px}
+.time-line{display:flex;align-items:center;gap:5px;margin-top:11px;color:#86909c;font-size:12px;line-height:16px}
 .time-line svg{width:12px;height:12px;stroke:currentColor}
-.action-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;padding-top:13px;border-top:1px solid #f1f4f8}
-.h5-btn{height:40px;border-radius:11px;font-size:13px;font-weight:750;text-align:center;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:transform .16s ease,box-shadow .16s ease,background .16s ease}
+.action-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid #edf0f5}
+.h5-btn{height:42px;border-radius:8px;font-size:13px;font-weight:800;text-align:center;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:transform .16s ease,box-shadow .16s ease,background .16s ease,border-color .16s ease}
 .h5-btn svg{width:15px;height:15px;stroke:currentColor}
-.h5-btn.secondary{background:#fff;border:1px solid rgba(15,23,42,.12);color:#111827;box-shadow:0 1px 0 rgba(255,255,255,.8) inset}
-.h5-btn.primary{background:linear-gradient(180deg,#2267ff,#155dfc);color:#fff;box-shadow:0 8px 16px rgba(21,93,252,.22)}
+.h5-btn.secondary{background:#fff;border:1px solid #d8dde7;color:#1d2129;box-shadow:0 1px 0 rgba(255,255,255,.8) inset}
+.h5-btn.primary{background:var(--primary);color:#fff;box-shadow:0 8px 16px rgba(0,82,217,.20)}
 .h5-btn:active{transform:translateY(1px) scale(.99);box-shadow:none}
-.report-list{display:flex;flex-direction:column;gap:8px;padding:12px 10px 18px}
-.report-card{position:relative;padding:18px 16px 16px;min-height:136px}
-.report-unread{position:absolute;right:12px;top:12px;width:9px;height:9px;background:#ff1f35;border-radius:999px;box-shadow:0 0 0 4px #fff1f2}
+.report-list{display:flex;flex-direction:column;gap:10px;padding:12px 12px 22px}
+.report-card{position:relative;padding:15px 14px 13px;min-height:112px}
+.report-unread{position:absolute;right:14px;top:14px;width:8px;height:8px;background:#f53f3f;border-radius:999px;box-shadow:0 0 0 4px #fff1f0}
 .report-title{font-size:14px;line-height:20px;color:var(--ink);font-weight:800;letter-spacing:-.15px}
 .report-date{margin-top:8px;font-size:13px;line-height:18px;color:var(--muted)}
-.report-actions{display:flex;justify-content:flex-end;gap:24px;margin-top:28px;padding-top:10px;border-top:1px solid var(--line-soft)}
-.mini-action{display:flex;flex-direction:column;align-items:center;gap:4px;color:#8b95a5;font-size:10px;line-height:14px}
-.mini-action svg{width:18px;height:18px;stroke:currentColor}
+.report-actions{display:flex;justify-content:flex-start;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line-soft)}
+.mini-action{height:30px;display:inline-flex;align-items:center;gap:5px;padding:0 10px;border-radius:7px;background:#f7f9fc;border:1px solid #edf0f5;color:#667085;font-size:12px;line-height:14px;font-weight:750}
+.mini-action svg{width:16px;height:16px;stroke:currentColor}
 .more-text{height:48px;display:grid;place-items:center;color:var(--subtle);font-size:12px}
-.report-preview-list{background:#fff;min-height:100%;padding:156px 16px 20px}
-.report-row{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;padding:12px 0;border-bottom:1px solid var(--line-soft)}
-.report-row-title{font-size:14px;line-height:20px;color:var(--primary)}
-.report-row-metric{font-size:12px;line-height:20px;color:#4a5565;white-space:nowrap}
+.report-preview-list{background:#fff;min-height:100%;padding:10px 16px 20px}
+.report-row{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:start;padding:14px 0;border-bottom:1px solid var(--line-soft)}
+.report-row-title{font-size:14px;line-height:21px;color:var(--primary);text-align:left}
+.report-row-metric{font-size:12px;line-height:21px;color:#4e5969;white-space:nowrap;font-weight:650}
 .detail-content{display:flex;flex-direction:column;gap:8px;padding-bottom:18px}
 .detail-card{background:#fff;box-shadow:var(--shadow-float);padding:16px}
 .detail-name{font-size:16px;line-height:24px;font-weight:800;color:var(--ink);letter-spacing:-.31px}
@@ -203,14 +211,15 @@ button{border:0;background:none;cursor:pointer}
 .play{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);width:0;height:0;border-top:18px solid transparent;border-bottom:18px solid transparent;border-left:28px solid rgba(255,255,255,.92)}
 .weibo-open{display:block;margin:-22px 16px 12px auto;width:108px;height:32px;border-radius:999px;background:#ff9f1a;color:#fff;font-size:13px;font-weight:700;position:relative;z-index:1}
 .weibo-stats{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--line-soft);font-size:12px;color:#6b7280;text-align:center;padding:8px 0}
-.dispose-overlay{position:absolute;inset:0;background:rgba(15,23,42,.58);z-index:20;display:none;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(4px)}
+.dispose-overlay{position:absolute;inset:0;background:rgba(15,23,42,.52);z-index:20;display:none;align-items:flex-end;justify-content:center;padding:0;backdrop-filter:blur(4px)}
 .dispose-overlay.show{display:flex}
-.dispose-modal{width:100%;max-width:354px;max-height:90%;overflow:auto;background:#fff;border-radius:18px;box-shadow:var(--shadow-panel);padding:24px}
-.modal-head{display:flex;align-items:center;justify-content:center;position:relative;padding-bottom:20px;border-bottom:1px solid var(--line-soft)}
-.modal-head h3{margin:0;font-size:18px;color:#111827}
-.modal-close{position:absolute;right:-4px;top:-6px;width:28px;height:28px;color:#4b5563;font-size:22px}
-.modal-section-title{margin:24px 0 12px;font-size:14px;font-weight:800;color:#111827}
-.radio-list{display:flex;flex-direction:column;gap:12px}
+.dispose-modal{width:100%;max-height:86%;overflow:auto;background:#fff;border-radius:18px 18px 0 0;box-shadow:var(--shadow-panel);padding:20px 18px 18px}
+.modal-head{display:flex;align-items:center;justify-content:center;position:relative;padding-bottom:16px;border-bottom:1px solid var(--line-soft)}
+.modal-head::before{content:"";position:absolute;top:-9px;left:50%;transform:translateX(-50%);width:38px;height:4px;border-radius:999px;background:#d8dde7}
+.modal-head h3{margin:0;font-size:17px;color:#1d2129}
+.modal-close{position:absolute;right:-4px;top:-6px;width:32px;height:32px;color:#4b5563;font-size:22px}
+.modal-section-title{margin:18px 0 10px;font-size:14px;font-weight:800;color:#1d2129}
+.radio-list{display:flex;flex-direction:column;gap:10px}
 .radio-item{display:flex;gap:8px;align-items:center;font-size:14px;color:#1f2937}
 .radio-item input{accent-color:var(--primary)}
 .dispose-textarea-wrap{position:relative;margin-top:16px}
@@ -220,7 +229,8 @@ button{border:0;background:none;cursor:pointer}
 .history{margin-top:16px;display:flex;flex-direction:column;gap:10px}
 .history-row{display:grid;grid-template-columns:1fr auto;gap:10px;font-size:12px;line-height:20px;color:#4a5565}
 .history-row strong{display:block;color:#1e2939;font-weight:500}
-.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:22px}
+.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.modal-actions .h5-btn{height:44px}
 .toast{position:absolute;left:50%;bottom:78px;transform:translateX(-50%) translateY(14px);padding:8px 12px;border-radius:999px;background:rgba(17,24,39,.92);color:#fff;font-size:12px;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;z-index:30;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .side-note{max-width:340px}
@@ -320,11 +330,6 @@ button{border:0;background:none;cursor:pointer}
             </div>
           </div>
         </div>
-        <aside class="side-note">
-          <span class="figma-tag">Figma-based H5</span>
-          <h1>公安移动端异常处置工作台</h1>
-          <p>按你提供的 Figma 地址复刻核心页面：数据报告、数据异常、巡检异常、评论异常、处置弹窗，以及两类详情页。右侧 PRD 与原型并列，方便产品和开发一起核对规则。</p>
-        </aside>
       </div>
     </div>
   </div>
@@ -362,7 +367,7 @@ button{border:0;background:none;cursor:pointer}
 
 ### 1.1 背景
 
-公安新媒体矩阵在微信、微博、抖音等渠道持续发布内容，需要在移动端快速查看数据报告，并及时处理数据异常、巡检异常和评论异常。Figma 原型展示了一个面向手机访问的 H5 工具，围绕“数据报告”和“待处理异常”两个入口组织工作。
+公安新媒体矩阵在微信、微博、抖音等渠道持续发布内容，需要在移动端快速查看数据报告，并及时处理数据异常、巡检异常和评论异常。Figma 原型展示了一个面向手机访问的 H5 工具，围绕“数据报告”“主题填报”和“异常处理”三个底部入口组织工作。
 
 ### 1.2 产品目标
 
@@ -381,7 +386,7 @@ button{border:0;background:none;cursor:pointer}
 
 - 设计来源：用户提供的 Figma 文件 `Untitled`。
 - 移动端尺寸：以 393px 宽手机 H5 为核心展示尺寸。
-- 视觉风格：浅灰页面背景、白色卡片、蓝色主操作按钮、紧凑型分段控件、底部双 Tab 导航。
+- 视觉风格：政务蓝主色、浅灰页面背景、白色卡片、细边框层级、紧凑型分段控件、底部三 Tab 导航。
 
 ---
 
@@ -390,9 +395,10 @@ button{border:0;background:none;cursor:pointer}
 ### 2.1 一级导航
 
 - 数据报告
-- 待处理异常
+- 主题填报
+- 异常处理
 
-### 2.2 待处理异常二级分类
+### 2.2 异常处理二级分类
 
 - 数据异常
 - 巡检异常
@@ -401,7 +407,7 @@ button{border:0;background:none;cursor:pointer}
 ### 2.3 关键页面
 
 - 数据报告列表页
-- 待处理异常列表页
+- 异常处理列表页
 - 异常处置弹窗
 - 表述异常详情页
 - 评论异常详情页
@@ -454,27 +460,50 @@ button{border:0;background:none;cursor:pointer}
 
 ---
 
-## 4. 待处理异常
+## 4. 异常处理
 
 ### 4.1 底部导航
 
 - **展示规则**
-  - 底部固定展示“数据报告”和“待处理异常”两个入口。
+  - 底部固定展示“数据报告”“主题填报”和“异常处理”三个入口。
   - 当前入口使用蓝色图标和文字高亮。
 - **交互规则**
   - 点击“数据报告”切换至报告列表。
-  - 点击“待处理异常”切换至异常列表，并保持最近一次选择的异常分类。
+  - 点击“主题填报”无页面跳转和状态变化，用于保留线上已有模块入口位置。
+  - 点击“异常处理”切换至异常列表，并保持最近一次选择的异常分类。
 - **数据规则**
   - **取数规则**：导航不直接取数，切换后由对应页面读取数据。
-  - **数据筛选规则**：切换页面时保留当前页面的分类状态。
+  - **数据筛选规则**：切换到异常处理时保留当前异常分类状态；主题填报入口在本原型中不参与筛选。
   - **数据排序规则**：导航本身无排序规则。
 
-### 4.2 异常分类切换
+### 4.2 日期筛选
+
+- **展示规则**
+  - 异常处理页在异常分类下方展示日期筛选框。
+  - 默认不选择日期，日期筛选框展示“全部日期”。
+  - 未选择日期时不展示前一天、后一天按钮，避免出现不可用控件。
+  - 选择日期后展示当前选中日期，并提供前一天、后一天快捷切换入口。
+  - 已选择日期时展示“全部”入口，用于清空日期筛选。
+  - 日期选择入口使用系统日期选择能力。
+  - 可选日期最近截止到当天。
+- **交互规则**
+  - 点击日期区域打开日期选择器，选择后刷新当前异常分类列表。
+  - 不选择日期时展示全部未处理异常。
+  - 点击“全部”清空日期筛选，并恢复展示全部未处理异常。
+  - 点击前一天或后一天后更新日期，并保持当前异常分类不变。
+  - 当已选日期为当天时，后一天入口不可继续切换。
+  - 切换日期后列表回到顶部。
+- **数据规则**
+  - **取数规则**：读取当前用户权限范围内所选日期产生或发现的异常数据。
+  - **数据筛选规则**：未选择日期时不按日期过滤，仅展示全部未处理异常；选择日期后，日期筛选作用于数据异常、巡检异常和评论异常三个分类，并与异常分类、平台、账号权限等筛选条件共同生效。
+  - **数据排序规则**：默认按异常发现时间倒序排列；同一日期内同样按异常发现时间倒序排列。
+
+### 4.3 异常分类切换
 
 - **展示规则**
   - 顶部展示“数据异常”“巡检异常”“评论异常”三个分段选项。
   - 默认选中“数据异常”。
-  - 列表顶部展示“共 6 项数据”。
+  - 日期筛选下方展示当前分类的数据总数，格式为“共 X 项数据”，不展示额外状态标签。
 - **交互规则**
   - 点击分类后切换选中态，并刷新列表卡片内容。
   - 切换分类时列表回到顶部。
@@ -483,7 +512,7 @@ button{border:0;background:none;cursor:pointer}
   - **数据筛选规则**：按异常类型精确筛选；仅展示待处理状态数据。
   - **数据排序规则**：按异常发现时间倒序排列。
 
-### 4.3 异常卡片通用规则
+### 4.4 异常卡片通用规则
 
 - **展示规则**
   - 每张卡片展示账号名称、平台标签、异常摘要、发现时间、忽略按钮和处置按钮。
@@ -498,7 +527,7 @@ button{border:0;background:none;cursor:pointer}
   - **数据筛选规则**：受异常分类、用户权限、处置状态共同约束。
   - **数据排序规则**：默认按发现时间倒序排列；同一时间按异常等级从高到低排列。
 
-### 4.4 数据异常
+### 4.5 数据异常
 
 - **展示规则**
   - 摘要内容展示异常指标和波动比例，例如“阅读数 -859.88%”。
@@ -511,7 +540,7 @@ button{border:0;background:none;cursor:pointer}
   - **数据筛选规则**：仅展示达到异常阈值且未处理的指标项；平台、账号权限按当前用户范围过滤。
   - **数据排序规则**：按异常发现时间倒序排列；同一时间按波动绝对值从大到小排列。
 
-### 4.5 巡检异常
+### 4.6 巡检异常
 
 - **展示规则**
   - 摘要内容展示稿件标题，下一行展示异常类型，例如“表述异常”。
@@ -524,23 +553,22 @@ button{border:0;background:none;cursor:pointer}
   - **数据筛选规则**：仅展示巡检结论为异常且尚未处理的数据；可按异常类型归类。
   - **数据排序规则**：按巡检完成时间倒序排列。
 
-### 4.6 评论异常
+### 4.7 评论异常
 
 - **展示规则**
   - 评论异常参考 Web 端评论监测表格，在移动端转为卡片列表。
-  - 顶部提供平台筛选：全部、抖音、微博、视频号、新闻号。
-  - 提供评论内容搜索入口，支持按账号、正文内容、AI 识别结果检索。
+  - 评论异常不展示渠道筛选和评论内容搜索框。
+  - 评论异常列表计数与其他异常分类一致，展示“共 X 项数据”。
   - 每张卡片展示序号、平台、账号、正文内容、评论时间、AI 识别结果、处理状态和操作按钮。
   - AI 识别结果包含“质疑执法”“质疑处理结果”等风险标签。
-  - 状态包含“未处理”和“已处理”，未处理使用橙色标签，已处理使用绿色标签。
+  - 异常处理列表仅展示“未处理”评论；已处理评论不进入待处理列表。
 - **交互规则**
   - 点击评论卡片跳转原文地址。
   - 评论异常操作按钮与数据异常、巡检异常保持一致，展示“忽略”和“处置”。
   - 点击“忽略”或“处置”时不触发卡片跳转。
-  - 点击平台筛选后刷新评论列表，并回到列表顶部。
 - **数据规则**
-  - **取数规则**：读取评论监测模型识别出的疑似负面或风险评论。
-  - **数据筛选规则**：按平台、账号权限、评论内容、AI 识别结果和处理状态过滤。
+  - **取数规则**：读取评论监测模型识别出的疑似负面或风险评论，并限制为未处理状态。
+  - **数据筛选规则**：按全局日期、账号权限、AI 识别结果和未处理状态过滤。
   - **数据排序规则**：移动端与 Web 端评论监测列表保持一致排序，默认按评论发现时间倒序排列。
 
 ---
@@ -684,7 +712,7 @@ button{border:0;background:none;cursor:pointer}
 </textarea>
 
 <script>
-var state={view:'exceptions',exceptionType:'data',period:'day',issueFilter:'all',commentPlatform:'all',commentSearch:'',activeCard:null,activeCommentId:null};
+var state={view:'exceptions',exceptionType:'data',period:'day',exceptionDate:'',issueFilter:'all',activeCard:null,activeCommentId:null};
 var reports=[
   {title:'新媒体健康度分析日报',date:'2025-12-19',unread:true},
   {title:'新媒体健康度分析日报',date:'2025-12-18',unread:true},
@@ -726,6 +754,13 @@ var periodLabels={day:'日报',week:'周报',month:'月报'};
 var exceptionLabels={data:'数据异常',inspect:'巡检异常',comment:'评论异常'};
 var platformLabels={wechat:'微信',weibo:'微博',douyin:'抖音',video:'视频号',news:'新闻号',all:'全部'};
 var changelogData=[
+  {time:'2026-05-25 18:02',desc:'去除顶部模块标题和右上角分类名称，顶部回归轻量分段切换。'},
+  {time:'2026-05-25 17:51',desc:'按资深设计师审稿意见进行视觉精修：强化模块标题、收敛政务蓝与卡片层级，优化日期筛选默认态和移动端处置弹窗。'},
+  {time:'2026-05-25 17:47',desc:'统一异常处理列表计数文案，去除右侧“待处理”，评论异常改为“共 X 项数据”。'},
+  {time:'2026-05-25 17:37',desc:'调整异常处理日期筛选默认状态：默认不选日期并展示全部未处理异常，支持清空回到全部。'},
+  {time:'2026-05-25 17:28',desc:'调整异常处理日期筛选：去除右侧提示字样，日期最近截止到当天；评论异常去除渠道筛选和搜索框。'},
+  {time:'2026-05-25 16:52',desc:'在异常处理页新增全局日期筛选，支持选择日期以及前后一天快捷切换。'},
+  {time:'2026-05-25 16:34',desc:'底部导航新增“主题填报”入口，异常入口改名为“异常处理”，并移除原型旁侧说明文案。'},
   {time:'2026-05-25 16:26',desc:'部署到 GitHub Pages，发布公安移动端 H5 原型与 PRD。'},
   {time:'2026-05-25 15:34',desc:'调整评论异常交互：操作按钮统一为“忽略 / 处置”，点击评论卡片跳转原文地址。'},
   {time:'2026-05-25 15:26',desc:'参考 Web 端评论监测表格优化移动端评论异常：新增平台筛选、搜索、AI 识别结果、处理状态和移动卡片详情。'},
@@ -737,8 +772,11 @@ function iconClock(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="
 function iconDoc(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h6"/></svg>'}
 function iconNotice(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>'}
 function iconEye(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="3"/></svg>'}
+function iconThemeReport(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 1 4 18.5v-13Z"/><path d="M8 8h7"/><path d="M8 12h8"/><path d="M8 16h5"/></svg>'}
 function iconDownload(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>'}
 function iconCalendar(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg>'}
+function iconChevronLeft(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>'}
+function iconChevronRight(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>'}
 function iconBack(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M15 18 9 12l6-6"/></svg>'}
 function iconIgnore(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m8.8 8.8 6.4 6.4"/></svg>'}
 function iconDispose(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 11l2 2 4-5"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8"/></svg>'}
@@ -755,6 +793,22 @@ function platformIcon(platform){
 }
 function summaryIcon(type){return type==='data'?iconTrend():(type==='inspect'?iconTextScan():iconCommentRisk())}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function formatDateCn(date){var p=String(date).split('-');return p.length===3?p[0]+'年'+p[1]+'月'+p[2]+'日':date}
+function todayDate(){
+  var d=new Date();
+  var y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  return y+'-'+m+'-'+day;
+}
+function clampDate(date){return String(date)>todayDate()?todayDate():date}
+function shiftDate(date,days){
+  var d=new Date(String(date)+'T00:00:00');
+  if(isNaN(d.getTime()))d=new Date(todayDate()+'T00:00:00');
+  d.setDate(d.getDate()+days);
+  var y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  return clampDate(y+'-'+m+'-'+day);
+}
+function displayExceptionTime(time){return (state.exceptionDate||'2025-09-11')+' '+time}
+function displayCommentTime(item){return state.exceptionDate?state.exceptionDate+' '+String(item.time).split(' ')[1]:item.time}
 function render(){
   var top=document.getElementById('appTop'),main=document.getElementById('appMain'),bottom=document.getElementById('appBottom');
   top.className='app-top';main.className='app-main';
@@ -784,7 +838,7 @@ function renderDetailHeader(title,handler){
   return '<div class="detail-header"><button class="back-btn" onclick="'+handler+'" aria-label="返回">'+iconBack()+'</button><div class="detail-title">'+title+'</div></div>';
 }
 function renderBottom(){
-  return '<button class="nav-btn '+(state.view==='report'||state.view==='reportPreview'?'active':'')+'" onclick="goReport()">'+iconDoc()+'<span>数据报告</span></button><button class="nav-btn '+(state.view==='exceptions'||state.view==='expressionDetail'||state.view==='commentDetail'?'active':'')+'" onclick="goExceptions()">'+iconNotice()+'<span>待处理异常</span></button>';
+  return '<button class="nav-btn '+(state.view==='report'||state.view==='reportPreview'?'active':'')+'" onclick="goReport()">'+iconDoc()+'<span>数据报告</span></button><button class="nav-btn inert" onclick="noopThemeTab(event)">'+iconThemeReport()+'<span>主题填报</span></button><button class="nav-btn '+(state.view==='exceptions'||state.view==='expressionDetail'||state.view==='commentDetail'?'active':'')+'" onclick="goExceptions()">'+iconNotice()+'<span>异常处理</span></button>';
 }
 function renderReportList(){
   var html='<div class="report-list">';
@@ -807,13 +861,12 @@ function renderReportPreview(){
   html+='</div>';
   return html;
 }
+function isPendingException(item){
+  return !removed[item.id]&&(!item.status||item.status==='未处理');
+}
 function getVisibleComments(){
-  var q=state.commentSearch.trim().toLowerCase();
   return exceptions.comment.filter(function(item){
-    if(removed[item.id])return false;
-    if(state.commentPlatform!=='all'&&item.platform!==state.commentPlatform)return false;
-    if(!q)return true;
-    return (item.account+' '+item.summary+' '+item.aiResult+' '+platformLabels[item.platform]).toLowerCase().indexOf(q)>-1;
+    return isPendingException(item);
   });
 }
 function findComment(id){return exceptions.comment.filter(function(item){return item.id===id})[0]}
@@ -833,25 +886,27 @@ function openCommentOriginal(id){
   if(!win)window.location.href=url;
 }
 function renderExceptionList(){
+  var filter=renderExceptionDateFilter();
   if(state.exceptionType==='comment')return renderCommentMonitorList();
-  var list=exceptions[state.exceptionType].filter(function(item){return !removed[item.id]});
-  var html='<div class="count-text">共 '+list.length+' 项数据</div><div class="card-list">';
+  var list=exceptions[state.exceptionType].filter(isPendingException);
+  var html=filter+'<div class="count-text">共 '+list.length+' 项数据</div><div class="card-list">';
   list.forEach(function(item){html+=renderExceptionCard(item,state.exceptionType)});
   html+='<div class="more-text">没有更多了</div></div>';
   return html;
 }
+function renderExceptionDateFilter(){
+  var hasDate=!!state.exceptionDate,atToday=hasDate&&state.exceptionDate>=todayDate();
+  if(!hasDate)return '<section class="exception-date-panel"><div class="exception-date-head"><strong>筛选日期</strong></div><div class="date-filter"><label class="date-picker">'+iconCalendar()+'<span>全部日期</span><input type="date" value="" max="'+todayDate()+'" onchange="setExceptionDate(this.value)" aria-label="选择日期"></label></div></section>';
+  return '<section class="exception-date-panel"><div class="exception-date-head"><strong>筛选日期</strong><button class="date-clear" onclick="clearExceptionDate()">全部</button></div><div class="date-filter picked"><button class="date-step" onclick="shiftExceptionDate(-1)" aria-label="前一天">'+iconChevronLeft()+'</button><label class="date-picker">'+iconCalendar()+'<span>'+formatDateCn(state.exceptionDate)+'</span><input type="date" value="'+state.exceptionDate+'" max="'+todayDate()+'" onchange="setExceptionDate(this.value)" aria-label="选择日期"></label><button class="date-step" onclick="shiftExceptionDate(1)" aria-label="后一天"'+(atToday?' disabled':'')+'>'+iconChevronRight()+'</button></div></section>';
+}
 function renderCommentMonitorList(){
   var list=getVisibleComments();
-  var html='<div class="comment-monitor"><div class="comment-tools"><div class="comment-platforms">';
-  var filters=['all','douyin','weibo','video','news'];
-  filters.forEach(function(k){html+="<button class=\"platform-filter "+(state.commentPlatform===k?'active':'')+"\" onclick=\"setCommentPlatform('"+k+"')\">"+platformLabels[k]+"</button>"});
-  html+='</div><label class="comment-search">'+iconSearch()+'<input value="'+escapeHtml(state.commentSearch)+'" placeholder="搜索评论内容" oninput="setCommentSearch(this.value)"></label></div>';
-  html+='<div class="comment-list-head" id="commentListHead">'+renderCommentListHead(list)+'</div><div class="comment-card-list" id="commentCards">'+renderCommentCards(list)+'</div></div>';
+  var html=renderExceptionDateFilter()+'<div class="count-text" id="commentListHead">'+renderCommentListHead(list)+'</div><div class="comment-monitor">';
+  html+='<div class="comment-card-list" id="commentCards">'+renderCommentCards(list)+'</div></div>';
   return html;
 }
 function renderCommentListHead(list){
-  var pending=list.filter(function(item){return item.status==='未处理'}).length;
-  return '<span><strong>评论监测</strong> 共 '+list.length+' 条</span><span>未处理 '+pending+'</span>';
+  return '共 '+list.length+' 项数据';
 }
 function renderCommentCards(list){
   var html='';
@@ -860,14 +915,21 @@ function renderCommentCards(list){
 }
 function renderCommentMonitorCard(item){
   var statusClass=item.status==='已处理'?'done':'pending';
-  return '<article class="comment-monitor-card" onclick="openCommentOriginal(\''+item.id+'\')"><div class="comment-card-head"><div class="comment-index">'+item.no+'</div><div class="comment-account"><div class="comment-account-name">'+escapeHtml(item.account)+'</div><div class="comment-account-meta"><span class="comment-platform-tag '+item.platform+'">'+platformLabels[item.platform]+'</span><span class="comment-time">'+escapeHtml(item.time)+'</span></div></div><span class="comment-status '+statusClass+'">'+item.status+'</span></div><div class="comment-body"><p>'+escapeHtml(item.summary)+'</p></div><div class="comment-ai-row"><span class="ai-result-tag '+(item.aiResult.indexOf('处理')>-1?'result':'warn')+'">'+escapeHtml(item.aiResult)+'</span></div><div class="action-row"><button class="h5-btn secondary" onclick="event.stopPropagation();ignoreItem(\''+item.id+'\')">'+iconIgnore()+'忽略</button><button class="h5-btn primary" onclick="event.stopPropagation();showDispose(\''+item.id+'\')">'+iconDispose()+'处置</button></div></article>';
+  return '<article class="comment-monitor-card" onclick="openCommentOriginal(\''+item.id+'\')"><div class="comment-card-head"><div class="comment-index">'+item.no+'</div><div class="comment-account"><div class="comment-account-name">'+escapeHtml(item.account)+'</div><div class="comment-account-meta"><span class="comment-platform-tag '+item.platform+'">'+platformLabels[item.platform]+'</span><span class="comment-time">'+escapeHtml(displayCommentTime(item))+'</span></div></div><span class="comment-status '+statusClass+'">'+item.status+'</span></div><div class="comment-body"><p>'+escapeHtml(item.summary)+'</p></div><div class="comment-ai-row"><span class="ai-result-tag '+(item.aiResult.indexOf('处理')>-1?'result':'warn')+'">'+escapeHtml(item.aiResult)+'</span><span class="source-hint">原文</span></div><div class="action-row"><button class="h5-btn secondary" onclick="event.stopPropagation();ignoreItem(\''+item.id+'\')">'+iconIgnore()+'忽略</button><button class="h5-btn primary" onclick="event.stopPropagation();showDispose(\''+item.id+'\')">'+iconDispose()+'处置</button></div></article>';
+}
+function renderSummaryMain(item,type){
+  if(type==='data'){
+    var m=String(item.summary).match(/^(.+?)\s+([+-].+)$/);
+    if(m)return '<span class="metric-name">'+escapeHtml(m[1])+'</span><span class="metric-value '+(m[2].charAt(0)==='-'?'negative':'')+'">'+escapeHtml(m[2])+'</span>';
+  }
+  return '<span class="risk-text">'+escapeHtml(item.summary)+'</span>';
 }
 function renderExceptionCard(item,type){
   var summaryClass=type==='data'?'':' clickable';
   var click=type==='inspect'?' onclick="showExpressionDetail()"':(type==='comment'?' onclick="showCommentDetail()"':' onclick="toast(\'数据指标详情待接入\')"');
-  var summaryText=type==='comment'?'<span class="comment-link">'+escapeHtml(item.summary)+'</span>':escapeHtml(item.summary);
+  var summaryText=renderSummaryMain(item,type);
   var sub=item.sub?'<div class="summary-sub">'+escapeHtml(item.sub)+'</div>':'';
-  return "<article class=\"exception-card\"><div class=\"card-head\"><div class=\"account\">"+escapeHtml(item.account)+"</div><span class=\"badge "+item.platform+"\">"+platformIcon(item.platform)+platformLabels[item.platform]+"</span><span class=\"card-status\">待处理</span></div><div class=\"summary-box"+summaryClass+"\""+click+"><span class=\"summary-icon\">"+summaryIcon(type)+"</span><div><div class=\"summary-main\">"+summaryText+"</div>"+sub+"</div></div><div class=\"time-line\">"+iconClock()+"<span>2025-09-11 15:43:21</span></div><div class=\"action-row\"><button class=\"h5-btn secondary\" onclick=\"ignoreItem('"+item.id+"')\">"+iconIgnore()+"忽略</button><button class=\"h5-btn primary\" onclick=\"showDispose('"+item.id+"')\">"+iconDispose()+"处置</button></div></article>";
+  return "<article class=\"exception-card\"><div class=\"card-head\"><div class=\"account\">"+escapeHtml(item.account)+"</div><span class=\"badge "+item.platform+"\">"+platformIcon(item.platform)+platformLabels[item.platform]+"</span><span class=\"card-status\">待处理</span></div><div class=\"summary-box"+summaryClass+"\""+click+"><span class=\"summary-icon\">"+summaryIcon(type)+"</span><div><div class=\"summary-main\">"+summaryText+"</div>"+sub+"</div></div><div class=\"time-line\">"+iconClock()+"<span>"+displayExceptionTime('15:43:21')+"</span></div><div class=\"action-row\"><button class=\"h5-btn secondary\" onclick=\"ignoreItem('"+item.id+"')\">"+iconIgnore()+"忽略</button><button class=\"h5-btn primary\" onclick=\"showDispose('"+item.id+"')\">"+iconDispose()+"处置</button></div></article>";
 }
 function renderExpressionDetail(){
   var issues=[
@@ -875,7 +937,7 @@ function renderExpressionDetail(){
     {type:'错别字、词',kind:'word',before:'蹭厉奋发',after:'踔厉奋发',note:'文本疑似存在字词书写错误，建议再次核对。'}
   ];
   var filtered=issues.filter(function(i){return state.issueFilter==='all'||state.issueFilter===i.kind});
-  var html='<div class="detail-content"><section class="detail-card"><div class="detail-name">浙江公安</div><div class="detail-meta"><span class="detail-badge">微信</span><span class="detail-date">2025-09-11 15:43:21</span></div><div class="alert-box red">'+iconAlert()+'<div class="alert-title">表述异常</div><div class="alert-desc">检测到文中存在多处表述不当，建议修改</div></div></section>';
+  var html='<div class="detail-content"><section class="detail-card"><div class="detail-name">浙江公安</div><div class="detail-meta"><span class="detail-badge">微信</span><span class="detail-date">'+displayExceptionTime('15:43:21')+'</span></div><div class="alert-box red">'+iconAlert()+'<div class="alert-title">表述异常</div><div class="alert-desc">检测到文中存在多处表述不当，建议修改</div></div></section>';
   html+="<div class=\"filter-strip\"><button class=\"filter-chip "+(state.issueFilter==='all'?'active':'')+"\" onclick=\"setIssueFilter('all')\">全部 4</button><button class=\"filter-chip "+(state.issueFilter==='time'?'active':'')+"\" onclick=\"setIssueFilter('time')\">时政重点词 1</button><button class=\"filter-chip "+(state.issueFilter==='word'?'active':'')+"\" onclick=\"setIssueFilter('word')\">错别字、词 1</button><button class=\"filter-chip\">空格检查 2</button></div><div class=\"issue-list\">";
   filtered.forEach(function(i){html+='<article class="issue-card"><div class="issue-type"><span class="dot '+(i.kind==='word'?'blue':'')+'"></span>'+i.type+'</div><div class="issue-text">'+markIssue(i.before,'bad')+'</div><div class="before-after">↓</div><div class="issue-text">'+markIssue(i.after,'good')+'</div><div class="issue-note">'+i.note+'</div></article>'});
   html+='</div></div>';
@@ -888,12 +950,14 @@ function markIssue(text,klass){
 function renderCommentDetail(){
   var item=exceptions.comment.filter(function(c){return c.id===state.activeCommentId})[0]||exceptions.comment[0];
   var statusClass=item.status==='已处理'?'done':'pending';
-  return '<div class="detail-content"><section class="detail-card"><div class="detail-name">'+escapeHtml(item.account)+'</div><div class="detail-meta"><span class="comment-platform-tag '+item.platform+'">'+platformLabels[item.platform]+'</span><span class="detail-date">'+escapeHtml(item.time)+'</span><span class="comment-status '+statusClass+'">'+item.status+'</span></div><div class="alert-box">'+iconAlert()+'<div class="alert-title">'+escapeHtml(item.aiResult)+'</div><div class="alert-desc">AI 识别该评论存在舆情风险，建议核查后处置</div></div></section><section class="snapshot-card"><div class="snapshot-title">评论内容</div><div class="comment-detail-panel"><div class="comment-detail-row"><span class="comment-detail-label">正文内容</span><span class="ai-result-tag '+(item.aiResult.indexOf('处理')>-1?'result':'warn')+'">'+escapeHtml(item.aiResult)+'</span></div><div class="comment-detail-content">'+escapeHtml(item.summary)+'</div><div class="comment-action-row"><button class="comment-action" onclick="toast(\'打开原评论\')">查看原文</button>'+(item.status==='未处理'?'<button class="comment-action muted" onclick="ignoreItem(\''+item.id+'\')">忽略</button>':'')+'<button class="comment-action" onclick="showDispose(\''+item.id+'\')">处置</button></div></div><div class="comment-source-card"><div class="comment-source-head"><div class="comment-source-title">关联正文快照</div><span class="comment-platform-tag '+item.platform+'">'+platformLabels[item.platform]+'</span></div><div class="comment-source-body"><strong>杭州公安</strong> 发布的涉民生服务内容下出现该评论。移动端详情用于快速核查评论语境，完整互动链路可在 Web 端继续查看。</div></div></section></div>';
+  return '<div class="detail-content"><section class="detail-card"><div class="detail-name">'+escapeHtml(item.account)+'</div><div class="detail-meta"><span class="comment-platform-tag '+item.platform+'">'+platformLabels[item.platform]+'</span><span class="detail-date">'+escapeHtml(displayCommentTime(item))+'</span><span class="comment-status '+statusClass+'">'+item.status+'</span></div><div class="alert-box">'+iconAlert()+'<div class="alert-title">'+escapeHtml(item.aiResult)+'</div><div class="alert-desc">AI 识别该评论存在舆情风险，建议核查后处置</div></div></section><section class="snapshot-card"><div class="snapshot-title">评论内容</div><div class="comment-detail-panel"><div class="comment-detail-row"><span class="comment-detail-label">正文内容</span><span class="ai-result-tag '+(item.aiResult.indexOf('处理')>-1?'result':'warn')+'">'+escapeHtml(item.aiResult)+'</span></div><div class="comment-detail-content">'+escapeHtml(item.summary)+'</div><div class="comment-action-row"><button class="comment-action" onclick="toast(\'打开原评论\')">查看原文</button>'+(item.status==='未处理'?'<button class="comment-action muted" onclick="ignoreItem(\''+item.id+'\')">忽略</button>':'')+'<button class="comment-action" onclick="showDispose(\''+item.id+'\')">处置</button></div></div><div class="comment-source-card"><div class="comment-source-head"><div class="comment-source-title">关联正文快照</div><span class="comment-platform-tag '+item.platform+'">'+platformLabels[item.platform]+'</span></div><div class="comment-source-body"><strong>杭州公安</strong> 发布的涉民生服务内容下出现该评论。移动端详情用于快速核查评论语境，完整互动链路可在 Web 端继续查看。</div></div></section></div>';
 }
 function setPeriod(p){state.period=p;render()}
 function setExceptionType(t){state.exceptionType=t;render();document.getElementById('appMain').scrollTop=0}
-function setCommentPlatform(p){state.commentPlatform=p;render();document.getElementById('appMain').scrollTop=0}
-function setCommentSearch(v){state.commentSearch=v;var list=getVisibleComments();document.getElementById('commentListHead').innerHTML=renderCommentListHead(list);document.getElementById('commentCards').innerHTML=renderCommentCards(list)}
+function setExceptionDate(v){state.exceptionDate=v?clampDate(v):'';render();document.getElementById('appMain').scrollTop=0}
+function clearExceptionDate(){state.exceptionDate='';render();document.getElementById('appMain').scrollTop=0}
+function shiftExceptionDate(days){state.exceptionDate=shiftDate(state.exceptionDate,days);render();document.getElementById('appMain').scrollTop=0}
+function noopThemeTab(e){if(e)e.preventDefault()}
 function goReport(){state.view='report';render()}
 function goExceptions(){state.view='exceptions';render()}
 function showReportPreview(){state.view='reportPreview';render()}
