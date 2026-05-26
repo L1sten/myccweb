@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>公安移动端 H5 异常处置与数据报告</title>
+<title>公安移动端 H5 异常处置</title>
 <script src="../auth.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box}
@@ -74,15 +74,20 @@ button{border:0;background:none;cursor:pointer}
 .exception-date-panel{padding:12px 12px 0}
 .exception-date-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;color:#667085;font-size:12px}
 .exception-date-head strong{color:#1d2129;font-size:13px;font-weight:800}
-.date-clear{height:24px;padding:0 10px;border-radius:8px;background:var(--primary-soft);color:var(--primary);font-size:12px;font-weight:800}
-.date-filter{height:40px;display:grid;grid-template-columns:1fr;gap:8px;align-items:center}
+.date-filter{display:grid;grid-template-columns:1fr;gap:8px;align-items:center}
 .date-filter.picked{grid-template-columns:34px 1fr 34px}
-.date-step{height:34px;border-radius:8px;background:#fff;border:1px solid rgba(223,227,235,.94);color:#667085;display:grid;place-items:center;box-shadow:var(--shadow-card)}
-.date-step:disabled{color:#c9cdd4;background:#f7f8fa;cursor:not-allowed;box-shadow:none}
+.date-step{height:38px;border-radius:10px;background:#fff;border:1px solid rgba(223,227,235,.94);color:#667085;display:grid;place-items:center;box-shadow:var(--shadow-card);transition:background .16s ease,color .16s ease,transform .16s ease}
+.date-step:active{transform:scale(.97)}
+.date-step:disabled{color:#c9cdd4;background:#f7f8fa;cursor:not-allowed;box-shadow:none;transform:none}
 .date-step svg{width:17px;height:17px;stroke:currentColor}
-.date-picker{position:relative;height:38px;border-radius:9px;background:#fff;border:1px solid rgba(190,198,214,.95);display:flex;align-items:center;justify-content:center;gap:8px;color:#1d2129;font-size:13px;font-weight:800;box-shadow:var(--shadow-card)}
+.date-picker{height:42px;border-radius:11px;background:#fff;border:1px solid rgba(190,198,214,.95);display:flex;align-items:center;justify-content:center;gap:9px;color:#1d2129;font-size:13px;font-weight:800;box-shadow:var(--shadow-card);transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease}
+.date-picker:active{transform:scale(.992);border-color:#b8cdf8;box-shadow:0 8px 16px rgba(0,82,217,.08)}
 .date-picker svg{width:17px;height:17px;stroke:var(--primary)}
-.date-picker input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.date-picker-text{display:flex;flex-direction:column;align-items:flex-start;gap:1px}
+.date-picker-text b{font-size:13px;line-height:17px;color:#1d2129}
+.date-picker-text b.placeholder{color:#667085}
+.date-clear-icon{width:22px;height:22px;border-radius:999px;background:#f2f5fa;color:#7a8699;display:grid;place-items:center;font-size:17px;line-height:1;flex:0 0 auto}
+.date-clear-icon:active{background:#e8edf5;color:#344054}
 .card-list{display:flex;flex-direction:column;gap:10px;padding:0 12px 24px}
 .exception-card,.report-card{background:#fff;border:1px solid rgba(223,227,235,.94);border-radius:12px;box-shadow:var(--shadow-float);overflow:hidden}
 .exception-card{padding:14px;position:relative;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
@@ -214,6 +219,29 @@ button{border:0;background:none;cursor:pointer}
 .dispose-overlay{position:absolute;inset:0;background:rgba(15,23,42,.52);z-index:20;display:none;align-items:flex-end;justify-content:center;padding:0;backdrop-filter:blur(4px)}
 .dispose-overlay.show{display:flex}
 .dispose-modal{width:100%;max-height:86%;overflow:auto;background:#fff;border-radius:18px 18px 0 0;box-shadow:var(--shadow-panel);padding:20px 18px 18px}
+.date-overlay{position:absolute;inset:0;background:rgba(15,23,42,.42);z-index:18;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px)}
+.date-overlay.show{display:flex}
+.date-sheet{width:100%;background:#fff;border-radius:18px 18px 0 0;box-shadow:var(--shadow-panel);padding:9px 16px 18px}
+.date-sheet-handle{width:38px;height:4px;margin:0 auto 12px;border-radius:999px;background:#d8dde7}
+.date-sheet-head{height:36px;display:grid;grid-template-columns:64px 1fr 64px;align-items:center}
+.date-sheet-head strong{text-align:center;font-size:16px;color:#1d2129}
+.date-sheet-action{height:32px;border-radius:8px;color:#667085;font-size:13px;font-weight:800}
+.date-sheet-action.primary{color:var(--primary);background:var(--primary-soft)}
+.date-month-bar{display:grid;grid-template-columns:34px 1fr 34px;align-items:center;margin:12px 0 8px}
+.date-month-title{text-align:center;font-size:14px;color:#1d2129;font-weight:850}
+.date-month-btn{height:34px;border-radius:9px;background:#f7f9fc;color:#4e5969;border:1px solid #edf0f5;display:grid;place-items:center}
+.date-month-btn:disabled{color:#c9cdd4;background:#f7f8fa}
+.date-month-btn svg{width:17px;height:17px;stroke:currentColor}
+.date-week-grid,.date-calendar-grid{display:grid;grid-template-columns:repeat(7,1fr)}
+.date-week-grid{margin-bottom:6px;color:#98a2b3;font-size:11px;font-weight:800;text-align:center}
+.date-week-grid span{height:24px;line-height:24px}
+.date-calendar-grid{gap:4px}
+.date-day{height:36px;border-radius:10px;color:#344054;font-size:13px;font-weight:750;display:grid;place-items:center;position:relative}
+.date-day.outside{color:#c9cdd4;background:transparent}
+.date-day.today::after{content:"";position:absolute;bottom:5px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:999px;background:var(--primary)}
+.date-day.active{background:var(--primary);color:#fff;box-shadow:0 8px 14px rgba(0,82,217,.2)}
+.date-day.active::after{background:#fff}
+.date-day:disabled{color:#d0d5dd;background:#f7f8fa;cursor:not-allowed}
 .modal-head{display:flex;align-items:center;justify-content:center;position:relative;padding-bottom:16px;border-bottom:1px solid var(--line-soft)}
 .modal-head::before{content:"";position:absolute;top:-9px;left:50%;transform:translateX(-50%);width:38px;height:4px;border-radius:999px;background:#d8dde7}
 .modal-head h3{margin:0;font-size:17px;color:#1d2129}
@@ -302,6 +330,7 @@ button{border:0;background:none;cursor:pointer}
             <main class="app-main" id="appMain"></main>
             <nav class="bottom-nav" id="appBottom"></nav>
             <div class="toast" id="toast"></div>
+            <div class="date-overlay" id="dateOverlay" onclick="closeDateSheet(event)"></div>
             <div class="dispose-overlay" id="disposeOverlay" onclick="closeDispose(event)">
               <div class="dispose-modal" role="dialog" aria-modal="true" aria-labelledby="disposeTitle" onclick="event.stopPropagation()">
                 <div class="modal-head">
@@ -361,25 +390,25 @@ button{border:0;background:none;cursor:pointer}
 </div>
 
 <textarea id="prdMdSource" style="display:none">
-# 公安移动端 H5 异常处置与数据报告 产品需求文档
+# 公安移动端 H5 异常处置 产品需求文档
 
 ## 1. 产品概述
 
 ### 1.1 背景
 
-公安新媒体矩阵在微信、微博、抖音等渠道持续发布内容，需要在移动端快速查看数据报告，并及时处理数据异常、巡检异常和评论异常。Figma 原型展示了一个面向手机访问的 H5 工具，围绕“数据报告”“主题填报”和“异常处理”三个底部入口组织工作。
+公安新媒体矩阵在微信、微博、抖音等渠道持续发布内容，需要在移动端快速处理数据异常、巡检异常和评论异常。数据报告为线上已有模块，本 PRD 聚焦“主题填报”和“异常处理”相关移动端规则。
 
 ### 1.2 产品目标
 
-- 为公安宣传和新媒体运营人员提供移动端数据报告查看入口。
 - 将待处理异常按数据异常、巡检异常、评论异常分类展示，便于快速判断优先级。
 - 支持异常忽略、异常处置、处置记录回看，形成移动端轻量闭环。
 - 支持从异常列表进入详情页，查看巡检命中问题或评论原文快照。
+- 支持用户通过微信通知卡片进入 H5 时免密登录，减少移动端处理阻力。
 
 ### 1.3 用户角色
 
-- **省级公安宣传管理员**：查看全省矩阵账号报告和异常，统筹异常处置。
-- **市县级矩阵账号负责人**：处理本账号相关异常，查看本账号报告。
+- **省级公安宣传管理员**：查看全省矩阵账号异常，统筹异常处置。
+- **市县级矩阵账号负责人**：处理本账号相关异常。
 - **内容巡检人员**：关注表述、错别字、空格、时政重点词等巡检异常，并给出处置意见。
 
 ---
@@ -388,8 +417,8 @@ button{border:0;background:none;cursor:pointer}
 
 ### 2.1 一级导航
 
-- 数据报告
-- 主题填报
+- 数据报告（线上已有入口）
+- 主题填报（线上已有入口）
 - 异常处理
 
 ### 2.2 异常处理二级分类
@@ -398,9 +427,9 @@ button{border:0;background:none;cursor:pointer}
 - 巡检异常
 - 评论异常
 
-### 2.3 关键页面
+### 2.3 关键页面与流程
 
-- 数据报告列表页
+- 微信通知卡片免密登录流程
 - 异常处理列表页
 - 异常处置弹窗
 - 表述异常详情页
@@ -408,49 +437,40 @@ button{border:0;background:none;cursor:pointer}
 
 ---
 
-## 3. 数据报告
+## 3. 登录模块优化
 
-### 3.1 周期筛选
-
-- **展示规则**
-  - 页面顶部展示分段控件，包含“日报”“周报”“月报”三个选项。
-  - 默认选中“日报”。
-  - 右侧展示日期选择入口。
-- **交互规则**
-  - 点击周期选项后切换高亮状态，并刷新报告列表。
-  - 点击日期入口后进入日期选择流程；原型中以提示反馈代替真实选择器。
-- **数据规则**
-  - **取数规则**：读取当前用户权限范围内已生成的数据报告。
-  - **数据筛选规则**：按日报、周报、月报筛选报告类型；日期筛选限定报告所属日期或周期。
-  - **数据排序规则**：默认按报告日期倒序排列，最新报告排在最前。
-
-### 3.2 报告卡片
+### 3.1 微信通知卡片免密登录
 
 - **展示规则**
-  - 列表以卡片形式展示报告名称、报告日期、未读标识、预览入口和下载入口。
-  - 报告名称示例为“新媒体健康度分析日报”。
-  - 未读报告在卡片右上角展示红色角标。
+  - 用户通过微信通知卡片打开 H5 时，系统优先尝试免密登录。
+  - 免密登录成功后直接进入通知卡片对应的业务页面，例如异常详情页或异常处理列表页。
+  - 免密登录过程中不展示账号密码输入页，不要求用户重复输入密码。
+  - 免密登录失败、通知凭证过期、用户绑定关系缺失或账号无权限时，进入常规登录或验证码校验流程。
 - **交互规则**
-  - 点击“预览”进入报告预览页。
-  - 点击“下载”触发文件下载反馈。
-  - 已读报告不展示未读角标。
+  - 通知发送前已按手机号匹配微信接收人，系统已掌握接收人、手机号、微信用户三者绑定关系；免密登录以该绑定关系作为校验前提。
+  - 微信通知卡片链接携带一次性登录凭证和业务跳转参数，不在前端链接中明文携带手机号、微信用户标识或用户敏感信息。
+  - 用户点击通知卡片后，H5 调用免密登录接口，后端根据通知发送记录校验接收人、手机号、微信用户和系统用户的绑定关系。
+  - 校验通过后建立 H5 登录态，并按通知卡片携带的业务跳转参数进入目标页面。
+  - 当同一手机号关联多个可用账号或多单位权限时，系统应按既有权限策略进入默认身份；若无法自动判定，则展示身份选择流程。
+  - 同一个一次性登录凭证仅允许使用一次，重复打开时若当前登录态仍有效则直接进入目标页面，否则进入常规登录流程。
 - **数据规则**
-  - **取数规则**：从报告库读取当前用户可见的报告记录。
-  - **数据筛选规则**：报告列表受周期筛选、日期筛选和用户权限范围共同约束。
-  - **数据排序规则**：按报告生成时间倒序排列；同一天多份报告按更新时间倒序排列。
+  - **取数规则**：读取微信通知发送记录、手机号与微信用户绑定关系、手机号与系统用户绑定关系、用户角色权限和目标业务参数。
+  - **数据筛选规则**：仅允许通知实际接收人对应的绑定用户完成免密登录；不得通过修改跳转参数切换用户身份或越权访问业务数据。
+  - **数据排序规则**：登录链路本身无排序规则；涉及多账号选择时按既有账号优先级或最近使用账号展示。
 
-### 3.3 报告预览页
+### 3.2 安全与审计
 
 - **展示规则**
-  - 预览页以列表展示报告条目标题及核心指标，例如阅读数、在看数、点赞数、转发数。
-  - 标题使用蓝色链接样式，指标在右侧展示。
+  - 免密登录成功后用户无感进入业务页面；失败时提示完成身份验证，不暴露失败校验细节。
+  - 登录态失效后再次访问业务页面，应回到常规登录或验证码校验流程。
 - **交互规则**
-  - 点击返回回到数据报告列表。
-  - 点击报告条目可进入原文或详情；原型中以提示反馈代替外链跳转。
+  - 免密登录凭证由后端生成并签名，绑定通知 ID、接收手机号、微信用户标识、目标业务参数和有效期。
+  - 凭证有效期应较短，过期、重复使用、签名异常、绑定关系不一致时均不允许免密登录。
+  - 前端仅负责携带凭证请求登录接口，不在本地持久化手机号、微信用户标识等敏感信息。
 - **数据规则**
-  - **取数规则**：读取所选报告下的明细内容和指标数据。
-  - **数据筛选规则**：仅展示当前报告范围内的内容条目。
-  - **数据排序规则**：默认按报告中的推荐顺序展示；无推荐顺序时按阅读数倒序展示。
+  - **取数规则**：记录免密登录审计日志，包括通知 ID、脱敏手机号、系统用户 ID、微信用户标识摘要、登录结果、失败原因、登录时间、客户端信息和目标页面。
+  - **数据筛选规则**：审计日志按权限可查，普通业务用户不可查看他人登录审计记录。
+  - **数据排序规则**：审计记录默认按登录时间倒序排列。
 
 ---
 
@@ -462,7 +482,7 @@ button{border:0;background:none;cursor:pointer}
   - 底部固定展示“数据报告”“主题填报”和“异常处理”三个入口。
   - 当前入口使用蓝色图标和文字高亮。
 - **交互规则**
-  - 点击“数据报告”切换至报告列表。
+  - 点击“数据报告”进入线上已有数据报告模块；本 PRD 不展开该模块规则。
   - 点击“主题填报”无页面跳转和状态变化，用于保留线上已有模块入口位置。
   - 点击“异常处理”切换至异常列表，并保持最近一次选择的异常分类。
 - **数据规则**
@@ -474,18 +494,20 @@ button{border:0;background:none;cursor:pointer}
 
 - **展示规则**
   - 异常处理页在异常分类下方展示日期筛选框。
-  - 默认不选择日期，日期筛选框展示“全部日期”。
+  - 默认不选择日期，日期筛选框展示“请选择日期”。
   - 未选择日期时不展示前一天、后一天按钮，避免出现不可用控件。
   - 选择日期后展示当前选中日期，并提供前一天、后一天快捷切换入口。
-  - 已选择日期时展示“全部”入口，用于清空日期筛选。
-  - 日期选择入口使用系统日期选择能力。
+  - 选择日期后，日期筛选框内展示清空入口，用于清空当前日期筛选。
+  - 点击日期筛选框打开底部日历弹层，弹层展示当前月份、星期行、日期网格、取消和确定按钮。
+  - 日历弹层中当前选中日期高亮展示，当天日期展示圆点标记。
   - 可选日期最近截止到当天。
 - **交互规则**
-  - 点击日期区域打开日期选择器，选择后刷新当前异常分类列表。
+  - 点击日期区域打开底部日历弹层，选择日期后需点击“确定”才刷新当前异常分类列表。
   - 不选择日期时展示全部未处理异常。
-  - 点击“全部”清空日期筛选，并恢复展示全部未处理异常。
+  - 清空日期筛选框后恢复展示全部未处理异常。
   - 点击前一天或后一天后更新日期，并保持当前异常分类不变。
-  - 当已选日期为当天时，后一天入口不可继续切换。
+  - 当已选日期为当天时，后一天入口不可继续切换；日历弹层中的未来日期置灰且不可选。
+  - 点击日历弹层遮罩或“取消”关闭弹层，不改变当前筛选条件。
   - 切换日期后列表回到顶部。
 - **数据规则**
   - **取数规则**：读取当前用户权限范围内所选日期产生或发现的异常数据。
@@ -527,7 +549,7 @@ button{border:0;background:none;cursor:pointer}
   - 摘要内容展示异常指标和波动比例，例如“阅读数 -859.88%”。
   - 负向和正向异常均展示为待处理项。
 - **交互规则**
-  - 点击摘要进入数据异常关联报告或指标详情；原型中以提示反馈代替详情页。
+  - 点击摘要进入数据异常指标详情；原型中以提示反馈代替详情页。
   - 处置成功后该卡片从数据异常列表移除。
 - **数据规则**
   - **取数规则**：读取矩阵账号数据监测结果中超过阈值的指标波动。
@@ -683,7 +705,7 @@ button{border:0;background:none;cursor:pointer}
 ### 8.2 权限范围
 
 - **展示规则**
-  - 用户仅看到自己权限范围内的报告和异常。
+  - 用户仅看到自己权限范围内的异常。
 - **交互规则**
   - 无权限数据不可见，不展示禁用项。
 - **数据规则**
@@ -706,7 +728,7 @@ button{border:0;background:none;cursor:pointer}
 </textarea>
 
 <script>
-var state={view:'exceptions',exceptionType:'data',period:'day',exceptionDate:'',issueFilter:'all',activeCard:null,activeCommentId:null};
+var state={view:'exceptions',exceptionType:'data',period:'day',exceptionDate:'',tempExceptionDate:'',calendarMonth:'',issueFilter:'all',activeCard:null,activeCommentId:null};
 var reports=[
   {title:'新媒体健康度分析日报',date:'2025-12-19',unread:true},
   {title:'新媒体健康度分析日报',date:'2025-12-18',unread:true},
@@ -748,6 +770,10 @@ var periodLabels={day:'日报',week:'周报',month:'月报'};
 var exceptionLabels={data:'数据异常',inspect:'巡检异常',comment:'评论异常'};
 var platformLabels={wechat:'微信',weibo:'微博',douyin:'抖音',video:'视频号',news:'新闻号',all:'全部'};
 var changelogData=[
+  {time:'2026-05-26 15:10',desc:'PRD 新增登录模块优化：支持微信通知卡片免密登录，补充绑定校验、失败兜底和安全审计规则。'},
+  {time:'2026-05-26 15:00',desc:'简化日期筛选呈现：去除截止提示、日期星期说明及弹窗顶部信息模块，保留清空日期即全部的交互。'},
+  {time:'2026-05-26 14:47',desc:'完善异常处理日期筛选交互：新增底部日历弹层、今日/昨日快捷项、未来日期禁用和确认取消流程。'},
+  {time:'2026-05-26 13:58',desc:'PRD 移除数据报告模块说明，保留其作为线上已有入口。'},
   {time:'2026-05-25 18:15',desc:'PRD 移除设计参考章节，并同步部署线上版本。'},
   {time:'2026-05-25 18:02',desc:'去除顶部模块标题和右上角分类名称，顶部回归轻量分段切换。'},
   {time:'2026-05-25 17:51',desc:'按资深设计师审稿意见进行视觉精修：强化模块标题、收敛政务蓝与卡片层级，优化日期筛选默认态和移动端处置弹窗。'},
@@ -789,11 +815,14 @@ function platformIcon(platform){
 function summaryIcon(type){return type==='data'?iconTrend():(type==='inspect'?iconTextScan():iconCommentRisk())}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function formatDateCn(date){var p=String(date).split('-');return p.length===3?p[0]+'年'+p[1]+'月'+p[2]+'日':date}
+function monthDateCn(month){var p=String(month).split('-');return p.length===2?p[0]+'年'+p[1]+'月':month}
 function todayDate(){
   var d=new Date();
   var y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
   return y+'-'+m+'-'+day;
 }
+function yesterdayDate(){return shiftDate(todayDate(),-1)}
+function dateToMonth(date){return String(date||todayDate()).slice(0,7)}
 function clampDate(date){return String(date)>todayDate()?todayDate():date}
 function shiftDate(date,days){
   var d=new Date(String(date)+'T00:00:00');
@@ -801,6 +830,14 @@ function shiftDate(date,days){
   d.setDate(d.getDate()+days);
   var y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
   return clampDate(y+'-'+m+'-'+day);
+}
+function shiftMonth(month,delta){
+  var base=new Date(String(month||dateToMonth(todayDate()))+'-01T00:00:00');
+  if(isNaN(base.getTime()))base=new Date(todayDate().slice(0,7)+'-01T00:00:00');
+  base.setMonth(base.getMonth()+delta);
+  var y=base.getFullYear(),m=String(base.getMonth()+1).padStart(2,'0');
+  var next=y+'-'+m;
+  return next>dateToMonth(todayDate())?dateToMonth(todayDate()):next;
 }
 function displayExceptionTime(time){return (state.exceptionDate||'2025-09-11')+' '+time}
 function displayCommentTime(item){return state.exceptionDate?state.exceptionDate+' '+String(item.time).split(' ')[1]:item.time}
@@ -891,8 +928,13 @@ function renderExceptionList(){
 }
 function renderExceptionDateFilter(){
   var hasDate=!!state.exceptionDate,atToday=hasDate&&state.exceptionDate>=todayDate();
-  if(!hasDate)return '<section class="exception-date-panel"><div class="exception-date-head"><strong>筛选日期</strong></div><div class="date-filter"><label class="date-picker">'+iconCalendar()+'<span>全部日期</span><input type="date" value="" max="'+todayDate()+'" onchange="setExceptionDate(this.value)" aria-label="选择日期"></label></div></section>';
-  return '<section class="exception-date-panel"><div class="exception-date-head"><strong>筛选日期</strong><button class="date-clear" onclick="clearExceptionDate()">全部</button></div><div class="date-filter picked"><button class="date-step" onclick="shiftExceptionDate(-1)" aria-label="前一天">'+iconChevronLeft()+'</button><label class="date-picker">'+iconCalendar()+'<span>'+formatDateCn(state.exceptionDate)+'</span><input type="date" value="'+state.exceptionDate+'" max="'+todayDate()+'" onchange="setExceptionDate(this.value)" aria-label="选择日期"></label><button class="date-step" onclick="shiftExceptionDate(1)" aria-label="后一天"'+(atToday?' disabled':'')+'>'+iconChevronRight()+'</button></div></section>';
+  var text=hasDate?formatDateCn(state.exceptionDate):'请选择日期';
+  var filter='<div class="exception-date-head"><strong>筛选日期</strong></div><div class="date-filter '+(hasDate?'picked':'')+'">';
+  if(hasDate)filter+='<button class="date-step" onclick="shiftExceptionDate(-1)" aria-label="前一天">'+iconChevronLeft()+'</button>';
+  filter+='<button class="date-picker" onclick="openDateSheet()" aria-label="选择日期">'+iconCalendar()+'<span class="date-picker-text"><b class="'+(hasDate?'':'placeholder')+'">'+text+'</b></span>'+(hasDate?'<span class="date-clear-icon" onclick="event.stopPropagation();clearExceptionDate()" aria-label="清空日期">×</span>':'')+'</button>';
+  if(hasDate)filter+='<button class="date-step" onclick="shiftExceptionDate(1)" aria-label="后一天"'+(atToday?' disabled':'')+'>'+iconChevronRight()+'</button>';
+  filter+='</div>';
+  return '<section class="exception-date-panel">'+filter+'</section>';
 }
 function renderCommentMonitorList(){
   var list=getVisibleComments();
@@ -949,9 +991,63 @@ function renderCommentDetail(){
 }
 function setPeriod(p){state.period=p;render()}
 function setExceptionType(t){state.exceptionType=t;render();document.getElementById('appMain').scrollTop=0}
-function setExceptionDate(v){state.exceptionDate=v?clampDate(v):'';render();document.getElementById('appMain').scrollTop=0}
-function clearExceptionDate(){state.exceptionDate='';render();document.getElementById('appMain').scrollTop=0}
-function shiftExceptionDate(days){state.exceptionDate=shiftDate(state.exceptionDate,days);render();document.getElementById('appMain').scrollTop=0}
+function scrollListTop(){var main=document.getElementById('appMain');if(main)main.scrollTop=0}
+function setExceptionDate(v){
+  state.exceptionDate=v?clampDate(v):'';
+  render();
+  scrollListTop();
+}
+function clearExceptionDate(){setExceptionDate('')}
+function shiftExceptionDate(days){setExceptionDate(shiftDate(state.exceptionDate,days))}
+function openDateSheet(){
+  state.tempExceptionDate=state.exceptionDate;
+  state.calendarMonth=dateToMonth(state.exceptionDate||todayDate());
+  renderDateSheet();
+  document.getElementById('dateOverlay').classList.add('show');
+}
+function closeDateSheet(e){
+  if(e&&e.target&&e.target.id!=='dateOverlay')return;
+  document.getElementById('dateOverlay').classList.remove('show');
+}
+function cancelDateSheet(){document.getElementById('dateOverlay').classList.remove('show')}
+function selectTempDate(v){
+  if(String(v)>todayDate())return;
+  state.tempExceptionDate=v;
+  state.calendarMonth=dateToMonth(v||todayDate());
+  renderDateSheet();
+}
+function changeCalendarMonth(delta){
+  state.calendarMonth=shiftMonth(state.calendarMonth,delta);
+  renderDateSheet();
+}
+function applyDateSheet(){
+  document.getElementById('dateOverlay').classList.remove('show');
+  setExceptionDate(state.tempExceptionDate);
+}
+function renderDateSheet(){
+  var overlay=document.getElementById('dateOverlay');
+  var currentMonth=state.calendarMonth||dateToMonth(state.tempExceptionDate||todayDate());
+  var first=new Date(currentMonth+'-01T00:00:00');
+  var start=new Date(first);
+  start.setDate(1-first.getDay());
+  var temp=state.tempExceptionDate;
+  var maxMonth=dateToMonth(todayDate());
+  var html='<div class="date-sheet" role="dialog" aria-modal="true" aria-label="选择筛选日期" onclick="event.stopPropagation()"><div class="date-sheet-handle"></div><div class="date-sheet-head"><button class="date-sheet-action" onclick="cancelDateSheet()">取消</button><strong>选择日期</strong><button class="date-sheet-action primary" onclick="applyDateSheet()">确定</button></div>';
+  html+='<div class="date-month-bar"><button class="date-month-btn" onclick="changeCalendarMonth(-1)" aria-label="上个月">'+iconChevronLeft()+'</button><div class="date-month-title">'+monthDateCn(currentMonth)+'</div><button class="date-month-btn" onclick="changeCalendarMonth(1)" aria-label="下个月"'+(currentMonth>=maxMonth?' disabled':'')+'>'+iconChevronRight()+'</button></div>';
+  html+='<div class="date-week-grid"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div><div class="date-calendar-grid">';
+  for(var i=0;i<42;i++){
+    var d=new Date(start);
+    d.setDate(start.getDate()+i);
+    var y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+    var val=y+'-'+m+'-'+day;
+    var outside=val.slice(0,7)!==currentMonth;
+    var future=val>todayDate();
+    var cls='date-day'+(outside?' outside':'')+(val===todayDate()?' today':'')+(val===temp?' active':'');
+    html+='<button class="'+cls+'" onclick="selectTempDate(\''+val+'\')"'+(future?' disabled':'')+'>'+String(d.getDate())+'</button>';
+  }
+  html+='</div></div>';
+  overlay.innerHTML=html;
+}
 function noopThemeTab(e){if(e)e.preventDefault()}
 function goReport(){state.view='report';render()}
 function goExceptions(){state.view='exceptions';render()}
@@ -969,7 +1065,7 @@ function updateCounter(){document.getElementById('disposeCounter').textContent=d
 function confirmDispose(){if(state.activeCard){removed[state.activeCard]=true}hideDispose();document.getElementById('disposeText').value='';updateCounter();toast('处置已提交');render()}
 function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(function(){el.classList.remove('show')},1600)}
 function togglePrdPanel(){var panel=document.getElementById('prdPanel');var dot=document.querySelector('#prdToggle .toggle-dot');panel.classList.toggle('collapsed');dot.style.background=panel.classList.contains('collapsed')?'#aaa':'#52c41a'}
-function downloadPrd(){var md=document.getElementById('prdMdSource').textContent.trim();var blob=new Blob([md],{type:'text/markdown;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='公安移动端H5异常处置与数据报告PRD.md';a.click();URL.revokeObjectURL(a.href)}
+function downloadPrd(){var md=document.getElementById('prdMdSource').textContent.trim();var blob=new Blob([md],{type:'text/markdown;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='公安移动端H5异常处置PRD.md';a.click();URL.revokeObjectURL(a.href)}
 function toggleChangelog(){var overlay=document.getElementById('changelogOverlay');var modal=document.getElementById('changelogModal');var open=modal.classList.contains('show');overlay.classList.toggle('show',!open);modal.classList.toggle('show',!open);if(!open)renderChangelog()}
 function renderChangelog(){var body=document.getElementById('changelogBody');var html='<table class="changelog-table"><thead><tr><th>更新时间</th><th>说明</th></tr></thead><tbody>';changelogData.forEach(function(item){html+='<tr><td>'+item.time+'</td><td>'+item.desc+'</td></tr>'});html+='</tbody></table>';body.innerHTML=html}
 function inlineFmt(s){return s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')}
