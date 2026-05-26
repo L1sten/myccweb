@@ -91,6 +91,7 @@ button{border:0;background:none;cursor:pointer}
 .card-list{display:flex;flex-direction:column;gap:10px;padding:0 12px 24px}
 .exception-card,.report-card{background:#fff;border:1px solid rgba(223,227,235,.94);border-radius:12px;box-shadow:var(--shadow-float);overflow:hidden}
 .exception-card{padding:14px;position:relative;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.exception-card.data-clickable{cursor:pointer}
 .exception-card:active{transform:scale(.992)}
 .card-head{display:flex;align-items:center;gap:7px;min-height:22px}
 .account{font-size:15px;line-height:21px;font-weight:800;letter-spacing:0;color:var(--ink)}
@@ -163,6 +164,22 @@ button{border:0;background:none;cursor:pointer}
 .report-row{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:start;padding:14px 0;border-bottom:1px solid var(--line-soft)}
 .report-row-title{font-size:14px;line-height:21px;color:var(--primary);text-align:left}
 .report-row-metric{font-size:12px;line-height:21px;color:#4e5969;white-space:nowrap;font-weight:650}
+.data-detail-wrap{display:flex;flex-direction:column;gap:10px;padding:12px 12px 20px}
+.data-detail-hero,.data-related-card{background:#fff;border:1px solid rgba(223,227,235,.94);border-radius:12px;box-shadow:var(--shadow-float);overflow:hidden}
+.data-detail-hero{padding:15px 14px 14px}
+.data-detail-meta{display:flex;align-items:center;gap:7px;margin-top:10px}
+.data-metric-line{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.data-metric-name{color:var(--primary);font-size:18px;line-height:26px;font-weight:850}
+.data-metric-label{font-size:16px;line-height:24px;color:#1d2129;font-weight:800}
+.data-metric-value{font-size:22px;line-height:28px;color:#ff5f5f;font-weight:850}
+.data-metric-value.negative{color:#f53f3f}
+.data-related-head{height:40px;padding:0 13px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #edf0f5}
+.data-related-title{font-size:13px;color:#1d2129;font-weight:850}
+.data-related-count{font-size:12px;color:#8a96a8;font-weight:700}
+.data-related-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;padding:12px 13px;background:#f7f7f8;border-bottom:1px solid #eceff4}
+.data-related-row:last-child{border-bottom:0}
+.data-related-link{font-size:14px;line-height:21px;color:#2f8cff;text-align:left;font-weight:750;text-wrap:pretty}
+.data-related-value{font-size:13px;line-height:21px;color:#4e5969;white-space:nowrap;font-weight:850}
 .detail-content{display:flex;flex-direction:column;gap:8px;padding-bottom:18px}
 .detail-card{background:#fff;box-shadow:var(--shadow-float);padding:16px}
 .detail-name{font-size:16px;line-height:24px;font-weight:800;color:var(--ink);letter-spacing:-.31px}
@@ -432,6 +449,7 @@ button{border:0;background:none;cursor:pointer}
 - 微信通知卡片免密登录流程
 - 异常处理列表页
 - 异常处置弹窗
+- 数据异常详情页
 - 表述异常详情页
 - 评论异常详情页
 
@@ -537,7 +555,8 @@ button{border:0;background:none;cursor:pointer}
 - **交互规则**
   - 点击“忽略”后将该异常标记为无需处理，并从当前列表移除。
   - 点击“处置”打开处置弹窗。
-  - 点击异常摘要进入详情页；评论异常进入评论异常详情，巡检异常进入表述异常详情。
+  - 点击数据异常卡片进入数据异常详情页；点击巡检异常摘要进入表述异常详情；评论异常卡片按评论异常规则跳转原文地址。
+  - 点击“忽略”或“处置”时不触发卡片详情跳转。
 - **数据规则**
   - **取数规则**：从异常中心读取账号、平台、异常摘要、异常类型、发现时间和处置状态。
   - **数据筛选规则**：受异常分类、用户权限、处置状态共同约束。
@@ -549,7 +568,7 @@ button{border:0;background:none;cursor:pointer}
   - 摘要内容展示异常指标和波动比例，例如“阅读数 -859.88%”。
   - 负向和正向异常均展示为待处理项。
 - **交互规则**
-  - 点击摘要进入数据异常指标详情；原型中以提示反馈代替详情页。
+  - 点击数据异常卡片进入数据异常详情页，查看异常指标波动和关联内容明细。
   - 处置成功后该卡片从数据异常列表移除。
 - **数据规则**
   - **取数规则**：读取矩阵账号数据监测结果中超过阈值的指标波动。
@@ -589,9 +608,42 @@ button{border:0;background:none;cursor:pointer}
 
 ---
 
-## 5. 异常处置
+## 5. 数据异常详情
 
-### 5.1 处置弹窗
+### 5.1 指标波动概览
+
+- **展示规则**
+  - 顶部展示返回按钮和标题“数据异常详情”。
+  - 内容区展示账号名称、平台、发现时间、异常指标名称、波动文案和波动比例。
+  - 指标名称示例为“点赞数”，波动比例示例为“+616.00%”。
+  - 正向和负向波动均作为异常展示，波动比例使用醒目样式。
+- **交互规则**
+  - 点击返回回到数据异常列表，并保留原异常分类和日期筛选状态。
+  - 指标波动概览仅用于查看，不支持编辑。
+- **数据规则**
+  - **取数规则**：读取当前数据异常记录的账号、平台、发现时间、异常指标、波动方向和波动比例。
+  - **数据筛选规则**：仅读取当前被点击的数据异常记录，且必须符合用户权限范围。
+  - **数据排序规则**：概览区域无排序规则。
+
+### 5.2 关联内容明细
+
+- **展示规则**
+  - 关联内容区域展示命中该指标异常的内容列表。
+  - 每条内容展示正文标题或摘要，以及对应指标值，例如“点赞数：100”。
+  - 内容标题使用可点击样式，指标值在同一行右侧展示。
+- **交互规则**
+  - 点击内容标题进入对应原文或内容详情；原型中以提示反馈代替真实跳转。
+  - 关联内容列表不展示处置按钮，处置仍在异常列表卡片或处置弹窗中完成。
+- **数据规则**
+  - **取数规则**：读取当前异常指标下贡献波动的内容明细及对应指标值。
+  - **数据筛选规则**：仅展示当前异常记录关联的内容；内容范围受账号权限、平台权限和异常日期共同约束。
+  - **数据排序规则**：默认按指标值倒序排列；指标值相同按内容发布时间倒序排列。
+
+---
+
+## 6. 异常处置
+
+### 6.1 处置弹窗
 
 - **展示规则**
   - 弹窗居中展示，背景增加半透明遮罩。
@@ -610,7 +662,7 @@ button{border:0;background:none;cursor:pointer}
   - **数据筛选规则**：仅展示当前异常对应的处置记录。
   - **数据排序规则**：历史处置记录按处置时间倒序排列。
 
-### 5.2 状态流转
+### 6.2 状态流转
 
 - **展示规则**
   - 待处理状态显示“忽略”和“处置”按钮。
@@ -626,9 +678,9 @@ button{border:0;background:none;cursor:pointer}
 
 ---
 
-## 6. 表述异常详情
+## 7. 表述异常详情
 
-### 6.1 详情头部
+### 7.1 详情头部
 
 - **展示规则**
   - 顶部展示返回按钮和标题“表述异常详情”。
@@ -641,7 +693,7 @@ button{border:0;background:none;cursor:pointer}
   - **数据筛选规则**：仅读取当前异常记录。
   - **数据排序规则**：详情头部无排序。
 
-### 6.2 问题分类与建议
+### 7.2 问题分类与建议
 
 - **展示规则**
   - 展示筛选标签：全部、时政重点词、错别字、空格检查。
@@ -657,9 +709,9 @@ button{border:0;background:none;cursor:pointer}
 
 ---
 
-## 7. 评论异常详情
+## 8. 评论异常详情
 
-### 7.1 异常概览
+### 8.1 异常概览
 
 - **展示规则**
   - 顶部展示返回按钮和标题“评论异常详情”。
@@ -673,7 +725,7 @@ button{border:0;background:none;cursor:pointer}
   - **数据筛选规则**：仅读取当前评论异常记录。
   - **数据排序规则**：详情概览无排序。
 
-### 7.2 原文快照
+### 8.2 原文快照
 
 - **展示规则**
   - 展示“原文快照”标题。
@@ -688,9 +740,9 @@ button{border:0;background:none;cursor:pointer}
 
 ---
 
-## 8. 全局规则
+## 9. 全局规则
 
-### 8.1 空状态与加载
+### 9.1 空状态与加载
 
 - **展示规则**
   - 列表为空时展示“没有更多了”或空状态提示。
@@ -702,7 +754,7 @@ button{border:0;background:none;cursor:pointer}
   - **数据筛选规则**：多筛选条件取交集。
   - **数据排序规则**：空状态不展示排序结果。
 
-### 8.2 权限范围
+### 9.2 权限范围
 
 - **展示规则**
   - 用户仅看到自己权限范围内的异常。
@@ -713,7 +765,7 @@ button{border:0;background:none;cursor:pointer}
   - **数据筛选规则**：权限过滤优先于页面筛选。
   - **数据排序规则**：权限过滤后再执行页面排序。
 
-### 8.3 移动端适配
+### 9.3 移动端适配
 
 - **展示规则**
   - 页面以手机 H5 为主要使用场景，内容纵向滚动。
@@ -728,7 +780,7 @@ button{border:0;background:none;cursor:pointer}
 </textarea>
 
 <script>
-var state={view:'exceptions',exceptionType:'data',period:'day',exceptionDate:'',tempExceptionDate:'',calendarMonth:'',issueFilter:'all',activeCard:null,activeCommentId:null};
+var state={view:'exceptions',exceptionType:'data',period:'day',exceptionDate:'',tempExceptionDate:'',calendarMonth:'',issueFilter:'all',activeCard:null,activeDataId:null,activeCommentId:null};
 var reports=[
   {title:'新媒体健康度分析日报',date:'2025-12-19',unread:true},
   {title:'新媒体健康度分析日报',date:'2025-12-18',unread:true},
@@ -738,7 +790,7 @@ var reports=[
 ];
 var exceptions={
   data:[
-    {id:'d1',account:'浙江公安',platform:'wechat',summary:'阅读数 -859.88%'},
+    {id:'d1',account:'浙江公安',platform:'wechat',summary:'点赞数 +616.00%'},
     {id:'d2',account:'浙江高速交警',platform:'weibo',summary:'阅读数 +396.64%'},
     {id:'d3',account:'浙江公安',platform:'douyin',summary:'阅读数 -379.58%'},
     {id:'d4',account:'浙江高速交警',platform:'wechat',summary:'阅读数 +224.31%'},
@@ -765,11 +817,30 @@ var exceptions={
     {id:'c9',no:9,account:'抖音_小林同学不焦虑',platform:'douyin',summary:'主持人的胸徽和警号好像方向粘反了哦',aiResult:'质疑执法',status:'未处理',time:'2026-05-21 20:53:34'}
   ]
 };
+var dataDetailRows={
+  d1:[
+    {title:'车停后门却被挪到前门？真相揭晓，竟是酒精惹的祸！#龙港',value:100},
+    {title:'找到了！没白跑！民警坚持搜寻，走失老人平安归家！#龙港',value:12},
+    {title:'满屏幕的不明APP！阿姨的5万元险些被骗！#龙港',value:3}
+  ],
+  d2:[
+    {title:'雨天高速行车请注意控制车速，保持安全车距',value:2380},
+    {title:'高速应急车道不是临时停车位，请勿随意占用',value:1204},
+    {title:'夏季出行安全提示：这些路段请提前规划',value:986}
+  ],
+  d3:[
+    {title:'防诈宣传进社区，守好群众钱袋子',value:342},
+    {title:'夜间巡逻不停步，平安守护在身边',value:218},
+    {title:'文明交通宣传进校园，安全意识伴成长',value:96}
+  ]
+};
 var removed={};
 var periodLabels={day:'日报',week:'周报',month:'月报'};
 var exceptionLabels={data:'数据异常',inspect:'巡检异常',comment:'评论异常'};
 var platformLabels={wechat:'微信',weibo:'微博',douyin:'抖音',video:'视频号',news:'新闻号',all:'全部'};
 var changelogData=[
+  {time:'2026-05-26 16:54',desc:'部署数据异常详情页更新到 GitHub Pages。'},
+  {time:'2026-05-26 16:50',desc:'数据异常新增详情页：点击数据异常卡片进入指标波动与关联内容明细页。'},
   {time:'2026-05-26 15:10',desc:'PRD 新增登录模块优化：支持微信通知卡片免密登录，补充绑定校验、失败兜底和安全审计规则。'},
   {time:'2026-05-26 15:00',desc:'简化日期筛选呈现：去除截止提示、日期星期说明及弹窗顶部信息模块，保留清空日期即全部的交互。'},
   {time:'2026-05-26 14:47',desc:'完善异常处理日期筛选交互：新增底部日历弹层、今日/昨日快捷项、未来日期禁用和确认取消流程。'},
@@ -847,6 +918,7 @@ function render(){
   if(state.view==='report'){top.innerHTML=renderReportTop();main.innerHTML=renderReportList()}
   if(state.view==='exceptions'){top.innerHTML=renderExceptionTop();main.innerHTML=renderExceptionList()}
   if(state.view==='reportPreview'){top.className='app-top detail';main.className='app-main detail';top.innerHTML=renderDetailHeader('数据报告预览',functionName('backReport'));main.innerHTML=renderReportPreview()}
+  if(state.view==='dataDetail'){top.className='app-top detail';main.className='app-main detail';top.innerHTML=renderDetailHeader('数据异常详情',functionName('backExceptions'));main.innerHTML=renderDataDetail()}
   if(state.view==='expressionDetail'){top.className='app-top detail';main.className='app-main detail';top.innerHTML=renderDetailHeader('表述异常详情',functionName('backExceptions'));main.innerHTML=renderExpressionDetail()}
   if(state.view==='commentDetail'){top.className='app-top detail';main.className='app-main detail';top.innerHTML=renderDetailHeader('评论异常详情',functionName('backExceptions'));main.innerHTML=renderCommentDetail()}
   bottom.innerHTML=renderBottom();
@@ -870,7 +942,7 @@ function renderDetailHeader(title,handler){
   return '<div class="detail-header"><button class="back-btn" onclick="'+handler+'" aria-label="返回">'+iconBack()+'</button><div class="detail-title">'+title+'</div></div>';
 }
 function renderBottom(){
-  return '<button class="nav-btn '+(state.view==='report'||state.view==='reportPreview'?'active':'')+'" onclick="goReport()">'+iconDoc()+'<span>数据报告</span></button><button class="nav-btn inert" onclick="noopThemeTab(event)">'+iconThemeReport()+'<span>主题填报</span></button><button class="nav-btn '+(state.view==='exceptions'||state.view==='expressionDetail'||state.view==='commentDetail'?'active':'')+'" onclick="goExceptions()">'+iconNotice()+'<span>异常处理</span></button>';
+  return '<button class="nav-btn '+(state.view==='report'||state.view==='reportPreview'?'active':'')+'" onclick="goReport()">'+iconDoc()+'<span>数据报告</span></button><button class="nav-btn inert" onclick="noopThemeTab(event)">'+iconThemeReport()+'<span>主题填报</span></button><button class="nav-btn '+(state.view==='exceptions'||state.view==='dataDetail'||state.view==='expressionDetail'||state.view==='commentDetail'?'active':'')+'" onclick="goExceptions()">'+iconNotice()+'<span>异常处理</span></button>';
 }
 function renderReportList(){
   var html='<div class="report-list">';
@@ -902,6 +974,15 @@ function getVisibleComments(){
   });
 }
 function findComment(id){return exceptions.comment.filter(function(item){return item.id===id})[0]}
+function findDataItem(id){return exceptions.data.filter(function(item){return item.id===id})[0]||exceptions.data[0]}
+function parseDataMetric(summary){
+  var m=String(summary).match(/^(.+?)\s+([+-].+)$/);
+  return m?{name:m[1],value:m[2],negative:m[2].charAt(0)==='-'}:{name:'指标',value:summary,negative:false};
+}
+function getDataRows(item){
+  var rows=dataDetailRows[item.id]||dataDetailRows.d1;
+  return rows.map(function(row){return {title:row.title,value:row.value}});
+}
 function commentOriginalUrl(item){
   var q=encodeURIComponent(item.account+' '+item.summary.slice(0,18));
   if(item.platform==='douyin')return 'https://www.douyin.com/search/'+q;
@@ -962,11 +1043,23 @@ function renderSummaryMain(item,type){
   return '<span class="risk-text">'+escapeHtml(item.summary)+'</span>';
 }
 function renderExceptionCard(item,type){
-  var summaryClass=type==='data'?'':' clickable';
-  var click=type==='inspect'?' onclick="showExpressionDetail()"':(type==='comment'?' onclick="showCommentDetail()"':' onclick="toast(\'数据指标详情待接入\')"');
+  var summaryClass=' clickable';
+  var cardClass='exception-card'+(type==='data'?' data-clickable':'');
+  var cardClick=type==='data'?' onclick="showDataDetail(\''+item.id+'\')"':'';
+  var click=type==='inspect'?' onclick="showExpressionDetail()"':(type==='comment'?' onclick="showCommentDetail()"':'');
   var summaryText=renderSummaryMain(item,type);
   var sub=item.sub?'<div class="summary-sub">'+escapeHtml(item.sub)+'</div>':'';
-  return "<article class=\"exception-card\"><div class=\"card-head\"><div class=\"account\">"+escapeHtml(item.account)+"</div><span class=\"badge "+item.platform+"\">"+platformIcon(item.platform)+platformLabels[item.platform]+"</span><span class=\"card-status\">待处理</span></div><div class=\"summary-box"+summaryClass+"\""+click+"><span class=\"summary-icon\">"+summaryIcon(type)+"</span><div><div class=\"summary-main\">"+summaryText+"</div>"+sub+"</div></div><div class=\"time-line\">"+iconClock()+"<span>"+displayExceptionTime('15:43:21')+"</span></div><div class=\"action-row\"><button class=\"h5-btn secondary\" onclick=\"ignoreItem('"+item.id+"')\">"+iconIgnore()+"忽略</button><button class=\"h5-btn primary\" onclick=\"showDispose('"+item.id+"')\">"+iconDispose()+"处置</button></div></article>";
+  return "<article class=\""+cardClass+"\""+cardClick+"><div class=\"card-head\"><div class=\"account\">"+escapeHtml(item.account)+"</div><span class=\"badge "+item.platform+"\">"+platformIcon(item.platform)+platformLabels[item.platform]+"</span><span class=\"card-status\">待处理</span></div><div class=\"summary-box"+summaryClass+"\""+click+"><span class=\"summary-icon\">"+summaryIcon(type)+"</span><div><div class=\"summary-main\">"+summaryText+"</div>"+sub+"</div></div><div class=\"time-line\">"+iconClock()+"<span>"+displayExceptionTime('15:43:21')+"</span></div><div class=\"action-row\"><button class=\"h5-btn secondary\" onclick=\"event.stopPropagation();ignoreItem('"+item.id+"')\">"+iconIgnore()+"忽略</button><button class=\"h5-btn primary\" onclick=\"event.stopPropagation();showDispose('"+item.id+"')\">"+iconDispose()+"处置</button></div></article>";
+}
+function renderDataDetail(){
+  var item=findDataItem(state.activeDataId);
+  var metric=parseDataMetric(item.summary);
+  var rows=getDataRows(item);
+  var html='<div class="data-detail-wrap"><section class="data-detail-hero"><div class="data-metric-line"><span class="data-metric-name">'+escapeHtml(metric.name)+'</span><span class="data-metric-label">波动</span><span class="data-metric-value '+(metric.negative?'negative':'')+'">'+escapeHtml(metric.value)+'</span></div><div class="data-detail-meta"><span class="badge '+item.platform+'">'+platformIcon(item.platform)+platformLabels[item.platform]+'</span><span class="detail-date">'+displayExceptionTime('15:43:21')+'</span></div></section>';
+  html+='<section class="data-related-card"><div class="data-related-head"><div class="data-related-title">关联内容</div><div class="data-related-count">共 '+rows.length+' 条</div></div>';
+  rows.forEach(function(row){html+='<div class="data-related-row"><button class="data-related-link" onclick="toast(\'打开原文详情\')">'+escapeHtml(row.title)+'</button><div class="data-related-value">'+escapeHtml(metric.name)+'： '+escapeHtml(row.value)+'</div></div>'});
+  html+='</section></div>';
+  return html;
 }
 function renderExpressionDetail(){
   var issues=[
@@ -1054,6 +1147,7 @@ function goExceptions(){state.view='exceptions';render()}
 function showReportPreview(){state.view='reportPreview';render()}
 function backReport(){state.view='report';render()}
 function backExceptions(){state.view='exceptions';render()}
+function showDataDetail(id){state.activeDataId=id;state.view='dataDetail';render()}
 function showExpressionDetail(){state.view='expressionDetail';state.issueFilter='all';render()}
 function showCommentDetail(id){state.activeCommentId=id||state.activeCommentId||'c1';state.view='commentDetail';render()}
 function setIssueFilter(f){state.issueFilter=f;render()}
