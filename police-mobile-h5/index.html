@@ -102,7 +102,6 @@ button{border:0;background:none;cursor:pointer}
 .badge.douyin{background:#1d2129;color:#fff}
 .badge.video{background:#eff6ff;color:#155dfc}
 .badge.news{background:#fff8e1;color:#f5a000}
-.card-status{margin-left:auto;font-size:11px;color:#ff7d00;background:#fff3e0;border:1px solid #ffe0b8;border-radius:6px;padding:3px 8px;font-weight:750}
 .summary-box{margin-top:13px;min-height:58px;background:#f7f9fc;border:1px solid #edf0f5;border-radius:9px;display:flex;align-items:center;gap:10px;padding:11px;color:#1d2129}
 .summary-box.clickable{cursor:pointer}
 .summary-box.clickable:active{background:#f1f6ff}
@@ -131,6 +130,7 @@ button{border:0;background:none;cursor:pointer}
 .comment-summary-box{align-items:center}
 .comment-summary-box .summary-main{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-wrap:pretty}
 .ai-result-tag,.reason-tag{background:#fff1f0;color:#f53f3f}
+.card-head .reason-tag{margin-left:auto}
 .ai-result-tag.warn{background:#fff1f0;color:#f53f3f}
 .ai-result-tag.result{background:#fff1f0;color:#f53f3f}
 .comment-action-row{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-top:12px;padding-top:11px;border-top:1px solid #f1f4f8}
@@ -548,10 +548,10 @@ button{border:0;background:none;cursor:pointer}
 - **展示规则**
   - 每张卡片展示账号名称、平台标签、异常摘要、发现时间、忽略按钮和处置按钮。
   - 平台标签包含微信、微博、抖音，不同平台使用不同底色。
-  - 数据异常、巡检异常、评论异常使用统一卡片骨架，账号、平台标签和待处理状态位置保持一致。
+  - 数据异常、巡检异常、评论异常使用统一卡片骨架，账号和平台标签位置保持一致；列表仅展示待处理数据，不额外展示“待处理”状态标签。
   - 异常摘要区域使用浅灰背景，左侧展示告警图标。
   - 异常摘要区域右侧展示文本入口：数据异常和巡检异常为“查看详情”，评论异常为“查看原文”。
-  - 时间行右侧统一展示异常原因标签；巡检异常展示巡检原因，评论异常展示 AI 识别原因，数据异常不展示原因标签。
+  - 卡片右上角统一作为异常原因位；巡检异常展示巡检原因，评论异常展示 AI 识别原因，数据异常不展示原因标签。
 - **交互规则**
   - 点击“忽略”后将该异常标记为无需处理，并从当前列表移除。
   - 点击“处置”打开处置弹窗。
@@ -579,7 +579,7 @@ button{border:0;background:none;cursor:pointer}
 
 - **展示规则**
   - 摘要内容展示稿件标题。
-  - 异常类型展示在时间行右侧，例如“表述异常”。
+  - 异常类型展示在卡片右上角，例如“表述异常”。
   - 长标题单行省略。
 - **交互规则**
   - 点击摘要进入表述异常详情页，查看命中问题、修改建议和上下文。
@@ -595,8 +595,8 @@ button{border:0;background:none;cursor:pointer}
   - 评论异常参考 Web 端评论监测表格，在移动端转为卡片列表。
   - 评论异常不展示渠道筛选和评论内容搜索框。
   - 评论异常列表计数与其他异常分类一致，展示“共 X 项数据”。
-  - 每张评论卡片沿用异常卡片通用结构，顶部展示账号、平台标签和“待处理”状态。
-  - 评论正文展示在异常摘要区域，摘要区域右侧展示“查看原文”，评论时间展示在时间行左侧，AI 识别结果展示在时间行右侧。
+  - 每张评论卡片沿用异常卡片通用结构，顶部展示账号、平台标签和 AI 识别原因。
+  - 评论正文展示在异常摘要区域，摘要区域右侧展示“查看原文”，评论时间展示在时间行。
   - AI 识别结果包含“质疑执法”“质疑处理结果”等风险标签。
   - 异常处理列表仅展示“未处理”评论；已处理评论不进入待处理列表。
 - **交互规则**
@@ -1019,7 +1019,7 @@ function renderCommentCards(list){
   return html;
 }
 function renderCommentMonitorCard(item){
-  return '<article class="exception-card comment-monitor-card" onclick="openCommentOriginal(\''+item.id+'\')"><div class="card-head"><div class="account">'+escapeHtml(item.account)+'</div><span class="badge '+item.platform+'">'+platformIcon(item.platform)+platformLabels[item.platform]+'</span><span class="card-status">待处理</span></div><div class="summary-box clickable comment-summary-box"><span class="summary-icon">'+iconCommentRisk()+'</span><div class="summary-content"><div class="summary-main"><span class="risk-text">'+escapeHtml(item.summary)+'</span></div></div><span class="summary-action">查看原文</span></div><div class="card-meta-row"><div class="time-line">'+iconClock()+'<span>'+escapeHtml(displayCommentTime(item))+'</span></div><span class="reason-tag">'+escapeHtml(item.aiResult)+'</span></div><div class="action-row"><button class="h5-btn secondary" onclick="event.stopPropagation();ignoreItem(\''+item.id+'\')">'+iconIgnore()+'忽略</button><button class="h5-btn primary" onclick="event.stopPropagation();showDispose(\''+item.id+'\')">'+iconDispose()+'处置</button></div></article>';
+  return '<article class="exception-card comment-monitor-card" onclick="openCommentOriginal(\''+item.id+'\')"><div class="card-head"><div class="account">'+escapeHtml(item.account)+'</div><span class="badge '+item.platform+'">'+platformIcon(item.platform)+platformLabels[item.platform]+'</span><span class="reason-tag">'+escapeHtml(item.aiResult)+'</span></div><div class="summary-box clickable comment-summary-box"><span class="summary-icon">'+iconCommentRisk()+'</span><div class="summary-content"><div class="summary-main"><span class="risk-text">'+escapeHtml(item.summary)+'</span></div></div><span class="summary-action">查看原文</span></div><div class="card-meta-row"><div class="time-line">'+iconClock()+'<span>'+escapeHtml(displayCommentTime(item))+'</span></div></div><div class="action-row"><button class="h5-btn secondary" onclick="event.stopPropagation();ignoreItem(\''+item.id+'\')">'+iconIgnore()+'忽略</button><button class="h5-btn primary" onclick="event.stopPropagation();showDispose(\''+item.id+'\')">'+iconDispose()+'处置</button></div></article>';
 }
 function renderSummaryMain(item,type){
   if(type==='data'){
@@ -1034,8 +1034,8 @@ function renderExceptionCard(item,type){
   var cardClick=type==='data'?' onclick="showDataDetail(\''+item.id+'\')"':'';
   var click=type==='inspect'?' onclick="showExpressionDetail()"':(type==='comment'?' onclick="showCommentDetail()"':'');
   var summaryText=renderSummaryMain(item,type);
-  var reason=item.sub?'<span class="reason-tag">'+escapeHtml(item.sub)+'</span>':'';
-  return "<article class=\""+cardClass+"\""+cardClick+"><div class=\"card-head\"><div class=\"account\">"+escapeHtml(item.account)+"</div><span class=\"badge "+item.platform+"\">"+platformIcon(item.platform)+platformLabels[item.platform]+"</span><span class=\"card-status\">待处理</span></div><div class=\"summary-box"+summaryClass+"\""+click+"><span class=\"summary-icon\">"+summaryIcon(type)+"</span><div class=\"summary-content\"><div class=\"summary-main\">"+summaryText+"</div></div><span class=\"summary-action\">查看详情</span></div><div class=\"card-meta-row\"><div class=\"time-line\">"+iconClock()+"<span>"+displayExceptionTime('15:43:21')+"</span></div>"+reason+"</div><div class=\"action-row\"><button class=\"h5-btn secondary\" onclick=\"event.stopPropagation();ignoreItem('"+item.id+"')\">"+iconIgnore()+"忽略</button><button class=\"h5-btn primary\" onclick=\"event.stopPropagation();showDispose('"+item.id+"')\">"+iconDispose()+"处置</button></div></article>";
+  var reason=type!=='data'&&item.sub?'<span class="reason-tag">'+escapeHtml(item.sub)+'</span>':'';
+  return "<article class=\""+cardClass+"\""+cardClick+"><div class=\"card-head\"><div class=\"account\">"+escapeHtml(item.account)+"</div><span class=\"badge "+item.platform+"\">"+platformIcon(item.platform)+platformLabels[item.platform]+"</span>"+reason+"</div><div class=\"summary-box"+summaryClass+"\""+click+"><span class=\"summary-icon\">"+summaryIcon(type)+"</span><div class=\"summary-content\"><div class=\"summary-main\">"+summaryText+"</div></div><span class=\"summary-action\">查看详情</span></div><div class=\"card-meta-row\"><div class=\"time-line\">"+iconClock()+"<span>"+displayExceptionTime('15:43:21')+"</span></div></div><div class=\"action-row\"><button class=\"h5-btn secondary\" onclick=\"event.stopPropagation();ignoreItem('"+item.id+"')\">"+iconIgnore()+"忽略</button><button class=\"h5-btn primary\" onclick=\"event.stopPropagation();showDispose('"+item.id+"')\">"+iconDispose()+"处置</button></div></article>";
 }
 function renderDataDetail(){
   var item=findDataItem(state.activeDataId);
