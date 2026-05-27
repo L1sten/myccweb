@@ -100,51 +100,48 @@ button{border:0;background:none;cursor:pointer}
 .badge.wechat{background:var(--green-soft);color:var(--green)}
 .badge.weibo{background:var(--amber-soft);color:var(--amber)}
 .badge.douyin{background:#1d2129;color:#fff}
+.badge.video{background:#eff6ff;color:#155dfc}
+.badge.news{background:#fff8e1;color:#f5a000}
 .card-status{margin-left:auto;font-size:11px;color:#ff7d00;background:#fff3e0;border:1px solid #ffe0b8;border-radius:6px;padding:3px 8px;font-weight:750}
 .summary-box{margin-top:13px;min-height:58px;background:#f7f9fc;border:1px solid #edf0f5;border-radius:9px;display:flex;align-items:center;gap:10px;padding:11px;color:#1d2129}
 .summary-box.clickable{cursor:pointer}
 .summary-box.clickable:active{background:#f1f6ff}
 .summary-icon{width:30px;height:30px;border-radius:8px;background:#fff3e0;border:1px solid #ffe0b8;display:grid;place-items:center;flex:0 0 auto}
 .summary-icon svg{width:15px;height:15px;stroke:var(--amber);margin:0}
+.summary-content{min-width:0;flex:1}
+.summary-action{flex:0 0 auto;margin-left:4px;color:var(--primary);font-size:13px;line-height:20px;font-weight:850;white-space:nowrap}
 .summary-main{min-width:0;font-size:14px;line-height:20px;font-weight:650;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .summary-main .metric-name{color:#4e5969;font-weight:700}
 .summary-main .metric-value{margin-left:8px;font-size:17px;font-weight:850;color:#ff7d00}
 .summary-main .metric-value.negative{color:#f53f3f}
 .summary-main .risk-text{font-weight:750;color:#1d2129}
-.summary-sub{margin-top:4px;font-size:12px;line-height:16px;color:var(--muted);font-weight:400}
 .comment-link{color:var(--primary)}
 .comment-monitor{padding:0 12px 22px}
 .comment-list-head{display:flex;align-items:center;justify-content:space-between;margin:0 0 10px;color:#667085;font-size:12px}
 .comment-list-head strong{color:#101828;font-size:13px}
 .comment-card-list{display:flex;flex-direction:column;gap:10px}
-.comment-monitor-card{background:#fff;border:1px solid rgba(223,227,235,.94);border-radius:12px;box-shadow:var(--shadow-float);padding:13px 13px 12px;overflow:hidden;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
-.comment-monitor-card:active{transform:scale(.992)}
-.comment-card-head{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center}
-.comment-index{width:26px;height:26px;border-radius:8px;background:#f2f5fa;color:#4e5969;font-size:12px;font-weight:850;display:grid;place-items:center}
-.comment-account{min-width:0}
-.comment-account-name{font-size:14px;line-height:19px;font-weight:800;color:#1d2129;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.comment-account-meta{display:flex;align-items:center;gap:6px;margin-top:4px}
-.comment-platform-tag,.ai-result-tag,.comment-status{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;font-size:11px;font-weight:750;white-space:nowrap}
+.comment-monitor-card{cursor:pointer}
+.comment-platform-tag,.ai-result-tag,.comment-status,.reason-tag{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;font-size:11px;font-weight:750;white-space:nowrap}
 .comment-platform-tag.douyin{background:#fff1f2;color:#ff1f35}
 .comment-platform-tag.weibo{background:#fff7ed;color:#f54900}
 .comment-platform-tag.video{background:#eff6ff;color:#155dfc}
 .comment-platform-tag.news{background:#fff8e1;color:#f5a000}
-.comment-time{color:#8a96a8;font-size:11px;white-space:nowrap}
 .comment-status.pending{background:#fff3e0;color:#ff7d00}
 .comment-status.done{background:#f0fdf4;color:#16a34a}
-.comment-body{margin-top:12px;padding:11px;border-radius:9px;background:#f7f9fc;border:1px solid #edf0f5}
-.comment-body p{margin:0;color:#344054;font-size:13px;line-height:21px;text-wrap:pretty}
-.comment-ai-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
-.ai-result-tag{background:#fff1f0;color:#f53f3f}
+.comment-summary-box{align-items:center}
+.comment-summary-box .summary-main{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-wrap:pretty}
+.ai-result-tag,.reason-tag{background:#fff1f0;color:#f53f3f}
 .ai-result-tag.warn{background:#fff1f0;color:#f53f3f}
 .ai-result-tag.result{background:#fff1f0;color:#f53f3f}
-.source-hint{height:22px;display:inline-flex;align-items:center;padding:0 8px;border-radius:6px;background:#f2f5fa;color:#667085;font-size:11px;font-weight:750}
 .comment-action-row{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-top:12px;padding-top:11px;border-top:1px solid #f1f4f8}
 .comment-action{color:#2f8cff;font-size:13px;font-weight:800}
 .comment-action.muted{color:#64748b}
 .comment-empty{height:160px;display:grid;place-items:center;color:#9aa3b2;font-size:13px}
 .time-line{display:flex;align-items:center;gap:5px;margin-top:11px;color:#86909c;font-size:12px;line-height:16px}
 .time-line svg{width:12px;height:12px;stroke:currentColor}
+.card-meta-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:11px}
+.card-meta-row .time-line{margin-top:0;min-width:0}
+.card-meta-row .time-line span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .action-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid #edf0f5}
 .h5-btn{height:42px;border-radius:8px;font-size:13px;font-weight:800;text-align:center;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:transform .16s ease,box-shadow .16s ease,background .16s ease,border-color .16s ease}
 .h5-btn svg{width:15px;height:15px;stroke:currentColor}
@@ -551,11 +548,14 @@ button{border:0;background:none;cursor:pointer}
 - **展示规则**
   - 每张卡片展示账号名称、平台标签、异常摘要、发现时间、忽略按钮和处置按钮。
   - 平台标签包含微信、微博、抖音，不同平台使用不同底色。
+  - 数据异常、巡检异常、评论异常使用统一卡片骨架，账号、平台标签和待处理状态位置保持一致。
   - 异常摘要区域使用浅灰背景，左侧展示告警图标。
+  - 异常摘要区域右侧展示文本入口：数据异常和巡检异常为“查看详情”，评论异常为“查看原文”。
+  - 时间行右侧统一展示异常原因标签；巡检异常展示巡检原因，评论异常展示 AI 识别原因，数据异常不展示原因标签。
 - **交互规则**
   - 点击“忽略”后将该异常标记为无需处理，并从当前列表移除。
   - 点击“处置”打开处置弹窗。
-  - 点击数据异常卡片进入数据异常详情页；点击巡检异常摘要进入表述异常详情；评论异常卡片按评论异常规则跳转原文地址。
+  - 点击数据异常卡片或“查看详情”进入数据异常详情页；点击巡检异常摘要或“查看详情”进入表述异常详情；评论异常卡片或“查看原文”按评论异常规则跳转原文地址。
   - 点击“忽略”或“处置”时不触发卡片详情跳转。
 - **数据规则**
   - **取数规则**：从异常中心读取账号、平台、异常摘要、异常类型、发现时间和处置状态。
@@ -578,7 +578,8 @@ button{border:0;background:none;cursor:pointer}
 ### 4.6 巡检异常
 
 - **展示规则**
-  - 摘要内容展示稿件标题，下一行展示异常类型，例如“表述异常”。
+  - 摘要内容展示稿件标题。
+  - 异常类型展示在时间行右侧，例如“表述异常”。
   - 长标题单行省略。
 - **交互规则**
   - 点击摘要进入表述异常详情页，查看命中问题、修改建议和上下文。
@@ -594,7 +595,8 @@ button{border:0;background:none;cursor:pointer}
   - 评论异常参考 Web 端评论监测表格，在移动端转为卡片列表。
   - 评论异常不展示渠道筛选和评论内容搜索框。
   - 评论异常列表计数与其他异常分类一致，展示“共 X 项数据”。
-  - 每张卡片展示序号、平台、账号、正文内容、评论时间、AI 识别结果、处理状态和操作按钮。
+  - 每张评论卡片沿用异常卡片通用结构，顶部展示账号、平台标签和“待处理”状态。
+  - 评论正文展示在异常摘要区域，摘要区域右侧展示“查看原文”，评论时间展示在时间行左侧，AI 识别结果展示在时间行右侧。
   - AI 识别结果包含“质疑执法”“质疑处理结果”等风险标签。
   - 异常处理列表仅展示“未处理”评论；已处理评论不进入待处理列表。
 - **交互规则**
@@ -839,25 +841,10 @@ var periodLabels={day:'日报',week:'周报',month:'月报'};
 var exceptionLabels={data:'数据异常',inspect:'巡检异常',comment:'评论异常'};
 var platformLabels={wechat:'微信',weibo:'微博',douyin:'抖音',video:'视频号',news:'新闻号',all:'全部'};
 var changelogData=[
-  {time:'2026-05-26 16:54',desc:'部署数据异常详情页更新到 GitHub Pages。'},
-  {time:'2026-05-26 16:50',desc:'数据异常新增详情页：点击数据异常卡片进入指标波动与关联内容明细页。'},
-  {time:'2026-05-26 15:10',desc:'PRD 新增登录模块优化：支持微信通知卡片免密登录，补充绑定校验、失败兜底和安全审计规则。'},
-  {time:'2026-05-26 15:00',desc:'简化日期筛选呈现：去除截止提示、日期星期说明及弹窗顶部信息模块，保留清空日期即全部的交互。'},
-  {time:'2026-05-26 14:47',desc:'完善异常处理日期筛选交互：新增底部日历弹层、今日/昨日快捷项、未来日期禁用和确认取消流程。'},
-  {time:'2026-05-26 13:58',desc:'PRD 移除数据报告模块说明，保留其作为线上已有入口。'},
-  {time:'2026-05-25 18:15',desc:'PRD 移除设计参考章节，并同步部署线上版本。'},
-  {time:'2026-05-25 18:02',desc:'去除顶部模块标题和右上角分类名称，顶部回归轻量分段切换。'},
-  {time:'2026-05-25 17:51',desc:'按资深设计师审稿意见进行视觉精修：强化模块标题、收敛政务蓝与卡片层级，优化日期筛选默认态和移动端处置弹窗。'},
-  {time:'2026-05-25 17:47',desc:'统一异常处理列表计数文案，去除右侧“待处理”，评论异常改为“共 X 项数据”。'},
-  {time:'2026-05-25 17:37',desc:'调整异常处理日期筛选默认状态：默认不选日期并展示全部未处理异常，支持清空回到全部。'},
-  {time:'2026-05-25 17:28',desc:'调整异常处理日期筛选：去除右侧提示字样，日期最近截止到当天；评论异常去除渠道筛选和搜索框。'},
-  {time:'2026-05-25 16:52',desc:'在异常处理页新增全局日期筛选，支持选择日期以及前后一天快捷切换。'},
-  {time:'2026-05-25 16:34',desc:'底部导航新增“主题填报”入口，异常入口改名为“异常处理”，并移除原型旁侧说明文案。'},
-  {time:'2026-05-25 16:26',desc:'部署到 GitHub Pages，发布公安移动端 H5 原型与 PRD。'},
-  {time:'2026-05-25 15:34',desc:'调整评论异常交互：操作按钮统一为“忽略 / 处置”，点击评论卡片跳转原文地址。'},
-  {time:'2026-05-25 15:26',desc:'参考 Web 端评论监测表格优化移动端评论异常：新增平台筛选、搜索、AI 识别结果、处理状态和移动卡片详情。'},
-  {time:'2026-05-25 14:14',desc:'使用 web-design-engineer 优化 H5 视觉层，新增自绘 SVG 图标、卡片层级、导航与处置弹窗细节。'},
-  {time:'2026-05-25 11:48',desc:'按用户提供的 Figma 地址创建公安移动端 H5 原型，编写并嵌入 PRD，补充首页入口与访问密码配置。'}
+  {time:'2026-05-27 10:57',desc:'异常卡片统一样式：评论异常改用通用卡片骨架；“查看详情 / 查看原文”统一放入摘要区右侧并使用政务蓝；巡检异常和评论异常的原因标签统一放到时间行右侧；同步更新 PRD 规则。'},
+  {time:'2026-05-26 16:54',desc:'数据异常新增详情页，支持点击数据异常卡片查看指标波动和关联内容；PRD 增加微信通知卡片免密登录规则；完善日期筛选交互并同步数据报告线上已有模块口径。'},
+  {time:'2026-05-25 18:15',desc:'视觉和信息架构精修：底部导航新增“主题填报”入口，异常入口改名为“异常处理”；移除顶部模块标题、右上角分类名称和 PRD 设计参考章节。'},
+  {time:'2026-05-25 16:26',desc:'初始部署公安移动端 H5 原型与 PRD：包含数据报告入口、数据异常、巡检异常、评论异常、处置弹窗、详情页和评论原文跳转等核心流程。'}
 ];
 function iconAlert(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>'}
 function iconClock(){return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>'}
@@ -1032,8 +1019,7 @@ function renderCommentCards(list){
   return html;
 }
 function renderCommentMonitorCard(item){
-  var statusClass=item.status==='已处理'?'done':'pending';
-  return '<article class="comment-monitor-card" onclick="openCommentOriginal(\''+item.id+'\')"><div class="comment-card-head"><div class="comment-index">'+item.no+'</div><div class="comment-account"><div class="comment-account-name">'+escapeHtml(item.account)+'</div><div class="comment-account-meta"><span class="comment-platform-tag '+item.platform+'">'+platformLabels[item.platform]+'</span><span class="comment-time">'+escapeHtml(displayCommentTime(item))+'</span></div></div><span class="comment-status '+statusClass+'">'+item.status+'</span></div><div class="comment-body"><p>'+escapeHtml(item.summary)+'</p></div><div class="comment-ai-row"><span class="ai-result-tag '+(item.aiResult.indexOf('处理')>-1?'result':'warn')+'">'+escapeHtml(item.aiResult)+'</span><span class="source-hint">原文</span></div><div class="action-row"><button class="h5-btn secondary" onclick="event.stopPropagation();ignoreItem(\''+item.id+'\')">'+iconIgnore()+'忽略</button><button class="h5-btn primary" onclick="event.stopPropagation();showDispose(\''+item.id+'\')">'+iconDispose()+'处置</button></div></article>';
+  return '<article class="exception-card comment-monitor-card" onclick="openCommentOriginal(\''+item.id+'\')"><div class="card-head"><div class="account">'+escapeHtml(item.account)+'</div><span class="badge '+item.platform+'">'+platformIcon(item.platform)+platformLabels[item.platform]+'</span><span class="card-status">待处理</span></div><div class="summary-box clickable comment-summary-box"><span class="summary-icon">'+iconCommentRisk()+'</span><div class="summary-content"><div class="summary-main"><span class="risk-text">'+escapeHtml(item.summary)+'</span></div></div><span class="summary-action">查看原文</span></div><div class="card-meta-row"><div class="time-line">'+iconClock()+'<span>'+escapeHtml(displayCommentTime(item))+'</span></div><span class="reason-tag">'+escapeHtml(item.aiResult)+'</span></div><div class="action-row"><button class="h5-btn secondary" onclick="event.stopPropagation();ignoreItem(\''+item.id+'\')">'+iconIgnore()+'忽略</button><button class="h5-btn primary" onclick="event.stopPropagation();showDispose(\''+item.id+'\')">'+iconDispose()+'处置</button></div></article>';
 }
 function renderSummaryMain(item,type){
   if(type==='data'){
@@ -1048,8 +1034,8 @@ function renderExceptionCard(item,type){
   var cardClick=type==='data'?' onclick="showDataDetail(\''+item.id+'\')"':'';
   var click=type==='inspect'?' onclick="showExpressionDetail()"':(type==='comment'?' onclick="showCommentDetail()"':'');
   var summaryText=renderSummaryMain(item,type);
-  var sub=item.sub?'<div class="summary-sub">'+escapeHtml(item.sub)+'</div>':'';
-  return "<article class=\""+cardClass+"\""+cardClick+"><div class=\"card-head\"><div class=\"account\">"+escapeHtml(item.account)+"</div><span class=\"badge "+item.platform+"\">"+platformIcon(item.platform)+platformLabels[item.platform]+"</span><span class=\"card-status\">待处理</span></div><div class=\"summary-box"+summaryClass+"\""+click+"><span class=\"summary-icon\">"+summaryIcon(type)+"</span><div><div class=\"summary-main\">"+summaryText+"</div>"+sub+"</div></div><div class=\"time-line\">"+iconClock()+"<span>"+displayExceptionTime('15:43:21')+"</span></div><div class=\"action-row\"><button class=\"h5-btn secondary\" onclick=\"event.stopPropagation();ignoreItem('"+item.id+"')\">"+iconIgnore()+"忽略</button><button class=\"h5-btn primary\" onclick=\"event.stopPropagation();showDispose('"+item.id+"')\">"+iconDispose()+"处置</button></div></article>";
+  var reason=item.sub?'<span class="reason-tag">'+escapeHtml(item.sub)+'</span>':'';
+  return "<article class=\""+cardClass+"\""+cardClick+"><div class=\"card-head\"><div class=\"account\">"+escapeHtml(item.account)+"</div><span class=\"badge "+item.platform+"\">"+platformIcon(item.platform)+platformLabels[item.platform]+"</span><span class=\"card-status\">待处理</span></div><div class=\"summary-box"+summaryClass+"\""+click+"><span class=\"summary-icon\">"+summaryIcon(type)+"</span><div class=\"summary-content\"><div class=\"summary-main\">"+summaryText+"</div></div><span class=\"summary-action\">查看详情</span></div><div class=\"card-meta-row\"><div class=\"time-line\">"+iconClock()+"<span>"+displayExceptionTime('15:43:21')+"</span></div>"+reason+"</div><div class=\"action-row\"><button class=\"h5-btn secondary\" onclick=\"event.stopPropagation();ignoreItem('"+item.id+"')\">"+iconIgnore()+"忽略</button><button class=\"h5-btn primary\" onclick=\"event.stopPropagation();showDispose('"+item.id+"')\">"+iconDispose()+"处置</button></div></article>";
 }
 function renderDataDetail(){
   var item=findDataItem(state.activeDataId);
