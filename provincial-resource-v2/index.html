@@ -1,0 +1,2106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <script src="../auth.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+    <title>全省资源库 v2 - 智能媒资系统</title>
+    <style>
+        :root {
+            --primary: #0052d9;
+            --primary-deep: #003fa8;
+            --primary-soft: #e8f0fe;
+            --primary-line: #b7cff8;
+            --cyan: #0891b2;
+            --green: #16a34a;
+            --amber: #d97706;
+            --violet: #7c3aed;
+            --red: #dc2626;
+            --ink: #1f2937;
+            --text: #344054;
+            --muted: #667085;
+            --subtle: #98a2b3;
+            --line: #e4e7ec;
+            --line-soft: #edf2f7;
+            --surface: #ffffff;
+            --page: #f5f7fb;
+            --panel: #fbfcff;
+            --shadow: 0 4px 16px rgba(29, 33, 41, .06);
+            --radius: 8px;
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        }
+
+        * { box-sizing: border-box; }
+        html, body { margin: 0; min-height: 100%; }
+        body {
+            font-family: var(--font);
+            background: var(--page);
+            color: var(--ink);
+            font-size: 14px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+        button, input, select, textarea { font: inherit; }
+        button { cursor: pointer; }
+        .hidden { display: none !important; }
+
+        .app-split { display: flex; height: 100vh; overflow: hidden; background: var(--page); }
+        .page-container { flex: 1; min-width: 0; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; }
+        .split-drag { width: 4px; cursor: col-resize; flex-shrink: 0; background: var(--line-soft); transition: background .15s; position: relative; z-index: 10; }
+        .split-drag:hover, .split-drag.dragging { background: var(--primary); }
+        .split-drag::after { content: ""; position: absolute; left: -3px; right: -3px; top: 0; bottom: 0; }
+        .prd-panel { width: 460px; flex-shrink: 0; display: flex; border-left: 1px solid var(--line); background: #fff; transition: opacity .25s; }
+        .prd-panel.collapsed { width: 0; opacity: 0; overflow: hidden; border: none; }
+
+        .top-nav {
+            height: 58px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 0 24px;
+            background: #fff;
+            border-bottom: 1px solid var(--line);
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+        .brand { display: flex; align-items: center; gap: 10px; min-width: 178px; }
+        .brand-mark {
+            width: 32px;
+            height: 32px;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            font-weight: 700;
+            background: var(--primary);
+            border-radius: 7px;
+            box-shadow: none;
+        }
+        .brand-text { font-weight: 650; letter-spacing: 0; white-space: nowrap; }
+        .nav-items { display: flex; align-items: center; gap: 4px; min-width: 0; flex: 1; }
+        .nav-item {
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            border-radius: 6px;
+            padding: 8px 14px;
+            transition: background .15s, color .15s;
+            white-space: nowrap;
+        }
+        .nav-item:hover { color: var(--primary); background: var(--primary-soft); }
+        .nav-item.active { color: var(--primary); background: var(--primary-soft); font-weight: 650; }
+        .nav-right { display: flex; align-items: center; gap: 10px; }
+        .upload-btn {
+            height: 34px;
+            border: 0;
+            border-radius: 6px;
+            padding: 0 14px;
+            background: var(--primary);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background .15s;
+        }
+        .upload-btn:hover { background: var(--primary-deep); }
+        .icon { width: 16px; height: 16px; display: inline-block; vertical-align: middle; }
+        .avatar { width: 30px; height: 30px; border-radius: 50%; background: #eef2f7; color: var(--muted); display: grid; place-items: center; font-size: 12px; font-weight: 650; }
+
+        .view { display: none; flex: 1; }
+        .view.active { display: block; }
+        .content-shell { width: min(1240px, calc(100% - 48px)); margin: 0 auto; }
+
+        .home-hero {
+            background:
+                linear-gradient(180deg, #e9f4ff 0%, #f4f8ff 58%, var(--page) 100%);
+            border-bottom: 1px solid #e9eef7;
+            padding: 38px 24px 34px;
+        }
+        .home-hero-inner { width: min(940px, 100%); margin: 0 auto; }
+        .home-title { margin: 0 0 8px; text-align: center; font-size: 30px; line-height: 1.2; letter-spacing: 0; font-weight: 760; }
+        .home-sub { margin: 0 0 26px; color: var(--muted); text-align: center; font-size: 15px; }
+        .home-search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff;
+            border: 1px solid #dbe5f2;
+            border-radius: 999px;
+            padding: 7px 8px 7px 18px;
+            box-shadow: 0 14px 36px rgba(47, 99, 244, .14);
+        }
+        .home-search:focus-within { border-color: var(--primary); box-shadow: 0 16px 40px rgba(47, 99, 244, .18); }
+        .home-search input {
+            flex: 1;
+            min-width: 0;
+            border: 0;
+            outline: 0;
+            height: 40px;
+            color: var(--ink);
+            font-size: 15px;
+            background: transparent;
+        }
+        .home-search input::placeholder { color: var(--subtle); }
+        .circle-tool {
+            width: 38px;
+            height: 38px;
+            border: 0;
+            border-radius: 50%;
+            background: #f3f6fb;
+            color: var(--muted);
+            display: grid;
+            place-items: center;
+            transition: color .15s, background .15s;
+        }
+        .circle-tool:hover { color: var(--primary); background: var(--primary-soft); }
+        .primary-pill {
+            height: 40px;
+            border: 0;
+            border-radius: 999px;
+            background: var(--primary);
+            color: #fff;
+            padding: 0 22px;
+            font-weight: 650;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: background .15s, transform .15s;
+        }
+        .primary-pill:hover { background: var(--primary-deep); transform: translateY(-1px); }
+        .home-lib-filter { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+        .filter-chip {
+            border: 1px solid #d9e2ef;
+            background: rgba(255,255,255,.82);
+            color: var(--muted);
+            border-radius: 999px;
+            padding: 6px 13px;
+            font-size: 13px;
+            transition: border-color .15s, color .15s, background .15s;
+        }
+        .filter-chip:hover { border-color: var(--primary); color: var(--primary); }
+        .filter-chip.active { border-color: var(--primary); background: var(--primary); color: #fff; }
+
+        .section { padding: 22px 0 0; }
+        .permission-bar {
+            margin-top: 16px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+        .permission-switch {
+            display: inline-flex;
+            border: 1px solid var(--line);
+            border-radius: 7px;
+            overflow: hidden;
+            background: #fff;
+        }
+        .permission-switch button {
+            height: 30px;
+            border: 0;
+            background: #fff;
+            color: var(--muted);
+            padding: 0 12px;
+            transition: background .15s, color .15s;
+        }
+        .permission-switch button + button { border-left: 1px solid var(--line); }
+        .permission-switch button.active { background: var(--primary); color: #fff; font-weight: 650; }
+        .permission-note {
+            color: var(--subtle);
+            background: #fff;
+            border: 1px dashed #cbd5e1;
+            border-radius: 6px;
+            padding: 5px 9px;
+        }
+        .section-head { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 12px; }
+        .section-title { margin: 0; font-size: 17px; line-height: 1.35; font-weight: 720; letter-spacing: 0; }
+        .section-sub { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+        .text-link { border: 0; background: transparent; color: var(--primary); font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        .text-link:hover { color: var(--primary-deep); }
+        .latest-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+        .latest-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: transform .16s, box-shadow .16s, border-color .16s;
+        }
+        .latest-card:hover { transform: translateY(-2px); border-color: #c8d7ed; box-shadow: var(--shadow); }
+        .latest-thumb { aspect-ratio: 16 / 9; background: #edf2f7; overflow: hidden; }
+        .latest-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .latest-body { padding: 10px 12px 12px; }
+        .latest-title { font-weight: 650; line-height: 1.45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .latest-meta { margin-top: 7px; display: flex; justify-content: space-between; color: var(--subtle); font-size: 12px; gap: 10px; }
+        .recommend-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+        .recommend-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
+            transition: transform .16s, box-shadow .16s, border-color .16s;
+        }
+        .recommend-card:hover { transform: translateY(-2px); border-color: #c8d7ed; box-shadow: var(--shadow); }
+        .rec-thumb { position: relative; aspect-ratio: 16 / 10; background: #e7edf6; overflow: hidden; }
+        .rec-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .25s; }
+        .recommend-card:hover .rec-thumb img { transform: scale(1.035); }
+        .badge {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 650;
+            background: rgba(31,41,55,.78);
+            backdrop-filter: blur(6px);
+        }
+        .duration { position: absolute; right: 10px; bottom: 10px; padding: 3px 7px; border-radius: 4px; color: #fff; font-size: 12px; background: rgba(17,24,39,.72); }
+        .rec-body { padding: 12px; }
+        .rec-title { margin: 0; font-weight: 650; color: var(--ink); line-height: 1.45; min-height: 40px; }
+        .rec-meta { margin-top: 8px; display: flex; justify-content: space-between; gap: 10px; color: var(--subtle); font-size: 12px; }
+
+        .stats-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 12px; }
+        .metric {
+            position: relative;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 15px 16px;
+            overflow: hidden;
+        }
+        .metric::after {
+            content: "";
+            position: absolute;
+            right: -20px;
+            bottom: -26px;
+            width: 92px;
+            height: 72px;
+            border: 1px solid color-mix(in srgb, var(--accent, var(--primary)) 32%, transparent);
+            border-radius: 10px;
+            transform: rotate(-8deg);
+            opacity: .65;
+        }
+        .metric:nth-child(1) { --accent: var(--primary); }
+        .metric:nth-child(2) { --accent: var(--cyan); }
+        .metric:nth-child(3) { --accent: var(--violet); }
+        .metric:nth-child(4) { --accent: var(--green); }
+        .metric-label { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+        .metric-value { font-size: 25px; font-weight: 780; line-height: 1; }
+        .metric-unit { color: var(--subtle); font-size: 12px; font-weight: 500; margin-left: 5px; }
+        .metric-foot { margin-top: 9px; color: var(--green); font-size: 12px; }
+        .legacy-stats-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+        .legacy-stat {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .legacy-stat::after {
+            content: "";
+            position: absolute;
+            right: -18px;
+            bottom: -24px;
+            width: 96px;
+            height: 68px;
+            border: 1px solid color-mix(in srgb, var(--accent, var(--primary)) 28%, transparent);
+            border-radius: 9px;
+            transform: rotate(-7deg);
+        }
+        .legacy-stat:nth-child(1) { --accent: var(--cyan); }
+        .legacy-stat:nth-child(2) { --accent: var(--violet); }
+        .legacy-stat:nth-child(3) { --accent: var(--green); }
+        .legacy-label { color: var(--muted); font-size: 12px; margin-bottom: 12px; }
+        .legacy-value { font-size: 25px; font-weight: 780; line-height: 1; }
+        .legacy-unit { color: var(--subtle); font-size: 12px; margin-left: 5px; }
+        .trend-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .trend-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 15px 16px 12px; border-bottom: 1px solid var(--line-soft); }
+        .trend-title { font-weight: 700; }
+        .select {
+            height: 32px;
+            min-width: 102px;
+            border: 1px solid #d7dee9;
+            border-radius: 6px;
+            background: #fff;
+            color: var(--text);
+            padding: 0 28px 0 10px;
+            outline: 0;
+        }
+        .select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(47,99,244,.12); }
+        .trend-body { padding: 16px; }
+        .legend { display: flex; justify-content: flex-end; align-items: center; gap: 14px; color: var(--muted); font-size: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+        .legend span { display: inline-flex; align-items: center; gap: 5px; }
+        .legend i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+        .trend-chart { height: 214px; position: relative; display: flex; align-items: flex-end; gap: 7px; padding: 20px 4px 0; border-bottom: 1px solid var(--line-soft); background: repeating-linear-gradient(to top, transparent 0, transparent 42px, #f1f4f8 43px); }
+        .trend-col { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; z-index: 2; }
+        .trend-col::after {
+            content: attr(data-tip);
+            position: absolute;
+            left: 50%;
+            bottom: 178px;
+            transform: translateX(-50%) translateY(5px);
+            opacity: 0;
+            pointer-events: none;
+            width: max-content;
+            max-width: 190px;
+            white-space: pre-line;
+            background: rgba(17,24,39,.92);
+            color: #fff;
+            border-radius: 5px;
+            padding: 7px 9px;
+            font-size: 11px;
+            line-height: 1.55;
+            box-shadow: 0 8px 22px rgba(0,0,0,.16);
+            transition: opacity .15s, transform .15s;
+        }
+        .trend-col:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .bar-stack { width: min(30px, 68%); height: 142px; display: flex; flex-direction: column-reverse; border-radius: 5px 5px 0 0; overflow: hidden; background: #eef2f7; transition: transform .15s, filter .15s; }
+        .trend-col:hover .bar-stack { transform: translateY(-3px); filter: saturate(1.1); }
+        .bar-stack span { display: block; min-height: 2px; }
+        .bar-article { background: var(--primary); }
+        .bar-image { background: var(--cyan); }
+        .bar-video { background: var(--violet); }
+        .bar-audio { background: var(--green); }
+        .trend-label { color: var(--subtle); font-size: 11px; white-space: nowrap; }
+        .trend-line-svg { position: absolute; inset: 16px 4px 30px; width: calc(100% - 8px); height: calc(100% - 46px); overflow: visible; pointer-events: none; z-index: 3; }
+        .trend-line-path { fill: none; stroke: #f59e0b; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 4px 8px rgba(245,158,11,.18)); }
+        .trend-line-dot { fill: #fff; stroke: #f59e0b; stroke-width: 2; opacity: 0; }
+        .trend-chart:hover .trend-line-dot { opacity: 1; }
+
+        .resource-page { padding-bottom: 24px; }
+        .resource-tabs {
+            height: 44px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 0 24px;
+            background: #fff;
+            border-bottom: 1px solid var(--line);
+            position: sticky;
+            top: 58px;
+            z-index: 80;
+        }
+        .resource-tab {
+            height: 44px;
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            padding: 0 2px;
+            border-bottom: 3px solid transparent;
+            font-weight: 650;
+            transition: color .15s, border-color .15s, background .15s, box-shadow .15s;
+        }
+        .resource-tab:hover { color: var(--primary); background: transparent; }
+        .resource-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: transparent;
+            box-shadow: none;
+        }
+        .resource-tab:focus-visible {
+            outline: 2px solid var(--primary-line);
+            outline-offset: -4px;
+        }
+        .resource-layout { display: flex; min-height: calc(100vh - 102px); background: var(--page); }
+        .sidebar {
+            width: 220px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 102px;
+            align-self: flex-start;
+            height: calc(100vh - 102px);
+            overflow-y: auto;
+            background: #fff;
+            border-right: 1px solid var(--line);
+            padding: 0 0 18px;
+        }
+        .sidebar-head { height: 40px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; border-bottom: 1px solid var(--line-soft); margin-bottom: 8px; background: #f8fafc; }
+        .sidebar-title { font-size: 12px; font-weight: 750; color: var(--text); }
+        .clear-btn { height: 24px; border: 1px solid var(--line); background: #fff; color: var(--primary); font-size: 12px; font-weight: 650; padding: 0 8px; border-radius: 4px; }
+        .clear-btn:hover { background: var(--primary-soft); }
+        .tree-group { margin: 2px 0; }
+        .tree-row {
+            min-height: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 14px;
+            color: var(--text);
+            border-radius: 6px;
+            font-size: 13px;
+            transition: background .15s;
+        }
+        .tree-row:hover { background: #eef4ff; }
+        .tree-row input { width: 14px; height: 14px; accent-color: var(--primary); }
+        .tree-row.parent { font-weight: 650; }
+        .tree-children { padding-left: 10px; margin-left: 20px; border-left: 1px solid var(--line-soft); }
+        .resource-main { flex: 1; min-width: 0; padding: 12px 16px 20px; }
+
+        .search-panel {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            box-shadow: none;
+        }
+        .search-mode-tabs {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            padding: 0 14px;
+            background: #fff;
+            border-bottom: 1px solid var(--line-soft);
+        }
+        .mode-tab {
+            position: relative;
+            height: 40px;
+            min-width: 96px;
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 700;
+            padding: 0 16px;
+            border-bottom: 2px solid transparent;
+            clip-path: none;
+            margin-right: 0;
+            transition: color .15s, border-color .15s;
+        }
+        .mode-tab.active { color: var(--primary); border-bottom-color: var(--primary); z-index: 2; }
+        .mode-tab:not(.active):hover { color: var(--primary); }
+        .advanced-search { padding: 12px 16px 10px; background: #fff; }
+        .precise-box { margin: 0 0 10px; }
+        .condition-row { display: grid; align-items: center; gap: 0; }
+        .primary-condition { grid-template-columns: 140px minmax(280px, 1fr) 164px 38px; }
+        #extraSearchRows { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+        .or-condition-row { grid-template-columns: 34px 140px minmax(280px, 1fr) 164px 38px; }
+        .condition-connector {
+            width: 24px;
+            height: 24px;
+            display: inline-grid;
+            place-items: center;
+            color: var(--primary);
+            background: var(--primary-soft);
+            border: 1px solid var(--primary-line);
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .search-select, .search-input-main, .match-select, .semantic-input {
+            height: 36px;
+            border: 1px solid #d7dee9;
+            background: #fff;
+            color: var(--ink);
+            outline: 0;
+        }
+        .search-select:focus, .search-input-main:focus, .match-select:focus, .semantic-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(0, 82, 217, .14);
+            position: relative;
+            z-index: 1;
+        }
+        .search-select { border-radius: 5px 0 0 5px; padding: 0 30px 0 14px; }
+        .search-input-main { border-left: 0; border-right: 0; padding: 0 16px; min-width: 0; }
+        .search-input-main::placeholder, .semantic-input::placeholder { color: var(--subtle); }
+        .match-select { border-radius: 0 5px 5px 0; padding: 0 30px 0 12px; }
+        .add-condition, .remove-condition {
+            width: 36px;
+            height: 36px;
+            margin-left: 14px;
+            border: 1px solid #d7dee9;
+            border-radius: 6px;
+            background: #fff;
+            color: var(--muted);
+            font-size: 20px;
+            line-height: 1;
+            transition: all .15s;
+        }
+        .add-condition:hover { color: var(--primary); border-color: var(--primary); background: var(--primary-soft); }
+        .remove-condition:hover { color: var(--red); border-color: #fecaca; background: #fff1f0; }
+        .precise-hint { margin-top: 7px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+        .semantic-box { margin: 0 0 12px; }
+        .semantic-input {
+            width: 100%;
+            min-height: 64px;
+            resize: vertical;
+            border-radius: 5px;
+            padding: 10px 14px;
+        }
+        .condition-area.hidden { display: none; }
+        .condition-area { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 28px; padding-top: 2px; border-top: 1px solid var(--line-soft); }
+        .condition-line { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; min-height: 34px; }
+        .condition-line:first-child { grid-column: 1 / -1; }
+        .condition-label { color: var(--ink); font-weight: 650; margin-right: 2px; white-space: nowrap; }
+        .radio, .check { display: inline-flex; align-items: center; gap: 8px; color: var(--text); white-space: nowrap; }
+        .radio input, .check input { width: 15px; height: 15px; accent-color: var(--primary); }
+        .search-actions-row { display: flex; justify-content: flex-end; align-items: center; gap: 10px; padding-top: 8px; }
+        .secondary-btn {
+            height: 34px;
+            min-width: 112px;
+            border: 1px solid #d0d5dd;
+            border-radius: 5px;
+            background: #fff;
+            color: var(--ink);
+            font-weight: 650;
+            transition: background .15s, border-color .15s;
+        }
+        .secondary-btn:hover { background: #f8fafc; border-color: #aeb8c7; }
+        .search-submit {
+            height: 34px;
+            min-width: 112px;
+            border: 0;
+            border-radius: 5px;
+            background: var(--primary);
+            color: #fff;
+            font-weight: 700;
+            transition: background .15s;
+        }
+        .search-submit:hover { background: var(--primary-deep); }
+        .collapse-row { text-align: center; color: var(--muted); font-size: 12px; padding-top: 6px; }
+        .collapse-row button { border: 0; background: transparent; color: var(--muted); }
+        .search-panel.collapsed .condition-area, .search-panel.collapsed .search-actions-row { display: none; }
+        .search-panel.collapsed .advanced-search { padding-bottom: 12px; }
+
+        .legacy-search-panel {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .legacy-search-toolbar {
+            min-height: 62px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 12px 16px;
+            background: #fff;
+        }
+        .legacy-date-range { display: flex; align-items: center; gap: 10px; min-width: 0; }
+        .date-field {
+            width: 210px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            border: 1px solid #d7dee9;
+            border-radius: 5px;
+            background: #fff;
+            color: var(--subtle);
+            padding: 0 12px;
+        }
+        .date-field input {
+            min-width: 0;
+            width: 100%;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: var(--ink);
+        }
+        .date-field input::placeholder, .legacy-keyword input::placeholder { color: var(--subtle); }
+        .date-sep { color: var(--ink); font-weight: 700; }
+        .legacy-keyword {
+            width: min(420px, 42%);
+            height: 36px;
+            display: flex;
+            border: 1px solid #d7dee9;
+            border-radius: 5px;
+            overflow: hidden;
+            background: #fff;
+        }
+        .legacy-keyword input {
+            flex: 1;
+            min-width: 0;
+            border: 0;
+            outline: 0;
+            padding: 0 14px;
+            color: var(--ink);
+        }
+        .legacy-keyword button {
+            width: 54px;
+            border: 0;
+            background: var(--primary);
+            color: #fff;
+            display: grid;
+            place-items: center;
+        }
+        .legacy-keyword button:hover { background: var(--primary-deep); }
+        .legacy-select-row {
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0 16px;
+            border-top: 1px solid var(--line-soft);
+            background: #fafbfc;
+            color: var(--ink);
+            font-weight: 650;
+        }
+        .legacy-select-row input { width: 16px; height: 16px; accent-color: var(--primary); }
+        .legacy-selected b { color: var(--primary); }
+        .legacy-clear {
+            border: 0;
+            background: transparent;
+            color: var(--ink);
+            font-weight: 650;
+            padding: 0;
+        }
+        .legacy-clear:hover { color: var(--primary); }
+
+        .result-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: none;
+        }
+        .result-head {
+            min-height: 44px;
+            padding: 0 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            border-bottom: 1px solid var(--line-soft);
+            background: #fafbfc;
+        }
+        .result-title { font-weight: 700; }
+        .result-meta { color: var(--muted); font-size: 12px; }
+        #resultContent { overflow-x: auto; }
+        .batch-btn {
+            height: 32px;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            background: #fff;
+            border-radius: 5px;
+            padding: 0 12px;
+            font-weight: 650;
+        }
+        .batch-btn:hover { background: var(--primary-soft); }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        #resultContent table { min-width: 1040px; }
+        th, td { height: 44px; border-bottom: 1px solid var(--line-soft); text-align: left; padding: 7px 10px; vertical-align: middle; }
+        th { color: var(--muted); background: #f8fafc; font-size: 12px; font-weight: 650; white-space: nowrap; }
+        td { color: var(--text); font-size: 13px; }
+        #resultContent th, #resultContent td { white-space: nowrap; }
+        tbody tr:hover { background: #fbfdff; }
+        th:nth-child(1), td:nth-child(1) { width: 38px; }
+        th:nth-child(2), td:nth-child(2) { width: 52px; }
+        th:nth-child(3), td:nth-child(3) { width: 31%; }
+        th:nth-child(4), td:nth-child(4) { width: 118px; }
+        th:nth-child(5), td:nth-child(5) { width: 72px; }
+        th:nth-child(6), td:nth-child(6) { width: 70px; }
+        th:nth-child(7), td:nth-child(7) { width: 136px; }
+        th:nth-child(8), td:nth-child(8) { width: 132px; white-space: nowrap; }
+        th:nth-child(9), td:nth-child(9) { width: 72px; }
+        .title-link { color: var(--primary); font-weight: 650; text-decoration: none; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .title-link:hover { text-decoration: underline; }
+        .tag { display: inline-flex; align-items: center; border-radius: 4px; padding: 2px 7px; font-size: 12px; background: #eef4ff; color: var(--primary); }
+        .row-btn { height: 28px; border: 1px solid var(--line); background: #fff; color: var(--text); border-radius: 4px; padding: 0 10px; }
+        .row-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; padding: 12px; }
+        .media-card { position: relative; border: 1px solid var(--line-soft); border-radius: 7px; overflow: hidden; background: #fff; transition: border-color .15s; }
+        .media-card:hover { border-color: var(--primary-line); }
+        .media-select {
+            position: absolute;
+            left: 8px;
+            top: 8px;
+            z-index: 3;
+            width: 18px;
+            height: 18px;
+            display: grid;
+            place-items: center;
+        }
+        .media-select input, .audio-select input { width: 16px; height: 16px; accent-color: var(--primary); }
+        .media-thumb { position: relative; aspect-ratio: 16 / 10; background: #edf2f7; overflow: hidden; }
+        .media-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .play {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(17,24,39,.62);
+            display: grid;
+            place-items: center;
+            color: #fff;
+        }
+        .media-body { padding: 8px 10px; }
+        .media-title { font-weight: 650; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; min-height: auto; }
+        .media-meta { margin-top: 8px; display: flex; justify-content: space-between; color: var(--subtle); font-size: 12px; gap: 8px; }
+        .audio-list { padding: 8px 14px 14px; }
+        .audio-row { display: grid; grid-template-columns: 22px minmax(280px, 1fr) 80px 70px 100px 72px; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line-soft); }
+        .audio-row:last-child { border-bottom: 0; }
+        .audio-title { display: flex; align-items: center; gap: 10px; font-weight: 650; color: var(--primary); }
+        .audio-wave { height: 10px; background: repeating-linear-gradient(90deg, #93c5fd 0 3px, transparent 3px 8px); opacity: .45; border-radius: 4px; }
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 16px;
+            border-top: 1px solid var(--line-soft);
+            color: var(--muted);
+            font-size: 12px;
+        }
+        .pages { display: flex; align-items: center; gap: 4px; }
+        .page-btn { min-width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 4px; background: #fff; color: var(--text); }
+        .page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .page-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .page-btn.active:hover { color: #fff; }
+
+        .page-footer { color: var(--subtle); text-align: center; padding: 20px 12px 28px; font-size: 12px; }
+
+        .top-controls { position: fixed; top: 70px; right: 14px; z-index: 400; display: flex; align-items: center; gap: 8px; }
+        .prd-toggle, .changelog-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            font-size: 12px;
+            color: var(--muted);
+            cursor: pointer;
+            box-shadow: 0 1px 4px rgba(0,0,0,.08);
+            transition: all .2s;
+            white-space: nowrap;
+        }
+        .prd-toggle:hover, .changelog-btn:hover { border-color: var(--primary-line); color: var(--primary); }
+        .toggle-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+        .changelog-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.3); z-index: 500; }
+        .changelog-overlay.show { display: block; }
+        .changelog-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 560px; max-height: 70vh; background: #fff; border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,.15); z-index: 501; overflow: hidden; }
+        .changelog-modal.show { display: flex; flex-direction: column; }
+        .changelog-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--line-soft); }
+        .changelog-header h3 { font-size: 15px; font-weight: 650; margin: 0; }
+        .changelog-close { background: none; border: none; font-size: 20px; color: var(--muted); cursor: pointer; padding: 0 4px; line-height: 1; }
+        .changelog-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
+        .changelog-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .changelog-table th { text-align: left; padding: 8px 12px; background: #f8f9fa; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--line-soft); }
+        .changelog-table td { padding: 8px 12px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+
+        .prd-toc { width: 180px; border-right: 1px solid var(--line); overflow-y: auto; background: #fafafa; padding: 16px 0; }
+        .prd-toc-title { font-size: 13px; font-weight: 650; color: var(--ink); padding: 0 14px 10px; border-bottom: 1px solid var(--line-soft); margin-bottom: 6px; }
+        .prd-toc-item { padding: 6px 14px; font-size: 12px; color: var(--muted); cursor: pointer; transition: all .15s; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .prd-toc-item:hover { color: var(--primary); background: var(--primary-soft); }
+        .prd-toc-item.level-3 { padding-left: 24px; }
+        .prd-content { flex: 1; overflow-y: auto; padding: 20px 24px; }
+        .prd-content h1 { font-size: 20px !important; font-weight: 650 !important; margin: 0 0 16px !important; color: var(--ink) !important; }
+        .prd-content h2 { font-size: 16px !important; font-weight: 650 !important; margin: 24px 0 10px !important; color: var(--ink) !important; }
+        .prd-content h3 { font-size: 14px !important; font-weight: 650 !important; margin: 16px 0 8px !important; color: var(--ink) !important; }
+        .prd-content h4 { font-size: 13px !important; font-weight: 650 !important; margin: 12px 0 6px !important; color: var(--ink) !important; }
+        .prd-content p { font-size: 13px !important; color: #444 !important; line-height: 1.7 !important; margin: 6px 0 !important; }
+        .prd-content strong { font-weight: 650 !important; color: var(--ink) !important; }
+        .prd-content ul.prd-list { margin: 8px 0 8px 20px; padding-left: 0; }
+        .prd-content ul.prd-list > li { margin: 6px 0; list-style: disc !important; }
+        .prd-content ul.prd-nested { margin: 2px 0 2px 18px; padding-left: 0; list-style: circle !important; }
+        .prd-content ul.prd-nested li { list-style: circle !important; font-size: 13px !important; color: #555; }
+        .prd-content hr { border: none; border-top: 1px solid var(--line-soft); margin: 16px 0; }
+        .prd-content table.prd-table{width:100% !important;border-collapse:collapse !important;margin:12px 0 !important;font-size:13px !important}
+        .prd-content table.prd-table th{background:#f8f9fa !important;padding:8px 12px !important;text-align:left !important;border:1px solid var(--line-soft) !important;font-weight:600 !important;color:var(--ink) !important;font-size:12px !important}
+        .prd-content table.prd-table td{padding:8px 12px !important;border:1px solid var(--line-soft) !important;color:#444 !important;font-size:13px !important;line-height:1.6 !important}
+
+        @media (max-width: 1100px) {
+            .latest-grid, .recommend-grid, .media-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .stats-strip, .legacy-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .sidebar { width: 210px; }
+        }
+        @media (max-width: 760px) {
+            .top-nav { overflow-x: auto; padding: 0 14px; }
+            .brand { min-width: auto; }
+            .nav-items { width: max-content; flex: 0 0 auto; }
+            .content-shell { width: min(100% - 28px, 1240px); }
+            .home-hero { padding: 30px 14px; }
+            .home-search { border-radius: 14px; flex-wrap: wrap; padding: 10px; }
+            .home-search input { flex-basis: calc(100% - 52px); }
+            .primary-pill { flex: 1; justify-content: center; }
+            .permission-bar { justify-content: flex-start; flex-wrap: wrap; }
+            .latest-grid, .recommend-grid, .stats-strip, .legacy-stats-grid, .media-grid { grid-template-columns: 1fr; }
+            .resource-layout { flex-direction: column; }
+            .sidebar { width: 100%; position: static; height: auto; overflow: visible; border-right: 0; border-bottom: 1px solid var(--line); }
+            .legacy-search-toolbar { align-items: stretch; flex-direction: column; gap: 10px; }
+            .legacy-date-range { flex-wrap: wrap; }
+            .date-field, .legacy-keyword { width: 100%; }
+            .primary-condition, .or-condition-row { grid-template-columns: 1fr; gap: 8px; }
+            .condition-connector { width: fit-content; padding: 0 8px; }
+            .search-select, .search-input-main, .match-select { border: 1px solid #d7dee9; border-radius: 5px; }
+            .add-condition, .remove-condition { margin-left: 0; }
+            .condition-area { grid-template-columns: 1fr; }
+            .audio-row { grid-template-columns: 22px 1fr; }
+            .prd-panel, .split-drag, .top-controls { display: none; }
+        }
+    </style>
+</head>
+<body>
+<div class="app-split">
+    <div class="page-container">
+        <header class="top-nav">
+            <div class="brand">
+                <div class="brand-mark">媒</div>
+                <div class="brand-text">智能媒资系统</div>
+            </div>
+            <nav class="nav-items" aria-label="主导航">
+                <button class="nav-item active" data-page="home" onclick="switchPage('home')">首页</button>
+                <button class="nav-item" data-page="resource" onclick="switchPage('resource')">全省资源库</button>
+                <button class="nav-item" onclick="showToast('素材中心为导航占位')">素材中心</button>
+                <button class="nav-item" onclick="showToast('资源中心保留网络资源库等入口')">资源中心</button>
+                <button class="nav-item" onclick="showToast('搜索中心为导航占位')">搜索中心</button>
+                <button class="nav-item" onclick="showToast('业务管理为导航占位')">业务管理</button>
+            </nav>
+            <div class="nav-right">
+                <button class="upload-btn">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    上传
+                </button>
+                <div class="avatar">管</div>
+            </div>
+        </header>
+
+        <main>
+            <section class="view active" id="homeView">
+                <div class="home-hero">
+                    <div class="home-hero-inner">
+                        <h1 class="home-title">灵感无界，触手可及</h1>
+                        <p class="home-sub">海量多模态媒资，AI赋能创意检索</p>
+                        <div class="home-search">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#98a2b3" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                            <input id="homeSearchInput" placeholder="输入关键词、自然语言描述搜索全部媒资" onkeydown="if(event.key==='Enter')runHomeSearch()">
+                            <button class="circle-tool" title="上传图片搜索">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                            </button>
+                            <button class="primary-pill" onclick="runHomeSearch()">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                                AI智搜
+                            </button>
+                        </div>
+                        <div class="home-lib-filter" id="homeLibFilter">
+                            <button class="filter-chip active" onclick="selectHomeFilter(this)">全部</button>
+                            <button class="filter-chip" onclick="selectHomeFilter(this)">媒资素材库</button>
+                            <button class="filter-chip" onclick="selectHomeFilter(this)">全省资源库</button>
+                            <button class="filter-chip" onclick="selectHomeFilter(this)">网络资源库</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-shell">
+                    <div class="permission-bar">
+                        <span>账号权限</span>
+                        <div class="permission-switch" aria-label="全省资源库权限视图">
+                            <button class="active" data-permission="on" onclick="setProvincePermission(true)">有全省资源库权限</button>
+                            <button data-permission="off" onclick="setProvincePermission(false)">无权限</button>
+                        </div>
+                        <span class="permission-note">仅原型展示，不做开发</span>
+                    </div>
+
+                    <section class="section">
+                        <div class="section-head">
+                            <div>
+                                <h2 class="section-title">最新图片资源</h2>
+                            </div>
+                            <button class="text-link">查看更多图片 →</button>
+                        </div>
+                        <div class="latest-grid">
+                            <article class="latest-card">
+                                <div class="latest-thumb"><img src="img/8252fbe5-9f01-4712-8775-6eec3976ba6b_m.jpg" alt="东钱湖环湖绿道"></div>
+                                <div class="latest-body"><div class="latest-title">东钱湖环湖绿道春季纪实</div><div class="latest-meta"><span>鄞响客户端</span><span>05-12</span></div></div>
+                            </article>
+                            <article class="latest-card">
+                                <div class="latest-thumb"><img src="img/b90bfe95-5904-4c50-82cc-1041830e3671_m.jpg" alt="港口作业"></div>
+                                <div class="latest-body"><div class="latest-title">宁波舟山港集装箱码头作业</div><div class="latest-meta"><span>甬派客户端</span><span>05-16</span></div></div>
+                            </article>
+                            <article class="latest-card">
+                                <div class="latest-thumb"><img src="img/db1d8ad9-64aa-4460-a05f-6bf00b169980_m.jpg" alt="南宋文化节"></div>
+                                <div class="latest-body"><div class="latest-title">南宋文化节开幕现场图集</div><div class="latest-meta"><span>萧山发布</span><span>05-06</span></div></div>
+                            </article>
+                            <article class="latest-card">
+                                <div class="latest-thumb"><img src="img/673c3d6e-114c-4f81-a6b8-bed9c03f4cc0_m.jpg" alt="城市更新"></div>
+                                <div class="latest-body"><div class="latest-title">城市更新重点项目航拍</div><div class="latest-meta"><span>浙江新闻</span><span>05-05</span></div></div>
+                            </article>
+                        </div>
+                    </section>
+
+                    <section class="section province-only">
+                        <div class="section-head">
+                            <div>
+                                <h2 class="section-title">全省资源库推荐素材</h2>
+                            </div>
+                            <button class="text-link" onclick="switchPage('resource')">进入全省资源库 →</button>
+                        </div>
+                        <div class="recommend-grid">
+                            <article class="recommend-card" onclick="switchPage('resource')">
+                                <div class="rec-thumb">
+                                    <img src="img/191fe758-19a1-446f-8cae-16cb1c8c0660_m.png" alt="越剧专题视频封面">
+                                    <span class="badge">视频</span><span class="duration">09:00</span>
+                                </div>
+                                <div class="rec-body">
+                                    <p class="rec-title">越剧120周年：历久弥新的越剧百花园</p>
+                                    <div class="rec-meta"><span>爱嵊州客户端</span><span>05-19</span></div>
+                                </div>
+                            </article>
+                            <article class="recommend-card" onclick="switchPage('resource')">
+                                <div class="rec-thumb">
+                                    <img src="img/4d8c8075-0daa-435f-a509-9b65880a4769_m.jpg" alt="黄河入画媒体行图片">
+                                    <span class="badge">图片</span><span class="duration">6图</span>
+                                </div>
+                                <div class="rec-body">
+                                    <p class="rec-title">黄河入画 滨州出彩全国主流媒体行</p>
+                                    <div class="rec-meta"><span>潮新闻客户端</span><span>04-11</span></div>
+                                </div>
+                            </article>
+                            <article class="recommend-card" onclick="switchPage('resource')">
+                                <div class="rec-thumb">
+                                    <img src="img/c57e0677-74ea-40fb-9efe-42ecfe368d56_m.png" alt="德寿宫夜游素材">
+                                    <span class="badge">图片</span><span class="duration">高清</span>
+                                </div>
+                                <div class="rec-body">
+                                    <p class="rec-title">“营造江南”宋代建筑美学展素材</p>
+                                    <div class="rec-meta"><span>钱江晚报</span><span>05-19</span></div>
+                                </div>
+                            </article>
+                            <article class="recommend-card" onclick="switchPage('resource')">
+                                <div class="rec-thumb">
+                                    <img src="img/f8cbc203-61f8-44ec-82cd-1b59353780b6_m.jpg" alt="城市发展专题素材">
+                                    <span class="badge">视频</span><span class="duration">03:28</span>
+                                </div>
+                                <div class="rec-body">
+                                    <p class="rec-title">浙江高质量发展一线观察素材包</p>
+                                    <div class="rec-meta"><span>浙江新闻</span><span>05-18</span></div>
+                                </div>
+                            </article>
+                        </div>
+                    </section>
+
+                    <section class="section">
+                        <div class="section-head">
+                            <div>
+                                <h2 class="section-title">资源聚合</h2>
+                                <p class="section-sub">汇总当前媒资素材库的图片、视频、音频规模。</p>
+                            </div>
+                        </div>
+                        <div class="legacy-stats-grid">
+                            <div class="legacy-stat"><div class="legacy-label">图片资源总量</div><div class="legacy-value">1,942<span class="legacy-unit">张</span></div></div>
+                            <div class="legacy-stat"><div class="legacy-label">视频资源总量</div><div class="legacy-value">6.47<span class="legacy-unit">小时</span></div></div>
+                            <div class="legacy-stat"><div class="legacy-label">音频资源总量</div><div class="legacy-value">17<span class="legacy-unit">条</span></div></div>
+                        </div>
+                    </section>
+
+                    <section class="section">
+                        <div class="trend-card">
+                            <div class="trend-head">
+                                <div class="trend-title">资源入库趋势</div>
+                                <select class="select" onchange="renderLegacyTrend(this.value)">
+                                    <option value="last14">近两周</option>
+                                    <option value="month">近一个月</option>
+                                    <option value="quarter">近三个月</option>
+                                </select>
+                            </div>
+                            <div class="trend-body">
+                                <div class="legend">
+                                    <span><i style="background:#0891b2"></i>图片</span>
+                                    <span><i style="background:#7c3aed"></i>视频</span>
+                                    <span><i style="background:#16a34a"></i>音频</span>
+                                    <span><i style="background:#f59e0b;border-radius:99px;width:18px;height:3px"></i>总量趋势</span>
+                                </div>
+                                <div class="trend-chart" id="legacyTrendChart"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="section province-only">
+                        <div class="section-head">
+                            <div>
+                                <h2 class="section-title">全省资源库数据统计</h2>
+                                <p class="section-sub">按入库时间统计稿件、图片、视频、音频的新增规模和结构变化。</p>
+                            </div>
+                        </div>
+                        <div class="stats-strip">
+                            <div class="metric"><div class="metric-label">稿件入库总量</div><div class="metric-value">38,426<span class="metric-unit">篇</span></div><div class="metric-foot">近两周 +1,284</div></div>
+                            <div class="metric"><div class="metric-label">图片入库总量</div><div class="metric-value">126,914<span class="metric-unit">张</span></div><div class="metric-foot">近两周 +6,812</div></div>
+                            <div class="metric"><div class="metric-label">视频入库总量</div><div class="metric-value">9,376<span class="metric-unit">条</span></div><div class="metric-foot">近两周 +463</div></div>
+                            <div class="metric"><div class="metric-label">音频入库总量</div><div class="metric-value">2,148<span class="metric-unit">条</span></div><div class="metric-foot">近两周 +92</div></div>
+                        </div>
+                        <div class="trend-card">
+                            <div class="trend-head">
+                                <div class="trend-title">入库统计趋势</div>
+                                <select class="select" onchange="renderTrend(this.value)">
+                                    <option value="last14">近两周</option>
+                                    <option value="month">近一个月</option>
+                                    <option value="quarter">近三个月</option>
+                                </select>
+                            </div>
+                            <div class="trend-body">
+                                <div class="legend">
+                                    <span><i style="background:#2f63f4"></i>稿件</span>
+                                    <span><i style="background:#0891b2"></i>图片</span>
+                                    <span><i style="background:#7c3aed"></i>视频</span>
+                                    <span><i style="background:#16a34a"></i>音频</span>
+                                    <span><i style="background:#f59e0b;border-radius:99px;width:18px;height:3px"></i>总量趋势</span>
+                                </div>
+                                <div class="trend-chart" id="trendChart"></div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </section>
+
+            <section class="view resource-page" id="resourceView">
+                <div class="resource-tabs">
+                    <button class="resource-tab active" data-type="article" onclick="switchResourceType('article')">成品稿件</button>
+                    <button class="resource-tab" data-type="image" onclick="switchResourceType('image')">成品图片</button>
+                    <button class="resource-tab" data-type="video" onclick="switchResourceType('video')">成品视频</button>
+                    <button class="resource-tab" data-type="audio" onclick="switchResourceType('audio')">成品音频</button>
+                </div>
+                <div class="resource-layout">
+                    <aside class="sidebar">
+                        <div class="sidebar-head"><span class="sidebar-title">地域筛选</span><button class="clear-btn" onclick="clearRegions()">重置</button></div>
+                        <div class="tree-group">
+                            <label class="tree-row parent"><input type="checkbox" checked data-default-region>省本级</label>
+                        </div>
+                        <div class="tree-group">
+                            <label class="tree-row parent"><input type="checkbox" checked data-default-region>杭州市</label>
+                            <div class="tree-children">
+                                <label class="tree-row"><input type="checkbox">市本级</label>
+                                <label class="tree-row"><input type="checkbox">萧山区</label>
+                                <label class="tree-row"><input type="checkbox">余杭区</label>
+                            </div>
+                        </div>
+                        <div class="tree-group">
+                            <label class="tree-row parent"><input type="checkbox">宁波市</label>
+                            <div class="tree-children">
+                                <label class="tree-row"><input type="checkbox">市本级</label>
+                                <label class="tree-row"><input type="checkbox">鄞州区</label>
+                                <label class="tree-row"><input type="checkbox">慈溪市</label>
+                            </div>
+                        </div>
+                        <div class="tree-group">
+                            <label class="tree-row parent"><input type="checkbox">温州市</label>
+                            <div class="tree-children">
+                                <label class="tree-row"><input type="checkbox">市本级</label>
+                                <label class="tree-row"><input type="checkbox">乐清市</label>
+                                <label class="tree-row"><input type="checkbox">龙港市</label>
+                            </div>
+                        </div>
+                        <div class="tree-group">
+                            <label class="tree-row parent"><input type="checkbox">嘉兴市</label>
+                            <label class="tree-row parent"><input type="checkbox">绍兴市</label>
+                            <label class="tree-row parent"><input type="checkbox">金华市</label>
+                            <label class="tree-row parent"><input type="checkbox">台州市</label>
+                            <label class="tree-row parent"><input type="checkbox">丽水市</label>
+                        </div>
+                    </aside>
+                    <div class="resource-main">
+                        <section class="search-panel" id="resourceSearchPanel">
+                            <div class="search-mode-tabs">
+                                <button class="mode-tab active" data-mode="precise" onclick="switchSearchMode('precise')">精准检索</button>
+                                <button class="mode-tab" data-mode="semantic" onclick="switchSearchMode('semantic')">语义检索</button>
+                            </div>
+                            <div class="advanced-search">
+                                <div id="preciseBox" class="precise-box">
+                                    <div class="condition-row primary-condition" data-condition-row>
+                                        <select class="search-select" id="fieldSelect">
+                                            <option>稿件标题</option>
+                                            <option>稿件正文</option>
+                                            <option>来源</option>
+                                            <option>关键词</option>
+                                        </select>
+                                        <input class="search-input-main" id="resourceKeyword" placeholder="输入关键词，多个用空格隔开进行搜索">
+                                        <select class="match-select"><option>包含全部关键词</option><option>包含任一关键词</option><option>不包含关键词</option></select>
+                                        <button class="add-condition" type="button" title="新增或条件" aria-label="新增或条件" onclick="addSearchCondition()">+</button>
+                                    </div>
+                                    <div id="extraSearchRows" aria-live="polite"></div>
+                                    <div class="precise-hint">多组检索条件之间按“或”运算；每组内部按匹配方式计算。</div>
+                                </div>
+                                <div id="semanticBox" class="semantic-box hidden">
+                                    <textarea class="semantic-input" id="semanticInput" placeholder="输入一段话进行检索，例：搜索近一年宁波日报报道下有关宁波的稿件"></textarea>
+                                </div>
+                                <div class="condition-area" id="conditionArea">
+                                    <div class="condition-line">
+                                        <span class="condition-label">发布时间</span>
+                                        <label class="radio"><input type="radio" name="pubtime" checked>全部</label>
+                                        <label class="radio"><input type="radio" name="pubtime">单日期</label>
+                                        <label class="radio"><input type="radio" name="pubtime">时间段</label>
+                                        <label class="radio"><input type="radio" name="pubtime">特殊日期</label>
+                                    </div>
+                                    <div class="condition-line" id="articleTypeLine">
+                                        <span class="condition-label">稿件类型</span>
+                                        <label class="check"><input type="checkbox">新闻稿</label>
+                                        <label class="check"><input type="checkbox">图集稿</label>
+                                        <label class="check"><input type="checkbox">链接稿</label>
+                                        <label class="check"><input type="checkbox">视频稿</label>
+                                        <label class="check"><input type="checkbox">直播稿</label>
+                                    </div>
+                                    <div class="condition-line">
+                                        <span class="condition-label">检索设置</span>
+                                        <label class="check"><input type="checkbox"><span id="titlelessSettingText">忽略“无标题”稿件</span></label>
+                                        <label class="check"><input type="checkbox">仅查询原创稿</label>
+                                    </div>
+                                </div>
+                                <div class="search-actions-row">
+                                    <button class="secondary-btn" onclick="resetResourceSearch()">重置条件</button>
+                                    <button class="search-submit" onclick="runResourceSearch()">搜索</button>
+                                </div>
+                                <div class="collapse-row"><button onclick="toggleSearchPanel()">收起⌃</button></div>
+                            </div>
+                        </section>
+
+                        <section class="legacy-search-panel hidden" id="legacySearchPanel">
+                            <div class="legacy-search-toolbar">
+                                <div class="legacy-date-range">
+                                    <label class="date-field">
+                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                                        <input id="legacyStartDate" placeholder="选择开始日期" readonly>
+                                    </label>
+                                    <span class="date-sep">－</span>
+                                    <label class="date-field">
+                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                                        <input id="legacyEndDate" placeholder="选择结束日期" readonly>
+                                    </label>
+                                </div>
+                                <div class="legacy-keyword">
+                                    <input id="legacyKeyword" placeholder="请输入关键词搜索" onkeydown="if(event.key==='Enter')runLegacySearch()">
+                                    <button type="button" aria-label="搜索" onclick="runLegacySearch()">
+                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="legacy-select-row">
+                                <label class="check"><input id="legacySelectAll" type="checkbox" onchange="toggleLegacySelection(this)">全选</label>
+                                <span class="legacy-selected">已选 <b id="legacySelectedCount">0</b></span>
+                                <button class="legacy-clear" type="button" onclick="clearLegacySelection()">清除</button>
+                            </div>
+                        </section>
+
+                        <section class="result-card" id="resultCard">
+                            <div class="result-head hidden" id="resultHead">
+                                <div>
+                                    <div class="result-title" id="resultTitle">成品稿件</div>
+                                    <div class="result-meta" id="resultMeta">共 2,486 条，按发布时间倒序</div>
+                                </div>
+                                <button class="batch-btn" id="batchButton">取稿（0）</button>
+                            </div>
+                            <div id="resultContent"></div>
+                            <div class="pagination">
+                                <span id="pageInfo">共 2,486 条 · 20 条/页</span>
+                                <div class="pages">
+                                    <button class="page-btn">上一页</button>
+                                    <button class="page-btn active">1</button>
+                                    <button class="page-btn">2</button>
+                                    <button class="page-btn">3</button>
+                                    <button class="page-btn">下一页</button>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="page-footer">传播大脑科技（浙江）股份有限公司 · 智能媒资系统</footer>
+    </div>
+
+    <div class="split-drag" id="splitDrag"></div>
+    <div class="prd-panel" id="prdPanel">
+        <div class="prd-toc" id="prdToc"></div>
+        <div class="prd-content" id="prdContent"></div>
+    </div>
+</div>
+
+<div class="top-controls">
+    <button class="prd-toggle" id="prdToggle" onclick="togglePrdPanel()"><span class="toggle-dot"></span> PRD</button>
+    <button class="changelog-btn" onclick="downloadPrd()">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        PRD 下载
+    </button>
+    <button class="changelog-btn" onclick="toggleChangelog()">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+        更新记录
+    </button>
+</div>
+
+<div class="changelog-overlay" id="changelogOverlay" onclick="toggleChangelog()"></div>
+<div class="changelog-modal" id="changelogModal">
+    <div class="changelog-header"><h3>更新记录</h3><button class="changelog-close" onclick="toggleChangelog()">&times;</button></div>
+    <div class="changelog-body" id="changelogBody"></div>
+</div>
+
+<textarea id="prdMdSource" style="display:none">
+# 全省资源库 v2 PRD
+
+## 产品概述
+
+- **背景**：现有首页搜索、资源统计和全省资源库分布在不同原型中。资源库入口依赖资源中心下拉菜单，用户需要先识别层级关系再进入稿件、图片、视频、音频等子模块，路径偏长。
+- **目标**：将首页搜索、推荐素材、资源入库统计与全省资源库主流程合并为一个可评审原型，突出全省优质成品内容的发现、检索、筛选和取用效率。
+- **用户角色**：
+  - 省级媒体编辑：快速发现全省优质素材和成品稿件，完成选题、复用和取稿。
+  - 市县融媒体编辑：查看全省内容动态，了解同题报道和优质素材。
+  - 资源运营人员：观察入库规模、内容结构和趋势，辅助运营调度。
+
+---
+
+## 一、顶部导航与页面入口
+
+### 1.1 顶部主导航
+
+- **展示规则**：
+  - 顶部主导航包含：首页、全省资源库、素材中心、资源中心、搜索中心、业务管理。
+  - “全省资源库”为一级独立入口，不再放入“资源中心”下拉菜单。
+  - 当前页面对应主导航项展示选中状态。
+- **交互规则**：
+  - 点击“首页”展示首页工作台。
+  - 点击“全省资源库”进入全省资源库聚合页。
+  - 其他主导航项保留可点击状态，用于表达系统完整导航，但不触发复杂跳转。
+- **数据规则**：
+  - **取数规则**：主导航从系统模块配置读取可见模块。
+  - **数据筛选规则**：按当前用户权限展示可访问模块；无权限模块不展示。
+  - **数据排序规则**：按后台配置的模块顺序展示，首页固定在首位，全省资源库固定在首页之后。
+
+### 1.2 全省资源库资源类型 Tab
+
+- **展示规则**：
+  - 全省资源库页顶部首层 Tab 展示成品稿件、成品图片、成品视频、成品音频四类资源。
+  - 该资源类型 Tab 占用原“客户端”渠道 Tab 的位置。
+  - 默认选中“成品稿件”。
+- **交互规则**：
+  - 点击不同资源类型后，搜索条件、筛选栏和结果区按资源类型刷新。
+  - 成品稿件使用新版精准检索和语义检索模块；成品图片、成品视频、成品音频使用旧版日期范围、关键词和批量选择筛选模块。
+- **数据规则**：
+  - **取数规则**：从全省资源库读取对应资源类型的成品内容。
+  - **数据筛选规则**：资源类型为单选条件，切换后仅展示当前类型资源。
+  - **数据排序规则**：默认按发布时间倒序；语义检索模式下优先按相关度倒序，再按发布时间倒序。
+
+### 1.3 客户端固定筛选条件
+
+- **展示规则**：
+  - 页面不再展示“客户端”渠道 Tab 行。
+  - 客户端作为全省资源库的固定筛选条件，不占用顶部可视导航层级。
+  - 本期不展示网站、个人创作中心、全部渠道等其他渠道入口。
+- **交互规则**：
+  - 用户无需切换渠道，资源类型切换、搜索和地域筛选均默认在客户端渠道范围内生效。
+  - 页面顶部仅保留成品稿件、成品图片、成品视频、成品音频资源类型 Tab。
+- **数据规则**：
+  - **取数规则**：读取发布渠道为客户端的全省资源库内容。
+  - **数据筛选规则**：客户端渠道作为固定筛选条件，与资源类型、关键词、发布时间、地域等条件取交集。
+  - **数据排序规则**：渠道固定后不改变当前排序方式。
+
+---
+
+## 二、首页优化
+
+### 2.1 线上已有首页模块
+
+- **展示规则**：
+  - 首页已上线模块保持现有展示，不在本 PRD 中重新定义字段、样式和交互细节。
+  - 原有模块包括首页搜索区、最新图片资源、资源聚合、资源入库趋势等。
+  - 无全省资源库权限时，首页仅展示线上已有模块，整体顺序和默认状态保持不变。
+- **交互规则**：
+  - 原有模块沿用线上交互规则。
+  - 本期不改变原有首页搜索、最新图片资源、资源聚合和资源入库趋势的使用方式。
+- **数据规则**：
+  - **取数规则**：原有模块沿用线上取数口径。
+  - **数据筛选规则**：原有模块沿用线上筛选口径。
+  - **数据排序规则**：原有模块沿用线上排序口径。
+
+### 2.2 全省资源库推荐素材
+
+- **展示规则**：
+  - “全省资源库推荐素材”为首页新增模块，展示在“最新图片资源”之后、“资源聚合”之前。
+  - 模块展示优质视频或图片卡片，卡片包含封面、资源类型、时长或图片数量、标题、来源和发布时间。
+  - 卡片底部不展示“专题热度高”“适合图集复用”等推荐理由文案，避免首页信息噪声过重。
+  - 无全省资源库权限时隐藏该模块，线上已有“资源聚合”自然上移。
+- **交互规则**：
+  - 点击素材卡片进入对应资源详情；原型阶段可先跳转至全省资源库页。
+  - 点击“进入全省资源库”进入全省资源库聚合页，并保留当前默认资源类型。
+  - 模块不影响首页线上已有模块的点击、搜索和统计交互。
+- **数据规则**：
+  - **取数规则**：从全省资源库中读取当前用户有权限查看、状态为已入库且可复用的图片和视频资源；优先读取运营推荐池中的资源，推荐池不足时从近 30 天高质量资源候选池补足。
+  - **数据筛选规则**：仅纳入发布渠道为客户端、资源状态正常、封面可用、标题非空、未下架且未被权限过滤的素材；图片需具备可展示缩略图，视频需具备封面和时长。
+  - **数据排序规则**：先按人工置顶/运营推荐权重倒序；权重相同时按资源质量分倒序；仍相同时按近 7 天复用量、收藏量或点击量综合热度倒序；最后按发布时间倒序兜底。
+  - **数据去重规则**：同一专题、同一稿件拆出的多张图片或同一视频多版本只保留排序最高的一条，避免首页重复展示相近素材。
+  - **数据兜底规则**：推荐池不足 4 条时，按上述筛选和排序规则从全省资源库候选池补齐；仍不足时按实际条数展示，不展示空卡片。
+
+### 2.3 全省资源库数据统计
+
+- **展示规则**：
+  - “全省资源库数据统计”为首页新增模块，展示在已有“资源入库趋势”之后，作为首页底部补充统计区域。
+  - 模块展示稿件、图片、视频、音频的入库总量、周期增量和入库统计趋势图。
+  - 模块不替换线上已有“资源入库趋势”，两者并列表达不同数据口径。
+  - 无全省资源库权限时隐藏该模块，首页底部保持线上已有模块收尾。
+- **交互规则**：
+  - 用户切换统计周期时，仅刷新“全省资源库数据统计”模块。
+  - 周期切换不影响线上已有“资源入库趋势”的周期选择和展示状态。
+  - 鼠标悬停趋势图节点时展示对应日期或周期的稿件、图片、视频、音频入库数量。
+- **数据规则**：
+  - **取数规则**：按入库时间读取当前用户权限范围内全省资源库稿件、图片、视频、音频四类资源的新增入库数据。
+  - **数据筛选规则**：仅统计已入库、状态正常且用户有权限查看的资源；下架、删除、审核未通过和权限不可见资源不纳入统计。
+  - **数据排序规则**：趋势图按统计周期的时间正序展示；指标卡按稿件、图片、视频、音频固定顺序展示。
+  - **数据聚合规则**：按日、周或月聚合不同周期内的入库量，同一资源多次更新不重复计入新增入库量。
+
+### 2.4 权限展示规则
+
+- **展示规则**：
+  - 用户具备全省资源库权限时，首页展示“全省资源库推荐素材”和“全省资源库数据统计”两个新增模块。
+  - 用户不具备全省资源库权限时，首页不展示上述两个新增模块，默认展示线上已有首页内容。
+  - 权限差异不影响线上已有首页模块的展示、顺序和交互。
+- **交互规则**：
+  - 原型中的“账号权限”切换仅用于评审展示有权限和无权限两种首页状态，不作为开发需求。
+  - 权限变更后，下次进入首页按最新权限重新判断是否展示新增模块。
+  - 无权限用户通过首页搜索命中全省资源库内容时，仍按既有权限规则过滤不可见资源。
+- **数据规则**：
+  - **取数规则**：权限状态从用户角色与模块权限配置读取。
+  - **数据筛选规则**：仅当用户具备全省资源库查看权限时，返回新增模块所需数据。
+  - **数据排序规则**：权限判断不改变已有模块的数据排序。
+
+---
+
+## 三、全省资源库搜索升级
+
+### 3.1 搜索模式 Tab
+
+- **展示规则**：
+  - 新版搜索模块仅在“成品稿件”资源类型下展示。
+  - 成品稿件搜索模块顶部提供“精准检索”和“语义检索”两个模式 Tab。
+  - 默认选中“精准检索”。
+  - 模式 Tab 采用醒目的顶部横向样式，便于与普通筛选项区分。
+- **交互规则**：
+  - 切换搜索模式时保留资源类型、渠道和发布时间条件。
+  - 精准检索和语义检索输入方式不同，切换后展示对应输入区。
+  - 点击“收起”可折叠高级条件，仅保留模式 Tab 和核心输入框。
+  - 切换到成品图片、成品视频、成品音频时隐藏新版搜索模块，展示旧版搜索筛选模块。
+- **数据规则**：
+  - **取数规则**：读取当前搜索模式、输入内容和筛选条件。
+  - **数据筛选规则**：搜索模式为单选条件，仅作用于成品稿件。
+  - **数据排序规则**：精准检索默认按发布时间倒序；语义检索默认按相关度倒序。
+
+### 3.2 精准检索
+
+- **展示规则**：
+  - 精准检索仅对成品稿件生效，提供字段下拉、关键词输入、关键词匹配方式和追加条件入口。
+  - 字段下拉默认值为“稿件标题”，可按资源类型显示对应字段选项。
+  - 关键词输入支持多个关键词用空格分隔。
+  - 匹配方式默认“包含全部关键词”。
+  - 追加条件入口使用“+”按钮；新增条件行左侧展示“或”连接标识，并提供删除入口。
+- **交互规则**：
+  - 点击“+”可增加一组检索条件，多组检索条件之间执行逻辑或运算。
+  - 点击新增条件行的删除入口，可移除该组或条件。
+  - 点击“重置条件”清空关键词、删除新增条件行、恢复默认字段和默认筛选项。
+  - 点击“搜索”按当前条件刷新结果。
+- **数据规则**：
+  - **取数规则**：读取每一组检索条件的字段、关键词和匹配方式。
+  - **数据筛选规则**：单组内多关键词按匹配方式计算；多组检索条件之间取并集，再与资源类型、渠道、地域、发布时间、稿件类型和检索设置取交集。
+  - **数据排序规则**：默认按发布时间倒序；用户切换排序时按所选排序执行。
+
+### 3.3 语义检索
+
+- **展示规则**：
+  - 语义检索仅对成品稿件生效，提供大文本输入框，用于输入自然语言检索意图。
+  - 输入框 placeholder 引导用户描述要查找的报道或素材。
+  - 下方复用发布时间、稿件类型、检索设置等高级条件。
+- **交互规则**：
+  - 点击搜索后，根据自然语言意图返回匹配资源。
+  - 清空输入框后再次搜索时提示用户输入检索内容。
+  - 语义检索结果需展示相关度排序效果。
+- **数据规则**：
+  - **取数规则**：读取用户输入的自然语言描述，并结合资源标题、摘要、标签、结构化信息进行语义匹配。
+  - **数据筛选规则**：语义结果仍受资源类型、渠道、发布时间、地域、稿件类型等条件约束。
+  - **数据排序规则**：默认按语义相关度倒序；相关度相同时按发布时间倒序。
+
+### 3.4 发布时间筛选
+
+- **展示规则**：
+  - 发布时间包含全部、单日期、时间段、特殊日期四个选项。
+  - 默认选中全部。
+- **交互规则**：
+  - 选择单日期时展示单个日期选择控件。
+  - 选择时间段时展示开始日期和结束日期。
+  - 选择特殊日期时展示常用日期范围选项。
+- **数据规则**：
+  - **取数规则**：读取资源发布时间。
+  - **数据筛选规则**：按所选时间条件筛选资源；全部不限制时间。
+  - **数据排序规则**：不改变当前排序方式。
+
+### 3.5 稿件类型与检索设置
+
+- **展示规则**：
+  - 稿件类型包含新闻稿、图集稿、链接稿、视频稿、直播稿。
+  - 检索设置包含忽略“无标题”稿件、仅查询原创稿。
+  - 稿件类型与检索设置仅在成品稿件新版搜索模块中展示。
+- **交互规则**：
+  - 多个稿件类型可多选，选中后立即参与筛选。
+  - 勾选检索设置后，点击搜索时生效。
+- **数据规则**：
+  - **取数规则**：读取资源内容类型、标题状态和原创标识。
+  - **数据筛选规则**：稿件类型多选取并集；检索设置与其他条件取交集。
+  - **数据排序规则**：不改变当前排序方式。
+
+### 3.6 图片、视频、音频旧版搜索筛选
+
+- **展示规则**：
+  - 成品图片、成品视频、成品音频不展示新版精准检索和语义检索模块。
+  - 旧版搜索筛选模块展示开始日期、结束日期、关键词搜索框和搜索按钮。
+  - 搜索筛选模块下方展示批量选择栏，包含全选、已选数量和清除入口。
+- **交互规则**：
+  - 点击搜索按钮按日期范围和关键词刷新当前资源类型结果。
+  - 勾选全选时选中当前页全部资源；取消全选时取消当前页全部选择。
+  - 点击清除时取消当前页已选资源，并将已选数量恢复为 0。
+- **数据规则**：
+  - **取数规则**：读取当前资源类型、开始日期、结束日期、关键词和当前页选择状态。
+  - **数据筛选规则**：日期范围、关键词、地域和客户端渠道取交集；当前资源类型仅取成品图片、成品视频或成品音频。
+  - **数据排序规则**：默认按发布时间倒序，保持旧版资源列表排序口径。
+
+---
+
+## 四、全省资源库结果区
+
+### 4.1 左侧地域筛选
+
+- **展示规则**：
+  - 左侧地域筛选按省本级和地市分组展示。
+  - 地市分组可展开区县和市本级。
+  - 地域节点不展示数量。
+  - 已选地域展示重置入口。
+- **交互规则**：
+  - 勾选地市时，默认选中该地市下全部子项。
+  - 勾选区县时，仅筛选该区县内容。
+  - 重置入口可一次性恢复地域筛选默认状态。
+- **数据规则**：
+  - **取数规则**：根据资源发布站点对应的地域属性读取省、市、区县层级。
+  - **数据筛选规则**：多地域取并集，与资源类型、渠道和搜索条件取交集。
+  - **数据排序规则**：不影响结果排序。
+
+### 4.2 成品稿件结果
+
+- **展示规则**：
+  - 成品稿件以表格展示，包含选择框、序号、稿件标题、来源、稿件类型、字数、发布站点、发布时间、操作。
+  - 标题可点击进入详情。
+  - 列表上方展示批量取稿按钮和当前结果数量。
+- **交互规则**：
+  - 支持单选、全选和批量取稿。
+  - 点击单行“取稿”弹出取稿渠道选择。
+  - 切换筛选条件后清空当前勾选状态。
+- **数据规则**：
+  - **取数规则**：读取全省资源库稿件标题、来源、类型、字数、发布站点、发布时间和可取稿状态。
+  - **数据筛选规则**：按资源类型、渠道、地域、发布时间、稿件类型、关键词和检索设置取交集。
+  - **数据排序规则**：默认按发布时间倒序；语义检索模式按相关度倒序。
+
+### 4.3 成品图片、成品视频、成品音频结果
+
+- **展示规则**：
+  - 成品图片和成品视频以卡片网格展示；成品音频以列表展示。
+  - 成品图片卡片展示选择框、封面、标题、来源和发布时间。
+  - 成品视频卡片展示选择框、封面、播放标识、时长、标题、来源和发布时间。
+  - 成品音频列表展示选择框、标题、来源、时长、格式、发布时间和操作。
+  - 结果区上方使用旧版日期范围、关键词和批量选择筛选模块。
+- **交互规则**：
+  - 点击卡片或标题进入资源详情。
+  - 图片、视频支持添加到个人素材库。
+  - 音频支持播放预览和下载。
+- **数据规则**：
+  - **取数规则**：读取对应资源类型的标题、封面或预览、来源、发布时间、时长、格式等业务字段。
+  - **数据筛选规则**：按资源类型、渠道、地域、发布时间和关键词取交集。
+  - **数据排序规则**：默认按发布时间倒序；语义检索模式按相关度倒序。
+
+### 4.4 分页
+
+- **展示规则**：
+  - 结果区底部展示总数、每页条数、页码、上一页、下一页和跳转页码。
+- **交互规则**：
+  - 点击页码切换页面。
+  - 每页条数切换后回到第一页。
+  - 页码越界时提示并保持当前页。
+- **数据规则**：
+  - **取数规则**：按当前筛选条件和页码截取结果。
+  - **数据筛选规则**：分页不改变筛选条件。
+  - **数据排序规则**：分页保持当前排序方式。
+
+---
+
+## 五、全局交互规则
+
+- 所有可点击控件具备 hover、focus 和 active 状态。
+- 搜索、筛选、资源类型切换、渠道切换均需提供即时视觉反馈。
+- 无结果时展示空状态，提示用户调整关键词、时间或地域筛选。
+- 统计图、推荐素材、资源列表中的数据仅展示当前用户权限范围内可见内容。
+- 全省资源库页面视觉按政务后台风格收敛，使用白底浅边框、紧凑表单、低阴影和明确功能色，避免装饰性渐变和过重视觉元素。
+- PRD 面板与原型页面平级展示，支持打开、收起、下载和查看更新记录。
+</textarea>
+
+<script>
+var currentResourceType = 'article';
+var hasProvincePermission = true;
+var trendData = {
+    last14: [
+        ['5/15', 96, 420, 31, 5], ['5/16', 102, 388, 28, 6], ['5/17', 78, 342, 22, 4], ['5/18', 124, 510, 36, 7],
+        ['5/19', 146, 548, 42, 9], ['5/20', 118, 496, 39, 8], ['5/21', 132, 522, 35, 6], ['5/22', 108, 451, 28, 5],
+        ['5/23', 92, 416, 26, 4], ['5/24', 76, 318, 19, 3], ['5/25', 125, 536, 41, 8], ['5/26', 138, 594, 45, 9],
+        ['5/27', 151, 612, 48, 10], ['5/28', 164, 659, 51, 11]
+    ],
+    month: [
+        ['第1周', 642, 2610, 188, 31], ['第2周', 708, 2924, 211, 38], ['第3周', 776, 3180, 236, 42], ['第4周', 824, 3468, 257, 48], ['本周', 589, 2412, 182, 34]
+    ],
+    quarter: [
+        ['3月', 2746, 11850, 816, 148], ['4月', 3018, 12940, 902, 163], ['5月', 3274, 13892, 986, 184]
+    ]
+};
+var legacyTrendData = {
+    last14: [
+        ['5/15', 186, 24, 2], ['5/16', 164, 21, 1], ['5/17', 142, 18, 1], ['5/18', 218, 27, 2],
+        ['5/19', 236, 31, 3], ['5/20', 204, 26, 2], ['5/21', 228, 29, 2], ['5/22', 196, 22, 1],
+        ['5/23', 178, 20, 1], ['5/24', 156, 17, 1], ['5/25', 232, 28, 2], ['5/26', 248, 32, 2],
+        ['5/27', 264, 34, 3], ['5/28', 286, 36, 3]
+    ],
+    month: [
+        ['第1周', 860, 118, 8], ['第2周', 940, 134, 10], ['第3周', 1026, 146, 12], ['第4周', 1118, 158, 13], ['本周', 798, 104, 9]
+    ],
+    quarter: [
+        ['3月', 3820, 486, 38], ['4月', 4168, 532, 44], ['5月', 4496, 574, 48]
+    ]
+};
+
+var articles = [
+    ['钱报朋友圈·福利 | “营造江南”开展在即等你打卡', '钱江晚报', '新闻', '1487', '钱报朋友圈', '2026/05/19 09:50:39'],
+    ['越剧120周年 历久弥新的越剧百花园', '嵊州市融媒体中心', '视频稿', '650', '爱嵊州客户端', '2026/05/19 06:03:35'],
+    ['浙江省数字经济增加值突破4万亿元大关', '浙江广播电视集团', '新闻', '702', '中国蓝新闻客户端', '2026/05/06 15:15:14'],
+    ['上城区南宋文化节开幕 千年古城焕发新活力', '萧山区融媒体中心', '新闻', '1414', '萧山发布客户端', '2026/05/06 20:14:28'],
+    ['温度新闻：温州民营经济高质量发展再上新台阶', '温州市新闻传媒中心', '新闻', '926', '温度新闻客户端', '2026/05/07 14:55:06'],
+    ['甬派：宁波舟山港年集装箱吞吐量创新高', '鄞州区融媒体中心', '专题', '2150', '鄞响客户端', '2026/05/01 16:53:40']
+];
+var media = {
+    image: [
+        ['黄河入画 滨州出彩全国主流媒体行', '潮新闻客户端', '2026/04/11', 'img/4d8c8075-0daa-435f-a509-9b65880a4769_m.jpg'],
+        ['“营造江南”宋代建筑美学展素材', '钱江晚报', '2026/05/19', 'img/c57e0677-74ea-40fb-9efe-42ecfe368d56_m.png'],
+        ['浙江高质量发展一线观察素材包', '浙江新闻', '2026/05/18', 'img/f8cbc203-61f8-44ec-82cd-1b59353780b6_m.jpg'],
+        ['宁波舟山港集装箱码头作业', '甬派客户端', '2026/05/16', 'img/b90bfe95-5904-4c50-82cc-1041830e3671_m.jpg'],
+        ['东钱湖环湖绿道春季纪实', '鄞响客户端', '2026/05/12', 'img/8252fbe5-9f01-4712-8775-6eec3976ba6b_m.jpg'],
+        ['南宋文化节开幕现场图集', '萧山发布客户端', '2026/05/06', 'img/db1d8ad9-64aa-4460-a05f-6bf00b169980_m.jpg']
+    ],
+    video: [
+        ['越剧120周年 历久弥新的越剧百花园', '爱嵊州客户端', '2026/05/19', 'img/191fe758-19a1-446f-8cae-16cb1c8c0660_m.png', '09:00'],
+        ['浙江数字经济高质量发展观察', '中国蓝新闻客户端', '2026/05/06', 'img/f89c4e15-9d26-4602-a126-8c16167c8480_m.jpg', '04:12'],
+        ['杭州德寿宫宋韵文化展探访', '钱江晚报', '2026/05/19', 'img/c57e0677-74ea-40fb-9efe-42ecfe368d56_m.png', '03:28'],
+        ['滨州媒体行黄河生态现场', '潮新闻客户端', '2026/04/11', 'img/2aa99f62-ba7c-4e36-9bf3-cffb1870b89c_m.jpg', '06:35']
+    ]
+};
+var audios = [
+    ['清晨新闻联播：共同富裕示范区建设观察', '浙江之声', '12:42', 'MP3', '2026/05/28'],
+    ['文旅访谈：宋韵文化与城市更新', '钱江晚报', '18:06', 'WAV', '2026/05/27'],
+    ['县域观察：融媒中心一线报道样本', '潮新闻', '09:31', 'MP3', '2026/05/26'],
+    ['专题配音：越剧百年传承', '爱嵊州客户端', '06:18', 'AAC', '2026/05/19']
+];
+
+function showToast(text) { alert(text); }
+
+function setProvincePermission(flag) {
+    hasProvincePermission = flag;
+    document.querySelectorAll('.permission-switch button').forEach(function(btn) {
+        btn.classList.toggle('active', (btn.dataset.permission === 'on') === flag);
+    });
+    document.querySelectorAll('.province-only').forEach(function(el) {
+        el.style.display = flag ? '' : 'none';
+    });
+}
+
+function switchPage(page) {
+    document.getElementById('homeView').classList.toggle('active', page === 'home');
+    document.getElementById('resourceView').classList.toggle('active', page === 'resource');
+    document.querySelectorAll('.nav-item[data-page]').forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.page === page);
+    });
+    if (page === 'resource') renderResourceResults();
+}
+
+function selectHomeFilter(el) {
+    document.querySelectorAll('#homeLibFilter .filter-chip').forEach(function(x) { x.classList.remove('active'); });
+    el.classList.add('active');
+}
+
+function runHomeSearch() {
+    var value = document.getElementById('homeSearchInput').value.trim() || '全省资源';
+    switchPage('resource');
+    switchResourceType('article');
+    switchSearchMode('precise');
+    clearExtraSearchRows();
+    document.getElementById('resourceKeyword').value = value;
+    runResourceSearch();
+}
+
+function switchResourceType(type) {
+    currentResourceType = type;
+    document.querySelectorAll('.resource-tab').forEach(function(tab) { tab.classList.toggle('active', tab.dataset.type === type); });
+    var field = document.getElementById('fieldSelect');
+    var keyword = document.getElementById('resourceKeyword');
+    var legacyKeyword = document.getElementById('legacyKeyword');
+    var typeLine = document.getElementById('articleTypeLine');
+    var titlelessText = document.getElementById('titlelessSettingText');
+    if (type === 'article') {
+        field.innerHTML = '<option>稿件标题</option><option>稿件正文</option><option>来源</option><option>关键词</option>';
+        keyword.placeholder = '输入稿件关键词，多个用空格隔开进行搜索';
+        legacyKeyword.placeholder = '请输入关键词搜索';
+        titlelessText.textContent = '忽略“无标题”稿件';
+        typeLine.style.display = 'flex';
+    } else if (type === 'image') {
+        field.innerHTML = '<option>图片标题</option><option>图片说明</option><option>来源</option><option>关键词</option>';
+        keyword.placeholder = '输入图片关键词，多个用空格隔开进行搜索';
+        legacyKeyword.placeholder = '请输入图片关键词搜索';
+        titlelessText.textContent = '忽略“无标题”资源';
+        typeLine.style.display = 'none';
+    } else if (type === 'video') {
+        field.innerHTML = '<option>视频标题</option><option>视频说明</option><option>来源</option><option>关键词</option>';
+        keyword.placeholder = '输入视频关键词，多个用空格隔开进行搜索';
+        legacyKeyword.placeholder = '请输入视频关键词搜索';
+        titlelessText.textContent = '忽略“无标题”资源';
+        typeLine.style.display = 'none';
+    } else {
+        field.innerHTML = '<option>音频标题</option><option>音频文稿</option><option>来源</option><option>关键词</option>';
+        keyword.placeholder = '输入音频关键词，多个用空格隔开进行搜索';
+        legacyKeyword.placeholder = '请输入音频关键词搜索';
+        titlelessText.textContent = '忽略“无标题”资源';
+        typeLine.style.display = 'none';
+    }
+    clearExtraSearchRows();
+    renderResourceResults();
+}
+
+function addSearchCondition() {
+    var rows = document.getElementById('extraSearchRows');
+    var row = document.createElement('div');
+    row.className = 'condition-row or-condition-row';
+    row.setAttribute('data-condition-row', '');
+    row.innerHTML =
+        '<span class="condition-connector">或</span>' +
+        '<select class="search-select condition-field">' + document.getElementById('fieldSelect').innerHTML + '</select>' +
+        '<input class="search-input-main condition-keyword" placeholder="输入另一组关键词，与上一组按或检索">' +
+        '<select class="match-select condition-match"><option>包含全部关键词</option><option>包含任一关键词</option><option>不包含关键词</option></select>' +
+        '<button class="remove-condition" type="button" title="删除此条件" aria-label="删除或条件" onclick="removeSearchCondition(this)">&times;</button>';
+    rows.appendChild(row);
+    row.querySelector('.condition-keyword').focus();
+}
+
+function removeSearchCondition(button) {
+    var row = button.closest('[data-condition-row]');
+    if (row) row.remove();
+    renderResourceResults();
+}
+
+function clearExtraSearchRows() {
+    var rows = document.getElementById('extraSearchRows');
+    if (rows) rows.innerHTML = '';
+}
+
+function getPreciseConditions() {
+    var rows = document.querySelectorAll('#preciseBox [data-condition-row]');
+    return Array.prototype.map.call(rows, function(row) {
+        var field = row.querySelector('.search-select');
+        var keyword = row.querySelector('.search-input-main');
+        var match = row.querySelector('.match-select');
+        return {
+            field: field ? field.value : '',
+            keyword: keyword ? keyword.value.trim() : '',
+            match: match ? match.value : ''
+        };
+    }).filter(function(item) {
+        return item.keyword;
+    });
+}
+
+function updateResourceSearchSurface() {
+    var isArticle = currentResourceType === 'article';
+    document.getElementById('resourceSearchPanel').classList.toggle('hidden', !isArticle);
+    document.getElementById('legacySearchPanel').classList.toggle('hidden', isArticle);
+    document.getElementById('resultHead').classList.add('hidden');
+}
+
+function switchSearchMode(mode) {
+    if (currentResourceType !== 'article') {
+        updateResourceSearchSurface();
+        return;
+    }
+    document.querySelectorAll('.mode-tab').forEach(function(tab) { tab.classList.toggle('active', tab.dataset.mode === mode); });
+    document.getElementById('preciseBox').classList.toggle('hidden', mode !== 'precise');
+    document.getElementById('semanticBox').classList.toggle('hidden', mode !== 'semantic');
+    renderResourceResults();
+}
+
+function toggleSearchPanel() {
+    var panel = document.getElementById('resourceSearchPanel');
+    var btn = panel.querySelector('.collapse-row button');
+    panel.classList.toggle('collapsed');
+    btn.textContent = panel.classList.contains('collapsed') ? '展开⌄' : '收起⌃';
+}
+
+function resetResourceSearch() {
+    document.getElementById('resourceKeyword').value = '';
+    document.getElementById('semanticInput').value = '';
+    document.getElementById('fieldSelect').selectedIndex = 0;
+    var primaryMatch = document.querySelector('#preciseBox .primary-condition .match-select');
+    if (primaryMatch) primaryMatch.selectedIndex = 0;
+    clearExtraSearchRows();
+    document.querySelectorAll('#conditionArea input').forEach(function(input) {
+        if (input.type === 'checkbox') input.checked = false;
+        if (input.type === 'radio') input.checked = input.parentElement.textContent.trim() === '全部';
+    });
+    renderResourceResults();
+}
+
+function runResourceSearch() {
+    if (currentResourceType !== 'article') {
+        runLegacySearch();
+        return;
+    }
+    var mode = document.querySelector('.mode-tab.active').dataset.mode;
+    renderResourceResults();
+    if (mode === 'semantic') {
+        var semanticInput = document.getElementById('semanticInput').value.trim();
+        if (semanticInput) {
+            document.getElementById('resultMeta').textContent = '已按“' + semanticInput + '”语义检索 · ' + getSortText();
+        }
+        return;
+    }
+    var conditions = getPreciseConditions();
+    if (conditions.length) {
+        var conditionText = conditions.map(function(item) { return item.keyword; }).join(' 或 ');
+        if (conditionText.length > 42) conditionText = conditionText.slice(0, 42) + '...';
+        var conditionLabel = conditions.length > 1 ? conditions.length + ' 组或条件' : '1 组条件';
+        document.getElementById('resultMeta').textContent = '已按 ' + conditionLabel + '检索“' + conditionText + '” · ' + getSortText();
+    }
+}
+
+function runLegacySearch() {
+    renderResourceResults();
+    var keyword = document.getElementById('legacyKeyword').value.trim();
+    if (keyword) {
+        document.getElementById('pageInfo').textContent = '已按“' + keyword + '”搜索 · 20 条/页';
+    }
+}
+
+function toggleLegacySelection(input) {
+    document.querySelectorAll('#resultContent input[data-legacy-select]').forEach(function(item) {
+        item.checked = input.checked;
+    });
+    updateLegacySelectedCount();
+}
+
+function clearLegacySelection() {
+    var all = document.getElementById('legacySelectAll');
+    if (all) all.checked = false;
+    document.querySelectorAll('#resultContent input[data-legacy-select]').forEach(function(item) {
+        item.checked = false;
+    });
+    updateLegacySelectedCount();
+}
+
+function updateLegacySelectedCount() {
+    var checked = document.querySelectorAll('#resultContent input[data-legacy-select]:checked').length;
+    var total = document.querySelectorAll('#resultContent input[data-legacy-select]').length;
+    var count = document.getElementById('legacySelectedCount');
+    var all = document.getElementById('legacySelectAll');
+    if (count) count.textContent = checked;
+    if (all) all.checked = total > 0 && checked === total;
+}
+
+function clearRegions() {
+    document.querySelectorAll('.sidebar input').forEach(function(input) {
+        input.checked = input.hasAttribute('data-default-region');
+    });
+    renderResourceResults();
+}
+
+function renderResourceResults() {
+    updateResourceSearchSurface();
+    var titleMap = { article: '成品稿件', image: '成品图片', video: '成品视频', audio: '成品音频' };
+    var totalMap = { article: '2,486', image: '8,214', video: '1,326', audio: '384' };
+    document.getElementById('resultTitle').textContent = titleMap[currentResourceType];
+    document.getElementById('resultMeta').textContent = '共 ' + totalMap[currentResourceType] + ' 条，' + getSortText();
+    document.getElementById('pageInfo').textContent = '共 ' + totalMap[currentResourceType] + ' 条 · 20 条/页';
+    document.getElementById('batchButton').style.display = currentResourceType === 'article' ? 'inline-flex' : 'none';
+    if (currentResourceType === 'article') return renderArticles();
+    if (currentResourceType === 'audio') return renderAudio();
+    return renderMedia(currentResourceType);
+}
+
+function getSortText() {
+    if (currentResourceType !== 'article') return '按发布时间倒序';
+    var mode = document.querySelector('.mode-tab.active').dataset.mode;
+    return mode === 'semantic' ? '按语义相关度排序' : '按发布时间倒序';
+}
+
+function renderArticles() {
+    var html = '<table><thead><tr><th><input type="checkbox"></th><th>序号</th><th>稿件标题</th><th>来源</th><th>类型</th><th style="text-align:right">字数</th><th>发布站点</th><th>发布时间</th><th>操作</th></tr></thead><tbody>';
+    articles.forEach(function(row, index) {
+        html += '<tr><td><input type="checkbox"></td><td>' + (index + 1) + '</td><td><a href="javascript:void(0)" class="title-link">' + row[0] + '</a></td><td>' + row[1] + '</td><td><span class="tag">' + row[2] + '</span></td><td style="text-align:right">' + row[3] + '</td><td>' + row[4] + '</td><td>' + row[5] + '</td><td><button class="row-btn">取稿</button></td></tr>';
+    });
+    html += '</tbody></table>';
+    document.getElementById('resultContent').innerHTML = html;
+}
+
+function renderMedia(type) {
+    var list = media[type] || [];
+    var html = '<div class="media-grid">';
+    list.forEach(function(item) {
+        html += '<article class="media-card"><label class="media-select"><input type="checkbox" data-legacy-select onchange="updateLegacySelectedCount()"></label><div class="media-thumb"><img src="' + item[3] + '" alt="">';
+        if (type === 'video') html += '<div class="play"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><span class="duration">' + item[4] + '</span>';
+        html += '</div><div class="media-body"><div class="media-title">' + item[0] + '</div><div class="media-meta"><span>' + item[1] + '</span><span>' + item[2] + '</span></div></div></article>';
+    });
+    html += '</div>';
+    document.getElementById('resultContent').innerHTML = html;
+    updateLegacySelectedCount();
+}
+
+function renderAudio() {
+    var html = '<div class="audio-list">';
+    audios.forEach(function(item) {
+        html += '<div class="audio-row"><label class="audio-select"><input type="checkbox" data-legacy-select onchange="updateLegacySelectedCount()"></label><div class="audio-title"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>' + item[0] + '</div><div>' + item[2] + '</div><div>' + item[3] + '</div><div>' + item[4] + '</div><button class="row-btn">预览</button></div><div class="audio-wave"></div>';
+    });
+    html += '</div>';
+    document.getElementById('resultContent').innerHTML = html;
+    updateLegacySelectedCount();
+}
+
+function renderLegacyTrend(range) {
+    var data = legacyTrendData[range || 'last14'];
+    var max = Math.max.apply(null, data.map(function(item) { return item[1] + item[2] + item[3]; }));
+    var points = [];
+    var html = '';
+    data.forEach(function(item, index) {
+        var total = item[1] + item[2] + item[3];
+        var h = Math.max(24, Math.round(total / max * 142));
+        points.push({ x: data.length === 1 ? 50 : index / (data.length - 1) * 100, y: 100 - (total / max * 82 + 8) });
+        var tip = item[0] + '&#10;图片 ' + item[1] + ' / 视频 ' + item[2] + ' / 音频 ' + item[3] + '&#10;总量 ' + total;
+        html += '<div class="trend-col" data-tip="' + tip + '"><div class="bar-stack" style="height:' + h + 'px">';
+        html += '<span class="bar-image" style="height:' + (item[1] / total * 100) + '%"></span>';
+        html += '<span class="bar-video" style="height:' + (item[2] / total * 100) + '%"></span>';
+        html += '<span class="bar-audio" style="height:' + (item[3] / total * 100) + '%"></span>';
+        html += '</div><span class="trend-label">' + item[0] + '</span></div>';
+    });
+    html += '<svg class="trend-line-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="trend-line-path" d="' + buildPath(points) + '"></path>';
+    points.forEach(function(point) { html += '<circle class="trend-line-dot" cx="' + point.x + '" cy="' + point.y + '" r="1.5"></circle>'; });
+    html += '</svg>';
+    document.getElementById('legacyTrendChart').innerHTML = html;
+}
+
+function renderTrend(range) {
+    var data = trendData[range || 'last14'];
+    var max = Math.max.apply(null, data.map(function(item) { return item[1] + item[2] + item[3] + item[4]; }));
+    var points = [];
+    var html = '';
+    data.forEach(function(item, index) {
+        var total = item[1] + item[2] + item[3] + item[4];
+        var h = Math.max(28, Math.round(total / max * 142));
+        points.push({ x: data.length === 1 ? 50 : index / (data.length - 1) * 100, y: 100 - (total / max * 82 + 8) });
+        var tip = item[0] + '&#10;稿件 ' + item[1] + ' / 图片 ' + item[2] + '&#10;视频 ' + item[3] + ' / 音频 ' + item[4] + '&#10;总量 ' + total;
+        html += '<div class="trend-col" data-tip="' + tip + '"><div class="bar-stack" style="height:' + h + 'px">';
+        html += '<span class="bar-article" style="height:' + (item[1] / total * 100) + '%"></span>';
+        html += '<span class="bar-image" style="height:' + (item[2] / total * 100) + '%"></span>';
+        html += '<span class="bar-video" style="height:' + (item[3] / total * 100) + '%"></span>';
+        html += '<span class="bar-audio" style="height:' + (item[4] / total * 100) + '%"></span>';
+        html += '</div><span class="trend-label">' + item[0] + '</span></div>';
+    });
+    html += '<svg class="trend-line-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="trend-line-path" d="' + buildPath(points) + '"></path>';
+    points.forEach(function(point) { html += '<circle class="trend-line-dot" cx="' + point.x + '" cy="' + point.y + '" r="1.5"></circle>'; });
+    html += '</svg>';
+    document.getElementById('trendChart').innerHTML = html;
+}
+
+function buildPath(points) {
+    if (!points.length) return '';
+    if (points.length === 1) return 'M ' + points[0].x + ' ' + points[0].y;
+    var d = 'M ' + points[0].x + ' ' + points[0].y;
+    for (var i = 1; i < points.length; i++) {
+        var prev = points[i - 1], cur = points[i];
+        var mx = (prev.x + cur.x) / 2;
+        d += ' C ' + mx + ' ' + prev.y + ', ' + mx + ' ' + cur.y + ', ' + cur.x + ' ' + cur.y;
+    }
+    return d;
+}
+
+function togglePrdPanel() {
+    var panel = document.getElementById('prdPanel');
+    var dot = document.querySelector('#prdToggle .toggle-dot');
+    panel.classList.toggle('collapsed');
+    dot.style.background = panel.classList.contains('collapsed') ? '#aaa' : 'var(--green)';
+}
+
+function downloadPrd() {
+    var md = document.getElementById('prdMdSource').textContent;
+    var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = '全省资源库v2PRD.md';
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
+
+var changelogData = [
+    { time: '2026-05-28 18:24', desc: '取消全省资源库“客户端”渠道行，改为 PRD 和数据规则中的固定筛选条件' },
+    { time: '2026-05-28 15:32', desc: '全省资源库结果区去除顶部“成品稿件/结果数量”信息头，列表直接展示内容' },
+    { time: '2026-05-28 15:30', desc: '首页主视觉副标题改为线上文案，并将客户端渠道 Tab 收敛为二级下划线选中态' },
+    { time: '2026-05-28 15:20', desc: '全省资源库类型 Tab 增加“成品”字样，并限定新版搜索仅用于成品稿件；图片、视频、音频恢复旧版搜索筛选模块' },
+    { time: '2026-05-28 15:07', desc: '首页“最新图片资源”和“全省资源库推荐素材”模块去除副标题' },
+    { time: '2026-05-28 13:49', desc: '首页推荐素材卡片去除底部推荐理由，PRD 拆分推荐素材与数据统计并明确推荐素材取数排序逻辑' },
+    { time: '2026-05-28 12:10', desc: '精准检索“+”改为新增或条件搜索框，并按 Gov UI 风格继续收敛全省资源库页面视觉' },
+    { time: '2026-05-28 11:43', desc: '根据 UI 专家审核优化全省资源库页：压缩搜索面板、克制模式切换样式、提升左侧筛选和结果区密度' },
+    { time: '2026-05-28 11:38', desc: '全省资源库渠道行仅保留“客户端”，并强化固定选中态；PRD 同步渠道固定筛选规则' },
+    { time: '2026-05-28 11:28', desc: '全省资源库左侧地域筛选去除数量展示，“浙江省本级”改为“省本级”，顶部操作改为“重置”' },
+    { time: '2026-05-28 11:24', desc: '权限切换控件补充“仅原型展示，不做开发”说明，PRD 同步标注不纳入开发需求' },
+    { time: '2026-05-28 11:18', desc: '首页补齐线上已有模块，新增模块按全省资源库权限展示；PRD 收敛为位置关系与权限规则' },
+    { time: '2026-05-28 10:54', desc: '创建全省资源库 v2，合并首页搜索、推荐素材、统计趋势和全省资源库聚合页' },
+    { time: '2026-05-28 10:54', desc: '全省资源库入口改为顶部独立入口，稿件/图片/视频/音频升为一级资源类型 Tab，客户端渠道 Tab 下移' },
+    { time: '2026-05-28 10:54', desc: '搜索模块升级为精准检索/语义检索双模式，并同步 PRD' }
+];
+
+function toggleChangelog() {
+    var overlay = document.getElementById('changelogOverlay');
+    var modal = document.getElementById('changelogModal');
+    var isOpen = modal.classList.contains('show');
+    overlay.classList.toggle('show', !isOpen);
+    modal.classList.toggle('show', !isOpen);
+    if (!isOpen) renderChangelog();
+}
+
+function renderChangelog() {
+    var body = document.getElementById('changelogBody');
+    var html = '<table class="changelog-table"><thead><tr><th>更新时间</th><th>说明</th></tr></thead><tbody>';
+    changelogData.forEach(function(item) { html += '<tr><td>' + item.time + '</td><td>' + item.desc + '</td></tr>'; });
+    html += '</tbody></table>';
+    body.innerHTML = html;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    renderLegacyTrend('last14');
+    renderTrend('last14');
+    renderResourceResults();
+    renderPrd();
+    setupDrag();
+    setProvincePermission(true);
+});
+
+function renderPrd() {
+    var md = document.getElementById('prdMdSource').textContent;
+    var content = document.getElementById('prdContent');
+    var toc = document.getElementById('prdToc');
+    content.innerHTML = mdToHtml(md);
+    var heads = content.querySelectorAll('h1,h2,h3');
+    var tocHtml = '<div class="prd-toc-title">PRD 目录</div>';
+    heads.forEach(function(h, i) {
+        h.id = 'h-' + i;
+        tocHtml += '<div class="prd-toc-item level-' + h.tagName.substring(1) + '" data-target="' + h.id + '">' + h.textContent + '</div>';
+    });
+    toc.innerHTML = tocHtml;
+    toc.querySelectorAll('.prd-toc-item[data-target]').forEach(function(item) {
+        item.addEventListener('click', function() {
+            document.getElementById(item.dataset.target).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+}
+
+function inlineFmt(s) { return s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>'); }
+function mdToHtml(md) {
+    var lines = md.split('\n');
+    var h = '', listStack = [], liOpenStack = [], inTable = false;
+    function closeLists(targetDepth) {
+        while (listStack.length > targetDepth) {
+            if (liOpenStack.pop()) h += '</li>';
+            h += '</ul>';
+            listStack.pop();
+        }
+    }
+    function closeAllLists() { closeLists(0); }
+    function openListItem(depth, text) {
+        if (inTable) { h += '</tbody></table>'; inTable = false; }
+        while (listStack.length < depth + 1) {
+            h += listStack.length === 0 ? '<ul class="prd-list">' : '<ul class="prd-nested prd-level-' + listStack.length + '">';
+            listStack.push(true);
+            liOpenStack.push(false);
+        }
+        closeLists(depth + 1);
+        if (liOpenStack[depth]) h += '</li>';
+        liOpenStack[depth] = true;
+        h += '<li>' + inlineFmt(text);
+    }
+    for (var j = 0; j < lines.length; j++) {
+        var ln = lines[j], tr = ln.trim();
+        if (!tr) { closeAllLists(); continue; }
+        if (/^---+$/.test(tr)) { closeAllLists(); h += '<hr>'; continue; }
+        var hm = tr.match(/^(#{1,5})\s+(.+)$/);
+        if (hm) { closeAllLists(); h += '<h' + hm[1].length + '>' + inlineFmt(hm[2]) + '</h' + hm[1].length + '>'; continue; }
+        if (/^\|(.+)\|$/.test(tr)) {
+            closeAllLists();
+            if (!inTable) {
+                var nxt = (j + 1 < lines.length) ? lines[j + 1].trim() : '';
+                var isSep = /^\|[\s\-:]+\|$/.test(nxt);
+                if (isSep) {
+                    h += '<table class="prd-table"><thead><tr>';
+                    tr.replace(/^\|/,'').replace(/\|$/,'').split('|').forEach(function(cell) { h += '<th>' + inlineFmt(cell.trim()) + '</th>'; });
+                    h += '</tr></thead><tbody>'; inTable = true; j++; continue;
+                }
+                h += '<table class="prd-table"><tbody>'; inTable = true;
+            }
+            if (/^\|[\s\-:]+\|$/.test(tr)) continue;
+            h += '<tr>';
+            tr.replace(/^\|/,'').replace(/\|$/,'').split('|').forEach(function(cell) { h += '<td>' + inlineFmt(cell.trim()) + '</td>'; });
+            h += '</tr>'; continue;
+        }
+        if (inTable) { h += '</tbody></table>'; inTable = false; }
+        var lm = ln.match(/^(\s*)- (.+)$/);
+        if (lm) { openListItem(Math.floor(lm[1].replace(/\t/g, '  ').length / 2), lm[2]); continue; }
+        closeAllLists();
+        h += '<p>' + inlineFmt(tr) + '</p>';
+    }
+    closeAllLists();
+    if (inTable) h += '</tbody></table>';
+    return h;
+}
+
+function setupDrag() {
+    var drag = document.getElementById('splitDrag');
+    var panel = document.getElementById('prdPanel');
+    if (!drag || !panel) return;
+    var startX, startW;
+    drag.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        startX = e.clientX;
+        startW = panel.offsetWidth;
+        drag.classList.add('dragging');
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+        function onMove(ev) {
+            var w = startW - (ev.clientX - startX);
+            if (w < 260) w = 260;
+            if (w > window.innerWidth * 0.7) w = window.innerWidth * 0.7;
+            panel.style.width = w + 'px';
+        }
+        function onUp() {
+            drag.classList.remove('dragging');
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+        }
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+    });
+}
+</script>
+</body>
+</html>

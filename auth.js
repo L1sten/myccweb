@@ -25,6 +25,8 @@
       "945e7d587a3bd600a646b3205e5775681fb4affc32c6fb8015e51e11eb8d4d09",
     "media-search":
       "4669e0f761940ffe21681002d85c96727f24e084a7328591cd2b50e0872d4873",
+    "provincial-resource-v2":
+      "a66f54154c1f41be7faa23b3eb2c41b61accd992c3a1fb0d52503ddda916409f",
     "police-mobile-h5":
       "03f8d06ec73b71a457b9b752c4a5ba4f07a5faa53a779b65e4e294da09e36b01",
   };
