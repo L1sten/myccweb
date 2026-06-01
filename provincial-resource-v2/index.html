@@ -58,15 +58,15 @@
             flex-shrink: 0;
             display: flex;
             align-items: center;
-            gap: 20px;
-            padding: 0 24px;
+            gap: 12px;
+            padding: 0 18px;
             background: #fff;
             border-bottom: 1px solid var(--line);
             position: sticky;
             top: 0;
             z-index: 90;
         }
-        .brand { display: flex; align-items: center; gap: 10px; min-width: 178px; }
+        .brand { display: flex; align-items: center; gap: 10px; min-width: 156px; }
         .brand-mark {
             width: 32px;
             height: 32px;
@@ -79,13 +79,14 @@
             box-shadow: none;
         }
         .brand-text { font-weight: 650; letter-spacing: 0; white-space: nowrap; }
-        .nav-items { display: flex; align-items: center; gap: 4px; min-width: 0; flex: 1; }
+        .nav-items { display: flex; align-items: center; gap: 2px; min-width: 0; flex: 1; overflow-x: auto; scrollbar-width: none; }
+        .nav-items::-webkit-scrollbar { display: none; }
         .nav-item {
             border: 0;
             background: transparent;
             color: var(--muted);
             border-radius: 6px;
-            padding: 8px 14px;
+            padding: 8px 6px;
             transition: background .15s, color .15s;
             white-space: nowrap;
         }
@@ -1103,11 +1104,13 @@
             </div>
             <nav class="nav-items" aria-label="主导航">
                 <button class="nav-item active" data-page="home" onclick="switchPage('home')">首页</button>
-                <button class="nav-item" data-page="resource" onclick="switchPage('resource')">全省资源库</button>
-                <button class="nav-item" onclick="showToast('素材中心为导航占位')">素材中心</button>
-                <button class="nav-item" onclick="showToast('资源中心保留网络资源库等入口')">资源中心</button>
                 <button class="nav-item" onclick="showToast('搜索中心为导航占位')">搜索中心</button>
-                <button class="nav-item" onclick="showToast('业务管理为导航占位')">业务管理</button>
+                <button class="nav-item" onclick="showToast('资源中心保留网络资源库等入口')">资源中心</button>
+                <button class="nav-item" onclick="showToast('素材中心为导航占位')">素材中心</button>
+                <button class="nav-item" onclick="showToast('审批中心为线上导航占位')">审批中心</button>
+                <button class="nav-item" onclick="showToast('同步中心为线上导航占位')">同步中心</button>
+                <button class="nav-item" onclick="showToast('智能标签库为线上导航占位')">智能标签库</button>
+                <button class="nav-item" data-page="resource" onclick="switchPage('resource')">全省资源库</button>
             </nav>
             <div class="nav-right">
                 <button class="upload-btn">
@@ -1503,8 +1506,8 @@
 ### 1.1 顶部主导航
 
 - **展示规则**：
-  - 顶部主导航包含：首页、全省资源库、素材中心、资源中心、搜索中心、业务管理。
-  - “全省资源库”为一级独立入口，不再放入“资源中心”下拉菜单。
+  - 顶部主导航沿用线上版本已存在的导航布局，包含：首页、搜索中心、资源中心、素材中心、审批中心、同步中心、智能标签库。
+  - “全省资源库”为一级独立入口，不再放入“资源中心”下拉菜单，并追加在现有线上导航之后。
   - 当前页面对应主导航项展示选中状态。
 - **交互规则**：
   - 点击“首页”展示首页工作台。
@@ -1513,7 +1516,7 @@
 - **数据规则**：
   - **取数规则**：主导航从系统模块配置读取可见模块。
   - **数据筛选规则**：按当前用户权限展示可访问模块；无权限模块不展示。
-  - **数据排序规则**：按后台配置的模块顺序展示，首页固定在首位，全省资源库固定在首页之后。
+  - **数据排序规则**：按线上现有模块顺序展示：首页、搜索中心、资源中心、素材中心、审批中心、同步中心、智能标签库、全省资源库。
 
 ### 1.2 全省资源库资源类型 Tab
 
@@ -2307,36 +2310,9 @@ function downloadPrd() {
 }
 
 var changelogData = [
-    { time: '2026-06-01 17:54', desc: '首页推荐素材取数和排除规则按当前可用字段继续收敛' },
-    { time: '2026-06-01 17:44', desc: '首页推荐素材字段排除规则收敛为按文件格式处理动图资源' },
-    { time: '2026-06-01 17:33', desc: '图片、视频、音频详情页右上角新增“上一个/下一个”素材跳转按钮，并同步 PRD 交互规则' },
-    { time: '2026-06-01 15:51', desc: '成品图片、视频、音频详情页按线上智能媒资系统截图还原左右分栏、操作条和基础信息结构' },
-    { time: '2026-06-01 15:05', desc: '成品稿件发布时间筛选精简为全部、单日期、时间段三项' },
-    { time: '2026-06-01 13:50', desc: '成品音频列表页去除标题下方波形装饰样式' },
-    { time: '2026-06-01 11:53', desc: '全省资源库推荐素材数据规则去除候选池准入说明' },
-    { time: '2026-06-01 11:51', desc: '成品音频搜索框去除上传图片入口，图片和视频保留图搜能力' },
-    { time: '2026-06-01 11:38', desc: '成品稿件改用首页同款 AI 搜索条，图搜按钮替换为筛选按钮并支持展开收起筛选区域' },
-    { time: '2026-06-01 11:27', desc: '成品稿件检索条件去除“检索设置”行，PRD 同步仅保留发布时间和稿件类型高级条件' },
-    { time: '2026-06-01 11:22', desc: '首页推荐素材去重口径收窄为同一稿件ID' },
-    { time: '2026-06-01 11:18', desc: '首页推荐素材规则去除冗余说明和人工推荐排除说明，排序描述改为字段完整度分层' },
-    { time: '2026-06-01 11:14', desc: '首页推荐素材改为仅使用素材已有字段准入、排除和排序' },
-    { time: '2026-06-01 11:09', desc: '首页全省资源库推荐素材改为纯机器推荐策略，新增低质和装饰性素材硬排除规则' },
-    { time: '2026-06-01 09:54', desc: '成品图片、成品视频、成品音频改用首页同款多模态 AI 搜索条，不再按资源库额外区分搜索入口' },
-    { time: '2026-05-28 18:24', desc: '取消全省资源库“客户端”渠道行，改为 PRD 和数据规则中的固定筛选条件' },
-    { time: '2026-05-28 15:32', desc: '全省资源库结果区去除顶部“成品稿件/结果数量”信息头，列表直接展示内容' },
-    { time: '2026-05-28 15:30', desc: '首页主视觉副标题改为线上文案，并将客户端渠道 Tab 收敛为二级下划线选中态' },
-    { time: '2026-05-28 15:20', desc: '全省资源库类型 Tab 增加“成品”字样，并限定新版搜索仅用于成品稿件；图片、视频、音频恢复旧版搜索筛选模块' },
-    { time: '2026-05-28 15:07', desc: '首页“最新图片资源”和“全省资源库推荐素材”模块去除副标题' },
-    { time: '2026-05-28 13:49', desc: '首页推荐素材卡片去除底部推荐理由，PRD 拆分推荐素材与数据统计并明确推荐素材取数排序逻辑' },
-    { time: '2026-05-28 12:10', desc: '精准检索“+”改为新增或条件搜索框，并按 Gov UI 风格继续收敛全省资源库页面视觉' },
-    { time: '2026-05-28 11:43', desc: '根据 UI 专家审核优化全省资源库页：压缩搜索面板、克制模式切换样式、提升左侧筛选和结果区密度' },
-    { time: '2026-05-28 11:38', desc: '全省资源库渠道行仅保留“客户端”，并强化固定选中态；PRD 同步渠道固定筛选规则' },
-    { time: '2026-05-28 11:28', desc: '全省资源库左侧地域筛选去除数量展示，“浙江省本级”改为“省本级”，顶部操作改为“重置”' },
-    { time: '2026-05-28 11:24', desc: '权限切换控件补充“仅原型展示，不做开发”说明，PRD 同步标注不纳入开发需求' },
-    { time: '2026-05-28 11:18', desc: '首页补齐线上已有模块，新增模块按全省资源库权限展示；PRD 收敛为位置关系与权限规则' },
-    { time: '2026-05-28 10:54', desc: '创建全省资源库 v2，合并首页搜索、推荐素材、统计趋势和全省资源库聚合页' },
-    { time: '2026-05-28 10:54', desc: '全省资源库入口改为顶部独立入口，稿件/图片/视频/音频升为一级资源类型 Tab，客户端渠道 Tab 下移' },
-    { time: '2026-05-28 10:54', desc: '搜索模块升级为精准检索/语义检索双模式，并同步 PRD' }
+    { time: '2026-06-01 19:22', desc: '顶部主导航沿用线上已有排序，并将全省资源库入口调整到最后。' },
+    { time: '2026-06-01 18:54', desc: '完成首页推荐素材与数据统计规则收敛、全省资源库搜索体验、图片/视频/音频详情页和素材跳转优化。' },
+    { time: '2026-05-28 10:54', desc: '创建全省资源库 v2，合并首页搜索、推荐素材、统计趋势和全省资源库聚合页。' }
 ];
 
 function toggleChangelog() {
