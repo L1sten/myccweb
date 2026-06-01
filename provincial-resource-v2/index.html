@@ -46,7 +46,7 @@
         .hidden { display: none !important; }
 
         .app-split { display: flex; height: 100vh; overflow: hidden; background: var(--page); }
-        .page-container { flex: 1; min-width: 0; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; }
+        .page-container { flex: 1; min-width: 0; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; container-type: inline-size; }
         .split-drag { width: 4px; cursor: col-resize; flex-shrink: 0; background: var(--line-soft); transition: background .15s; position: relative; z-index: 10; }
         .split-drag:hover, .split-drag.dragging { background: var(--primary); }
         .split-drag::after { content: ""; position: absolute; left: -3px; right: -3px; top: 0; bottom: 0; }
@@ -155,6 +155,7 @@
             transition: color .15s, background .15s;
         }
         .circle-tool:hover { color: var(--primary); background: var(--primary-soft); }
+        .circle-tool.active { color: var(--primary); background: var(--primary-soft); box-shadow: inset 0 0 0 1px var(--primary-line); }
         .primary-pill {
             height: 40px;
             border: 0;
@@ -577,6 +578,9 @@
         .collapse-row button { border: 0; background: transparent; color: var(--muted); }
         .search-panel.collapsed .condition-area, .search-panel.collapsed .search-actions-row { display: none; }
         .search-panel.collapsed .advanced-search { padding-bottom: 12px; }
+        .article-search-panel .legacy-search-toolbar { min-height: 64px; }
+        .article-search-panel .home-search { width: 100%; box-shadow: none; }
+        .article-filter-area { padding: 10px 16px 12px; background: #fff; }
 
         .legacy-search-panel {
             background: #fff;
@@ -586,14 +590,18 @@
             margin-bottom: 10px;
         }
         .legacy-search-toolbar {
-            min-height: 62px;
+            min-height: 64px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 18px;
+            justify-content: center;
             padding: 12px 16px;
             background: #fff;
         }
+        .legacy-search-toolbar .home-search {
+            width: 100%;
+            box-shadow: none;
+        }
+        .media-ai-search .primary-pill { flex-shrink: 0; }
         .legacy-date-range { display: flex; align-items: center; gap: 10px; min-width: 0; }
         .date-field {
             width: 210px;
@@ -751,8 +759,218 @@
         .audio-list { padding: 8px 14px 14px; }
         .audio-row { display: grid; grid-template-columns: 22px minmax(280px, 1fr) 80px 70px 100px 72px; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line-soft); }
         .audio-row:last-child { border-bottom: 0; }
+        .audio-row.clickable, .media-card.clickable { cursor: pointer; }
         .audio-title { display: flex; align-items: center; gap: 10px; font-weight: 650; color: var(--primary); }
-        .audio-wave { height: 10px; background: repeating-linear-gradient(90deg, #93c5fd 0 3px, transparent 3px 8px); opacity: .45; border-radius: 4px; }
+
+        .media-detail-page { min-height: calc(100vh - 58px); background: #eef1f6; padding: 12px 8px 16px; }
+        .detail-action-bar {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            background: #fff;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .detail-primary, .detail-secondary {
+            height: 38px;
+            border-radius: 4px;
+            padding: 0 18px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 650;
+        }
+        .detail-primary { border: 0; background: #2f63f4; color: #fff; }
+        .detail-secondary { border: 1px solid #cfd5df; background: #fff; color: #111827; }
+        .detail-jump-actions {
+            position: absolute;
+            right: 18px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .detail-jump-btn {
+            height: 34px;
+            border: 1px solid #cfd5df;
+            border-radius: 4px;
+            background: #fff;
+            color: #111827;
+            padding: 0 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 650;
+        }
+        .detail-jump-btn:hover:not(:disabled) { border-color: var(--primary-line); color: var(--primary); background: #f7faff; }
+        .detail-jump-btn:disabled { color: #a4acb9; background: #f6f7f9; cursor: not-allowed; }
+        .detail-shell {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(360px, 30vw);
+            gap: 12px;
+            min-height: calc(100vh - 150px);
+        }
+        .detail-main-pane, .detail-side-pane { background: #fff; border: 1px solid #edf0f5; }
+        .detail-main-pane { padding: 16px; overflow: hidden; }
+        .detail-side-pane { min-width: 0; }
+        .detail-tabs {
+            height: 48px;
+            display: flex;
+            align-items: stretch;
+            background: #f2f4f8;
+            border-bottom: 1px solid #dbe2ec;
+        }
+        .detail-tab {
+            min-width: 86px;
+            border: 0;
+            border-right: 1px solid #e3e7ef;
+            background: transparent;
+            color: #111827;
+            font-weight: 700;
+        }
+        .detail-tab.active { background: #fff; color: var(--primary); border-top: 2px solid var(--primary); }
+        .detail-info { padding: 18px 16px; }
+        .detail-info-row {
+            display: grid;
+            grid-template-columns: 86px minmax(0, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+            color: #111827;
+            line-height: 1.55;
+        }
+        .detail-info-row dt { font-weight: 700; }
+        .detail-info-row dd { margin: 0; word-break: break-all; }
+        .detail-preview {
+            height: min(52vw, 584px);
+            min-height: 360px;
+            display: grid;
+            place-items: center;
+            background: #fff;
+        }
+        .detail-preview.image img {
+            max-width: min(58%, 700px);
+            max-height: 68%;
+            object-fit: contain;
+            display: block;
+        }
+        .detail-preview.video {
+            background: #050505;
+            position: relative;
+            overflow: hidden;
+        }
+        .detail-preview.video img { width: 74%; height: 100%; object-fit: cover; filter: brightness(.72); }
+        .detail-preview.video::before, .detail-preview.video::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 12%;
+            background: #000;
+            z-index: 1;
+        }
+        .detail-preview.video::before { left: 0; }
+        .detail-preview.video::after { right: 0; }
+        .video-play-large {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,.78);
+            color: #fff;
+            display: grid;
+            place-items: center;
+            background: rgba(0,0,0,.18);
+        }
+        .detail-spec-strip {
+            min-height: 58px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            align-items: center;
+            gap: 18px;
+            background: #f3f4f6;
+            margin-top: 16px;
+            padding: 0 24px;
+            font-size: 15px;
+        }
+        .detail-spec-strip b { margin-right: 14px; }
+        .video-data-grid {
+            display: grid;
+            grid-template-columns: 332px minmax(0, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .video-cover-card, .video-meta-card, .audio-info-card {
+            background: #f3f4f6;
+            min-height: 180px;
+        }
+        .video-cover-label {
+            width: 104px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            background: #7a7f87;
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .video-cover-placeholder {
+            height: 118px;
+            display: grid;
+            place-items: center;
+            color: #c7c9ce;
+        }
+        .video-cover-placeholder svg { width: 92px; height: 92px; }
+        .video-meta-card { padding: 18px; }
+        .quality-badge { display: inline-flex; align-items: center; justify-content: center; height: 34px; min-width: 74px; padding: 0 14px; border-radius: 5px; background: #2f63f4; color: #fff; font-weight: 750; margin-bottom: 10px; }
+        .detail-meta-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 30px; }
+        .detail-meta-grid div { min-width: 0; }
+        .detail-meta-grid b { display: inline-block; min-width: 70px; }
+        .audio-player-card {
+            height: 94px;
+            display: grid;
+            grid-template-columns: 58px 28px auto 1fr 28px;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid #e4e7ec;
+            border-radius: 4px;
+            padding: 0 16px;
+            margin-bottom: 30px;
+        }
+        .audio-file-icon {
+            width: 52px;
+            height: 60px;
+            border-radius: 5px;
+            background: #b665dc;
+            color: #fff;
+            display: grid;
+            place-items: center;
+        }
+        .audio-progress { height: 18px; border-radius: 999px; background: #e8ebf3; }
+        .audio-duration-text { color: #7a8291; font-size: 18px; white-space: nowrap; }
+        .audio-detail-grid { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 12px; }
+        .audio-info-card { padding: 28px 24px; min-height: 620px; }
+        .detail-card-title {
+            margin: 0 0 16px;
+            color: #111827;
+            font-size: 20px;
+            line-height: 1.3;
+            font-weight: 760;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .detail-card-title::before { content: ""; width: 4px; height: 14px; background: #2f63f4; display: inline-block; }
+        .audio-info-row { display: grid; grid-template-columns: 82px minmax(0, 1fr); gap: 8px; margin: 18px 0; font-size: 16px; }
+        .audio-info-row dt { font-weight: 700; }
+        .audio-info-row dd { margin: 0; }
+        .download-empty { padding: 26px 24px; }
+        .download-table-head { display: grid; grid-template-columns: 1fr 1fr 1fr; text-align: center; font-weight: 700; margin-bottom: 18px; }
+        .download-empty-text { text-align: center; color: #111827; }
         .pagination {
             display: flex;
             align-items: center;
@@ -822,10 +1040,23 @@
         .prd-content table.prd-table th{background:#f8f9fa !important;padding:8px 12px !important;text-align:left !important;border:1px solid var(--line-soft) !important;font-weight:600 !important;color:var(--ink) !important;font-size:12px !important}
         .prd-content table.prd-table td{padding:8px 12px !important;border:1px solid var(--line-soft) !important;color:#444 !important;font-size:13px !important;line-height:1.6 !important}
 
+        @container (max-width: 1040px) {
+            .detail-shell { grid-template-columns: minmax(0, 1fr) 360px; }
+            .video-data-grid, .audio-detail-grid { grid-template-columns: 1fr; }
+            .detail-meta-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .detail-preview { height: 430px; }
+            .detail-side-pane { min-height: 360px; }
+        }
+        @container (max-width: 820px) {
+            .detail-shell { grid-template-columns: 1fr; }
+        }
+
         @media (max-width: 1100px) {
             .latest-grid, .recommend-grid, .media-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .stats-strip, .legacy-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .sidebar { width: 210px; }
+            .detail-shell, .audio-detail-grid { grid-template-columns: 1fr; }
+            .detail-preview { height: 430px; }
         }
         @media (max-width: 760px) {
             .top-nav { overflow-x: auto; padding: 0 14px; }
@@ -849,6 +1080,15 @@
             .add-condition, .remove-condition { margin-left: 0; }
             .condition-area { grid-template-columns: 1fr; }
             .audio-row { grid-template-columns: 22px 1fr; }
+            .media-detail-page { padding: 8px; }
+            .detail-action-bar { height: auto; min-height: 60px; flex-wrap: wrap; padding: 10px; }
+            .detail-jump-actions { position: static; width: 100%; justify-content: center; }
+            .detail-preview { min-height: 260px; height: 58vw; }
+            .detail-preview.image img { max-width: 88%; max-height: 72%; }
+            .video-data-grid { grid-template-columns: 1fr; }
+            .detail-spec-strip, .detail-meta-grid { grid-template-columns: 1fr; }
+            .audio-player-card { grid-template-columns: 48px 22px minmax(120px, auto) 1fr 22px; gap: 8px; padding: 0 10px; }
+            .audio-duration-text { font-size: 14px; }
             .prd-panel, .split-drag, .top-controls { display: none; }
         }
     </style>
@@ -1111,77 +1351,49 @@
                         </div>
                     </aside>
                     <div class="resource-main">
-                        <section class="search-panel" id="resourceSearchPanel">
-                            <div class="search-mode-tabs">
-                                <button class="mode-tab active" data-mode="precise" onclick="switchSearchMode('precise')">精准检索</button>
-                                <button class="mode-tab" data-mode="semantic" onclick="switchSearchMode('semantic')">语义检索</button>
+                        <section class="search-panel article-search-panel" id="resourceSearchPanel">
+                            <div class="legacy-search-toolbar">
+                                <div class="home-search media-ai-search article-ai-search">
+                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#98a2b3" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                                    <input id="resourceKeyword" placeholder="输入关键词、自然语言描述搜索成品稿件" onkeydown="if(event.key==='Enter')runResourceSearch()">
+                                    <button class="circle-tool" id="articleFilterToggle" title="展开筛选" aria-label="展开筛选" aria-expanded="false" type="button" onclick="toggleArticleFilters()">
+                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18"/><path d="M7 12h10"/><path d="M10 19h4"/></svg>
+                                    </button>
+                                    <button class="primary-pill" type="button" onclick="runResourceSearch()">
+                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                                        AI智搜
+                                    </button>
+                                </div>
                             </div>
-                            <div class="advanced-search">
-                                <div id="preciseBox" class="precise-box">
-                                    <div class="condition-row primary-condition" data-condition-row>
-                                        <select class="search-select" id="fieldSelect">
-                                            <option>稿件标题</option>
-                                            <option>稿件正文</option>
-                                            <option>来源</option>
-                                            <option>关键词</option>
-                                        </select>
-                                        <input class="search-input-main" id="resourceKeyword" placeholder="输入关键词，多个用空格隔开进行搜索">
-                                        <select class="match-select"><option>包含全部关键词</option><option>包含任一关键词</option><option>不包含关键词</option></select>
-                                        <button class="add-condition" type="button" title="新增或条件" aria-label="新增或条件" onclick="addSearchCondition()">+</button>
-                                    </div>
-                                    <div id="extraSearchRows" aria-live="polite"></div>
-                                    <div class="precise-hint">多组检索条件之间按“或”运算；每组内部按匹配方式计算。</div>
+                            <div class="condition-area article-filter-area hidden" id="conditionArea">
+                                <div class="condition-line">
+                                    <span class="condition-label">发布时间</span>
+                                    <label class="radio"><input type="radio" name="pubtime" checked>全部</label>
+                                    <label class="radio"><input type="radio" name="pubtime">单日期</label>
+                                    <label class="radio"><input type="radio" name="pubtime">时间段</label>
                                 </div>
-                                <div id="semanticBox" class="semantic-box hidden">
-                                    <textarea class="semantic-input" id="semanticInput" placeholder="输入一段话进行检索，例：搜索近一年宁波日报报道下有关宁波的稿件"></textarea>
+                                <div class="condition-line" id="articleTypeLine">
+                                    <span class="condition-label">稿件类型</span>
+                                    <label class="check"><input type="checkbox">新闻稿</label>
+                                    <label class="check"><input type="checkbox">图集稿</label>
+                                    <label class="check"><input type="checkbox">链接稿</label>
+                                    <label class="check"><input type="checkbox">视频稿</label>
+                                    <label class="check"><input type="checkbox">直播稿</label>
                                 </div>
-                                <div class="condition-area" id="conditionArea">
-                                    <div class="condition-line">
-                                        <span class="condition-label">发布时间</span>
-                                        <label class="radio"><input type="radio" name="pubtime" checked>全部</label>
-                                        <label class="radio"><input type="radio" name="pubtime">单日期</label>
-                                        <label class="radio"><input type="radio" name="pubtime">时间段</label>
-                                        <label class="radio"><input type="radio" name="pubtime">特殊日期</label>
-                                    </div>
-                                    <div class="condition-line" id="articleTypeLine">
-                                        <span class="condition-label">稿件类型</span>
-                                        <label class="check"><input type="checkbox">新闻稿</label>
-                                        <label class="check"><input type="checkbox">图集稿</label>
-                                        <label class="check"><input type="checkbox">链接稿</label>
-                                        <label class="check"><input type="checkbox">视频稿</label>
-                                        <label class="check"><input type="checkbox">直播稿</label>
-                                    </div>
-                                    <div class="condition-line">
-                                        <span class="condition-label">检索设置</span>
-                                        <label class="check"><input type="checkbox"><span id="titlelessSettingText">忽略“无标题”稿件</span></label>
-                                        <label class="check"><input type="checkbox">仅查询原创稿</label>
-                                    </div>
-                                </div>
-                                <div class="search-actions-row">
-                                    <button class="secondary-btn" onclick="resetResourceSearch()">重置条件</button>
-                                    <button class="search-submit" onclick="runResourceSearch()">搜索</button>
-                                </div>
-                                <div class="collapse-row"><button onclick="toggleSearchPanel()">收起⌃</button></div>
                             </div>
                         </section>
 
                         <section class="legacy-search-panel hidden" id="legacySearchPanel">
                             <div class="legacy-search-toolbar">
-                                <div class="legacy-date-range">
-                                    <label class="date-field">
-                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                                        <input id="legacyStartDate" placeholder="选择开始日期" readonly>
-                                    </label>
-                                    <span class="date-sep">－</span>
-                                    <label class="date-field">
-                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                                        <input id="legacyEndDate" placeholder="选择结束日期" readonly>
-                                    </label>
-                                </div>
-                                <div class="legacy-keyword">
-                                    <input id="legacyKeyword" placeholder="请输入关键词搜索" onkeydown="if(event.key==='Enter')runLegacySearch()">
-                                    <button type="button" aria-label="搜索" onclick="runLegacySearch()">
+                                <div class="home-search media-ai-search">
+                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#98a2b3" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                                    <input id="legacyKeyword" placeholder="输入关键词、自然语言描述搜索全部媒资" onkeydown="if(event.key==='Enter')runLegacySearch()">
+                                    <button class="circle-tool" id="legacyImageSearchButton" title="上传图片搜索" type="button" onclick="showToast('可通过上传图片进行多模态检索')">
+                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                                    </button>
+                                    <button class="primary-pill" type="button" onclick="runLegacySearch()">
                                         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                                        AI智搜
                                     </button>
                                 </div>
                             </div>
@@ -1213,6 +1425,33 @@
                             </div>
                         </section>
                     </div>
+                </div>
+            </section>
+
+            <section class="view media-detail-page" id="mediaDetailView">
+                <div class="detail-action-bar">
+                    <button class="detail-primary" type="button" onclick="showToast('已添加到个人素材库')">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
+                        添加到个人素材库
+                    </button>
+                    <button class="detail-secondary" type="button" onclick="showToast('开始下载')">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+                        下载
+                    </button>
+                    <div class="detail-jump-actions" aria-label="详情页素材跳转">
+                        <button class="detail-jump-btn" id="detailPrevBtn" type="button" onclick="jumpMediaDetail(-1)">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+                            上一个
+                        </button>
+                        <button class="detail-jump-btn" id="detailNextBtn" type="button" onclick="jumpMediaDetail(1)">
+                            下一个
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="detail-shell">
+                    <section class="detail-main-pane" id="detailMainPane"></section>
+                    <aside class="detail-side-pane" id="detailSidePane"></aside>
                 </div>
             </section>
         </main>
@@ -1284,11 +1523,11 @@
   - 默认选中“成品稿件”。
 - **交互规则**：
   - 点击不同资源类型后，搜索条件、筛选栏和结果区按资源类型刷新。
-  - 成品稿件使用新版精准检索和语义检索模块；成品图片、成品视频、成品音频使用旧版日期范围、关键词和批量选择筛选模块。
+  - 成品稿件使用首页同款 AI 搜索条，并通过筛选按钮展开发布时间和稿件类型；成品图片、成品视频、成品音频使用首页同款多模态 AI 搜索条和批量选择栏。
 - **数据规则**：
   - **取数规则**：从全省资源库读取对应资源类型的成品内容。
   - **数据筛选规则**：资源类型为单选条件，切换后仅展示当前类型资源。
-  - **数据排序规则**：默认按发布时间倒序；语义检索模式下优先按相关度倒序，再按发布时间倒序。
+  - **数据排序规则**：默认按发布时间倒序。
 
 ### 1.3 客户端固定筛选条件
 
@@ -1326,7 +1565,7 @@
 
 - **展示规则**：
   - “全省资源库推荐素材”为首页新增模块，展示在“最新图片资源”之后、“资源聚合”之前。
-  - 模块展示优质视频或图片卡片，卡片包含封面、资源类型、时长或图片数量、标题、来源和发布时间。
+  - 模块展示由机器推荐的视频或图片卡片，卡片包含封面、资源类型、时长或图片数量、标题、来源和发布时间。
   - 卡片底部不展示“专题热度高”“适合图集复用”等推荐理由文案，避免首页信息噪声过重。
   - 无全省资源库权限时隐藏该模块，线上已有“资源聚合”自然上移。
 - **交互规则**：
@@ -1334,11 +1573,11 @@
   - 点击“进入全省资源库”进入全省资源库聚合页，并保留当前默认资源类型。
   - 模块不影响首页线上已有模块的点击、搜索和统计交互。
 - **数据规则**：
-  - **取数规则**：从全省资源库中读取当前用户有权限查看、状态为已入库且可复用的图片和视频资源；优先读取运营推荐池中的资源，推荐池不足时从近 30 天高质量资源候选池补足。
-  - **数据筛选规则**：仅纳入发布渠道为客户端、资源状态正常、封面可用、标题非空、未下架且未被权限过滤的素材；图片需具备可展示缩略图，视频需具备封面和时长。
-  - **数据排序规则**：先按人工置顶/运营推荐权重倒序；权重相同时按资源质量分倒序；仍相同时按近 7 天复用量、收藏量或点击量综合热度倒序；最后按发布时间倒序兜底。
-  - **数据去重规则**：同一专题、同一稿件拆出的多张图片或同一视频多版本只保留排序最高的一条，避免首页重复展示相近素材。
-  - **数据兜底规则**：推荐池不足 4 条时，按上述筛选和排序规则从全省资源库候选池补齐；仍不足时按实际条数展示，不展示空卡片。
+  - **取数规则**：从全省资源库中读取当前用户有权限查看、发布渠道为客户端、状态为已入库且可复用的图片和视频资源；默认取近 30 天入库资源作为候选池。
+  - **字段排除规则**：自动排除标题为空、正文/说明为空、封面为空、来源为空、发布时间为空、文件大小为 0、宽高缺失、图片宽或高低于展示阈值、视频时长缺失或为 0 的素材。文件格式为 gif、animated webp、apng 的资源不进入首页推荐。
+  - **数据排序规则**：候选素材按字段完整度分层展示：优先展示标题、正文/说明、来源、发布时间、封面、格式、大小、宽高或时长均完整的素材；同层内按发布时间倒序。排序后按资源类型、来源和地域做轮询重排，避免 4 张卡片全部来自同一类型、同一来源或同一地域。
+  - **数据去重规则**：同一稿件ID下的多条图片或视频资源只保留发布时间最新的一条；无稿件ID的资源不参与该去重规则。
+  - **数据兜底规则**：若筛选后不足 4 条，放宽正文/说明非空要求；不得放宽权限、封面、格式、大小、宽高、时长等硬条件。仍不足时按实际条数展示，不展示空卡片；无可推荐素材时隐藏该模块。
 
 ### 2.3 全省资源库数据统计
 
@@ -1376,98 +1615,81 @@
 
 ## 三、全省资源库搜索升级
 
-### 3.1 搜索模式 Tab
+### 3.1 成品稿件 AI 搜索条
 
 - **展示规则**：
-  - 新版搜索模块仅在“成品稿件”资源类型下展示。
-  - 成品稿件搜索模块顶部提供“精准检索”和“语义检索”两个模式 Tab。
-  - 默认选中“精准检索”。
-  - 模式 Tab 采用醒目的顶部横向样式，便于与普通筛选项区分。
+  - 成品稿件搜索模块复用成品图片、成品视频、成品音频的首页同款搜索条样式。
+  - 搜索条展示搜索图标、关键词/自然语言输入框、筛选按钮和“AI智搜”按钮。
+  - 成品稿件不支持图搜，搜索条中间按钮使用筛选图标，不展示上传图片入口。
+  - 输入框使用“输入关键词、自然语言描述搜索成品稿件”占位文案。
 - **交互规则**：
-  - 切换搜索模式时保留资源类型、渠道和发布时间条件。
-  - 精准检索和语义检索输入方式不同，切换后展示对应输入区。
-  - 点击“收起”可折叠高级条件，仅保留模式 Tab 和核心输入框。
-  - 切换到成品图片、成品视频、成品音频时隐藏新版搜索模块，展示旧版搜索筛选模块。
+  - 点击“AI智搜”或按回车后，按输入内容刷新成品稿件结果。
+  - 点击筛选图标展开筛选区域；再次点击筛选图标收起筛选区域。
+  - 筛选区域展开时筛选图标展示选中态。
+  - 切换到成品图片、成品视频、成品音频时隐藏成品稿件搜索条，展示对应资源类型的多模态 AI 搜索条。
 - **数据规则**：
-  - **取数规则**：读取当前搜索模式、输入内容和筛选条件。
-  - **数据筛选规则**：搜索模式为单选条件，仅作用于成品稿件。
-  - **数据排序规则**：精准检索默认按发布时间倒序；语义检索默认按相关度倒序。
+  - **取数规则**：读取关键词/自然语言描述、发布时间和稿件类型筛选条件。
+  - **数据筛选规则**：输入内容与资源类型、客户端渠道、地域、发布时间和稿件类型取交集。
+  - **数据排序规则**：默认按发布时间倒序。
 
-### 3.2 精准检索
+### 3.2 成品稿件筛选区域
 
 - **展示规则**：
-  - 精准检索仅对成品稿件生效，提供字段下拉、关键词输入、关键词匹配方式和追加条件入口。
-  - 字段下拉默认值为“稿件标题”，可按资源类型显示对应字段选项。
-  - 关键词输入支持多个关键词用空格分隔。
-  - 匹配方式默认“包含全部关键词”。
-  - 追加条件入口使用“+”按钮；新增条件行左侧展示“或”连接标识，并提供删除入口。
+  - 筛选区域默认收起，仅在点击筛选图标后展开。
+  - 筛选区域包含发布时间和稿件类型两类条件。
+  - 筛选区域不展示图搜入口、精准检索/语义检索模式 Tab、字段下拉、匹配方式或追加条件入口。
 - **交互规则**：
-  - 点击“+”可增加一组检索条件，多组检索条件之间执行逻辑或运算。
-  - 点击新增条件行的删除入口，可移除该组或条件。
-  - 点击“重置条件”清空关键词、删除新增条件行、恢复默认字段和默认筛选项。
-  - 点击“搜索”按当前条件刷新结果。
+  - 点击筛选图标展开后，用户可修改发布时间和稿件类型条件。
+  - 再次点击筛选图标收起筛选区域；已选择的筛选条件继续生效。
+  - 切换资源类型或刷新结果时不强制展开筛选区域。
 - **数据规则**：
-  - **取数规则**：读取每一组检索条件的字段、关键词和匹配方式。
-  - **数据筛选规则**：单组内多关键词按匹配方式计算；多组检索条件之间取并集，再与资源类型、渠道、地域、发布时间、稿件类型和检索设置取交集。
-  - **数据排序规则**：默认按发布时间倒序；用户切换排序时按所选排序执行。
+  - **取数规则**：读取当前发布时间和稿件类型条件。
+  - **数据筛选规则**：筛选区域条件与搜索输入、资源类型、客户端渠道、地域取交集。
+  - **数据排序规则**：不改变当前排序方式。
 
-### 3.3 语义检索
+### 3.3 发布时间筛选
 
 - **展示规则**：
-  - 语义检索仅对成品稿件生效，提供大文本输入框，用于输入自然语言检索意图。
-  - 输入框 placeholder 引导用户描述要查找的报道或素材。
-  - 下方复用发布时间、稿件类型、检索设置等高级条件。
-- **交互规则**：
-  - 点击搜索后，根据自然语言意图返回匹配资源。
-  - 清空输入框后再次搜索时提示用户输入检索内容。
-  - 语义检索结果需展示相关度排序效果。
-- **数据规则**：
-  - **取数规则**：读取用户输入的自然语言描述，并结合资源标题、摘要、标签、结构化信息进行语义匹配。
-  - **数据筛选规则**：语义结果仍受资源类型、渠道、发布时间、地域、稿件类型等条件约束。
-  - **数据排序规则**：默认按语义相关度倒序；相关度相同时按发布时间倒序。
-
-### 3.4 发布时间筛选
-
-- **展示规则**：
-  - 发布时间包含全部、单日期、时间段、特殊日期四个选项。
+  - 发布时间包含全部、单日期、时间段三个选项。
   - 默认选中全部。
 - **交互规则**：
   - 选择单日期时展示单个日期选择控件。
   - 选择时间段时展示开始日期和结束日期。
-  - 选择特殊日期时展示常用日期范围选项。
 - **数据规则**：
   - **取数规则**：读取资源发布时间。
   - **数据筛选规则**：按所选时间条件筛选资源；全部不限制时间。
   - **数据排序规则**：不改变当前排序方式。
 
-### 3.5 稿件类型与检索设置
+### 3.4 稿件类型
 
 - **展示规则**：
   - 稿件类型包含新闻稿、图集稿、链接稿、视频稿、直播稿。
-  - 检索设置包含忽略“无标题”稿件、仅查询原创稿。
-  - 稿件类型与检索设置仅在成品稿件新版搜索模块中展示。
+  - 稿件类型仅在成品稿件筛选区域中展示。
 - **交互规则**：
   - 多个稿件类型可多选，选中后立即参与筛选。
-  - 勾选检索设置后，点击搜索时生效。
 - **数据规则**：
-  - **取数规则**：读取资源内容类型、标题状态和原创标识。
-  - **数据筛选规则**：稿件类型多选取并集；检索设置与其他条件取交集。
+  - **取数规则**：读取资源内容类型。
+  - **数据筛选规则**：稿件类型多选取并集，再与其他条件取交集。
   - **数据排序规则**：不改变当前排序方式。
 
-### 3.6 图片、视频、音频旧版搜索筛选
+### 3.5 图片、视频、音频多模态搜索
 
 - **展示规则**：
-  - 成品图片、成品视频、成品音频不展示新版精准检索和语义检索模块。
-  - 旧版搜索筛选模块展示开始日期、结束日期、关键词搜索框和搜索按钮。
-  - 搜索筛选模块下方展示批量选择栏，包含全选、已选数量和清除入口。
+  - 成品图片、成品视频、成品音频不展示成品稿件筛选按钮和稿件类型筛选区域。
+  - 搜索框复用首页搜索样式，展示搜索图标、关键词/自然语言输入框和“AI智搜”按钮。
+  - 成品图片、成品视频展示上传图片入口；成品音频不具备图搜能力，不展示上传图片入口。
+  - 输入框统一使用“输入关键词、自然语言描述搜索全部媒资”占位文案，不按成品图片、成品视频、成品音频额外区分资源库。
+  - 该模块不展示首页下方的媒资素材库、全省资源库、网络资源库筛选 chip。
+  - 搜索框下方保留批量选择栏，包含全选、已选数量和清除入口。
 - **交互规则**：
-  - 点击搜索按钮按日期范围和关键词刷新当前资源类型结果。
+  - 点击“AI智搜”或按回车后，按输入内容刷新当前资源类型结果。
+  - 在成品图片、成品视频下点击上传图片入口时进入多模态图片检索流程；原型阶段可先展示上传图片检索提示。
   - 勾选全选时选中当前页全部资源；取消全选时取消当前页全部选择。
   - 点击清除时取消当前页已选资源，并将已选数量恢复为 0。
 - **数据规则**：
-  - **取数规则**：读取当前资源类型、开始日期、结束日期、关键词和当前页选择状态。
-  - **数据筛选规则**：日期范围、关键词、地域和客户端渠道取交集；当前资源类型仅取成品图片、成品视频或成品音频。
-  - **数据排序规则**：默认按发布时间倒序，保持旧版资源列表排序口径。
+  - **取数规则**：读取当前资源类型、关键词/自然语言描述和当前页选择状态；仅成品图片、成品视频读取上传图片特征。
+  - **数据筛选规则**：文本语义、地域和客户端渠道取交集；成品图片、成品视频上传图片时叠加图片特征条件；当前资源类型仅取成品图片、成品视频或成品音频。
+  - **数据排序规则**：默认按多模态相关度倒序；相关度相同时按发布时间倒序。
 
 ---
 
@@ -1501,8 +1723,8 @@
   - 切换筛选条件后清空当前勾选状态。
 - **数据规则**：
   - **取数规则**：读取全省资源库稿件标题、来源、类型、字数、发布站点、发布时间和可取稿状态。
-  - **数据筛选规则**：按资源类型、渠道、地域、发布时间、稿件类型、关键词和检索设置取交集。
-  - **数据排序规则**：默认按发布时间倒序；语义检索模式按相关度倒序。
+  - **数据筛选规则**：按资源类型、渠道、地域、发布时间、稿件类型和关键词取交集。
+  - **数据排序规则**：默认按发布时间倒序。
 
 ### 4.3 成品图片、成品视频、成品音频结果
 
@@ -1511,7 +1733,7 @@
   - 成品图片卡片展示选择框、封面、标题、来源和发布时间。
   - 成品视频卡片展示选择框、封面、播放标识、时长、标题、来源和发布时间。
   - 成品音频列表展示选择框、标题、来源、时长、格式、发布时间和操作。
-  - 结果区上方使用旧版日期范围、关键词和批量选择筛选模块。
+  - 结果区上方使用首页同款多模态 AI 搜索条和批量选择栏。
 - **交互规则**：
   - 点击卡片或标题进入资源详情。
   - 图片、视频支持添加到个人素材库。
@@ -1519,9 +1741,28 @@
 - **数据规则**：
   - **取数规则**：读取对应资源类型的标题、封面或预览、来源、发布时间、时长、格式等业务字段。
   - **数据筛选规则**：按资源类型、渠道、地域、发布时间和关键词取交集。
-  - **数据排序规则**：默认按发布时间倒序；语义检索模式按相关度倒序。
+  - **数据排序规则**：默认按发布时间倒序。
 
-### 4.4 分页
+### 4.4 成品图片、成品视频、成品音频详情页
+
+- **展示规则**：
+  - 点击成品图片、成品视频、成品音频结果后进入详情页，详情页保持线上智能媒资系统的左右分栏结构。
+  - 详情页顶部展示操作条，提供“添加到个人素材库”和“下载”两个主操作。
+  - 详情页右上角展示“上一个”“下一个”跳转按钮，用于在当前资源类型结果列表内快速切换素材。
+  - 成品图片详情左侧展示大图预览，下方展示大小、格式、尺寸；右侧展示“基本信息 / 下载记录”页签，默认展示基本信息。
+  - 成品视频详情左侧展示视频预览区、播放按钮、封面图区域和视频数据；右侧展示“基本信息 / 下载记录”页签，默认展示基本信息。
+  - 成品音频详情左侧展示音频播放器、基本信息和音频数据；右侧默认展示下载记录表格，暂无下载记录时展示空状态。
+- **交互规则**：
+  - 点击“添加到个人素材库”后反馈添加结果。
+  - 点击“下载”后触发下载动作。
+  - 点击“上一个”切换到当前结果列表中的上一条素材，点击“下一个”切换到下一条素材；首条素材的“上一个”和末条素材的“下一个”置灰不可点。
+  - 详情页与列表页保持同一资源类型上下文，返回全省资源库时仍停留在进入详情前的成品类型。
+- **数据规则**：
+  - **取数规则**：详情页读取素材标题、发布时间、关联稿件标题、渠道、发布站点、库名称、大小、格式、尺寸、时长、信息 ID 等已有字段。
+  - **数据筛选规则**：详情页只展示用户在列表中可见且有权限访问的素材。
+  - **数据排序规则**：“上一个”“下一个”按进入详情页时当前结果列表的排序顺序跳转；详情页不改变列表排序；下载记录按下载时间倒序展示。
+
+### 4.5 分页
 
 - **展示规则**：
   - 结果区底部展示总数、每页条数、页码、上一页、下一页和跳转页码。
@@ -1548,6 +1789,8 @@
 
 <script>
 var currentResourceType = 'article';
+var currentDetailType = 'image';
+var currentDetailIndex = 0;
 var hasProvincePermission = true;
 var trendData = {
     last14: [
@@ -1624,8 +1867,9 @@ function setProvincePermission(flag) {
 function switchPage(page) {
     document.getElementById('homeView').classList.toggle('active', page === 'home');
     document.getElementById('resourceView').classList.toggle('active', page === 'resource');
+    document.getElementById('mediaDetailView').classList.toggle('active', page === 'detail');
     document.querySelectorAll('.nav-item[data-page]').forEach(function(btn) {
-        btn.classList.toggle('active', btn.dataset.page === page);
+        btn.classList.toggle('active', btn.dataset.page === page || (page === 'detail' && btn.dataset.page === 'resource'));
     });
     if (page === 'resource') renderResourceResults();
 }
@@ -1639,8 +1883,6 @@ function runHomeSearch() {
     var value = document.getElementById('homeSearchInput').value.trim() || '全省资源';
     switchPage('resource');
     switchResourceType('article');
-    switchSearchMode('precise');
-    clearExtraSearchRows();
     document.getElementById('resourceKeyword').value = value;
     runResourceSearch();
 }
@@ -1648,80 +1890,24 @@ function runHomeSearch() {
 function switchResourceType(type) {
     currentResourceType = type;
     document.querySelectorAll('.resource-tab').forEach(function(tab) { tab.classList.toggle('active', tab.dataset.type === type); });
-    var field = document.getElementById('fieldSelect');
     var keyword = document.getElementById('resourceKeyword');
     var legacyKeyword = document.getElementById('legacyKeyword');
-    var typeLine = document.getElementById('articleTypeLine');
-    var titlelessText = document.getElementById('titlelessSettingText');
+    var legacyImageSearchButton = document.getElementById('legacyImageSearchButton');
+    var multimodalPlaceholder = '输入关键词、自然语言描述搜索全部媒资';
     if (type === 'article') {
-        field.innerHTML = '<option>稿件标题</option><option>稿件正文</option><option>来源</option><option>关键词</option>';
-        keyword.placeholder = '输入稿件关键词，多个用空格隔开进行搜索';
-        legacyKeyword.placeholder = '请输入关键词搜索';
-        titlelessText.textContent = '忽略“无标题”稿件';
-        typeLine.style.display = 'flex';
+        keyword.placeholder = '输入关键词、自然语言描述搜索成品稿件';
+        legacyKeyword.placeholder = multimodalPlaceholder;
     } else if (type === 'image') {
-        field.innerHTML = '<option>图片标题</option><option>图片说明</option><option>来源</option><option>关键词</option>';
-        keyword.placeholder = '输入图片关键词，多个用空格隔开进行搜索';
-        legacyKeyword.placeholder = '请输入图片关键词搜索';
-        titlelessText.textContent = '忽略“无标题”资源';
-        typeLine.style.display = 'none';
+        legacyKeyword.placeholder = multimodalPlaceholder;
     } else if (type === 'video') {
-        field.innerHTML = '<option>视频标题</option><option>视频说明</option><option>来源</option><option>关键词</option>';
-        keyword.placeholder = '输入视频关键词，多个用空格隔开进行搜索';
-        legacyKeyword.placeholder = '请输入视频关键词搜索';
-        titlelessText.textContent = '忽略“无标题”资源';
-        typeLine.style.display = 'none';
+        legacyKeyword.placeholder = multimodalPlaceholder;
     } else {
-        field.innerHTML = '<option>音频标题</option><option>音频文稿</option><option>来源</option><option>关键词</option>';
-        keyword.placeholder = '输入音频关键词，多个用空格隔开进行搜索';
-        legacyKeyword.placeholder = '请输入音频关键词搜索';
-        titlelessText.textContent = '忽略“无标题”资源';
-        typeLine.style.display = 'none';
+        legacyKeyword.placeholder = multimodalPlaceholder;
     }
-    clearExtraSearchRows();
+    if (legacyImageSearchButton) {
+        legacyImageSearchButton.classList.toggle('hidden', type === 'audio');
+    }
     renderResourceResults();
-}
-
-function addSearchCondition() {
-    var rows = document.getElementById('extraSearchRows');
-    var row = document.createElement('div');
-    row.className = 'condition-row or-condition-row';
-    row.setAttribute('data-condition-row', '');
-    row.innerHTML =
-        '<span class="condition-connector">或</span>' +
-        '<select class="search-select condition-field">' + document.getElementById('fieldSelect').innerHTML + '</select>' +
-        '<input class="search-input-main condition-keyword" placeholder="输入另一组关键词，与上一组按或检索">' +
-        '<select class="match-select condition-match"><option>包含全部关键词</option><option>包含任一关键词</option><option>不包含关键词</option></select>' +
-        '<button class="remove-condition" type="button" title="删除此条件" aria-label="删除或条件" onclick="removeSearchCondition(this)">&times;</button>';
-    rows.appendChild(row);
-    row.querySelector('.condition-keyword').focus();
-}
-
-function removeSearchCondition(button) {
-    var row = button.closest('[data-condition-row]');
-    if (row) row.remove();
-    renderResourceResults();
-}
-
-function clearExtraSearchRows() {
-    var rows = document.getElementById('extraSearchRows');
-    if (rows) rows.innerHTML = '';
-}
-
-function getPreciseConditions() {
-    var rows = document.querySelectorAll('#preciseBox [data-condition-row]');
-    return Array.prototype.map.call(rows, function(row) {
-        var field = row.querySelector('.search-select');
-        var keyword = row.querySelector('.search-input-main');
-        var match = row.querySelector('.match-select');
-        return {
-            field: field ? field.value : '',
-            keyword: keyword ? keyword.value.trim() : '',
-            match: match ? match.value : ''
-        };
-    }).filter(function(item) {
-        return item.keyword;
-    });
 }
 
 function updateResourceSearchSurface() {
@@ -1732,30 +1918,29 @@ function updateResourceSearchSurface() {
 }
 
 function switchSearchMode(mode) {
-    if (currentResourceType !== 'article') {
-        updateResourceSearchSurface();
-        return;
-    }
-    document.querySelectorAll('.mode-tab').forEach(function(tab) { tab.classList.toggle('active', tab.dataset.mode === mode); });
-    document.getElementById('preciseBox').classList.toggle('hidden', mode !== 'precise');
-    document.getElementById('semanticBox').classList.toggle('hidden', mode !== 'semantic');
+    updateResourceSearchSurface();
     renderResourceResults();
 }
 
+function toggleArticleFilters() {
+    var area = document.getElementById('conditionArea');
+    var btn = document.getElementById('articleFilterToggle');
+    var nextOpen = area.classList.contains('hidden');
+    area.classList.toggle('hidden', !nextOpen);
+    if (btn) {
+        btn.classList.toggle('active', nextOpen);
+        btn.setAttribute('aria-expanded', nextOpen ? 'true' : 'false');
+        btn.setAttribute('aria-label', nextOpen ? '收起筛选' : '展开筛选');
+        btn.title = nextOpen ? '收起筛选' : '展开筛选';
+    }
+}
+
 function toggleSearchPanel() {
-    var panel = document.getElementById('resourceSearchPanel');
-    var btn = panel.querySelector('.collapse-row button');
-    panel.classList.toggle('collapsed');
-    btn.textContent = panel.classList.contains('collapsed') ? '展开⌄' : '收起⌃';
+    toggleArticleFilters();
 }
 
 function resetResourceSearch() {
     document.getElementById('resourceKeyword').value = '';
-    document.getElementById('semanticInput').value = '';
-    document.getElementById('fieldSelect').selectedIndex = 0;
-    var primaryMatch = document.querySelector('#preciseBox .primary-condition .match-select');
-    if (primaryMatch) primaryMatch.selectedIndex = 0;
-    clearExtraSearchRows();
     document.querySelectorAll('#conditionArea input').forEach(function(input) {
         if (input.type === 'checkbox') input.checked = false;
         if (input.type === 'radio') input.checked = input.parentElement.textContent.trim() === '全部';
@@ -1768,21 +1953,10 @@ function runResourceSearch() {
         runLegacySearch();
         return;
     }
-    var mode = document.querySelector('.mode-tab.active').dataset.mode;
     renderResourceResults();
-    if (mode === 'semantic') {
-        var semanticInput = document.getElementById('semanticInput').value.trim();
-        if (semanticInput) {
-            document.getElementById('resultMeta').textContent = '已按“' + semanticInput + '”语义检索 · ' + getSortText();
-        }
-        return;
-    }
-    var conditions = getPreciseConditions();
-    if (conditions.length) {
-        var conditionText = conditions.map(function(item) { return item.keyword; }).join(' 或 ');
-        if (conditionText.length > 42) conditionText = conditionText.slice(0, 42) + '...';
-        var conditionLabel = conditions.length > 1 ? conditions.length + ' 组或条件' : '1 组条件';
-        document.getElementById('resultMeta').textContent = '已按 ' + conditionLabel + '检索“' + conditionText + '” · ' + getSortText();
+    var keyword = document.getElementById('resourceKeyword').value.trim();
+    if (keyword) {
+        document.getElementById('pageInfo').textContent = '已按“' + keyword + '”AI智搜 · 20 条/页';
     }
 }
 
@@ -1790,7 +1964,7 @@ function runLegacySearch() {
     renderResourceResults();
     var keyword = document.getElementById('legacyKeyword').value.trim();
     if (keyword) {
-        document.getElementById('pageInfo').textContent = '已按“' + keyword + '”搜索 · 20 条/页';
+        document.getElementById('pageInfo').textContent = '已按“' + keyword + '”多模态检索 · 20 条/页';
     }
 }
 
@@ -1840,9 +2014,7 @@ function renderResourceResults() {
 }
 
 function getSortText() {
-    if (currentResourceType !== 'article') return '按发布时间倒序';
-    var mode = document.querySelector('.mode-tab.active').dataset.mode;
-    return mode === 'semantic' ? '按语义相关度排序' : '按发布时间倒序';
+    return '按发布时间倒序';
 }
 
 function renderArticles() {
@@ -1857,8 +2029,8 @@ function renderArticles() {
 function renderMedia(type) {
     var list = media[type] || [];
     var html = '<div class="media-grid">';
-    list.forEach(function(item) {
-        html += '<article class="media-card"><label class="media-select"><input type="checkbox" data-legacy-select onchange="updateLegacySelectedCount()"></label><div class="media-thumb"><img src="' + item[3] + '" alt="">';
+    list.forEach(function(item, index) {
+        html += '<article class="media-card clickable" onclick="openMediaDetail(\'' + type + '\',' + index + ')"><label class="media-select" onclick="event.stopPropagation()"><input type="checkbox" data-legacy-select onchange="updateLegacySelectedCount()"></label><div class="media-thumb"><img src="' + item[3] + '" alt="">';
         if (type === 'video') html += '<div class="play"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><span class="duration">' + item[4] + '</span>';
         html += '</div><div class="media-body"><div class="media-title">' + item[0] + '</div><div class="media-meta"><span>' + item[1] + '</span><span>' + item[2] + '</span></div></div></article>';
     });
@@ -1869,12 +2041,195 @@ function renderMedia(type) {
 
 function renderAudio() {
     var html = '<div class="audio-list">';
-    audios.forEach(function(item) {
-        html += '<div class="audio-row"><label class="audio-select"><input type="checkbox" data-legacy-select onchange="updateLegacySelectedCount()"></label><div class="audio-title"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>' + item[0] + '</div><div>' + item[2] + '</div><div>' + item[3] + '</div><div>' + item[4] + '</div><button class="row-btn">预览</button></div><div class="audio-wave"></div>';
+    audios.forEach(function(item, index) {
+        html += '<div class="audio-row clickable" onclick="openMediaDetail(\'audio\',' + index + ')"><label class="audio-select" onclick="event.stopPropagation()"><input type="checkbox" data-legacy-select onchange="updateLegacySelectedCount()"></label><div class="audio-title"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>' + item[0] + '</div><div>' + item[2] + '</div><div>' + item[3] + '</div><div>' + item[4] + '</div><button class="row-btn" onclick="event.stopPropagation();openMediaDetail(\'audio\',' + index + ')">预览</button></div>';
     });
     html += '</div>';
     document.getElementById('resultContent').innerHTML = html;
     updateLegacySelectedCount();
+}
+
+function escapeHtml(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function(char) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char];
+    });
+}
+
+function normalizeDetailTime(dateText, fallbackTime) {
+    var date = String(dateText || '2026/06/01').replace(/\//g, '-');
+    return date.length <= 10 ? date + ' ' + (fallbackTime || '15:20:00') : date;
+}
+
+function getDetailFileName(type, index, format) {
+    var imageNames = ['17163087701833.jpeg', '17163087722310.png', '17163087745188.jpeg', '17163087769042.jpeg', '17163087790364.jpeg', '17163087812076.jpeg'];
+    var videoNames = ['17163080515912_hd.mp4', '17163080540127_hd.mp4', '17163080577248_hd.mp4', '17163080603855_hd.mp4'];
+    if (type === 'image') return imageNames[index] || ('1716308770' + (1800 + index) + '.' + (format || 'jpeg'));
+    if (type === 'video') return videoNames[index] || ('1716308050' + (1200 + index) + '_hd.' + (format || 'mp4'));
+    return 'FM103.6《美食情报局》——杨梅.' + (format || 'mp3');
+}
+
+function getMediaDetailData(type, index) {
+    var item = type === 'audio' ? audios[index] : (media[type] || [])[index];
+    if (!item) item = type === 'audio' ? audios[0] : (media[type] || media.image)[0];
+    if (type === 'audio') {
+        return {
+            type: type,
+            title: item[0],
+            fileName: getDetailFileName(type, index, String(item[3]).toLowerCase()),
+            relatedTitle: item[0],
+            source: item[1],
+            publishTime: normalizeDetailTime(item[4], '15:15:25'),
+            channel: '--',
+            publishSite: '--',
+            repo: '全省资源库',
+            infoId: String(206134744577206273 + index * 17),
+            duration: item[2],
+            size: '0',
+            format: String(item[3]).toLowerCase(),
+            product: '--',
+            column: '--',
+            officialUrl: '',
+            description: '--',
+            tags: '--'
+        };
+    }
+    var format = type === 'video' ? 'mp4' : ((item[3].match(/\.([a-z0-9]+)$/i) || [])[1] || 'jpeg').toLowerCase();
+    var source = item[1] || '客户端';
+    return {
+        type: type,
+        title: item[0],
+        fileName: getDetailFileName(type, index, format),
+        relatedTitle: item[0],
+        source: source,
+        publishTime: normalizeDetailTime(item[2], type === 'video' ? '15:18:05' : '15:20:00'),
+        channel: '客户端',
+        publishSite: source,
+        repo: '全省资源库',
+        preview: item[3],
+        infoId: String(2061347442421334018 + index * 131),
+        duration: item[4] || '--',
+        size: type === 'image' ? '0' : '--',
+        format: format,
+        dimensions: type === 'image' ? '*' : '--',
+        frameRate: type === 'video' ? '--' : '',
+        bitrate: type === 'video' ? '--' : ''
+    };
+}
+
+function detailRowsHtml(rows) {
+    var html = '<dl class="detail-info">';
+    rows.forEach(function(row) {
+        html += '<div class="detail-info-row"><dt>' + escapeHtml(row[0]) + '</dt><dd>' + escapeHtml(row[1] || '--') + '</dd></div>';
+    });
+    html += '</dl>';
+    return html;
+}
+
+function downloadRecordHtml() {
+    return '<div class="download-empty"><div class="download-table-head"><span>序号</span><span>下载人</span><span>下载时间</span></div><div class="download-empty-text">暂无数据</div></div>';
+}
+
+function renderDetailSide(data, activeTab) {
+    if (activeTab === 'download') {
+        return '<div class="detail-tabs"><button class="detail-tab active" type="button">下载记录</button></div>' + downloadRecordHtml();
+    }
+    var rows = [
+        ['标题', data.fileName],
+        ['发布时间', data.publishTime],
+        ['关联稿件标题', data.relatedTitle],
+        ['渠道', data.channel],
+        ['发布站点', data.publishSite],
+        ['库名称', data.repo]
+    ];
+    return '<div class="detail-tabs"><button class="detail-tab active" type="button">基本信息</button><button class="detail-tab" type="button">下载记录</button></div>' + detailRowsHtml(rows);
+}
+
+function renderImageDetail(data) {
+    return '<div class="detail-preview image"><img src="' + escapeHtml(data.preview) + '" alt="' + escapeHtml(data.title) + '"></div>' +
+        '<div class="detail-spec-strip"><span><b>大小</b>' + escapeHtml(data.size) + '</span><span><b>格式</b>' + escapeHtml(data.format) + '</span><span><b>尺寸</b>' + escapeHtml(data.dimensions) + '</span></div>';
+}
+
+function renderVideoDetail(data) {
+    return '<div class="detail-preview video"><img src="' + escapeHtml(data.preview) + '" alt="' + escapeHtml(data.title) + '">' +
+        '<div class="video-play-large"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div></div>' +
+        '<div class="video-data-grid">' +
+            '<div class="video-cover-card"><div class="video-cover-label">封面图</div><div class="video-cover-placeholder"><svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="5"><rect x="18" y="16" width="60" height="64" rx="3"/><circle cx="34" cy="34" r="6"/><path d="M24 68l18-22 13 16 9-10 10 16"/></svg></div></div>' +
+            '<div class="video-meta-card"><span class="quality-badge">720P</span><div class="detail-meta-grid">' +
+                '<div><b>信息ID</b>' + escapeHtml(data.infoId) + '</div><div><b>时长</b>' + escapeHtml(data.duration) + '</div><div><b>大小</b>' + escapeHtml(data.size) + '</div>' +
+                '<div><b>格式</b>' + escapeHtml(data.format) + '</div><div><b>帧率</b>' + escapeHtml(data.frameRate) + '</div><div><b>码率</b>' + escapeHtml(data.bitrate) + '</div>' +
+            '</div></div>' +
+        '</div>';
+}
+
+function renderAudioDetail(data) {
+    return '<div class="audio-player-card">' +
+            '<div class="audio-file-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>' +
+            '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>' +
+            '<span class="audio-duration-text">00:00:00/00:' + escapeHtml(data.duration) + '</span><div class="audio-progress"></div>' +
+            '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 10v4h4l5 5V5l-5 5H3zm13.5 2a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>' +
+        '</div>' +
+        '<div class="audio-detail-grid">' +
+            '<section class="audio-info-card"><h3 class="detail-card-title">基本信息</h3><dl>' +
+                '<div class="audio-info-row"><dt>标题</dt><dd>' + escapeHtml(data.title) + '</dd></div>' +
+                '<div class="audio-info-row"><dt>发布时间</dt><dd>' + escapeHtml(data.publishTime) + '</dd></div>' +
+                '<div class="audio-info-row"><dt>关联稿件标题</dt><dd>' + escapeHtml(data.relatedTitle) + '</dd></div>' +
+                '<div class="audio-info-row"><dt>渠道</dt><dd>' + escapeHtml(data.channel) + '</dd></div>' +
+                '<div class="audio-info-row"><dt>产品</dt><dd>' + escapeHtml(data.product) + '</dd></div>' +
+                '<div class="audio-info-row"><dt>栏目</dt><dd>' + escapeHtml(data.column) + '</dd></div>' +
+                '<div class="audio-info-row"><dt>公网地址</dt><dd>' + escapeHtml(data.officialUrl || '') + '</dd></div>' +
+                '<div class="audio-info-row"><dt>描述</dt><dd>' + escapeHtml(data.description) + '</dd></div>' +
+                '<div class="audio-info-row"><dt>标签</dt><dd>' + escapeHtml(data.tags) + '</dd></div>' +
+            '</dl></section>' +
+            '<section class="audio-info-card"><h3 class="detail-card-title">音频数据</h3><dl>' +
+                '<div class="audio-info-row"><dt>信息ID</dt><dd>' + escapeHtml(data.infoId) + '</dd></div>' +
+                '<div class="audio-info-row"><dt>时长</dt><dd>--</dd></div>' +
+                '<div class="audio-info-row"><dt>大小</dt><dd>' + escapeHtml(data.size) + '</dd></div>' +
+                '<div class="audio-info-row"><dt>格式</dt><dd>' + escapeHtml(data.format) + '</dd></div>' +
+            '</dl></section>' +
+        '</div>';
+}
+
+function renderMediaDetail(type, index) {
+    var total = getDetailListLength(type);
+    var safeIndex = Math.min(Math.max(Number(index) || 0, 0), Math.max(total - 1, 0));
+    currentDetailType = type;
+    currentDetailIndex = safeIndex;
+    var data = getMediaDetailData(type, safeIndex);
+    var mainHtml = type === 'audio' ? renderAudioDetail(data) : (type === 'video' ? renderVideoDetail(data) : renderImageDetail(data));
+    document.getElementById('detailMainPane').innerHTML = mainHtml;
+    document.getElementById('detailSidePane').innerHTML = renderDetailSide(data, type === 'audio' ? 'download' : 'basic');
+    updateDetailJumpButtons();
+}
+
+function openMediaDetail(type, index) {
+    currentResourceType = type;
+    renderMediaDetail(type, index || 0);
+    switchPage('detail');
+}
+
+function getDetailListLength(type) {
+    if (type === 'audio') return audios.length;
+    return (media[type] || []).length;
+}
+
+function updateDetailJumpButtons() {
+    var total = getDetailListLength(currentDetailType);
+    var prev = document.getElementById('detailPrevBtn');
+    var next = document.getElementById('detailNextBtn');
+    if (!prev || !next) return;
+    prev.disabled = currentDetailIndex <= 0;
+    next.disabled = currentDetailIndex >= total - 1;
+}
+
+function jumpMediaDetail(direction) {
+    var total = getDetailListLength(currentDetailType);
+    var nextIndex = currentDetailIndex + direction;
+    if (nextIndex < 0 || nextIndex >= total) return;
+    renderMediaDetail(currentDetailType, nextIndex);
+}
+
+function backToResource() {
+    switchPage('resource');
 }
 
 function renderLegacyTrend(range) {
@@ -1952,6 +2307,21 @@ function downloadPrd() {
 }
 
 var changelogData = [
+    { time: '2026-06-01 17:54', desc: '首页推荐素材取数和排除规则按当前可用字段继续收敛' },
+    { time: '2026-06-01 17:44', desc: '首页推荐素材字段排除规则收敛为按文件格式处理动图资源' },
+    { time: '2026-06-01 17:33', desc: '图片、视频、音频详情页右上角新增“上一个/下一个”素材跳转按钮，并同步 PRD 交互规则' },
+    { time: '2026-06-01 15:51', desc: '成品图片、视频、音频详情页按线上智能媒资系统截图还原左右分栏、操作条和基础信息结构' },
+    { time: '2026-06-01 15:05', desc: '成品稿件发布时间筛选精简为全部、单日期、时间段三项' },
+    { time: '2026-06-01 13:50', desc: '成品音频列表页去除标题下方波形装饰样式' },
+    { time: '2026-06-01 11:53', desc: '全省资源库推荐素材数据规则去除候选池准入说明' },
+    { time: '2026-06-01 11:51', desc: '成品音频搜索框去除上传图片入口，图片和视频保留图搜能力' },
+    { time: '2026-06-01 11:38', desc: '成品稿件改用首页同款 AI 搜索条，图搜按钮替换为筛选按钮并支持展开收起筛选区域' },
+    { time: '2026-06-01 11:27', desc: '成品稿件检索条件去除“检索设置”行，PRD 同步仅保留发布时间和稿件类型高级条件' },
+    { time: '2026-06-01 11:22', desc: '首页推荐素材去重口径收窄为同一稿件ID' },
+    { time: '2026-06-01 11:18', desc: '首页推荐素材规则去除冗余说明和人工推荐排除说明，排序描述改为字段完整度分层' },
+    { time: '2026-06-01 11:14', desc: '首页推荐素材改为仅使用素材已有字段准入、排除和排序' },
+    { time: '2026-06-01 11:09', desc: '首页全省资源库推荐素材改为纯机器推荐策略，新增低质和装饰性素材硬排除规则' },
+    { time: '2026-06-01 09:54', desc: '成品图片、成品视频、成品音频改用首页同款多模态 AI 搜索条，不再按资源库额外区分搜索入口' },
     { time: '2026-05-28 18:24', desc: '取消全省资源库“客户端”渠道行，改为 PRD 和数据规则中的固定筛选条件' },
     { time: '2026-05-28 15:32', desc: '全省资源库结果区去除顶部“成品稿件/结果数量”信息头，列表直接展示内容' },
     { time: '2026-05-28 15:30', desc: '首页主视觉副标题改为线上文案，并将客户端渠道 Tab 收敛为二级下划线选中态' },
