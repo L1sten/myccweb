@@ -988,9 +988,295 @@
         .page-btn:hover { border-color: var(--primary); color: var(--primary); }
         .page-btn.active:hover { color: #fff; }
 
-        .page-footer { color: var(--subtle); text-align: center; padding: 20px 12px 28px; font-size: 12px; }
+	        .page-footer { color: var(--subtle); text-align: center; padding: 20px 12px 28px; font-size: 12px; }
 
-        .top-controls { position: fixed; top: 70px; right: 14px; z-index: 400; display: flex; align-items: center; gap: 8px; }
+	        .mobile-launcher {
+	            position: fixed;
+	            right: 24px;
+	            bottom: 28px;
+	            z-index: 360;
+	            height: 44px;
+	            border: 1px solid rgba(0, 82, 217, .22);
+	            border-radius: 999px;
+	            padding: 0 16px 0 13px;
+	            display: inline-flex;
+	            align-items: center;
+	            gap: 8px;
+	            background: #fff;
+	            color: var(--primary);
+	            font-weight: 700;
+	            box-shadow: 0 12px 32px rgba(0, 82, 217, .18);
+	            transition: transform .16s, box-shadow .16s, background .16s;
+	        }
+	        .mobile-launcher:hover { transform: translateY(-2px); background: #f7faff; box-shadow: 0 16px 38px rgba(0, 82, 217, .22); }
+	        .mobile-launcher .icon { width: 18px; height: 18px; }
+	        .mobile-home-overlay {
+	            display: none;
+	            position: fixed;
+	            inset: 0;
+	            z-index: 520;
+	            align-items: center;
+	            justify-content: center;
+	            padding: 28px;
+	            background: rgba(15, 23, 42, .32);
+	            backdrop-filter: blur(18px) saturate(1.08);
+	        }
+	        .mobile-home-overlay.show { display: flex; }
+	        .mobile-home-dialog {
+	            position: relative;
+	            width: min(414px, calc(100vw - 28px));
+	            max-height: calc(100vh - 48px);
+	            display: flex;
+	            justify-content: center;
+	        }
+	        .mobile-home-close {
+	            position: absolute;
+	            right: -14px;
+	            top: -14px;
+	            z-index: 2;
+	            width: 34px;
+	            height: 34px;
+	            border: 1px solid rgba(255,255,255,.72);
+	            border-radius: 50%;
+	            background: rgba(255,255,255,.94);
+	            color: #111827;
+	            display: grid;
+	            place-items: center;
+	            box-shadow: 0 10px 28px rgba(15,23,42,.2);
+	        }
+	        .mobile-phone {
+	            width: 375px;
+	            height: min(812px, calc(100vh - 62px));
+	            min-height: 620px;
+	            display: flex;
+	            flex-direction: column;
+	            overflow: hidden;
+	            border-radius: 28px;
+	            background: #fff;
+	            box-shadow: 0 26px 80px rgba(15,23,42,.34);
+	        }
+	        .mobile-status {
+	            height: 34px;
+	            flex-shrink: 0;
+	            display: flex;
+	            align-items: center;
+	            justify-content: space-between;
+	            padding: 0 28px 0 42px;
+	            color: #0b1020;
+	            font-size: 15px;
+	            font-weight: 760;
+	            background: #fff;
+	        }
+	        .mobile-signal { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 760; }
+	        .mobile-bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
+	        .mobile-bars span { width: 3px; border-radius: 2px; background: #0b1020; }
+	        .mobile-bars span:nth-child(1) { height: 5px; }
+	        .mobile-bars span:nth-child(2) { height: 8px; }
+	        .mobile-bars span:nth-child(3) { height: 11px; }
+	        .mobile-bars span:nth-child(4) { height: 14px; }
+	        .mobile-battery { width: 25px; height: 12px; border: 1.7px solid #0b1020; border-radius: 4px; position: relative; display: inline-flex; align-items: center; padding: 1px; }
+	        .mobile-battery::after { content: ""; position: absolute; right: -4px; top: 3px; width: 2px; height: 5px; border-radius: 1px; background: #0b1020; }
+	        .mobile-battery i { width: 15px; height: 100%; border-radius: 2px; background: #0b1020; display: block; }
+	        .mobile-appbar {
+	            height: 58px;
+	            flex-shrink: 0;
+	            display: grid;
+	            grid-template-columns: 96px 1fr 96px;
+	            align-items: center;
+	            border-bottom: 1px solid #eef1f6;
+	            background: #fff;
+	        }
+	        .mobile-appbar-title { text-align: center; font-size: 17px; font-weight: 760; color: #181d2f; }
+	        .mobile-icon-row { display: flex; align-items: center; gap: 18px; padding: 0 22px; color: #111827; }
+	        .mobile-icon-row.end { justify-content: flex-end; }
+	        .mobile-icon-btn { width: 26px; height: 26px; border: 0; background: transparent; color: inherit; display: grid; place-items: center; padding: 0; }
+	        .mobile-screen {
+	            flex: 1;
+	            min-height: 0;
+	            overflow-y: auto;
+	            background: #f7f8fb;
+	            scrollbar-width: none;
+	        }
+	        .mobile-screen::-webkit-scrollbar { display: none; }
+	        .mobile-view { display: none; min-height: 100%; }
+	        .mobile-view.active { display: block; }
+	        .mobile-hero {
+	            position: relative;
+	            padding: 42px 14px 22px;
+	            background:
+	                radial-gradient(circle at 78% 0%, rgba(103, 232, 249, .52), transparent 42%),
+	                radial-gradient(circle at 12% 6%, rgba(191, 219, 254, .9), transparent 42%),
+	                linear-gradient(180deg, #edf7ff 0%, #f7f8fb 100%);
+	        }
+	        .mobile-menu-mark { position: absolute; left: 14px; top: 12px; width: 22px; height: 18px; display: grid; gap: 4px; }
+	        .mobile-menu-mark span { height: 2.5px; border-radius: 3px; background: #1f2937; }
+	        .mobile-title { margin: 28px 0 8px; text-align: center; color: #070b16; font-size: 28px; line-height: 1.2; font-weight: 820; letter-spacing: 0; }
+	        .mobile-subtitle { margin: 0 0 44px; text-align: center; color: #252b3a; font-size: 15px; }
+	        .mobile-search-card {
+	            position: relative;
+	            min-height: 58px;
+	            display: grid;
+	            grid-template-columns: 94px 1fr 34px 76px;
+	            align-items: center;
+	            gap: 0;
+	            border-radius: 14px;
+	            background: #fff;
+	            box-shadow: 0 14px 30px rgba(15,23,42,.12);
+	            padding: 0 8px 0 12px;
+	        }
+	        .mobile-type-select {
+	            height: 36px;
+	            border: 0;
+	            border-right: 1px solid #edf0f5;
+	            background: transparent;
+	            color: #172033;
+	            display: inline-flex;
+	            align-items: center;
+	            justify-content: center;
+	            gap: 5px;
+	            font-weight: 680;
+	        }
+	        .mobile-type-menu {
+	            display: none;
+	            position: absolute;
+	            left: 14px;
+	            top: 58px;
+	            width: 136px;
+	            border-radius: 12px;
+	            background: #fff;
+	            box-shadow: 0 16px 36px rgba(15,23,42,.16);
+	            overflow: hidden;
+	            z-index: 4;
+	        }
+	        .mobile-type-menu.show { display: block; }
+	        .mobile-type-menu button {
+	            width: 100%;
+	            height: 50px;
+	            border: 0;
+	            background: #fff;
+	            color: #202938;
+	            font-size: 17px;
+	        }
+	        .mobile-type-menu button + button { border-top: 1px solid #eef1f6; }
+	        .mobile-type-menu button.active { color: var(--primary); font-weight: 760; }
+	        .mobile-search-card input {
+	            min-width: 0;
+	            height: 44px;
+	            border: 0;
+	            outline: 0;
+	            color: #172033;
+	            background: transparent;
+	            font-size: 15px;
+	        }
+	        .mobile-search-card input::placeholder { color: #a4acb9; }
+	        .mobile-library-switch {
+	            display: grid;
+	            grid-template-columns: 1fr 1fr;
+	            gap: 4px;
+	            width: min(220px, 100%);
+	            height: 34px;
+	            margin: 12px auto 0;
+	            padding: 3px;
+	            border-radius: 999px;
+	            background: rgba(255,255,255,.54);
+	            box-shadow: inset 0 1px 2px rgba(255,255,255,.82), 0 6px 18px rgba(15,23,42,.06);
+	        }
+	        .mobile-library-switch button {
+	            min-width: 0;
+	            border: 0;
+	            border-radius: 999px;
+	            background: transparent;
+	            color: #697386;
+	            font-size: 13px;
+	            font-weight: 720;
+	            white-space: nowrap;
+	            transition: background .16s, color .16s, box-shadow .16s;
+	        }
+	        .mobile-library-switch button.active {
+	            background: #fff;
+	            color: var(--primary);
+	            box-shadow: 0 3px 10px rgba(15,23,42,.1);
+	        }
+	        .mobile-camera {
+	            width: 30px;
+	            height: 30px;
+	            border: 0;
+	            border-radius: 8px;
+	            background: transparent;
+	            color: #8d96a8;
+	            display: grid;
+	            place-items: center;
+	        }
+	        .mobile-search-submit {
+	            height: 44px;
+	            border: 0;
+	            border-radius: 11px;
+	            background: #151a33;
+	            color: #fff;
+	            font-weight: 760;
+	        }
+	        .mobile-content { padding: 20px 14px 28px; }
+	        .mobile-section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+	        .mobile-section-title { margin: 0; font-size: 19px; font-weight: 820; color: #111827; }
+	        .mobile-asset-tabs { display: inline-grid; grid-template-columns: 1fr 1fr; padding: 3px; border-radius: 10px; background: #eef1f6; }
+	        .mobile-asset-tabs button { width: 48px; height: 28px; border: 0; border-radius: 8px; color: #6b7280; background: transparent; font-weight: 700; }
+	        .mobile-asset-tabs button.active { background: #fff; color: #111827; box-shadow: 0 2px 7px rgba(15,23,42,.08); }
+	        .mobile-card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+	        .mobile-material-card {
+	            position: relative;
+	            height: 124px;
+	            border-radius: 7px;
+	            overflow: hidden;
+	            background: #e5e7eb;
+	        }
+	        .mobile-material-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+	        .mobile-material-card.is-portrait img { object-fit: contain; background: color-mix(in srgb, #d9e2ee 78%, var(--tone, #94a3b8)); }
+	        .mobile-material-card.is-video::after {
+	            content: "";
+	            position: absolute;
+	            left: 50%;
+	            top: 50%;
+	            width: 38px;
+	            height: 38px;
+	            transform: translate(-50%, -50%);
+	            border-radius: 50%;
+	            background: rgba(15,23,42,.56);
+	        }
+	        .mobile-material-card.is-video::before {
+	            content: "";
+	            position: absolute;
+	            left: 50%;
+	            top: 50%;
+	            transform: translate(-38%, -50%);
+	            border-left: 12px solid #fff;
+	            border-top: 8px solid transparent;
+	            border-bottom: 8px solid transparent;
+	            z-index: 2;
+	        }
+	        .mobile-result-tools {
+	            padding: 18px 14px 12px;
+	            border-bottom: 1px solid #eef1f6;
+	            background: #fff;
+	        }
+	        .mobile-result-tools .mobile-library-switch {
+	            width: 100%;
+	            margin-top: 10px;
+	            background: #f1f4f8;
+	            box-shadow: none;
+	        }
+	        .mobile-result-search {
+	            min-height: 46px;
+	            grid-template-columns: 28px 1fr 34px 76px;
+	            border: 1px solid #eef1f6;
+	            border-radius: 999px;
+	            box-shadow: none;
+	            padding-left: 13px;
+	        }
+	        .mobile-result-search .mobile-search-submit { height: 38px; border-radius: 10px; }
+	        .mobile-result-count { margin: 0; color: #6b7280; font-size: 15px; font-weight: 650; }
+	        .mobile-result-count b { color: #111827; font-size: 18px; }
+
+	        .top-controls { position: fixed; top: 70px; right: 14px; z-index: 400; display: flex; align-items: center; gap: 8px; }
         .prd-toggle, .changelog-btn {
             display: flex;
             align-items: center;
@@ -1469,25 +1755,120 @@
     </div>
 </div>
 
-<div class="top-controls">
-    <button class="prd-toggle" id="prdToggle" onclick="togglePrdPanel()"><span class="toggle-dot"></span> PRD</button>
-    <button class="changelog-btn" onclick="downloadPrd()">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        PRD 下载
+	<div class="top-controls">
+	    <button class="prd-toggle" id="prdToggle" onclick="togglePrdPanel()"><span class="toggle-dot"></span> PRD</button>
+	    <button class="changelog-btn" onclick="downloadPrd()">
+	        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+	        PRD 下载
     </button>
     <button class="changelog-btn" onclick="toggleChangelog()">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
-        更新记录
-    </button>
-</div>
+	        更新记录
+	    </button>
+	</div>
 
-<div class="changelog-overlay" id="changelogOverlay" onclick="toggleChangelog()"></div>
-<div class="changelog-modal" id="changelogModal">
-    <div class="changelog-header"><h3>更新记录</h3><button class="changelog-close" onclick="toggleChangelog()">&times;</button></div>
-    <div class="changelog-body" id="changelogBody"></div>
-</div>
+	<button class="mobile-launcher" type="button" onclick="openMobileHome()">
+	    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
+	    移动端首页
+	</button>
 
-<textarea id="prdMdSource" style="display:none">
+	<div class="changelog-overlay" id="changelogOverlay" onclick="toggleChangelog()"></div>
+	<div class="changelog-modal" id="changelogModal">
+	    <div class="changelog-header"><h3>更新记录</h3><button class="changelog-close" onclick="toggleChangelog()">&times;</button></div>
+	    <div class="changelog-body" id="changelogBody"></div>
+	</div>
+
+	<div class="mobile-home-overlay" id="mobileHomeOverlay" onclick="closeMobileHome()">
+	    <div class="mobile-home-dialog" role="dialog" aria-modal="true" aria-label="移动端首页预览" onclick="event.stopPropagation()">
+	        <button class="mobile-home-close" type="button" onclick="closeMobileHome()" aria-label="关闭移动端首页预览">
+	            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+	        </button>
+	        <div class="mobile-phone">
+	            <div class="mobile-status">
+	                <span id="mobileClock">09:24</span>
+	                <span class="mobile-signal"><span class="mobile-bars"><span></span><span></span><span></span><span></span></span>5G<span class="mobile-battery"><i></i></span></span>
+	            </div>
+	            <div class="mobile-appbar">
+	                <div class="mobile-icon-row">
+	                    <button class="mobile-icon-btn" type="button" aria-label="返回">
+	                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m15 18-6-6 6-6"/></svg>
+	                    </button>
+	                    <button class="mobile-icon-btn" type="button" onclick="closeMobileHome()" aria-label="关闭">
+	                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6 6 18M6 6l12 12"/></svg>
+	                    </button>
+	                </div>
+	                <div class="mobile-appbar-title" id="mobileAppTitle">智能媒资</div>
+	                <div class="mobile-icon-row end">
+	                    <button class="mobile-icon-btn" type="button" aria-label="更多">
+	                        <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+	                    </button>
+	                </div>
+	            </div>
+	            <div class="mobile-screen">
+	                <section class="mobile-view active" id="mobileHomeView">
+	                    <div class="mobile-hero">
+	                        <div class="mobile-menu-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+	                        <h2 class="mobile-title">灵感无界，触手可及</h2>
+	                        <p class="mobile-subtitle">海量多模态媒资，AI赋能创意检索</p>
+	                        <div class="mobile-search-card">
+	                            <button class="mobile-type-select" type="button" onclick="toggleMobileTypeMenu()">
+	                                <span id="mobileTypeText">图片</span>
+	                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+	                            </button>
+	                            <input id="mobileSearchInput" placeholder="请描述画面灵感" onkeydown="if(event.key==='Enter')runMobileSearch()">
+	                            <button class="mobile-camera" id="mobileCameraButton" type="button" onclick="showToast('可通过图片理解进行多模态检索')" aria-label="图片检索">
+	                                <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M9 4h6l1.4 2H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.6L9 4Zm3 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0-2.2a2.8 2.8 0 1 1 0-5.6 2.8 2.8 0 0 1 0 5.6Z"/></svg>
+	                            </button>
+	                            <button class="mobile-search-submit" type="button" onclick="runMobileSearch()">AI智搜</button>
+	                            <div class="mobile-type-menu" id="mobileTypeMenu">
+	                                <button class="active" type="button" data-mobile-type="image" onclick="setMobileAssetType('image')">图片</button>
+	                                <button type="button" data-mobile-type="video" onclick="setMobileAssetType('video')">视频</button>
+	                            </div>
+	                        </div>
+	                    </div>
+	                    <div class="mobile-content">
+	                        <div class="mobile-section-head">
+	                            <h3 class="mobile-section-title">推荐素材</h3>
+	                            <div class="mobile-asset-tabs" aria-label="推荐素材类型">
+	                                <button class="active" type="button" data-mobile-type-tab="image" onclick="setMobileAssetType('image')">图片</button>
+	                                <button type="button" data-mobile-type-tab="video" onclick="setMobileAssetType('video')">视频</button>
+	                            </div>
+	                        </div>
+	                        <div class="mobile-card-grid" id="mobileRecommendGrid"></div>
+	                    </div>
+	                </section>
+	                <section class="mobile-view" id="mobileResultView">
+	                    <div class="mobile-result-tools">
+	                        <div class="mobile-search-card mobile-result-search">
+	                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+	                            <input id="mobileResultInput" placeholder="请输入关键词" onkeydown="if(event.key==='Enter')runMobileSearchFromResult()">
+	                            <button class="mobile-camera" type="button" onclick="showToast('可继续使用图片理解进行多模态检索')" aria-label="图片检索">
+	                                <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M9 4h6l1.4 2H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.6L9 4Zm3 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"/></svg>
+	                            </button>
+	                            <button class="mobile-search-submit" type="button" onclick="runMobileSearchFromResult()">AI智搜</button>
+	                        </div>
+	                        <div class="mobile-library-switch" aria-label="移动端搜索结果库范围">
+	                            <button class="active" type="button" data-mobile-library="province" onclick="setMobileLibrary('province')">全省资源库</button>
+	                            <button type="button" data-mobile-library="media" onclick="setMobileLibrary('media')">媒资素材库</button>
+	                        </div>
+	                    </div>
+	                    <div class="mobile-content">
+	                        <div class="mobile-section-head">
+	                            <p class="mobile-result-count" id="mobileResultCount">找到 <b>10</b> 个结果</p>
+	                            <div class="mobile-asset-tabs" aria-label="搜索结果类型">
+	                                <button class="active" type="button" data-mobile-type-tab="image" onclick="setMobileAssetType('image')">图片</button>
+	                                <button type="button" data-mobile-type-tab="video" onclick="setMobileAssetType('video')">视频</button>
+	                            </div>
+	                        </div>
+	                        <div class="mobile-card-grid" id="mobileResultGrid"></div>
+	                    </div>
+	                </section>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+
+	<textarea id="prdMdSource" style="display:none">
 # 全省资源库 v2 PRD
 
 ## 产品概述
@@ -1613,6 +1994,21 @@
   - **取数规则**：权限状态从用户角色与模块权限配置读取。
   - **数据筛选规则**：仅当用户具备全省资源库查看权限时，返回新增模块所需数据。
   - **数据排序规则**：权限判断不改变已有模块的数据排序。
+
+### 2.5 移动端首页优化
+
+- **展示规则**：
+  - 移动端首页沿用“灵感无界，触手可及”和“海量多模态媒资，AI赋能创意检索”的首页表达，展示 AI智搜、图片/视频类型切换、搜索框和推荐素材。
+  - 搜索列表页展示全省资源库/媒资素材库切换，默认选中全省资源库，媒资素材库展示在全省资源库之后；移动端首页态不展示该切换。
+
+- **交互规则**：
+  - AI智搜支持自然语言描述和图片理解入口，不提供精准检索模式切换。
+  - 在搜索列表页切换全省资源库/媒资素材库时刷新搜索结果列表，并保留当前图片/视频类型和输入内容。
+  - 切换图片/视频类型时刷新推荐素材和搜索结果列表。
+- **数据规则**：
+  - **取数规则**：复用 Web 首页多模态检索口径和用户权限口径；选择媒资素材库时读取线上首页原有可检索媒资，选择全省资源库时读取当前用户可见的全省资源库成品图片和成品视频。
+  - **数据筛选规则**：按选中的资源库范围、资源类型、关键词或自然语言意图、用户权限取交集；无全省资源库权限时过滤不可见的全省资源库素材。
+  - **数据排序规则**：推荐区默认按全省资源库首页推荐素材排序口径展示；搜索结果按检索相关性优先，同等相关性下按发布时间倒序展示。
 
 ---
 
@@ -1848,14 +2244,160 @@ var media = {
         ['滨州媒体行黄河生态现场', '潮新闻客户端', '2026/04/11', 'img/2aa99f62-ba7c-4e36-9bf3-cffb1870b89c_m.jpg', '06:35']
     ]
 };
-var audios = [
-    ['清晨新闻联播：共同富裕示范区建设观察', '浙江之声', '12:42', 'MP3', '2026/05/28'],
-    ['文旅访谈：宋韵文化与城市更新', '钱江晚报', '18:06', 'WAV', '2026/05/27'],
-    ['县域观察：融媒中心一线报道样本', '潮新闻', '09:31', 'MP3', '2026/05/26'],
-    ['专题配音：越剧百年传承', '爱嵊州客户端', '06:18', 'AAC', '2026/05/19']
-];
+	var audios = [
+	    ['清晨新闻联播：共同富裕示范区建设观察', '浙江之声', '12:42', 'MP3', '2026/05/28'],
+	    ['文旅访谈：宋韵文化与城市更新', '钱江晚报', '18:06', 'WAV', '2026/05/27'],
+	    ['县域观察：融媒中心一线报道样本', '潮新闻', '09:31', 'MP3', '2026/05/26'],
+	    ['专题配音：越剧百年传承', '爱嵊州客户端', '06:18', 'AAC', '2026/05/19']
+	];
+		var mobileAssetType = 'image';
+		var mobileLibrary = 'province';
+		var mobilePools = {
+	    image: [
+	        { title: '稻田丰收画面', src: 'img/8252fbe5-9f01-4712-8775-6eec3976ba6b_m.jpg' },
+	        { title: '城市地标晚霞', src: 'img/c57e0677-74ea-40fb-9efe-42ecfe368d56_m.png', portrait: true, tone: '#9fb6ca' },
+	        { title: '宋韵文化建筑群', src: 'img/db1d8ad9-64aa-4460-a05f-6bf00b169980_m.jpg' },
+	        { title: '古城广场实景', src: 'img/f89c4e15-9d26-4602-a126-8c16167c8480_m.jpg' },
+	        { title: '古建筑夕照', src: 'img/673c3d6e-114c-4f81-a6b8-bed9c03f4cc0_m.jpg', portrait: true, tone: '#d5a38b' },
+	        { title: '云端城市天际线', src: 'img/2aa99f62-ba7c-4e36-9bf3-cffb1870b89c_m.jpg', portrait: true, tone: '#b9c4d0' },
+	        { title: '西湖荷塘晚景', src: 'img/4d8c8075-0daa-435f-a509-9b65880a4769_m.jpg' },
+	        { title: '白塔湖水面', src: 'img/80077534-66d6-4bb6-b2b9-173fdc244dc0_m.jpg', portrait: true, tone: '#a9bfca' },
+	        { title: '观鸟现场', src: 'img/48318c6d-3f4a-45f4-921c-3ed4c4febd9a_m.jpg' },
+	        { title: '湖区标识装置', src: 'img/6a461d0e-5448-4551-8a85-760682cfc1c5_m.jpg', portrait: true, tone: '#d7dce3' }
+	    ],
+	    video: [
+	        { title: '越剧120周年专题', src: 'img/191fe758-19a1-446f-8cae-16cb1c8c0660_m.png', video: true },
+	        { title: '城市发展观察', src: 'img/f8cbc203-61f8-44ec-82cd-1b59353780b6_m.jpg', video: true },
+	        { title: '数字经济报道', src: 'img/f89c4e15-9d26-4602-a126-8c16167c8480_m.jpg', video: true },
+	        { title: '港口作业现场', src: 'img/b90bfe95-5904-4c50-82cc-1041830e3671_m.jpg', video: true },
+	        { title: '宋韵文化探访', src: 'img/c57e0677-74ea-40fb-9efe-42ecfe368d56_m.png', video: true, portrait: true, tone: '#9fb6ca' },
+	        { title: '生态现场记录', src: 'img/2aa99f62-ba7c-4e36-9bf3-cffb1870b89c_m.jpg', video: true }
+		    ]
+		};
+		var mobileProvincePools = {
+		    image: [
+		        { title: '全省资源库·黄河媒体行', src: 'img/4d8c8075-0daa-435f-a509-9b65880a4769_m.jpg' },
+		        { title: '全省资源库·宋代建筑美学', src: 'img/c57e0677-74ea-40fb-9efe-42ecfe368d56_m.png', portrait: true, tone: '#9fb6ca' },
+		        { title: '全省资源库·高质量发展', src: 'img/f8cbc203-61f8-44ec-82cd-1b59353780b6_m.jpg' },
+		        { title: '全省资源库·港口作业', src: 'img/b90bfe95-5904-4c50-82cc-1041830e3671_m.jpg' },
+		        { title: '全省资源库·东钱湖绿道', src: 'img/8252fbe5-9f01-4712-8775-6eec3976ba6b_m.jpg' },
+		        { title: '全省资源库·南宋文化节', src: 'img/db1d8ad9-64aa-4460-a05f-6bf00b169980_m.jpg' },
+		        { title: '全省资源库·城市更新航拍', src: 'img/673c3d6e-114c-4f81-a6b8-bed9c03f4cc0_m.jpg', portrait: true, tone: '#d5a38b' },
+		        { title: '全省资源库·生态现场', src: 'img/2aa99f62-ba7c-4e36-9bf3-cffb1870b89c_m.jpg', portrait: true, tone: '#b9c4d0' }
+		    ],
+		    video: [
+		        { title: '全省资源库·越剧120周年', src: 'img/191fe758-19a1-446f-8cae-16cb1c8c0660_m.png', video: true },
+		        { title: '全省资源库·德寿宫探访', src: 'img/c57e0677-74ea-40fb-9efe-42ecfe368d56_m.png', video: true, portrait: true, tone: '#9fb6ca' },
+		        { title: '全省资源库·数字经济观察', src: 'img/f89c4e15-9d26-4602-a126-8c16167c8480_m.jpg', video: true },
+		        { title: '全省资源库·黄河生态现场', src: 'img/2aa99f62-ba7c-4e36-9bf3-cffb1870b89c_m.jpg', video: true },
+		        { title: '全省资源库·城市发展一线', src: 'img/f8cbc203-61f8-44ec-82cd-1b59353780b6_m.jpg', video: true }
+		    ]
+		};
 
-function showToast(text) { alert(text); }
+	function showToast(text) { alert(text); }
+
+	function openMobileHome() {
+	    var overlay = document.getElementById('mobileHomeOverlay');
+	    if (!overlay) return;
+	    overlay.classList.add('show');
+	    setMobileView('home');
+	    renderMobileCards();
+	}
+
+	function closeMobileHome() {
+	    var overlay = document.getElementById('mobileHomeOverlay');
+	    if (overlay) overlay.classList.remove('show');
+	    toggleMobileTypeMenu(false);
+	}
+
+	function setMobileView(view) {
+	    document.getElementById('mobileHomeView').classList.toggle('active', view === 'home');
+	    document.getElementById('mobileResultView').classList.toggle('active', view === 'result');
+	    document.getElementById('mobileAppTitle').textContent = view === 'result' ? '搜索结果' : '智能媒资';
+	    document.getElementById('mobileClock').textContent = view === 'result' ? '09:25' : '09:24';
+	}
+
+	function toggleMobileTypeMenu(force) {
+	    var menu = document.getElementById('mobileTypeMenu');
+	    if (!menu) return;
+	    var show = typeof force === 'boolean' ? force : !menu.classList.contains('show');
+	    menu.classList.toggle('show', show);
+	}
+
+		function setMobileAssetType(type) {
+		    mobileAssetType = type;
+	    var label = type === 'video' ? '视频' : '图片';
+	    var typeText = document.getElementById('mobileTypeText');
+	    if (typeText) typeText.textContent = label;
+	    document.querySelectorAll('[data-mobile-type], [data-mobile-type-tab]').forEach(function(btn) {
+	        btn.classList.toggle('active', (btn.dataset.mobileType || btn.dataset.mobileTypeTab) === type);
+	    });
+	    toggleMobileTypeMenu(false);
+		    renderMobileCards();
+		    updateMobileResultCount();
+		}
+
+		function setMobileLibrary(library) {
+		    mobileLibrary = library;
+		    document.querySelectorAll('[data-mobile-library]').forEach(function(btn) {
+		        btn.classList.toggle('active', btn.dataset.mobileLibrary === library);
+		    });
+		    renderMobileCards();
+		    updateMobileResultCount();
+		}
+
+		function getMobilePool() {
+		    var source = mobileLibrary === 'province' ? mobileProvincePools : mobilePools;
+		    return source[mobileAssetType] || source.image;
+		}
+
+	function renderMobileCards() {
+	    renderMobileCardGrid('mobileRecommendGrid', false);
+	    renderMobileCardGrid('mobileResultGrid', true);
+	}
+
+	function renderMobileCardGrid(targetId, isResult) {
+	    var target = document.getElementById(targetId);
+	    if (!target) return;
+		    var pool = getMobilePool();
+		    var limit = isResult ? (mobileAssetType === 'video' ? 6 : 10) : 6;
+	    var html = '';
+	    pool.slice(0, limit).forEach(function(item) {
+	        var classes = ['mobile-material-card'];
+	        if (item.portrait) classes.push('is-portrait');
+	        if (item.video || mobileAssetType === 'video') classes.push('is-video');
+	        html += '<article class="' + classes.join(' ') + '" style="--tone:' + escapeHtml(item.tone || '#cbd5e1') + '">';
+	        html += '<img src="' + escapeHtml(item.src) + '" alt="' + escapeHtml(item.title) + '">';
+	        html += '</article>';
+	    });
+	    target.innerHTML = html;
+	}
+
+	function updateMobileResultCount() {
+		    var count = document.getElementById('mobileResultCount');
+		    if (!count) return;
+		    var total = getMobilePool().length;
+		    count.innerHTML = '找到 <b>' + total + '</b> 个结果';
+		}
+
+	function runMobileSearch() {
+	    var input = document.getElementById('mobileSearchInput');
+	    var keyword = input.value.trim() || (mobileAssetType === 'video' ? '城市宣传片' : '西湖');
+	    input.value = keyword;
+	    document.getElementById('mobileResultInput').value = keyword;
+	    setMobileView('result');
+	    renderMobileCards();
+	    updateMobileResultCount();
+	}
+
+	function runMobileSearchFromResult() {
+	    var input = document.getElementById('mobileResultInput');
+	    var keyword = input.value.trim() || (mobileAssetType === 'video' ? '城市宣传片' : '西湖');
+	    input.value = keyword;
+	    document.getElementById('mobileSearchInput').value = keyword;
+	    renderMobileCards();
+	    updateMobileResultCount();
+	}
 
 function setProvincePermission(flag) {
     hasProvincePermission = flag;
@@ -2310,6 +2852,7 @@ function downloadPrd() {
 }
 
 var changelogData = [
+    { time: '2026-06-02 09:59', desc: '新增移动端首页优化，支持 AI智搜、图片/视频推荐和搜索列表页全省资源库/媒资素材库切换。' },
     { time: '2026-06-01 19:22', desc: '顶部主导航沿用线上已有排序，并将全省资源库入口调整到最后。' },
     { time: '2026-06-01 18:54', desc: '完成首页推荐素材与数据统计规则收敛、全省资源库搜索体验、图片/视频/音频详情页和素材跳转优化。' },
     { time: '2026-05-28 10:54', desc: '创建全省资源库 v2，合并首页搜索、推荐素材、统计趋势和全省资源库聚合页。' }
