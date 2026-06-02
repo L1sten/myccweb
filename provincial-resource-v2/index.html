@@ -325,6 +325,7 @@
         .legacy-label { color: var(--muted); font-size: 12px; margin-bottom: 12px; }
         .legacy-value { font-size: 25px; font-weight: 780; line-height: 1; }
         .legacy-unit { color: var(--subtle); font-size: 12px; margin-left: 5px; }
+        .legacy-foot { margin-top: 9px; color: var(--green); font-size: 12px; }
         .trend-card {
             background: #fff;
             border: 1px solid var(--line);
@@ -1525,13 +1526,12 @@
                         <div class="section-head">
                             <div>
                                 <h2 class="section-title">资源聚合</h2>
-                                <p class="section-sub">汇总当前媒资素材库的图片、视频、音频规模。</p>
                             </div>
                         </div>
-                        <div class="legacy-stats-grid">
-                            <div class="legacy-stat"><div class="legacy-label">图片资源总量</div><div class="legacy-value">1,942<span class="legacy-unit">张</span></div></div>
-                            <div class="legacy-stat"><div class="legacy-label">视频资源总量</div><div class="legacy-value">6.47<span class="legacy-unit">小时</span></div></div>
-                            <div class="legacy-stat"><div class="legacy-label">音频资源总量</div><div class="legacy-value">17<span class="legacy-unit">条</span></div></div>
+                        <div class="legacy-stats-grid" id="legacyStatsGrid">
+                            <div class="legacy-stat"><div class="legacy-label">图片资源总量</div><div class="legacy-value">1,942<span class="legacy-unit">张</span></div><div class="legacy-foot">近两周 +2,938</div></div>
+                            <div class="legacy-stat"><div class="legacy-label">视频资源总量</div><div class="legacy-value">6.47<span class="legacy-unit">小时</span></div><div class="legacy-foot">近两周 +365</div></div>
+                            <div class="legacy-stat"><div class="legacy-label">音频资源总量</div><div class="legacy-value">17<span class="legacy-unit">条</span></div><div class="legacy-foot">近两周 +26</div></div>
                         </div>
                     </section>
 
@@ -1561,14 +1561,13 @@
                         <div class="section-head">
                             <div>
                                 <h2 class="section-title">全省资源库数据统计</h2>
-                                <p class="section-sub">按入库时间统计稿件、图片、视频、音频的新增规模和结构变化。</p>
                             </div>
                         </div>
-                        <div class="stats-strip">
-                            <div class="metric"><div class="metric-label">稿件入库总量</div><div class="metric-value">38,426<span class="metric-unit">篇</span></div><div class="metric-foot">近两周 +1,284</div></div>
+                        <div class="stats-strip" id="provinceStatsStrip">
+                            <div class="metric"><div class="metric-label">稿件入库总量</div><div class="metric-value">38,426<span class="metric-unit">篇</span></div><div class="metric-foot">近两周 +1,650</div></div>
                             <div class="metric"><div class="metric-label">图片入库总量</div><div class="metric-value">126,914<span class="metric-unit">张</span></div><div class="metric-foot">近两周 +6,812</div></div>
-                            <div class="metric"><div class="metric-label">视频入库总量</div><div class="metric-value">9,376<span class="metric-unit">条</span></div><div class="metric-foot">近两周 +463</div></div>
-                            <div class="metric"><div class="metric-label">音频入库总量</div><div class="metric-value">2,148<span class="metric-unit">条</span></div><div class="metric-foot">近两周 +92</div></div>
+                            <div class="metric"><div class="metric-label">视频入库总量</div><div class="metric-value">9,376<span class="metric-unit">条</span></div><div class="metric-foot">近两周 +491</div></div>
+                            <div class="metric"><div class="metric-label">音频入库总量</div><div class="metric-value">2,148<span class="metric-unit">条</span></div><div class="metric-foot">近两周 +95</div></div>
                         </div>
                         <div class="trend-card">
                             <div class="trend-head">
@@ -1936,14 +1935,16 @@
 - **展示规则**：
   - 首页已上线模块保持现有展示，不在本 PRD 中重新定义字段、样式和交互细节。
   - 原有模块包括首页搜索区、最新图片资源、资源聚合、资源入库趋势等。
+  - 本期优化“资源聚合”的数据统计展示，图片、视频、音频数据卡片展示资源总量和当前统计周期增量。
   - 无全省资源库权限时，首页仅展示线上已有模块，整体顺序和默认状态保持不变。
 - **交互规则**：
   - 原有模块沿用线上交互规则。
-  - 本期不改变原有首页搜索、最新图片资源、资源聚合和资源入库趋势的使用方式。
+  - 用户切换“资源入库趋势”统计周期时，同步刷新“资源聚合”数据卡片的周期增量和趋势图；统计周期包括近两周、近一个月、近三个月。
 - **数据规则**：
-  - **取数规则**：原有模块沿用线上取数口径。
-  - **数据筛选规则**：原有模块沿用线上筛选口径。
-  - **数据排序规则**：原有模块沿用线上排序口径。
+  - **取数规则**：资源聚合总量沿用线上当前媒资素材库累计统计口径；周期增量读取当前媒资素材库中按入库时间落在所选统计周期内的新增图片、视频、音频素材。
+  - **数据筛选规则**：仅统计当前用户可见、已入库且状态正常的公共媒资素材；下架、删除、权限不可见资源不纳入统计。
+  - **数据排序规则**：趋势图按统计周期时间正序展示；数据卡片按图片、视频、音频固定顺序展示。
+  - **数据聚合规则**：近两周增量为“资源入库趋势”近两周视图中最近 14 个统计日的新增入库量求和；近一个月增量为近一个月视图中各周新增入库量求和；近三个月增量为近三个月视图中各月新增入库量求和。
 
 ### 2.2 全省资源库推荐素材
 
@@ -1967,11 +1968,12 @@
 
 - **展示规则**：
   - “全省资源库数据统计”为首页新增模块，展示在已有“资源入库趋势”之后，作为首页底部补充统计区域。
+  - 模块标题下不展示副标题说明。
   - 模块展示稿件、图片、视频、音频的入库总量、周期增量和入库统计趋势图。
   - 模块不替换线上已有“资源入库趋势”，两者并列表达不同数据口径。
   - 无全省资源库权限时隐藏该模块，首页底部保持线上已有模块收尾。
 - **交互规则**：
-  - 用户切换统计周期时，仅刷新“全省资源库数据统计”模块。
+  - 用户切换统计周期时，仅刷新“全省资源库数据统计”模块内的指标卡周期增量和入库统计趋势图。
   - 周期切换不影响线上已有“资源入库趋势”的周期选择和展示状态。
   - 鼠标悬停趋势图节点时展示对应日期或周期的稿件、图片、视频、音频入库数量。
 - **数据规则**：
@@ -2007,9 +2009,9 @@
   - 在搜索列表页切换全省资源库/媒资素材库时刷新搜索结果列表，并保留当前图片/视频类型和输入内容。
   - 切换图片/视频类型时刷新推荐素材和搜索结果列表。
 - **数据规则**：
-  - **取数规则**：复用 Web 首页多模态检索口径和用户权限口径；选择媒资素材库时读取线上首页原有可检索媒资，选择全省资源库时读取当前用户可见的全省资源库成品图片和成品视频。
-  - **数据筛选规则**：按选中的资源库范围、资源类型、关键词或自然语言意图、用户权限取交集；无全省资源库权限时过滤不可见的全省资源库素材。
-  - **数据排序规则**：推荐区默认按全省资源库首页推荐素材排序口径展示；搜索结果按检索相关性优先，同等相关性下按发布时间倒序展示。
+  - **取数规则**：复用 Web 首页多模态检索口径和用户权限口径；移动端首页推荐素材在有全省资源库权限时读取全省资源库推荐素材，无全省资源库权限时沿用线上已有逻辑，读取公共素材库最新素材；搜索列表页选择媒资素材库时读取线上首页原有可检索媒资，选择全省资源库时读取当前用户可见的全省资源库成品图片和成品视频。
+  - **数据筛选规则**：按推荐区或搜索列表页所在场景、选中的资源类型、关键词或自然语言意图、用户权限取交集；无全省资源库权限时，推荐区不取全省资源库素材，搜索结果中过滤不可见的全省资源库素材。
+  - **数据排序规则**：移动端首页推荐区有全省资源库权限时按全省资源库首页推荐素材排序口径展示，无全省资源库权限时按公共素材库发布时间倒序展示最新素材；搜索结果按检索相关性优先，同等相关性下按发布时间倒序展示。
 
 ---
 
@@ -2206,6 +2208,11 @@ var trendData = {
         ['3月', 2746, 11850, 816, 148], ['4月', 3018, 12940, 902, 163], ['5月', 3274, 13892, 986, 184]
     ]
 };
+var trendRangeLabels = {
+    last14: '近两周',
+    month: '近一个月',
+    quarter: '近三个月'
+};
 var legacyTrendData = {
     last14: [
         ['5/15', 186, 24, 2], ['5/16', 164, 21, 1], ['5/17', 142, 18, 1], ['5/18', 218, 27, 2],
@@ -2350,8 +2357,16 @@ var media = {
 		    updateMobileResultCount();
 		}
 
-		function getMobilePool() {
+		function getMobileRecommendPool() {
+		    var source = hasProvincePermission ? mobileProvincePools : mobilePools;
+		    return source[mobileAssetType] || source.image;
+		}
+
+		function getMobileResultPool() {
 		    var source = mobileLibrary === 'province' ? mobileProvincePools : mobilePools;
+		    if (mobileLibrary === 'province' && !hasProvincePermission) {
+		        return [];
+		    }
 		    return source[mobileAssetType] || source.image;
 		}
 
@@ -2363,8 +2378,8 @@ var media = {
 	function renderMobileCardGrid(targetId, isResult) {
 	    var target = document.getElementById(targetId);
 	    if (!target) return;
-		    var pool = getMobilePool();
-		    var limit = isResult ? (mobileAssetType === 'video' ? 6 : 10) : 6;
+	    var pool = isResult ? getMobileResultPool() : getMobileRecommendPool();
+	    var limit = isResult ? (mobileAssetType === 'video' ? 6 : 10) : 6;
 	    var html = '';
 	    pool.slice(0, limit).forEach(function(item) {
 	        var classes = ['mobile-material-card'];
@@ -2378,11 +2393,11 @@ var media = {
 	}
 
 	function updateMobileResultCount() {
-		    var count = document.getElementById('mobileResultCount');
-		    if (!count) return;
-		    var total = getMobilePool().length;
-		    count.innerHTML = '找到 <b>' + total + '</b> 个结果';
-		}
+	    var count = document.getElementById('mobileResultCount');
+	    if (!count) return;
+	    var total = getMobileResultPool().length;
+	    count.innerHTML = '找到 <b>' + total + '</b> 个结果';
+	}
 
 	function runMobileSearch() {
 	    var input = document.getElementById('mobileSearchInput');
@@ -2411,6 +2426,8 @@ function setProvincePermission(flag) {
     document.querySelectorAll('.province-only').forEach(function(el) {
         el.style.display = flag ? '' : 'none';
     });
+    renderMobileCards();
+    updateMobileResultCount();
 }
 
 function switchPage(page) {
@@ -2782,7 +2799,9 @@ function backToResource() {
 }
 
 function renderLegacyTrend(range) {
-    var data = legacyTrendData[range || 'last14'];
+    var key = range || 'last14';
+    var data = legacyTrendData[key] || legacyTrendData.last14;
+    renderLegacyTrendMetrics(key, data);
     var max = Math.max.apply(null, data.map(function(item) { return item[1] + item[2] + item[3]; }));
     var points = [];
     var html = '';
@@ -2803,8 +2822,25 @@ function renderLegacyTrend(range) {
     document.getElementById('legacyTrendChart').innerHTML = html;
 }
 
+function renderLegacyTrendMetrics(range, data) {
+    var foots = document.querySelectorAll('#legacyStatsGrid .legacy-foot');
+    if (!foots.length) return;
+    var label = trendRangeLabels[range] || trendRangeLabels.last14;
+    var totals = [0, 0, 0];
+    data.forEach(function(item) {
+        totals[0] += item[1];
+        totals[1] += item[2];
+        totals[2] += item[3];
+    });
+    totals.forEach(function(value, index) {
+        if (foots[index]) foots[index].textContent = label + ' +' + formatMetricDelta(value);
+    });
+}
+
 function renderTrend(range) {
-    var data = trendData[range || 'last14'];
+    var key = range || 'last14';
+    var data = trendData[key] || trendData.last14;
+    renderTrendMetrics(key, data);
     var max = Math.max.apply(null, data.map(function(item) { return item[1] + item[2] + item[3] + item[4]; }));
     var points = [];
     var html = '';
@@ -2824,6 +2860,26 @@ function renderTrend(range) {
     points.forEach(function(point) { html += '<circle class="trend-line-dot" cx="' + point.x + '" cy="' + point.y + '" r="1.5"></circle>'; });
     html += '</svg>';
     document.getElementById('trendChart').innerHTML = html;
+}
+
+function formatMetricDelta(value) {
+    return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function renderTrendMetrics(range, data) {
+    var foots = document.querySelectorAll('#provinceStatsStrip .metric-foot');
+    if (!foots.length) return;
+    var label = trendRangeLabels[range] || trendRangeLabels.last14;
+    var totals = [0, 0, 0, 0];
+    data.forEach(function(item) {
+        totals[0] += item[1];
+        totals[1] += item[2];
+        totals[2] += item[3];
+        totals[3] += item[4];
+    });
+    totals.forEach(function(value, index) {
+        if (foots[index]) foots[index].textContent = label + ' +' + formatMetricDelta(value);
+    });
 }
 
 function buildPath(points) {
@@ -2856,6 +2912,7 @@ function downloadPrd() {
 }
 
 var changelogData = [
+    { time: '2026-06-02 11:00', desc: '优化首页资源聚合与全省资源库统计，支持周期增量联动，并补充移动端无权限推荐素材兜底规则。' },
     { time: '2026-06-02 10:15', desc: '优化移动端搜索结果页返回首页交互，并移除不适素材及其列表、移动端素材池引用。' },
     { time: '2026-06-02 09:59', desc: '新增移动端首页优化，支持 AI智搜、图片/视频推荐和搜索列表页全省资源库/媒资素材库切换。' },
     { time: '2026-06-01 19:22', desc: '顶部主导航沿用线上已有排序，并将全省资源库入口调整到最后。' },
