@@ -662,15 +662,15 @@
         .resource-filter-box .condition-line:first-child { grid-column: auto; }
         .article-filter-row {
             display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
+            flex-wrap: nowrap;
+            gap: 10px;
             align-items: center;
             width: 100%;
         }
-        .article-filter-row .legacy-date-picker { flex: 1 1 500px; min-width: 430px; max-width: 520px; }
+        .article-filter-row .legacy-date-picker { flex: 0 0 340px; min-width: 0; max-width: 340px; }
         .article-type-select {
             position: relative;
-            flex: 0 0 180px;
+            flex: 0 0 160px;
         }
         .article-type-select select {
             width: 100%;
@@ -743,17 +743,16 @@
         }
         .legacy-date-picker {
             position: relative;
-            width: min(520px, 100%);
+            width: min(340px, 100%);
         }
         .legacy-date-trigger {
             display: flex;
             align-items: center;
-            gap: 10px;
             min-width: 0;
         }
         .legacy-date-input {
-            width: 240px;
-            height: 36px;
+            width: 100%;
+            height: 38px;
             border: 1px solid #d3dae6;
             border-radius: 6px;
             background: #fff;
@@ -763,16 +762,24 @@
             gap: 8px;
             padding: 0 12px;
             font-size: 14px;
+            font-weight: 600;
             transition: border-color .15s, box-shadow .15s;
         }
-        .legacy-date-input:hover,
+        .legacy-date-input:hover {
+            border-color: #aeb8c7;
+            color: var(--text);
+        }
+        .legacy-date-input:focus-visible,
         .legacy-date-input.active {
             border-color: var(--primary);
             box-shadow: 0 0 0 2px rgba(0, 82, 217, .12);
             color: var(--text);
         }
         .legacy-date-input .icon { color: #b7c0cf; }
-        .legacy-date-separator { color: var(--ink); font-weight: 700; font-size: 16px; }
+        .legacy-date-input b {
+            color: var(--subtle);
+            font-weight: 700;
+        }
         .legacy-date-popover {
             position: absolute;
             left: 0;
@@ -1626,6 +1633,9 @@
         .prd-content table.prd-table td{padding:8px 12px !important;border:1px solid var(--line-soft) !important;color:#444 !important;font-size:13px !important;line-height:1.6 !important}
 
         @container (max-width: 1040px) {
+            .resource-query-panel { grid-template-columns: 1fr; }
+            .resource-search-box { justify-content: stretch; }
+            .resource-search-box .home-search { max-width: none; }
             .detail-shell { grid-template-columns: minmax(0, 1fr) 360px; }
             .video-data-grid, .audio-detail-grid { grid-template-columns: 1fr; }
             .detail-meta-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1675,8 +1685,6 @@
             .article-type-select { flex: 1 1 100%; min-width: 0; max-width: none; }
             .article-type-select select { font-size: 14px; }
             .legacy-date-picker, .legacy-date-input { width: 100%; }
-            .legacy-date-trigger { flex-wrap: wrap; }
-            .legacy-date-separator { width: 100%; text-align: center; line-height: 1; }
             .legacy-date-popover {
                 position: static;
                 width: 100%;
@@ -1970,14 +1978,9 @@
                                 <div class="article-filter-row">
                                     <div class="legacy-date-picker" id="articleDatePicker">
                                         <div class="legacy-date-trigger">
-                                            <button class="legacy-date-input active" type="button" onclick="toggleDatePicker('articleDatePopover')">
-                                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                                                <span>2026-05-03</span>
-                                            </button>
-                                            <span class="legacy-date-separator">-</span>
                                             <button class="legacy-date-input" type="button" onclick="toggleDatePicker('articleDatePopover')">
                                                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                                                <span>2026-06-02</span>
+                                                <span>创建开始日期</span><b>至</b><span>创建结束日期</span>
                                             </button>
                                         </div>
                                         <div class="legacy-date-popover" id="articleDatePopover">
@@ -2052,14 +2055,9 @@
                                 <div class="resource-filter-box">
                                     <div class="legacy-date-picker" id="legacyDatePicker">
                                         <div class="legacy-date-trigger">
-                                            <button class="legacy-date-input active" type="button" onclick="toggleLegacyDatePicker()">
-                                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                                                <span>选择开始日期</span>
-                                            </button>
-                                            <span class="legacy-date-separator">-</span>
                                             <button class="legacy-date-input" type="button" onclick="toggleLegacyDatePicker()">
                                                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                                                <span>选择结束日期</span>
+                                                <span>创建开始日期</span><b>至</b><span>创建结束日期</span>
                                             </button>
                                         </div>
                                         <div class="legacy-date-popover" id="legacyDatePopover">
@@ -2105,9 +2103,6 @@
                                     <div class="home-search media-ai-search compact-resource-search">
                                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#98a2b3" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                                     <input id="legacyKeyword" placeholder="输入关键词、自然语言描述搜索全部媒资" onkeydown="if(event.key==='Enter')runLegacySearch()">
-                                    <button class="circle-tool" id="legacyImageSearchButton" title="上传图片搜索" type="button" onclick="showToast('可通过上传图片进行多模态检索')">
-                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-                                    </button>
                                     <button class="primary-pill" type="button" onclick="runLegacySearch()">
                                         AI智搜
                                     </button>
@@ -2483,12 +2478,12 @@
 
 - **展示规则**：
   - 成品稿件列表顶部筛选区默认展示，不再放入搜索框内折叠。
-  - 筛选模块展示为日期范围控件和稿件类型下拉控件。
-  - 日期范围控件默认展示开始日期“2026-05-03”和结束日期“2026-06-02”。
+  - 筛选模块展示为单个日期范围控件和稿件类型下拉控件。
+  - 日期范围控件默认展示“创建开始日期 至 创建结束日期”。
   - 稿件类型下拉默认展示“全部稿件”。
   - 搜索框内不展示图搜入口、筛选按钮、精准检索/语义检索模式 Tab、字段下拉、匹配方式或追加条件入口。
 - **交互规则**：
-  - 用户可通过日期范围控件调整开始日期和结束日期。
+  - 用户可点击日期范围控件展开日期面板，并调整开始日期和结束日期。
   - 用户可通过稿件类型下拉切换全部稿件、新闻、图集、视频、音频、链接、视频专辑、音频专辑、专题、活动、直播。
   - 切换日期范围或稿件类型后刷新成品稿件结果，并清空当前勾选状态。
   - 右侧搜索框只承担关键词或自然语言检索动作。
@@ -2501,13 +2496,12 @@
 
 - **展示规则**：
   - 成品稿件、成品图片、成品视频、成品音频列表页上方均展示发布时间筛选。
-  - 成品稿件发布时间使用开始日期和结束日期的范围控件。
-  - 成品图片、成品视频、成品音频使用日期范围选择器，默认展示“选择开始日期 - 选择结束日期”两个输入框。
+  - 成品稿件、成品图片、成品视频、成品音频均使用单个日期范围控件。
+  - 日期范围控件默认展示“创建开始日期 至 创建结束日期”。
   - 日期范围选择器下拉面板包含今天、昨天、最近三天、最近一周、最近一个月快捷项，以及月份日历、年份选择和月份选择入口。
 - **交互规则**：
-  - 成品稿件按开始日期和结束日期筛选稿件。
-  - 成品图片、成品视频、成品音频点击开始日期或结束日期输入框时展开日期范围面板。
-  - 点击快捷项后自动回填开始日期和结束日期。
+  - 点击日期范围控件时展开日期范围面板。
+  - 点击快捷项后自动在同一个日期范围控件内回填开始日期和结束日期。
   - 点击日历日期后按所选日期回填日期范围；再次选择可更新日期条件。
 - **数据规则**：
   - **取数规则**：读取资源发布时间。
@@ -2532,19 +2526,18 @@
   - 成品图片、成品视频、成品音频不展示稿件类型筛选。
   - 列表顶部筛选区展示日期范围选择器，右侧展示紧凑多模态 AI智搜搜索框。
   - 搜索框展示搜索图标、关键词/自然语言输入框和“AI智搜”按钮。
-  - 成品图片、成品视频展示上传图片入口；成品音频不具备图搜能力，不展示上传图片入口。
+  - 成品图片、成品视频、成品音频均不展示图搜入口或上传图片入口。
   - 输入框统一使用“输入关键词、自然语言描述搜索全部媒资”占位文案，不按成品图片、成品视频、成品音频额外区分资源库。
   - 该模块不展示首页下方的素材中心、全省资源库、网络资源库筛选 chip；仅首页搜索进入的结果页展示范围 Tab。
   - 批量选择栏移动到结果区内部、卡片网格或音频列表上方，包含全选、已选数量和清除入口。
 - **交互规则**：
   - 点击“AI智搜”或按回车后，按输入内容刷新当前资源类型结果。
-  - 选择开始日期、结束日期或快捷日期范围后刷新当前资源类型结果。
-  - 在成品图片、成品视频下点击上传图片入口时进入多模态图片检索流程；未完成上传或识别失败时展示对应提示状态。
+  - 选择日期范围或快捷日期范围后刷新当前资源类型结果。
   - 勾选全选时选中当前页全部资源；取消全选时取消当前页全部选择。
   - 点击清除时取消当前页已选资源，并将已选数量恢复为 0。
 - **数据规则**：
-  - **取数规则**：读取当前资源类型、关键词/自然语言描述、发布时间开始日期、发布时间结束日期和当前页选择状态；仅成品图片、成品视频读取上传图片特征。
-  - **数据筛选规则**：文本语义、发布时间闭区间、地域和客户端渠道取交集；成品图片、成品视频上传图片时叠加图片特征条件；当前资源类型仅取成品图片、成品视频或成品音频。
+  - **取数规则**：读取当前资源类型、关键词/自然语言描述、发布时间开始日期、发布时间结束日期和当前页选择状态。
+  - **数据筛选规则**：文本语义、发布时间闭区间、地域和客户端渠道取交集；当前资源类型仅取成品图片、成品视频或成品音频。
   - **数据排序规则**：默认按多模态相关度倒序；相关度相同时按发布时间倒序。
 
 ---
@@ -2604,19 +2597,22 @@
 - **展示规则**：
   - 点击成品图片、成品视频、成品音频结果后进入详情页，详情页保持线上智能媒资系统的左右分栏结构。
   - 详情页顶部展示操作条，提供“添加到个人素材库”和“下载”两个主操作。
-  - 详情页右上角展示“上一个”“下一个”跳转按钮，用于在当前资源类型结果列表内快速切换素材。
+  - 全省资源库成品图片、成品视频、成品音频详情页不展示“上一个”“下一个”跳转按钮。
+  - “上一个”“下一个”仅在个人素材库、部门素材库、公共素材库的素材详情页中展示。
   - 成品图片详情左侧展示大图预览，下方展示大小、格式、尺寸；右侧展示“基本信息 / 下载记录”页签，默认展示基本信息。
   - 成品视频详情左侧展示视频预览区、播放按钮、封面图区域和视频数据；右侧展示“基本信息 / 下载记录”页签，默认展示基本信息。
   - 成品音频详情左侧展示音频播放器、基本信息和音频数据；右侧默认展示下载记录表格，暂无下载记录时展示空状态。
 - **交互规则**：
   - 点击“添加到个人素材库”后反馈添加结果。
   - 点击“下载”后触发下载动作。
-  - 点击“上一个”切换到当前结果列表中的上一条素材，点击“下一个”切换到下一条素材；首条素材的“上一个”和末条素材的“下一个”置灰不可点。
+  - 个人素材库、部门素材库、公共素材库详情页中，点击“上一个”切换到当前素材上下文中的上一条素材，点击“下一个”切换到下一条素材；首条素材的“上一个”和末条素材的“下一个”置灰不可点。
+  - 若当前素材属于某个文件夹，“上一个”“下一个”仅在该文件夹内切换，不跨文件夹、不跳转到素材库根目录或其他文件夹。
+  - 若当前素材不属于任何文件夹，“上一个”“下一个”按进入详情页时的当前素材列表上下文切换。
   - 详情页与列表页保持同一资源类型上下文，返回全省资源库时仍停留在进入详情前的成品类型。
 - **数据规则**：
   - **取数规则**：详情页读取素材标题、发布时间、关联稿件标题、渠道、发布站点、库名称、大小、格式、尺寸、时长、信息 ID 等已有字段。
-  - **数据筛选规则**：详情页只展示用户在列表中可见且有权限访问的素材。
-  - **数据排序规则**：“上一个”“下一个”按进入详情页时当前结果列表的排序顺序跳转；详情页不改变列表排序；下载记录按下载时间倒序展示。
+  - **数据筛选规则**：详情页只展示用户在列表中可见且有权限访问的素材；“上一个”“下一个”仅取个人素材库、部门素材库、公共素材库中的可见素材，且与当前素材所属素材库范围一致。
+  - **数据排序规则**：个人素材库、部门素材库、公共素材库详情页的“上一个”“下一个”按进入详情页时当前素材列表的排序顺序跳转；素材属于文件夹时，排序范围限定为该文件夹内素材；详情页不改变列表排序；下载记录按下载时间倒序展示。
 
 ### 4.5 分页
 
@@ -2646,6 +2642,7 @@
 var currentResourceType = 'article';
 var currentDetailType = 'image';
 var currentDetailIndex = 0;
+var currentDetailLibraryScope = 'province';
 var hasProvincePermission = true;
 var hasMediaPermission = true;
 var currentHomeResourceTab = 'media';
@@ -2963,7 +2960,6 @@ function switchResourceType(type) {
     document.querySelectorAll('.resource-tab').forEach(function(tab) { tab.classList.toggle('active', tab.dataset.type === type); });
     var keyword = document.getElementById('resourceKeyword');
     var legacyKeyword = document.getElementById('legacyKeyword');
-    var legacyImageSearchButton = document.getElementById('legacyImageSearchButton');
     var multimodalPlaceholder = '输入关键词、自然语言描述搜索全部媒资';
     if (type === 'article') {
         keyword.placeholder = '输入关键词、自然语言描述搜索成品稿件';
@@ -2974,9 +2970,6 @@ function switchResourceType(type) {
         legacyKeyword.placeholder = multimodalPlaceholder;
     } else {
         legacyKeyword.placeholder = multimodalPlaceholder;
-    }
-    if (legacyImageSearchButton) {
-        legacyImageSearchButton.classList.toggle('hidden', type === 'audio');
     }
     renderResourceResults();
 }
@@ -3343,8 +3336,9 @@ function renderMediaDetail(type, index) {
     updateDetailJumpButtons();
 }
 
-function openMediaDetail(type, index) {
+function openMediaDetail(type, index, libraryScope) {
     currentResourceType = type;
+    currentDetailLibraryScope = libraryScope || 'province';
     renderMediaDetail(type, index || 0);
     switchPage('detail');
 }
@@ -3356,14 +3350,19 @@ function getDetailListLength(type) {
 
 function updateDetailJumpButtons() {
     var total = getDetailListLength(currentDetailType);
+    var actions = document.querySelector('.detail-jump-actions');
     var prev = document.getElementById('detailPrevBtn');
     var next = document.getElementById('detailNextBtn');
     if (!prev || !next) return;
+    var canJump = ['personal', 'department', 'public'].indexOf(currentDetailLibraryScope) >= 0;
+    if (actions) actions.classList.toggle('hidden', !canJump);
+    if (!canJump) return;
     prev.disabled = currentDetailIndex <= 0;
     next.disabled = currentDetailIndex >= total - 1;
 }
 
 function jumpMediaDetail(direction) {
+    if (['personal', 'department', 'public'].indexOf(currentDetailLibraryScope) < 0) return;
     var total = getDetailListLength(currentDetailType);
     var nextIndex = currentDetailIndex + direction;
     if (nextIndex < 0 || nextIndex >= total) return;
@@ -3488,6 +3487,7 @@ function downloadPrd() {
 }
 
 var changelogData = [
+    { time: '2026-06-02 19:36', desc: '优化全省资源库详情页上下切换范围、成品图片/视频检索能力和单框时间筛选布局，同步 PRD 规则。' },
     { time: '2026-06-02 17:51', desc: '优化首页本地资源库与全省资源库分区、最新素材命名和移动端权限切换，同步全省资源库筛选、详情页及 PRD 规则。' },
     { time: '2026-06-02 11:00', desc: '优化首页资源聚合与全省资源库统计，支持周期增量联动，并补充移动端无权限推荐素材兜底规则。' },
     { time: '2026-06-02 10:15', desc: '优化移动端搜索结果页返回首页交互，并移除不适素材及其列表、移动端素材池引用。' },
