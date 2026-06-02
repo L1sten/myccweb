@@ -1790,7 +1790,7 @@
 	            </div>
 	            <div class="mobile-appbar">
 	                <div class="mobile-icon-row">
-	                    <button class="mobile-icon-btn" type="button" aria-label="返回">
+	                    <button class="mobile-icon-btn" type="button" onclick="handleMobileBack()" aria-label="返回">
 	                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m15 18-6-6 6-6"/></svg>
 	                    </button>
 	                    <button class="mobile-icon-btn" type="button" onclick="closeMobileHome()" aria-label="关闭">
@@ -2003,6 +2003,7 @@
 
 - **交互规则**：
   - AI智搜支持自然语言描述和图片理解入口，不提供精准检索模式切换。
+  - 搜索结果页点击左上角返回按钮后返回移动端首页态。
   - 在搜索列表页切换全省资源库/媒资素材库时刷新搜索结果列表，并保留当前图片/视频类型和输入内容。
   - 切换图片/视频类型时刷新推荐素材和搜索结果列表。
 - **数据规则**：
@@ -2240,8 +2241,7 @@ var media = {
     video: [
         ['越剧120周年 历久弥新的越剧百花园', '爱嵊州客户端', '2026/05/19', 'img/191fe758-19a1-446f-8cae-16cb1c8c0660_m.png', '09:00'],
         ['浙江数字经济高质量发展观察', '中国蓝新闻客户端', '2026/05/06', 'img/f89c4e15-9d26-4602-a126-8c16167c8480_m.jpg', '04:12'],
-        ['杭州德寿宫宋韵文化展探访', '钱江晚报', '2026/05/19', 'img/c57e0677-74ea-40fb-9efe-42ecfe368d56_m.png', '03:28'],
-        ['滨州媒体行黄河生态现场', '潮新闻客户端', '2026/04/11', 'img/2aa99f62-ba7c-4e36-9bf3-cffb1870b89c_m.jpg', '06:35']
+        ['杭州德寿宫宋韵文化展探访', '钱江晚报', '2026/05/19', 'img/c57e0677-74ea-40fb-9efe-42ecfe368d56_m.png', '03:28']
     ]
 };
 	var audios = [
@@ -2259,7 +2259,6 @@ var media = {
 	        { title: '宋韵文化建筑群', src: 'img/db1d8ad9-64aa-4460-a05f-6bf00b169980_m.jpg' },
 	        { title: '古城广场实景', src: 'img/f89c4e15-9d26-4602-a126-8c16167c8480_m.jpg' },
 	        { title: '古建筑夕照', src: 'img/673c3d6e-114c-4f81-a6b8-bed9c03f4cc0_m.jpg', portrait: true, tone: '#d5a38b' },
-	        { title: '云端城市天际线', src: 'img/2aa99f62-ba7c-4e36-9bf3-cffb1870b89c_m.jpg', portrait: true, tone: '#b9c4d0' },
 	        { title: '西湖荷塘晚景', src: 'img/4d8c8075-0daa-435f-a509-9b65880a4769_m.jpg' },
 	        { title: '白塔湖水面', src: 'img/80077534-66d6-4bb6-b2b9-173fdc244dc0_m.jpg', portrait: true, tone: '#a9bfca' },
 	        { title: '观鸟现场', src: 'img/48318c6d-3f4a-45f4-921c-3ed4c4febd9a_m.jpg' },
@@ -2270,8 +2269,7 @@ var media = {
 	        { title: '城市发展观察', src: 'img/f8cbc203-61f8-44ec-82cd-1b59353780b6_m.jpg', video: true },
 	        { title: '数字经济报道', src: 'img/f89c4e15-9d26-4602-a126-8c16167c8480_m.jpg', video: true },
 	        { title: '港口作业现场', src: 'img/b90bfe95-5904-4c50-82cc-1041830e3671_m.jpg', video: true },
-	        { title: '宋韵文化探访', src: 'img/c57e0677-74ea-40fb-9efe-42ecfe368d56_m.png', video: true, portrait: true, tone: '#9fb6ca' },
-	        { title: '生态现场记录', src: 'img/2aa99f62-ba7c-4e36-9bf3-cffb1870b89c_m.jpg', video: true }
+	        { title: '宋韵文化探访', src: 'img/c57e0677-74ea-40fb-9efe-42ecfe368d56_m.png', video: true, portrait: true, tone: '#9fb6ca' }
 		    ]
 		};
 		var mobileProvincePools = {
@@ -2282,14 +2280,12 @@ var media = {
 		        { title: '全省资源库·港口作业', src: 'img/b90bfe95-5904-4c50-82cc-1041830e3671_m.jpg' },
 		        { title: '全省资源库·东钱湖绿道', src: 'img/8252fbe5-9f01-4712-8775-6eec3976ba6b_m.jpg' },
 		        { title: '全省资源库·南宋文化节', src: 'img/db1d8ad9-64aa-4460-a05f-6bf00b169980_m.jpg' },
-		        { title: '全省资源库·城市更新航拍', src: 'img/673c3d6e-114c-4f81-a6b8-bed9c03f4cc0_m.jpg', portrait: true, tone: '#d5a38b' },
-		        { title: '全省资源库·生态现场', src: 'img/2aa99f62-ba7c-4e36-9bf3-cffb1870b89c_m.jpg', portrait: true, tone: '#b9c4d0' }
+		        { title: '全省资源库·城市更新航拍', src: 'img/673c3d6e-114c-4f81-a6b8-bed9c03f4cc0_m.jpg', portrait: true, tone: '#d5a38b' }
 		    ],
 		    video: [
 		        { title: '全省资源库·越剧120周年', src: 'img/191fe758-19a1-446f-8cae-16cb1c8c0660_m.png', video: true },
 		        { title: '全省资源库·德寿宫探访', src: 'img/c57e0677-74ea-40fb-9efe-42ecfe368d56_m.png', video: true, portrait: true, tone: '#9fb6ca' },
 		        { title: '全省资源库·数字经济观察', src: 'img/f89c4e15-9d26-4602-a126-8c16167c8480_m.jpg', video: true },
-		        { title: '全省资源库·黄河生态现场', src: 'img/2aa99f62-ba7c-4e36-9bf3-cffb1870b89c_m.jpg', video: true },
 		        { title: '全省资源库·城市发展一线', src: 'img/f8cbc203-61f8-44ec-82cd-1b59353780b6_m.jpg', video: true }
 		    ]
 		};
@@ -2315,6 +2311,14 @@ var media = {
 	    document.getElementById('mobileResultView').classList.toggle('active', view === 'result');
 	    document.getElementById('mobileAppTitle').textContent = view === 'result' ? '搜索结果' : '智能媒资';
 	    document.getElementById('mobileClock').textContent = view === 'result' ? '09:25' : '09:24';
+	}
+
+	function handleMobileBack() {
+	    var resultView = document.getElementById('mobileResultView');
+	    if (resultView && resultView.classList.contains('active')) {
+	        setMobileView('home');
+	        renderMobileCards();
+	    }
 	}
 
 	function toggleMobileTypeMenu(force) {
@@ -2852,6 +2856,7 @@ function downloadPrd() {
 }
 
 var changelogData = [
+    { time: '2026-06-02 10:15', desc: '优化移动端搜索结果页返回首页交互，并移除不适素材及其列表、移动端素材池引用。' },
     { time: '2026-06-02 09:59', desc: '新增移动端首页优化，支持 AI智搜、图片/视频推荐和搜索列表页全省资源库/媒资素材库切换。' },
     { time: '2026-06-01 19:22', desc: '顶部主导航沿用线上已有排序，并将全省资源库入口调整到最后。' },
     { time: '2026-06-01 18:54', desc: '完成首页推荐素材与数据统计规则收敛、全省资源库搜索体验、图片/视频/音频详情页和素材跳转优化。' },
