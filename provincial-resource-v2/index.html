@@ -185,39 +185,83 @@
         .filter-chip.active { border-color: var(--primary); background: var(--primary); color: #fff; }
 
         .section { padding: 22px 0 0; }
-        .permission-bar {
-            margin-top: 16px;
+        .home-resource-tabs {
+            width: fit-content;
+            margin: 18px auto 2px;
             display: flex;
-            justify-content: flex-end;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            gap: 34px;
+            padding: 0 2px;
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+        }
+        .home-resource-tab {
+            position: relative;
+            height: 36px;
+            border: 0;
+            border-radius: 0;
+            padding: 0 2px;
+            background: transparent;
+            color: var(--muted);
+            font-weight: 600;
+            transition: background .15s, color .15s;
+        }
+        .home-resource-tab::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 2px;
+            border-radius: 999px;
+            background: transparent;
+            transition: background .15s;
+        }
+        .home-resource-tab:hover { color: var(--primary); }
+        .home-resource-tab.active { background: transparent; color: var(--primary); font-weight: 700; }
+        .home-resource-tab.active::after { background: var(--primary); }
+        .permission-bar {
+            position: fixed;
+            right: 24px;
+            bottom: 82px;
+            z-index: 360;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 7px;
             color: var(--muted);
             font-size: 12px;
         }
+        .permission-caption {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 2px;
+            white-space: nowrap;
+        }
+        .permission-title { color: var(--text); font-weight: 650; }
+        .permission-note { color: var(--subtle); }
         .permission-switch {
             display: inline-flex;
             border: 1px solid var(--line);
             border-radius: 7px;
             overflow: hidden;
             background: #fff;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, .10);
         }
         .permission-switch button {
             height: 30px;
             border: 0;
             background: #fff;
             color: var(--muted);
-            padding: 0 12px;
+            padding: 0 11px;
+            font-size: 12px;
             transition: background .15s, color .15s;
         }
         .permission-switch button + button { border-left: 1px solid var(--line); }
         .permission-switch button.active { background: var(--primary); color: #fff; font-weight: 650; }
-        .permission-note {
-            color: var(--subtle);
-            background: #fff;
-            border: 1px dashed #cbd5e1;
-            border-radius: 6px;
-            padding: 5px 9px;
-        }
         .section-head { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 12px; }
         .section-title { margin: 0; font-size: 17px; line-height: 1.35; font-weight: 720; letter-spacing: 0; }
         .section-sub { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
@@ -386,11 +430,17 @@
         .trend-chart:hover .trend-line-dot { opacity: 1; }
 
         .resource-page { padding-bottom: 24px; }
+        .result-lib-filter {
+            display: none;
+            justify-content: flex-start;
+            margin: 10px 24px 0;
+        }
+        .resource-page.search-result-mode .result-lib-filter { display: flex; }
         .resource-tabs {
-            height: 44px;
+            height: 48px;
             display: flex;
             align-items: center;
-            gap: 18px;
+            gap: 30px;
             padding: 0 24px;
             background: #fff;
             border-bottom: 1px solid var(--line);
@@ -399,12 +449,13 @@
             z-index: 80;
         }
         .resource-tab {
-            height: 44px;
+            height: 48px;
             border: 0;
             background: transparent;
             color: var(--muted);
             padding: 0 2px;
-            border-bottom: 3px solid transparent;
+            border-bottom: 2px solid transparent;
+            font-size: 15px;
             font-weight: 650;
             transition: color .15s, border-color .15s, background .15s, box-shadow .15s;
         }
@@ -419,14 +470,14 @@
             outline: 2px solid var(--primary-line);
             outline-offset: -4px;
         }
-        .resource-layout { display: flex; min-height: calc(100vh - 102px); background: var(--page); }
+        .resource-layout { display: flex; min-height: calc(100vh - 106px); background: var(--page); }
         .sidebar {
             width: 220px;
             flex-shrink: 0;
             position: sticky;
-            top: 102px;
+            top: 106px;
             align-self: flex-start;
-            height: calc(100vh - 102px);
+            height: calc(100vh - 106px);
             overflow-y: auto;
             background: #fff;
             border-right: 1px solid var(--line);
@@ -449,6 +500,7 @@
             transition: background .15s;
         }
         .tree-row:hover { background: #eef4ff; }
+        .tree-row:has(input:checked) { background: #e8f0fe; box-shadow: inset 2px 0 0 var(--primary); }
         .tree-row input { width: 14px; height: 14px; accent-color: var(--primary); }
         .tree-row.parent { font-weight: 650; }
         .tree-children { padding-left: 10px; margin-left: 20px; border-left: 1px solid var(--line-soft); }
@@ -580,17 +632,261 @@
         .collapse-row button { border: 0; background: transparent; color: var(--muted); }
         .search-panel.collapsed .condition-area, .search-panel.collapsed .search-actions-row { display: none; }
         .search-panel.collapsed .advanced-search { padding-bottom: 12px; }
-        .article-search-panel .legacy-search-toolbar { min-height: 64px; }
-        .article-search-panel .home-search { width: 100%; box-shadow: none; }
-        .article-filter-area { padding: 10px 16px 12px; background: #fff; }
-
-        .legacy-search-panel {
+        .resource-query-panel {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+            gap: 12px;
+            align-items: center;
             background: #fff;
             border: 1px solid var(--line);
             border-radius: 8px;
-            overflow: hidden;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            box-shadow: none;
+        }
+        .resource-filter-box {
+            min-height: 38px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 4px;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            padding: 0;
+        }
+        .resource-filter-box .condition-line {
+            min-height: 28px;
+            gap: 8px 14px;
+        }
+        .resource-filter-box .condition-line:first-child { grid-column: auto; }
+        .article-filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            width: 100%;
+        }
+        .article-filter-row .legacy-date-picker { flex: 1 1 500px; min-width: 430px; max-width: 520px; }
+        .article-type-select {
+            position: relative;
+            flex: 0 0 180px;
+        }
+        .article-type-select select {
+            width: 100%;
+            height: 36px;
+            appearance: none;
+            border: 1px solid #aeb8c7;
+            border-radius: 6px;
+            background: #fff;
+            color: var(--subtle);
+            padding: 0 38px 0 14px;
+            font-size: 14px;
+            font-weight: 600;
+            outline: 0;
+        }
+        .article-type-select select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(0, 82, 217, .12);
+        }
+        .article-type-select .icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9aa4b2;
+            pointer-events: none;
+        }
+        .resource-search-box {
+            display: flex;
+            justify-content: flex-end;
+            min-width: 0;
+        }
+        .resource-search-box .home-search {
+            width: 100%;
+            max-width: 420px;
+            min-width: 0;
+            border-radius: 8px;
+            padding: 5px 6px 5px 12px;
+            box-shadow: none;
+        }
+        .resource-search-box .home-search:focus-within { box-shadow: 0 0 0 3px rgba(0, 82, 217, .12); }
+        .resource-search-box .home-search input {
+            height: 34px;
+            font-size: 14px;
+        }
+        .resource-search-box .circle-tool {
+            width: 34px;
+            height: 34px;
+            border-radius: 6px;
+        }
+        .resource-search-box .primary-pill {
+            height: 34px;
+            min-width: 76px;
+            border-radius: 6px;
+            padding: 0 14px;
+        }
+        .resource-search-box .primary-pill:hover { transform: none; }
+        .article-search-panel.hidden { display: none; }
+
+        .legacy-search-panel {
+            background: transparent;
+            border: 0;
+            border-radius: 0;
+            overflow: visible;
             margin-bottom: 10px;
         }
+        .legacy-search-panel .resource-query-panel {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            margin-bottom: 0;
+        }
+        .legacy-date-picker {
+            position: relative;
+            width: min(520px, 100%);
+        }
+        .legacy-date-trigger {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+        .legacy-date-input {
+            width: 240px;
+            height: 36px;
+            border: 1px solid #d3dae6;
+            border-radius: 6px;
+            background: #fff;
+            color: var(--subtle);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 12px;
+            font-size: 14px;
+            transition: border-color .15s, box-shadow .15s;
+        }
+        .legacy-date-input:hover,
+        .legacy-date-input.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(0, 82, 217, .12);
+            color: var(--text);
+        }
+        .legacy-date-input .icon { color: #b7c0cf; }
+        .legacy-date-separator { color: var(--ink); font-weight: 700; font-size: 16px; }
+        .legacy-date-popover {
+            position: absolute;
+            left: 0;
+            top: calc(100% + 10px);
+            z-index: 75;
+            width: min(590px, calc(100vw - 280px));
+            min-width: 560px;
+            display: none;
+            grid-template-columns: 132px 1fr;
+            background: #fff;
+            border: 1px solid #dbe2ec;
+            border-radius: 6px;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, .12);
+        }
+        .legacy-date-popover.show { display: grid; }
+        .legacy-date-popover::before {
+            content: "";
+            position: absolute;
+            left: 66px;
+            top: -8px;
+            width: 14px;
+            height: 14px;
+            background: #fff;
+            border-left: 1px solid #dbe2ec;
+            border-top: 1px solid #dbe2ec;
+            transform: rotate(45deg);
+        }
+        .date-quick-list {
+            padding: 10px 0;
+            border-right: 1px solid var(--line-soft);
+            background: #fff;
+        }
+        .date-quick-list button {
+            width: 100%;
+            height: 36px;
+            border: 0;
+            background: transparent;
+            color: var(--ink);
+            text-align: left;
+            padding: 0 18px;
+            font-size: 14px;
+        }
+        .date-quick-list button:hover,
+        .date-quick-list button.active { color: var(--primary); background: var(--primary-soft); }
+        .date-calendar {
+            padding: 14px 18px 16px;
+            background: #fff;
+        }
+        .calendar-head {
+            display: grid;
+            grid-template-columns: 30px 30px 1fr 30px 30px;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        .calendar-nav {
+            width: 28px;
+            height: 28px;
+            border: 0;
+            border-radius: 5px;
+            background: transparent;
+            color: var(--text);
+            font-size: 20px;
+        }
+        .calendar-nav:hover { background: #f2f5fa; color: var(--primary); }
+        .calendar-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 760;
+            color: var(--ink);
+            letter-spacing: 0;
+        }
+        .calendar-switches {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .calendar-switch {
+            height: 32px;
+            border: 1px solid #aeb5c0;
+            border-radius: 5px;
+            background: #fff;
+            color: var(--ink);
+            padding: 0 12px;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .calendar-week,
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+        }
+        .calendar-week {
+            color: var(--ink);
+            font-weight: 650;
+            padding-bottom: 8px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--line-soft);
+        }
+        .calendar-day {
+            height: 32px;
+            border: 0;
+            background: transparent;
+            color: var(--ink);
+            font-size: 13px;
+            border-radius: 5px;
+        }
+        .calendar-day.muted { color: #b7c0cf; }
+        .calendar-day.active,
+        .calendar-day:hover { color: var(--primary); background: #eef4ff; font-weight: 700; }
         .legacy-search-toolbar {
             min-height: 64px;
             display: flex;
@@ -659,7 +955,8 @@
             align-items: center;
             gap: 14px;
             padding: 0 16px;
-            border-top: 1px solid var(--line-soft);
+            border-top: 0;
+            border-bottom: 1px solid var(--line-soft);
             background: #fafbfc;
             color: var(--ink);
             font-weight: 650;
@@ -1339,6 +1636,12 @@
             .detail-shell { grid-template-columns: 1fr; }
         }
 
+        @media (max-width: 1180px) {
+            .resource-query-panel { grid-template-columns: 1fr; }
+            .resource-search-box { justify-content: stretch; }
+            .resource-search-box .home-search { max-width: none; }
+        }
+
         @media (max-width: 1100px) {
             .latest-grid, .recommend-grid, .media-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .stats-strip, .legacy-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1355,11 +1658,38 @@
             .home-search { border-radius: 14px; flex-wrap: wrap; padding: 10px; }
             .home-search input { flex-basis: calc(100% - 52px); }
             .primary-pill { flex: 1; justify-content: center; }
-            .permission-bar { justify-content: flex-start; flex-wrap: wrap; }
+            .permission-bar { right: 14px; bottom: 78px; max-width: calc(100vw - 28px); }
+            .permission-caption { max-width: 100%; }
+            .permission-switch { max-width: 100%; }
+            .permission-switch button { padding: 0 8px; }
             .latest-grid, .recommend-grid, .stats-strip, .legacy-stats-grid, .media-grid { grid-template-columns: 1fr; }
             .resource-layout { flex-direction: column; }
             .sidebar { width: 100%; position: static; height: auto; overflow: visible; border-right: 0; border-bottom: 1px solid var(--line); }
             .legacy-search-toolbar { align-items: stretch; flex-direction: column; gap: 10px; }
+            .resource-query-panel { grid-template-columns: 1fr; }
+            .resource-search-box { justify-content: stretch; }
+            .resource-search-box .home-search { max-width: none; flex-wrap: nowrap; border-radius: 8px; padding: 5px 6px 5px 12px; }
+            .resource-search-box .home-search input { flex-basis: auto; }
+            .resource-search-box .primary-pill { flex: 0 0 auto; }
+            .article-filter-row .legacy-date-picker,
+            .article-type-select { flex: 1 1 100%; min-width: 0; max-width: none; }
+            .article-type-select select { font-size: 14px; }
+            .legacy-date-picker, .legacy-date-input { width: 100%; }
+            .legacy-date-trigger { flex-wrap: wrap; }
+            .legacy-date-separator { width: 100%; text-align: center; line-height: 1; }
+            .legacy-date-popover {
+                position: static;
+                width: 100%;
+                min-width: 0;
+                grid-template-columns: 1fr;
+                margin-top: 10px;
+            }
+            .legacy-date-popover::before { display: none; }
+            .date-quick-list { border-right: 0; border-bottom: 1px solid var(--line-soft); }
+            .date-calendar { padding: 18px 14px; }
+            .calendar-title { font-size: 18px; }
+            .calendar-switches { gap: 10px; }
+            .calendar-switch { padding: 0 12px; }
             .legacy-date-range { flex-wrap: wrap; }
             .date-field, .legacy-keyword { width: 100%; }
             .primary-condition, .or-condition-row { grid-template-columns: 1fr; gap: 8px; }
@@ -1396,7 +1726,7 @@
                 <button class="nav-item" onclick="showToast('素材中心为导航占位')">素材中心</button>
                 <button class="nav-item" onclick="showToast('审批中心为线上导航占位')">审批中心</button>
                 <button class="nav-item" onclick="showToast('同步中心为线上导航占位')">同步中心</button>
-                <button class="nav-item" onclick="showToast('智能标签库为线上导航占位')">智能标签库</button>
+                <button class="nav-item" onclick="showToast('标签中心为线上导航占位')">标签中心</button>
                 <button class="nav-item" data-page="resource" onclick="switchPage('resource')">全省资源库</button>
             </nav>
             <div class="nav-right">
@@ -1425,26 +1755,16 @@
                                 AI智搜
                             </button>
                         </div>
-                        <div class="home-lib-filter" id="homeLibFilter">
-                            <button class="filter-chip active" onclick="selectHomeFilter(this)">全部</button>
-                            <button class="filter-chip" onclick="selectHomeFilter(this)">媒资素材库</button>
-                            <button class="filter-chip" onclick="selectHomeFilter(this)">全省资源库</button>
-                            <button class="filter-chip" onclick="selectHomeFilter(this)">网络资源库</button>
-                        </div>
-                    </div>
-                </div>
+	                    </div>
+	                </div>
 
-                <div class="content-shell">
-                    <div class="permission-bar">
-                        <span>账号权限</span>
-                        <div class="permission-switch" aria-label="全省资源库权限视图">
-                            <button class="active" data-permission="on" onclick="setProvincePermission(true)">有全省资源库权限</button>
-                            <button data-permission="off" onclick="setProvincePermission(false)">无权限</button>
-                        </div>
-                        <span class="permission-note">仅原型展示，不做开发</span>
-                    </div>
+		                <div class="content-shell">
+	                    <div class="home-resource-tabs" id="homeResourceTabs" aria-label="首页资源范围">
+	                        <button class="home-resource-tab active" type="button" data-home-tab="media" onclick="switchHomeResourceTab('media')">本地资源库</button>
+	                        <button class="home-resource-tab" type="button" data-home-tab="province" onclick="switchHomeResourceTab('province')">全省资源库</button>
+	                    </div>
 
-                    <section class="section">
+	                    <section class="section" data-home-pane="media">
                         <div class="section-head">
                             <div>
                                 <h2 class="section-title">最新图片资源</h2>
@@ -1471,10 +1791,10 @@
                         </div>
                     </section>
 
-                    <section class="section province-only">
+	                    <section class="section province-only" data-home-pane="province">
                         <div class="section-head">
                             <div>
-                                <h2 class="section-title">全省资源库推荐素材</h2>
+                                <h2 class="section-title">最新素材</h2>
                             </div>
                             <button class="text-link" onclick="switchPage('resource')">进入全省资源库 →</button>
                         </div>
@@ -1522,7 +1842,7 @@
                         </div>
                     </section>
 
-                    <section class="section">
+	                    <section class="section" data-home-pane="media">
                         <div class="section-head">
                             <div>
                                 <h2 class="section-title">资源聚合</h2>
@@ -1535,7 +1855,7 @@
                         </div>
                     </section>
 
-                    <section class="section">
+	                    <section class="section" data-home-pane="media">
                         <div class="trend-card">
                             <div class="trend-head">
                                 <div class="trend-title">资源入库趋势</div>
@@ -1557,7 +1877,7 @@
                         </div>
                     </section>
 
-                    <section class="section province-only">
+	                    <section class="section province-only" data-home-pane="province">
                         <div class="section-head">
                             <div>
                                 <h2 class="section-title">全省资源库数据统计</h2>
@@ -1593,8 +1913,14 @@
                 </div>
             </section>
 
-            <section class="view resource-page" id="resourceView">
-                <div class="resource-tabs">
+	            <section class="view resource-page" id="resourceView">
+	                <div class="home-lib-filter result-lib-filter" id="resultLibFilter" aria-label="搜索结果资源范围">
+	                    <button class="filter-chip active" onclick="selectSearchFilter(this)">全部</button>
+	                    <button class="filter-chip" onclick="selectSearchFilter(this)">素材中心</button>
+	                    <button class="filter-chip" onclick="selectSearchFilter(this)">全省资源库</button>
+	                    <button class="filter-chip" onclick="selectSearchFilter(this)">网络资源库</button>
+	                </div>
+	                <div class="resource-tabs">
                     <button class="resource-tab active" data-type="article" onclick="switchResourceType('article')">成品稿件</button>
                     <button class="resource-tab" data-type="image" onclick="switchResourceType('image')">成品图片</button>
                     <button class="resource-tab" data-type="video" onclick="switchResourceType('video')">成品视频</button>
@@ -1639,56 +1965,154 @@
                         </div>
                     </aside>
                     <div class="resource-main">
-                        <section class="search-panel article-search-panel" id="resourceSearchPanel">
-                            <div class="legacy-search-toolbar">
-                                <div class="home-search media-ai-search article-ai-search">
-                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#98a2b3" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                                    <input id="resourceKeyword" placeholder="输入关键词、自然语言描述搜索成品稿件" onkeydown="if(event.key==='Enter')runResourceSearch()">
-                                    <button class="circle-tool" id="articleFilterToggle" title="展开筛选" aria-label="展开筛选" aria-expanded="false" type="button" onclick="toggleArticleFilters()">
-                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18"/><path d="M7 12h10"/><path d="M10 19h4"/></svg>
-                                    </button>
-                                    <button class="primary-pill" type="button" onclick="runResourceSearch()">
-                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                                        AI智搜
-                                    </button>
+                        <section class="resource-query-panel article-search-panel" id="resourceSearchPanel">
+                            <div class="resource-filter-box" id="conditionArea">
+                                <div class="article-filter-row">
+                                    <div class="legacy-date-picker" id="articleDatePicker">
+                                        <div class="legacy-date-trigger">
+                                            <button class="legacy-date-input active" type="button" onclick="toggleDatePicker('articleDatePopover')">
+                                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                                                <span>2026-05-03</span>
+                                            </button>
+                                            <span class="legacy-date-separator">-</span>
+                                            <button class="legacy-date-input" type="button" onclick="toggleDatePicker('articleDatePopover')">
+                                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                                                <span>2026-06-02</span>
+                                            </button>
+                                        </div>
+                                        <div class="legacy-date-popover" id="articleDatePopover">
+                                            <div class="date-quick-list">
+                                                <button type="button" onclick="selectLegacyQuickRange(this)">今天</button>
+                                                <button type="button" onclick="selectLegacyQuickRange(this)">昨天</button>
+                                                <button type="button" onclick="selectLegacyQuickRange(this)">最近三天</button>
+                                                <button type="button" onclick="selectLegacyQuickRange(this)">最近一周</button>
+                                                <button type="button" onclick="selectLegacyQuickRange(this)">最近一个月</button>
+                                            </div>
+                                            <div class="date-calendar">
+                                                <div class="calendar-head">
+                                                    <button class="calendar-nav" type="button">«</button>
+                                                    <button class="calendar-nav" type="button">‹</button>
+                                                    <div class="calendar-title">2026 年 6 月</div>
+                                                    <button class="calendar-nav" type="button">›</button>
+                                                    <button class="calendar-nav" type="button">»</button>
+                                                </div>
+                                                <div class="calendar-switches">
+                                                    <button class="calendar-switch" type="button">
+                                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                                                        选年份
+                                                    </button>
+                                                    <button class="calendar-switch" type="button">
+                                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                                                        选月份
+                                                    </button>
+                                                </div>
+                                                <div class="calendar-week"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+                                                <div class="calendar-days">
+                                                    <button class="calendar-day muted" type="button">31</button><button class="calendar-day" type="button">1</button><button class="calendar-day active" type="button">2</button><button class="calendar-day" type="button">3</button><button class="calendar-day" type="button">4</button><button class="calendar-day" type="button">5</button><button class="calendar-day" type="button">6</button>
+                                                    <button class="calendar-day" type="button">7</button><button class="calendar-day" type="button">8</button><button class="calendar-day" type="button">9</button><button class="calendar-day" type="button">10</button><button class="calendar-day" type="button">11</button><button class="calendar-day" type="button">12</button><button class="calendar-day" type="button">13</button>
+                                                    <button class="calendar-day" type="button">14</button><button class="calendar-day" type="button">15</button><button class="calendar-day" type="button">16</button><button class="calendar-day" type="button">17</button><button class="calendar-day" type="button">18</button><button class="calendar-day" type="button">19</button><button class="calendar-day" type="button">20</button>
+                                                    <button class="calendar-day" type="button">21</button><button class="calendar-day" type="button">22</button><button class="calendar-day" type="button">23</button><button class="calendar-day" type="button">24</button><button class="calendar-day" type="button">25</button><button class="calendar-day" type="button">26</button><button class="calendar-day" type="button">27</button>
+                                                    <button class="calendar-day" type="button">28</button><button class="calendar-day" type="button">29</button><button class="calendar-day" type="button">30</button><button class="calendar-day muted" type="button">1</button><button class="calendar-day muted" type="button">2</button><button class="calendar-day muted" type="button">3</button><button class="calendar-day muted" type="button">4</button>
+                                                    <button class="calendar-day muted" type="button">5</button><button class="calendar-day muted" type="button">6</button><button class="calendar-day muted" type="button">7</button><button class="calendar-day muted" type="button">8</button><button class="calendar-day muted" type="button">9</button><button class="calendar-day muted" type="button">10</button><button class="calendar-day muted" type="button">11</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <label class="article-type-select" id="articleTypeLine" aria-label="稿件类型">
+                                        <select id="articleTypeSelect" onchange="renderResourceResults()">
+                                            <option>全部稿件</option>
+                                            <option>新闻</option>
+                                            <option>图集</option>
+                                            <option>视频</option>
+                                            <option>音频</option>
+                                            <option>链接</option>
+                                            <option>视频专辑</option>
+                                            <option>音频专辑</option>
+                                            <option>专题</option>
+                                            <option>活动</option>
+                                            <option>直播</option>
+                                        </select>
+                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                                    </label>
                                 </div>
                             </div>
-                            <div class="condition-area article-filter-area hidden" id="conditionArea">
-                                <div class="condition-line">
-                                    <span class="condition-label">发布时间</span>
-                                    <label class="radio"><input type="radio" name="pubtime" checked>全部</label>
-                                    <label class="radio"><input type="radio" name="pubtime">单日期</label>
-                                    <label class="radio"><input type="radio" name="pubtime">时间段</label>
-                                </div>
-                                <div class="condition-line" id="articleTypeLine">
-                                    <span class="condition-label">稿件类型</span>
-                                    <label class="check"><input type="checkbox">新闻稿</label>
-                                    <label class="check"><input type="checkbox">图集稿</label>
-                                    <label class="check"><input type="checkbox">链接稿</label>
-                                    <label class="check"><input type="checkbox">视频稿</label>
-                                    <label class="check"><input type="checkbox">直播稿</label>
+                            <div class="resource-search-box">
+                                <div class="home-search media-ai-search compact-resource-search article-ai-search">
+                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#98a2b3" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                                    <input id="resourceKeyword" placeholder="输入关键词、自然语言描述搜索成品稿件" onkeydown="if(event.key==='Enter')runResourceSearch()">
+                                    <button class="primary-pill" type="button" onclick="runResourceSearch()">
+                                        AI智搜
+                                    </button>
                                 </div>
                             </div>
                         </section>
 
                         <section class="legacy-search-panel hidden" id="legacySearchPanel">
-                            <div class="legacy-search-toolbar">
-                                <div class="home-search media-ai-search">
+                            <div class="resource-query-panel legacy-query-panel">
+                                <div class="resource-filter-box">
+                                    <div class="legacy-date-picker" id="legacyDatePicker">
+                                        <div class="legacy-date-trigger">
+                                            <button class="legacy-date-input active" type="button" onclick="toggleLegacyDatePicker()">
+                                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                                                <span>选择开始日期</span>
+                                            </button>
+                                            <span class="legacy-date-separator">-</span>
+                                            <button class="legacy-date-input" type="button" onclick="toggleLegacyDatePicker()">
+                                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                                                <span>选择结束日期</span>
+                                            </button>
+                                        </div>
+                                        <div class="legacy-date-popover" id="legacyDatePopover">
+                                            <div class="date-quick-list">
+                                                <button type="button" onclick="selectLegacyQuickRange(this)">今天</button>
+                                                <button type="button" onclick="selectLegacyQuickRange(this)">昨天</button>
+                                                <button type="button" onclick="selectLegacyQuickRange(this)">最近三天</button>
+                                                <button type="button" onclick="selectLegacyQuickRange(this)">最近一周</button>
+                                                <button type="button" onclick="selectLegacyQuickRange(this)">最近一个月</button>
+                                            </div>
+                                            <div class="date-calendar">
+                                                <div class="calendar-head">
+                                                    <button class="calendar-nav" type="button">«</button>
+                                                    <button class="calendar-nav" type="button">‹</button>
+                                                    <div class="calendar-title">2026 年 6 月</div>
+                                                    <button class="calendar-nav" type="button">›</button>
+                                                    <button class="calendar-nav" type="button">»</button>
+                                                </div>
+                                                <div class="calendar-switches">
+                                                    <button class="calendar-switch" type="button">
+                                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                                                        选年份
+                                                    </button>
+                                                    <button class="calendar-switch" type="button">
+                                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                                                        选月份
+                                                    </button>
+                                                </div>
+                                                <div class="calendar-week"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+                                                <div class="calendar-days">
+                                                    <button class="calendar-day muted" type="button">31</button><button class="calendar-day" type="button">1</button><button class="calendar-day active" type="button">2</button><button class="calendar-day" type="button">3</button><button class="calendar-day" type="button">4</button><button class="calendar-day" type="button">5</button><button class="calendar-day" type="button">6</button>
+                                                    <button class="calendar-day" type="button">7</button><button class="calendar-day" type="button">8</button><button class="calendar-day" type="button">9</button><button class="calendar-day" type="button">10</button><button class="calendar-day" type="button">11</button><button class="calendar-day" type="button">12</button><button class="calendar-day" type="button">13</button>
+                                                    <button class="calendar-day" type="button">14</button><button class="calendar-day" type="button">15</button><button class="calendar-day" type="button">16</button><button class="calendar-day" type="button">17</button><button class="calendar-day" type="button">18</button><button class="calendar-day" type="button">19</button><button class="calendar-day" type="button">20</button>
+                                                    <button class="calendar-day" type="button">21</button><button class="calendar-day" type="button">22</button><button class="calendar-day" type="button">23</button><button class="calendar-day" type="button">24</button><button class="calendar-day" type="button">25</button><button class="calendar-day" type="button">26</button><button class="calendar-day" type="button">27</button>
+                                                    <button class="calendar-day" type="button">28</button><button class="calendar-day" type="button">29</button><button class="calendar-day" type="button">30</button><button class="calendar-day muted" type="button">1</button><button class="calendar-day muted" type="button">2</button><button class="calendar-day muted" type="button">3</button><button class="calendar-day muted" type="button">4</button>
+                                                    <button class="calendar-day muted" type="button">5</button><button class="calendar-day muted" type="button">6</button><button class="calendar-day muted" type="button">7</button><button class="calendar-day muted" type="button">8</button><button class="calendar-day muted" type="button">9</button><button class="calendar-day muted" type="button">10</button><button class="calendar-day muted" type="button">11</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="resource-search-box">
+                                    <div class="home-search media-ai-search compact-resource-search">
                                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#98a2b3" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                                     <input id="legacyKeyword" placeholder="输入关键词、自然语言描述搜索全部媒资" onkeydown="if(event.key==='Enter')runLegacySearch()">
                                     <button class="circle-tool" id="legacyImageSearchButton" title="上传图片搜索" type="button" onclick="showToast('可通过上传图片进行多模态检索')">
                                         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
                                     </button>
                                     <button class="primary-pill" type="button" onclick="runLegacySearch()">
-                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                                         AI智搜
                                     </button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="legacy-select-row">
-                                <label class="check"><input id="legacySelectAll" type="checkbox" onchange="toggleLegacySelection(this)">全选</label>
-                                <span class="legacy-selected">已选 <b id="legacySelectedCount">0</b></span>
-                                <button class="legacy-clear" type="button" onclick="clearLegacySelection()">清除</button>
                             </div>
                         </section>
 
@@ -1766,6 +2190,18 @@
 	    </button>
 	</div>
 
+	<div class="permission-bar">
+	    <div class="permission-caption">
+	        <span class="permission-title">账号权限</span>
+	        <span class="permission-note">仅原型展示，不做开发</span>
+	    </div>
+	    <div class="permission-switch" aria-label="首页资源权限视图">
+	        <button class="active" data-permission="both" onclick="setHomePermission('both')">本地+全省</button>
+	        <button data-permission="media" onclick="setHomePermission('media')">仅本地资源库</button>
+	        <button data-permission="province" onclick="setHomePermission('province')">仅全省资源库</button>
+	    </div>
+	</div>
+
 	<button class="mobile-launcher" type="button" onclick="openMobileHome()">
 	    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
 	    移动端首页
@@ -1827,8 +2263,8 @@
 	                    </div>
 	                    <div class="mobile-content">
 	                        <div class="mobile-section-head">
-	                            <h3 class="mobile-section-title">推荐素材</h3>
-	                            <div class="mobile-asset-tabs" aria-label="推荐素材类型">
+	                            <h3 class="mobile-section-title">最新素材</h3>
+	                            <div class="mobile-asset-tabs" aria-label="最新素材类型">
 	                                <button class="active" type="button" data-mobile-type-tab="image" onclick="setMobileAssetType('image')">图片</button>
 	                                <button type="button" data-mobile-type-tab="video" onclick="setMobileAssetType('video')">视频</button>
 	                            </div>
@@ -1848,7 +2284,7 @@
 	                        </div>
 	                        <div class="mobile-library-switch" aria-label="移动端搜索结果库范围">
 	                            <button class="active" type="button" data-mobile-library="province" onclick="setMobileLibrary('province')">全省资源库</button>
-	                            <button type="button" data-mobile-library="media" onclick="setMobileLibrary('media')">媒资素材库</button>
+	                            <button type="button" data-mobile-library="media" onclick="setMobileLibrary('media')">素材中心</button>
 	                        </div>
 	                    </div>
 	                    <div class="mobile-content">
@@ -1872,8 +2308,8 @@
 
 ## 产品概述
 
-- **背景**：现有首页搜索、资源统计和全省资源库分布在不同原型中。资源库入口依赖资源中心下拉菜单，用户需要先识别层级关系再进入稿件、图片、视频、音频等子模块，路径偏长。
-- **目标**：将首页搜索、推荐素材、资源入库统计与全省资源库主流程合并为一个可评审原型，突出全省优质成品内容的发现、检索、筛选和取用效率。
+- **背景**：现有首页搜索、资源统计和全省资源库分布在不同页面和模块中。资源库入口依赖资源中心下拉菜单，用户需要先识别层级关系再进入稿件、图片、视频、音频等子模块，路径偏长。
+- **目标**：将首页搜索、最新素材、资源入库统计与全省资源库主流程合并为统一入口和工作流，突出全省优质成品内容的发现、检索、筛选和取用效率。
 - **用户角色**：
   - 省级媒体编辑：快速发现全省优质素材和成品稿件，完成选题、复用和取稿。
   - 市县融媒体编辑：查看全省内容动态，了解同题报道和优质素材。
@@ -1886,7 +2322,7 @@
 ### 1.1 顶部主导航
 
 - **展示规则**：
-  - 顶部主导航沿用线上版本已存在的导航布局，包含：首页、搜索中心、资源中心、素材中心、审批中心、同步中心、智能标签库。
+  - 顶部主导航沿用线上版本已存在的导航布局，包含：首页、搜索中心、资源中心、素材中心、审批中心、同步中心、标签中心。
   - “全省资源库”为一级独立入口，不再放入“资源中心”下拉菜单，并追加在现有线上导航之后。
   - 当前页面对应主导航项展示选中状态。
 - **交互规则**：
@@ -1896,7 +2332,7 @@
 - **数据规则**：
   - **取数规则**：主导航从系统模块配置读取可见模块。
   - **数据筛选规则**：按当前用户权限展示可访问模块；无权限模块不展示。
-  - **数据排序规则**：按线上现有模块顺序展示：首页、搜索中心、资源中心、素材中心、审批中心、同步中心、智能标签库、全省资源库。
+  - **数据排序规则**：按线上现有模块顺序展示：首页、搜索中心、资源中心、素材中心、审批中心、同步中心、标签中心、全省资源库。
 
 ### 1.2 全省资源库资源类型 Tab
 
@@ -1906,7 +2342,7 @@
   - 默认选中“成品稿件”。
 - **交互规则**：
   - 点击不同资源类型后，搜索条件、筛选栏和结果区按资源类型刷新。
-  - 成品稿件使用首页同款 AI 搜索条，并通过筛选按钮展开发布时间和稿件类型；成品图片、成品视频、成品音频使用首页同款多模态 AI 搜索条和批量选择栏。
+  - 成品稿件使用列表顶部紧凑筛选与 AI智搜工具栏；成品图片、成品视频、成品音频使用日期范围筛选、多模态 AI智搜工具栏和结果操作条。
 - **数据规则**：
   - **取数规则**：从全省资源库读取对应资源类型的成品内容。
   - **数据筛选规则**：资源类型为单选条件，切换后仅展示当前类型资源。
@@ -1935,39 +2371,45 @@
 - **展示规则**：
   - 首页已上线模块保持现有展示，不在本 PRD 中重新定义字段、样式和交互细节。
   - 原有模块包括首页搜索区、最新图片资源、资源聚合、资源入库趋势等。
+  - Web 首页搜索框下不展示资源库范围或资源类型 tab；资源库范围 tab 仅在搜索结果页展示，沿用线上已有逻辑。
+  - 线上搜索结果页资源范围 tab 中，原“媒资素材库”命名调整为“素材中心”。
+  - 首页在“最新图片资源”上方展示资源范围 tab，包含“本地资源库”和“全省资源库”。
+  - “本地资源库”tab 下展示最新图片资源、资源聚合、资源入库趋势。
+  - “全省资源库”tab 下展示最新素材、全省资源库数据统计、入库统计趋势。
   - 本期优化“资源聚合”的数据统计展示，图片、视频、音频数据卡片展示资源总量和当前统计周期增量。
   - 无全省资源库权限时，首页仅展示线上已有模块，整体顺序和默认状态保持不变。
 - **交互规则**：
   - 原有模块沿用线上交互规则。
+  - 用户同时具备本地资源库和全省资源库权限时，首页默认选中“本地资源库”tab；点击 tab 后切换对应模块组。
   - 用户切换“资源入库趋势”统计周期时，同步刷新“资源聚合”数据卡片的周期增量和趋势图；统计周期包括近两周、近一个月、近三个月。
 - **数据规则**：
-  - **取数规则**：资源聚合总量沿用线上当前媒资素材库累计统计口径；周期增量读取当前媒资素材库中按入库时间落在所选统计周期内的新增图片、视频、音频素材。
+  - **取数规则**：资源聚合总量沿用线上当前素材中心累计统计口径；周期增量读取当前素材中心中按入库时间落在所选统计周期内的新增图片、视频、音频素材。
   - **数据筛选规则**：仅统计当前用户可见、已入库且状态正常的公共媒资素材；下架、删除、权限不可见资源不纳入统计。
   - **数据排序规则**：趋势图按统计周期时间正序展示；数据卡片按图片、视频、音频固定顺序展示。
   - **数据聚合规则**：近两周增量为“资源入库趋势”近两周视图中最近 14 个统计日的新增入库量求和；近一个月增量为近一个月视图中各周新增入库量求和；近三个月增量为近三个月视图中各月新增入库量求和。
 
-### 2.2 全省资源库推荐素材
+### 2.2 最新素材
 
 - **展示规则**：
-  - “全省资源库推荐素材”为首页新增模块，展示在“最新图片资源”之后、“资源聚合”之前。
-  - 模块展示由机器推荐的视频或图片卡片，卡片包含封面、资源类型、时长或图片数量、标题、来源和发布时间。
-  - 卡片底部不展示“专题热度高”“适合图集复用”等推荐理由文案，避免首页信息噪声过重。
-  - 无全省资源库权限时隐藏该模块，线上已有“资源聚合”自然上移。
+  - “最新素材”为首页新增模块，展示在“全省资源库”tab 内。
+  - 模块展示全省资源库最新入库的视频或图片卡片，卡片包含封面、资源类型、时长或图片数量、标题、来源和发布时间。
+  - 卡片底部不展示“专题热度高”“适合图集复用”等额外理由文案，避免首页信息噪声过重。
+  - 无全省资源库权限时不展示该模块，也不展示“全省资源库”tab。
 - **交互规则**：
-  - 点击素材卡片进入对应资源详情；原型阶段可先跳转至全省资源库页。
+  - 点击素材卡片进入对应资源详情；资源详情暂未接入时跳转至全省资源库对应列表，并保留当前资源类型。
   - 点击“进入全省资源库”进入全省资源库聚合页，并保留当前默认资源类型。
   - 模块不影响首页线上已有模块的点击、搜索和统计交互。
 - **数据规则**：
   - **取数规则**：从全省资源库中读取当前用户有权限查看、发布渠道为客户端、状态为已入库且可复用的图片和视频资源；默认取近 30 天入库资源作为候选池。
-  - **字段排除规则**：自动排除标题为空、正文/说明为空、封面为空、来源为空、发布时间为空、文件大小为 0、宽高缺失、图片宽或高低于展示阈值、视频时长缺失或为 0 的素材。文件格式为 gif、animated webp、apng 的资源不进入首页推荐。
+  - **字段排除规则**：自动排除标题为空、正文/说明为空、封面为空、来源为空、发布时间为空、文件大小为 0、宽高缺失、图片宽或高低于展示阈值、视频时长缺失或为 0 的素材。文件格式为 gif、animated webp、apng 的资源不进入最新素材展示。
   - **数据排序规则**：候选素材按字段完整度分层展示：优先展示标题、正文/说明、来源、发布时间、封面、格式、大小、宽高或时长均完整的素材；同层内按发布时间倒序。排序后按资源类型、来源和地域做轮询重排，避免 4 张卡片全部来自同一类型、同一来源或同一地域。
   - **数据去重规则**：同一稿件ID下的多条图片或视频资源只保留发布时间最新的一条；无稿件ID的资源不参与该去重规则。
-  - **数据兜底规则**：若筛选后不足 4 条，放宽正文/说明非空要求；不得放宽权限、封面、格式、大小、宽高、时长等硬条件。仍不足时按实际条数展示，不展示空卡片；无可推荐素材时隐藏该模块。
+  - **数据兜底规则**：若筛选后不足 4 条，放宽正文/说明非空要求；不得放宽权限、封面、格式、大小、宽高、时长等硬条件。仍不足时按实际条数展示，不展示空卡片；无可展示素材时隐藏该模块。
 
 ### 2.3 全省资源库数据统计
 
 - **展示规则**：
-  - “全省资源库数据统计”为首页新增模块，展示在已有“资源入库趋势”之后，作为首页底部补充统计区域。
+  - “全省资源库数据统计”为首页新增模块，展示在“全省资源库”tab 内，位于最新素材之后。
   - 模块标题下不展示副标题说明。
   - 模块展示稿件、图片、视频、音频的入库总量、周期增量和入库统计趋势图。
   - 模块不替换线上已有“资源入库趋势”，两者并列表达不同数据口径。
@@ -1985,112 +2427,124 @@
 ### 2.4 权限展示规则
 
 - **展示规则**：
-  - 用户具备全省资源库权限时，首页展示“全省资源库推荐素材”和“全省资源库数据统计”两个新增模块。
-  - 用户不具备全省资源库权限时，首页不展示上述两个新增模块，默认展示线上已有首页内容。
-  - 权限差异不影响线上已有首页模块的展示、顺序和交互。
+  - 首页资源范围由素材中心权限和全省资源库权限共同决定。
+  - 用户同时具备素材中心权限和全省资源库权限时，展示“本地资源库”“全省资源库”两个 tab，默认选中“本地资源库”。
+  - 用户具备全省资源库权限但不具备素材中心权限时，仅展示全省资源库内容，资源范围 tab 隐藏。
+  - 用户具备素材中心权限但不具备全省资源库权限时，仅展示本地资源库内容，资源范围 tab 隐藏。
+  - 权限差异不影响当前可见模块内部的展示、顺序和交互。
 - **交互规则**：
-  - 原型中的“账号权限”切换仅用于评审展示有权限和无权限两种首页状态，不作为开发需求。
+  - 账号权限由系统权限配置决定，权限状态变化后按最新权限刷新首页可见内容。
   - 权限变更后，下次进入首页按最新权限重新判断是否展示新增模块。
   - 无权限用户通过首页搜索命中全省资源库内容时，仍按既有权限规则过滤不可见资源。
 - **数据规则**：
-  - **取数规则**：权限状态从用户角色与模块权限配置读取。
-  - **数据筛选规则**：仅当用户具备全省资源库查看权限时，返回新增模块所需数据。
+  - **取数规则**：权限状态从用户角色、素材中心权限和全省资源库权限配置读取。
+  - **数据筛选规则**：首页仅返回当前租户具备权限的资源域数据；不具备权限的资源域不展示 tab、不展示模块、不返回推荐和统计数据。
   - **数据排序规则**：权限判断不改变已有模块的数据排序。
 
 ### 2.5 移动端首页优化
 
 - **展示规则**：
-  - 移动端首页沿用“灵感无界，触手可及”和“海量多模态媒资，AI赋能创意检索”的首页表达，展示 AI智搜、图片/视频类型切换、搜索框和推荐素材。
-  - 搜索列表页展示全省资源库/媒资素材库切换，默认选中全省资源库，媒资素材库展示在全省资源库之后；移动端首页态不展示该切换。
+  - 移动端首页沿用“灵感无界，触手可及”和“海量多模态媒资，AI赋能创意检索”的首页表达，展示 AI智搜、图片/视频类型切换、搜索框和最新素材。
+  - 移动端首页仅展示一个最新素材模块，不展示素材中心/全省资源库切换。
+  - 搜索列表页展示全省资源库/素材中心切换，默认选中全省资源库，素材中心展示在全省资源库之后；移动端首页态不展示该切换。
 
 - **交互规则**：
   - AI智搜支持自然语言描述和图片理解入口，不提供精准检索模式切换。
   - 搜索结果页点击左上角返回按钮后返回移动端首页态。
-  - 在搜索列表页切换全省资源库/媒资素材库时刷新搜索结果列表，并保留当前图片/视频类型和输入内容。
-  - 切换图片/视频类型时刷新推荐素材和搜索结果列表。
+  - 在搜索列表页切换全省资源库/素材中心时刷新搜索结果列表，并保留当前图片/视频类型和输入内容。
+  - 切换图片/视频类型时刷新最新素材和搜索结果列表。
 - **数据规则**：
-  - **取数规则**：复用 Web 首页多模态检索口径和用户权限口径；移动端首页推荐素材在有全省资源库权限时读取全省资源库推荐素材，无全省资源库权限时沿用线上已有逻辑，读取公共素材库最新素材；搜索列表页选择媒资素材库时读取线上首页原有可检索媒资，选择全省资源库时读取当前用户可见的全省资源库成品图片和成品视频。
-  - **数据筛选规则**：按推荐区或搜索列表页所在场景、选中的资源类型、关键词或自然语言意图、用户权限取交集；无全省资源库权限时，推荐区不取全省资源库素材，搜索结果中过滤不可见的全省资源库素材。
-  - **数据排序规则**：移动端首页推荐区有全省资源库权限时按全省资源库首页推荐素材排序口径展示，无全省资源库权限时按公共素材库发布时间倒序展示最新素材；搜索结果按检索相关性优先，同等相关性下按发布时间倒序展示。
+  - **取数规则**：复用 Web 首页多模态检索口径和用户权限口径；移动端首页最新素材由系统按权限判定后切换数据来源：有全省资源库权限时读取全省资源库最新素材，没有全省资源库权限时读取素材中心最新素材；搜索列表页选择素材中心时读取线上首页原有可检索媒资，选择全省资源库时读取当前用户可见的全省资源库成品图片和成品视频。
+  - **数据筛选规则**：按最新素材区或搜索列表页所在场景、选中的资源类型、关键词或自然语言意图、用户权限取交集；移动端首页最新素材区不做资源库切换展示，只返回权限判定后的单一资源域素材。
+  - **权限过滤规则**：移动端搜索列表页仅展示当前租户有权限的资源库范围；无权限的资源库范围不展示切换项、不返回搜索结果。
+  - **数据排序规则**：移动端首页最新素材区有全省资源库权限时按全省资源库首页最新素材排序口径展示，无全省资源库权限时按素材中心发布时间倒序展示最新素材；搜索结果按检索相关性优先，同等相关性下按发布时间倒序展示。
 
 ---
 
 ## 三、全省资源库搜索升级
 
-### 3.1 成品稿件 AI 搜索条
+### 3.1 全省资源库列表页检索布局
 
 - **展示规则**：
-  - 成品稿件搜索模块复用成品图片、成品视频、成品音频的首页同款搜索条样式。
-  - 搜索条展示搜索图标、关键词/自然语言输入框、筛选按钮和“AI智搜”按钮。
-  - 成品稿件不支持图搜，搜索条中间按钮使用筛选图标，不展示上传图片入口。
-  - 输入框使用“输入关键词、自然语言描述搜索成品稿件”占位文案。
+  - 全省资源库列表页不使用首页大搜索条，统一使用列表页紧凑检索布局。
+  - 检索区域采用列表顶部筛选区在前、AI智搜搜索框在后的横向布局。
+  - 右侧搜索框展示搜索图标、关键词/自然语言输入框和“AI智搜”按钮。
+  - 普通进入全省资源库列表页时，不展示“全部/素材中心/全省资源库/网络资源库”范围 Tab；该范围 Tab 仅在首页搜索进入的搜索结果页展示。
 - **交互规则**：
-  - 点击“AI智搜”或按回车后，按输入内容刷新成品稿件结果。
-  - 点击筛选图标展开筛选区域；再次点击筛选图标收起筛选区域。
-  - 筛选区域展开时筛选图标展示选中态。
-  - 切换到成品图片、成品视频、成品音频时隐藏成品稿件搜索条，展示对应资源类型的多模态 AI 搜索条。
+  - 点击“AI智搜”或按回车后，按输入内容刷新当前资源类型结果。
+  - 切换成品稿件、成品图片、成品视频、成品音频时，筛选模块和搜索框按资源类型刷新。
+  - 首页搜索进入结果页时，可通过范围 Tab 切换全部、素材中心、全省资源库、网络资源库；直接进入全省资源库列表页时不出现该范围 Tab。
 - **数据规则**：
-  - **取数规则**：读取关键词/自然语言描述、发布时间和稿件类型筛选条件。
-  - **数据筛选规则**：输入内容与资源类型、客户端渠道、地域、发布时间和稿件类型取交集。
+  - **取数规则**：读取当前资源类型、关键词/自然语言描述、发布时间、地域和资源类型对应的筛选条件。
+  - **数据筛选规则**：输入内容与资源类型、客户端渠道、地域、发布时间和当前资源类型筛选条件取交集。
   - **数据排序规则**：默认按发布时间倒序。
 
 ### 3.2 成品稿件筛选区域
 
 - **展示规则**：
-  - 筛选区域默认收起，仅在点击筛选图标后展开。
-  - 筛选区域包含发布时间和稿件类型两类条件。
-  - 筛选区域不展示图搜入口、精准检索/语义检索模式 Tab、字段下拉、匹配方式或追加条件入口。
+  - 成品稿件列表顶部筛选区默认展示，不再放入搜索框内折叠。
+  - 筛选模块展示为日期范围控件和稿件类型下拉控件。
+  - 日期范围控件默认展示开始日期“2026-05-03”和结束日期“2026-06-02”。
+  - 稿件类型下拉默认展示“全部稿件”。
+  - 搜索框内不展示图搜入口、筛选按钮、精准检索/语义检索模式 Tab、字段下拉、匹配方式或追加条件入口。
 - **交互规则**：
-  - 点击筛选图标展开后，用户可修改发布时间和稿件类型条件。
-  - 再次点击筛选图标收起筛选区域；已选择的筛选条件继续生效。
-  - 切换资源类型或刷新结果时不强制展开筛选区域。
+  - 用户可通过日期范围控件调整开始日期和结束日期。
+  - 用户可通过稿件类型下拉切换全部稿件、新闻、图集、视频、音频、链接、视频专辑、音频专辑、专题、活动、直播。
+  - 切换日期范围或稿件类型后刷新成品稿件结果，并清空当前勾选状态。
+  - 右侧搜索框只承担关键词或自然语言检索动作。
 - **数据规则**：
-  - **取数规则**：读取当前发布时间和稿件类型条件。
-  - **数据筛选规则**：筛选区域条件与搜索输入、资源类型、客户端渠道、地域取交集。
+  - **取数规则**：读取当前发布时间开始日期、发布时间结束日期和稿件类型条件。
+  - **数据筛选规则**：发布时间闭区间、稿件类型、搜索输入、资源类型、客户端渠道和地域取交集；选择全部稿件时不限制稿件类型。
   - **数据排序规则**：不改变当前排序方式。
 
 ### 3.3 发布时间筛选
 
 - **展示规则**：
-  - 发布时间包含全部、单日期、时间段三个选项。
-  - 默认选中全部。
+  - 成品稿件、成品图片、成品视频、成品音频列表页上方均展示发布时间筛选。
+  - 成品稿件发布时间使用开始日期和结束日期的范围控件。
+  - 成品图片、成品视频、成品音频使用日期范围选择器，默认展示“选择开始日期 - 选择结束日期”两个输入框。
+  - 日期范围选择器下拉面板包含今天、昨天、最近三天、最近一周、最近一个月快捷项，以及月份日历、年份选择和月份选择入口。
 - **交互规则**：
-  - 选择单日期时展示单个日期选择控件。
-  - 选择时间段时展示开始日期和结束日期。
+  - 成品稿件按开始日期和结束日期筛选稿件。
+  - 成品图片、成品视频、成品音频点击开始日期或结束日期输入框时展开日期范围面板。
+  - 点击快捷项后自动回填开始日期和结束日期。
+  - 点击日历日期后按所选日期回填日期范围；再次选择可更新日期条件。
 - **数据规则**：
   - **取数规则**：读取资源发布时间。
-  - **数据筛选规则**：按所选时间条件筛选资源；全部不限制时间。
+  - **数据筛选规则**：成品稿件、成品图片、成品视频、成品音频均按开始日期和结束日期闭区间筛选资源。
   - **数据排序规则**：不改变当前排序方式。
 
 ### 3.4 稿件类型
 
 - **展示规则**：
-  - 稿件类型包含新闻稿、图集稿、链接稿、视频稿、直播稿。
-  - 稿件类型仅在成品稿件筛选区域中展示。
+  - 稿件类型包含新闻、图集、视频、音频、链接、视频专辑、音频专辑、专题、活动、直播。
+  - 稿件类型以下拉控件形式仅在成品稿件筛选区域中展示，默认项为全部稿件。
 - **交互规则**：
-  - 多个稿件类型可多选，选中后立即参与筛选。
+  - 稿件类型单选，切换后立即参与筛选。
 - **数据规则**：
   - **取数规则**：读取资源内容类型。
-  - **数据筛选规则**：稿件类型多选取并集，再与其他条件取交集。
+  - **数据筛选规则**：按所选稿件类型过滤；选择全部稿件时不限制稿件类型。
   - **数据排序规则**：不改变当前排序方式。
 
 ### 3.5 图片、视频、音频多模态搜索
 
 - **展示规则**：
-  - 成品图片、成品视频、成品音频不展示成品稿件筛选按钮和稿件类型筛选区域。
-  - 搜索框复用首页搜索样式，展示搜索图标、关键词/自然语言输入框和“AI智搜”按钮。
+  - 成品图片、成品视频、成品音频不展示稿件类型筛选。
+  - 列表顶部筛选区展示日期范围选择器，右侧展示紧凑多模态 AI智搜搜索框。
+  - 搜索框展示搜索图标、关键词/自然语言输入框和“AI智搜”按钮。
   - 成品图片、成品视频展示上传图片入口；成品音频不具备图搜能力，不展示上传图片入口。
   - 输入框统一使用“输入关键词、自然语言描述搜索全部媒资”占位文案，不按成品图片、成品视频、成品音频额外区分资源库。
-  - 该模块不展示首页下方的媒资素材库、全省资源库、网络资源库筛选 chip。
-  - 搜索框下方保留批量选择栏，包含全选、已选数量和清除入口。
+  - 该模块不展示首页下方的素材中心、全省资源库、网络资源库筛选 chip；仅首页搜索进入的结果页展示范围 Tab。
+  - 批量选择栏移动到结果区内部、卡片网格或音频列表上方，包含全选、已选数量和清除入口。
 - **交互规则**：
   - 点击“AI智搜”或按回车后，按输入内容刷新当前资源类型结果。
-  - 在成品图片、成品视频下点击上传图片入口时进入多模态图片检索流程；原型阶段可先展示上传图片检索提示。
+  - 选择开始日期、结束日期或快捷日期范围后刷新当前资源类型结果。
+  - 在成品图片、成品视频下点击上传图片入口时进入多模态图片检索流程；未完成上传或识别失败时展示对应提示状态。
   - 勾选全选时选中当前页全部资源；取消全选时取消当前页全部选择。
   - 点击清除时取消当前页已选资源，并将已选数量恢复为 0。
 - **数据规则**：
-  - **取数规则**：读取当前资源类型、关键词/自然语言描述和当前页选择状态；仅成品图片、成品视频读取上传图片特征。
-  - **数据筛选规则**：文本语义、地域和客户端渠道取交集；成品图片、成品视频上传图片时叠加图片特征条件；当前资源类型仅取成品图片、成品视频或成品音频。
+  - **取数规则**：读取当前资源类型、关键词/自然语言描述、发布时间开始日期、发布时间结束日期和当前页选择状态；仅成品图片、成品视频读取上传图片特征。
+  - **数据筛选规则**：文本语义、发布时间闭区间、地域和客户端渠道取交集；成品图片、成品视频上传图片时叠加图片特征条件；当前资源类型仅取成品图片、成品视频或成品音频。
   - **数据排序规则**：默认按多模态相关度倒序；相关度相同时按发布时间倒序。
 
 ---
@@ -2135,7 +2589,7 @@
   - 成品图片卡片展示选择框、封面、标题、来源和发布时间。
   - 成品视频卡片展示选择框、封面、播放标识、时长、标题、来源和发布时间。
   - 成品音频列表展示选择框、标题、来源、时长、格式、发布时间和操作。
-  - 结果区上方使用首页同款多模态 AI 搜索条和批量选择栏。
+  - 结果区上方展示批量选择栏；日期范围筛选和紧凑多模态 AI智搜搜索框位于结果区上方的检索工具栏。
 - **交互规则**：
   - 点击卡片或标题进入资源详情。
   - 图片、视频支持添加到个人素材库。
@@ -2184,9 +2638,8 @@
 - 所有可点击控件具备 hover、focus 和 active 状态。
 - 搜索、筛选、资源类型切换、渠道切换均需提供即时视觉反馈。
 - 无结果时展示空状态，提示用户调整关键词、时间或地域筛选。
-- 统计图、推荐素材、资源列表中的数据仅展示当前用户权限范围内可见内容。
+- 统计图、最新素材、资源列表中的数据仅展示当前用户权限范围内可见内容。
 - 全省资源库页面视觉按政务后台风格收敛，使用白底浅边框、紧凑表单、低阴影和明确功能色，避免装饰性渐变和过重视觉元素。
-- PRD 面板与原型页面平级展示，支持打开、收起、下载和查看更新记录。
 </textarea>
 
 <script>
@@ -2194,6 +2647,9 @@ var currentResourceType = 'article';
 var currentDetailType = 'image';
 var currentDetailIndex = 0;
 var hasProvincePermission = true;
+var hasMediaPermission = true;
+var currentHomeResourceTab = 'media';
+var resourceSearchResultMode = false;
 var trendData = {
     last14: [
         ['5/15', 96, 420, 31, 5], ['5/16', 102, 388, 28, 6], ['5/17', 78, 342, 22, 4], ['5/18', 124, 510, 36, 7],
@@ -2230,7 +2686,7 @@ var legacyTrendData = {
 
 var articles = [
     ['钱报朋友圈·福利 | “营造江南”开展在即等你打卡', '钱江晚报', '新闻', '1487', '钱报朋友圈', '2026/05/19 09:50:39'],
-    ['越剧120周年 历久弥新的越剧百花园', '嵊州市融媒体中心', '视频稿', '650', '爱嵊州客户端', '2026/05/19 06:03:35'],
+    ['越剧120周年 历久弥新的越剧百花园', '嵊州市融媒体中心', '视频', '650', '爱嵊州客户端', '2026/05/19 06:03:35'],
     ['浙江省数字经济增加值突破4万亿元大关', '浙江广播电视集团', '新闻', '702', '中国蓝新闻客户端', '2026/05/06 15:15:14'],
     ['上城区南宋文化节开幕 千年古城焕发新活力', '萧山区融媒体中心', '新闻', '1414', '萧山发布客户端', '2026/05/06 20:14:28'],
     ['温度新闻：温州民营经济高质量发展再上新台阶', '温州市新闻传媒中心', '新闻', '926', '温度新闻客户端', '2026/05/07 14:55:06'],
@@ -2367,6 +2823,9 @@ var media = {
 		    if (mobileLibrary === 'province' && !hasProvincePermission) {
 		        return [];
 		    }
+		    if (mobileLibrary === 'media' && !hasMediaPermission) {
+		        return [];
+		    }
 		    return source[mobileAssetType] || source.image;
 		}
 
@@ -2418,21 +2877,67 @@ var media = {
 	    updateMobileResultCount();
 	}
 
-function setProvincePermission(flag) {
-    hasProvincePermission = flag;
+function setHomePermission(mode) {
+    hasMediaPermission = mode !== 'province';
+    hasProvincePermission = mode !== 'media';
+    currentHomeResourceTab = hasMediaPermission ? 'media' : 'province';
+    if (!hasProvincePermission && mobileLibrary === 'province') mobileLibrary = 'media';
+    if (!hasMediaPermission && mobileLibrary === 'media') mobileLibrary = 'province';
     document.querySelectorAll('.permission-switch button').forEach(function(btn) {
-        btn.classList.toggle('active', (btn.dataset.permission === 'on') === flag);
+        btn.classList.toggle('active', btn.dataset.permission === mode);
     });
-    document.querySelectorAll('.province-only').forEach(function(el) {
-        el.style.display = flag ? '' : 'none';
+    document.querySelectorAll('[data-mobile-library]').forEach(function(btn) {
+        var library = btn.dataset.mobileLibrary;
+        var allowed = library === 'province' ? hasProvincePermission : hasMediaPermission;
+        btn.classList.toggle('hidden', !allowed);
+        btn.classList.toggle('active', library === mobileLibrary);
     });
+    updateHomeResourceTabs();
     renderMobileCards();
     updateMobileResultCount();
 }
 
-function switchPage(page) {
+function setProvincePermission(flag) {
+    setHomePermission(flag ? 'both' : 'media');
+}
+
+function switchHomeResourceTab(tab) {
+    if (tab === 'media' && !hasMediaPermission) return;
+    if (tab === 'province' && !hasProvincePermission) return;
+    currentHomeResourceTab = tab;
+    updateHomeResourceTabs();
+}
+
+function updateHomeResourceTabs() {
+    if (!hasMediaPermission && !hasProvincePermission) {
+        hasMediaPermission = true;
+        currentHomeResourceTab = 'media';
+    }
+    if (currentHomeResourceTab === 'media' && !hasMediaPermission) currentHomeResourceTab = 'province';
+    if (currentHomeResourceTab === 'province' && !hasProvincePermission) currentHomeResourceTab = 'media';
+    var tabs = document.getElementById('homeResourceTabs');
+    var availableCount = (hasMediaPermission ? 1 : 0) + (hasProvincePermission ? 1 : 0);
+    if (tabs) tabs.classList.toggle('hidden', availableCount < 2);
+    document.querySelectorAll('[data-home-tab]').forEach(function(btn) {
+        var tab = btn.dataset.homeTab;
+        var allowed = tab === 'media' ? hasMediaPermission : hasProvincePermission;
+        btn.classList.toggle('hidden', !allowed);
+        btn.classList.toggle('active', tab === currentHomeResourceTab);
+    });
+    document.querySelectorAll('[data-home-pane]').forEach(function(el) {
+        el.style.display = el.dataset.homePane === currentHomeResourceTab ? '' : 'none';
+    });
+}
+
+function switchPage(page, options) {
+    options = options || {};
+    if (page === 'resource' && !options.preserveResourceMode) {
+        resourceSearchResultMode = !!options.searchResult;
+    }
     document.getElementById('homeView').classList.toggle('active', page === 'home');
-    document.getElementById('resourceView').classList.toggle('active', page === 'resource');
+    var resourceView = document.getElementById('resourceView');
+    resourceView.classList.toggle('active', page === 'resource');
+    resourceView.classList.toggle('search-result-mode', resourceSearchResultMode);
     document.getElementById('mediaDetailView').classList.toggle('active', page === 'detail');
     document.querySelectorAll('.nav-item[data-page]').forEach(function(btn) {
         btn.classList.toggle('active', btn.dataset.page === page || (page === 'detail' && btn.dataset.page === 'resource'));
@@ -2440,14 +2945,14 @@ function switchPage(page) {
     if (page === 'resource') renderResourceResults();
 }
 
-function selectHomeFilter(el) {
-    document.querySelectorAll('#homeLibFilter .filter-chip').forEach(function(x) { x.classList.remove('active'); });
+function selectSearchFilter(el) {
+    document.querySelectorAll('#resultLibFilter .filter-chip').forEach(function(x) { x.classList.remove('active'); });
     el.classList.add('active');
 }
 
 function runHomeSearch() {
     var value = document.getElementById('homeSearchInput').value.trim() || '全省资源';
-    switchPage('resource');
+    switchPage('resource', { searchResult: true });
     switchResourceType('article');
     document.getElementById('resourceKeyword').value = value;
     runResourceSearch();
@@ -2491,6 +2996,7 @@ function switchSearchMode(mode) {
 function toggleArticleFilters() {
     var area = document.getElementById('conditionArea');
     var btn = document.getElementById('articleFilterToggle');
+    if (!area) return;
     var nextOpen = area.classList.contains('hidden');
     area.classList.toggle('hidden', !nextOpen);
     if (btn) {
@@ -2511,6 +3017,8 @@ function resetResourceSearch() {
         if (input.type === 'checkbox') input.checked = false;
         if (input.type === 'radio') input.checked = input.parentElement.textContent.trim() === '全部';
     });
+    var articleTypeSelect = document.getElementById('articleTypeSelect');
+    if (articleTypeSelect) articleTypeSelect.selectedIndex = 0;
     renderResourceResults();
 }
 
@@ -2532,6 +3040,70 @@ function runLegacySearch() {
     if (keyword) {
         document.getElementById('pageInfo').textContent = '已按“' + keyword + '”多模态检索 · 20 条/页';
     }
+}
+
+function toggleDatePicker(popoverId, force) {
+    var popover = document.getElementById(popoverId);
+    if (!popover) return;
+    var next = typeof force === 'boolean' ? force : !popover.classList.contains('show');
+    document.querySelectorAll('.legacy-date-popover').forEach(function(item) {
+        if (item !== popover) item.classList.remove('show');
+    });
+    popover.classList.toggle('show', next);
+}
+
+function toggleLegacyDatePicker(force) {
+    toggleDatePicker('legacyDatePopover', force);
+}
+
+function closeDatePickers() {
+    document.querySelectorAll('.legacy-date-popover').forEach(function(item) {
+        item.classList.remove('show');
+    });
+}
+
+function setupDatePickerOutsideClose() {
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.legacy-date-picker')) {
+            closeDatePickers();
+        }
+    });
+}
+
+function selectLegacyQuickRange(btn) {
+    var picker = btn.closest('.legacy-date-picker') || document;
+    picker.querySelectorAll('.date-quick-list button').forEach(function(item) {
+        item.classList.toggle('active', item === btn);
+    });
+    var labels = picker.querySelectorAll('.legacy-date-input span');
+    var map = {
+        '今天': ['2026-06-02', '2026-06-02'],
+        '昨天': ['2026-06-01', '2026-06-01'],
+        '最近三天': ['2026-05-31', '2026-06-02'],
+        '最近一周': ['2026-05-27', '2026-06-02'],
+        '最近一个月': ['2026-05-03', '2026-06-02']
+    };
+    var range = map[btn.textContent.trim()] || ['2026-06-02', '2026-06-02'];
+    if (labels[0]) labels[0].textContent = range[0];
+    if (labels[1]) labels[1].textContent = range[1];
+    renderResourceResults();
+}
+
+function setupLegacyDatePicker() {
+    document.querySelectorAll('.calendar-day').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var picker = btn.closest('.legacy-date-picker') || document;
+            picker.querySelectorAll('.calendar-day').forEach(function(day) { day.classList.remove('active'); });
+            btn.classList.add('active');
+            var labels = picker.querySelectorAll('.legacy-date-input span');
+            var day = btn.textContent.trim().padStart(2, '0');
+            var month = btn.classList.contains('muted') && Number(day) > 20 ? '05' : '06';
+            var value = '2026-' + month + '-' + day;
+            if (labels[0]) labels[0].textContent = value;
+            if (labels[1]) labels[1].textContent = value;
+            renderResourceResults();
+        });
+    });
 }
 
 function toggleLegacySelection(input) {
@@ -2592,9 +3164,13 @@ function renderArticles() {
     document.getElementById('resultContent').innerHTML = html;
 }
 
+function getLegacySelectionToolbarHtml() {
+    return '<div class="legacy-select-row"><label class="check"><input id="legacySelectAll" type="checkbox" onchange="toggleLegacySelection(this)">全选</label><span class="legacy-selected">已选 <b id="legacySelectedCount">0</b></span><button class="legacy-clear" type="button" onclick="clearLegacySelection()">清除</button></div>';
+}
+
 function renderMedia(type) {
     var list = media[type] || [];
-    var html = '<div class="media-grid">';
+    var html = getLegacySelectionToolbarHtml() + '<div class="media-grid">';
     list.forEach(function(item, index) {
         html += '<article class="media-card clickable" onclick="openMediaDetail(\'' + type + '\',' + index + ')"><label class="media-select" onclick="event.stopPropagation()"><input type="checkbox" data-legacy-select onchange="updateLegacySelectedCount()"></label><div class="media-thumb"><img src="' + item[3] + '" alt="">';
         if (type === 'video') html += '<div class="play"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><span class="duration">' + item[4] + '</span>';
@@ -2606,7 +3182,7 @@ function renderMedia(type) {
 }
 
 function renderAudio() {
-    var html = '<div class="audio-list">';
+    var html = getLegacySelectionToolbarHtml() + '<div class="audio-list">';
     audios.forEach(function(item, index) {
         html += '<div class="audio-row clickable" onclick="openMediaDetail(\'audio\',' + index + ')"><label class="audio-select" onclick="event.stopPropagation()"><input type="checkbox" data-legacy-select onchange="updateLegacySelectedCount()"></label><div class="audio-title"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>' + item[0] + '</div><div>' + item[2] + '</div><div>' + item[3] + '</div><div>' + item[4] + '</div><button class="row-btn" onclick="event.stopPropagation();openMediaDetail(\'audio\',' + index + ')">预览</button></div>';
     });
@@ -2795,7 +3371,7 @@ function jumpMediaDetail(direction) {
 }
 
 function backToResource() {
-    switchPage('resource');
+    switchPage('resource', { preserveResourceMode: true });
 }
 
 function renderLegacyTrend(range) {
@@ -2912,6 +3488,7 @@ function downloadPrd() {
 }
 
 var changelogData = [
+    { time: '2026-06-02 17:51', desc: '优化首页本地资源库与全省资源库分区、最新素材命名和移动端权限切换，同步全省资源库筛选、详情页及 PRD 规则。' },
     { time: '2026-06-02 11:00', desc: '优化首页资源聚合与全省资源库统计，支持周期增量联动，并补充移动端无权限推荐素材兜底规则。' },
     { time: '2026-06-02 10:15', desc: '优化移动端搜索结果页返回首页交互，并移除不适素材及其列表、移动端素材池引用。' },
     { time: '2026-06-02 09:59', desc: '新增移动端首页优化，支持 AI智搜、图片/视频推荐和搜索列表页全省资源库/媒资素材库切换。' },
@@ -2943,7 +3520,9 @@ document.addEventListener('DOMContentLoaded', function() {
     renderResourceResults();
     renderPrd();
     setupDrag();
-    setProvincePermission(true);
+    setupLegacyDatePicker();
+    setupDatePickerOutsideClose();
+    setHomePermission('both');
 });
 
 function renderPrd() {
