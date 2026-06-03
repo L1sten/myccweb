@@ -29,6 +29,8 @@
       "a66f54154c1f41be7faa23b3eb2c41b61accd992c3a1fb0d52503ddda916409f",
     "police-mobile-h5":
       "03f8d06ec73b71a457b9b752c4a5ba4f07a5faa53a779b65e4e294da09e36b01",
+    "hz-self-media-monitor":
+      "d2a0c556a51b27e5a165ffc9b57638ca8ea1e256a4f2a47114a20ebf87c7cdb8",
   };
 
   var projectKey = "root";
