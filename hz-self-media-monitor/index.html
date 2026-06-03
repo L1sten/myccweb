@@ -132,12 +132,10 @@ tbody tr:nth-child(even){background:#fff}
 tbody tr:hover{background:#eef6ff}
 td{height:49px;padding:0 12px;color:#1d2129;font-size:14px;border-bottom:1px solid #f0f2f5;vertical-align:middle}
 tbody tr:last-child td{border-bottom:none}
-.checkbox{width:14px;height:14px;border:1px solid #dbe0e8;border-radius:2px;background:#fff;display:inline-block}
-.col-check{width:36px;text-align:center}
 .col-index{width:54px;text-align:center}
 .col-platform{width:112px}
 .col-account{width:150px}
-.col-title{width:620px}
+.col-title{width:660px}
 .col-time{width:154px}
 .title-link{color:#0074ff;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
 .title-link:hover{text-decoration:underline}
@@ -314,7 +312,6 @@ tbody tr:last-child td{border-bottom:none}
               <table>
                 <thead>
                   <tr>
-                    <th class="col-check"><span class="checkbox"></span></th>
                     <th class="col-index">序号</th>
                     <th class="col-platform">发布平台</th>
                     <th class="col-account">发布账号</th>
@@ -491,9 +488,9 @@ tbody tr:last-child td{border-bottom:none}
 ### 4.1 列表字段
 
 - **序号**
-  - 展示规则：按当前分页从 1 开始递增，居中展示。
+  - 展示规则：按当前筛选结果和分页位置展示连续序号，居中展示。
   - 交互规则：纯展示。
-  - 数据规则：按当前筛选结果和分页位置生成；无独立取数；排序跟随列表排序。
+  - 数据规则：按当前筛选结果、排序结果和分页位置生成；无独立取数；排序跟随列表排序。
 
 - **发布平台**
   - 展示规则：展示平台名称标签，包含微博、抖音、微信公众号、视频号。
@@ -508,7 +505,7 @@ tbody tr:last-child td{border-bottom:none}
 - **发文标题**
   - 展示规则：标题以蓝色链接样式展示；列表内按列宽单行展示，超出部分以省略号截断；鼠标悬停展示完整标题。
   - 交互规则：点击标题在新窗口打开原文链接。
-  - 数据规则：取数自发文标题和原文链接；筛选规则支持标题模糊匹配；排序默认按发布时间倒序；导出 Excel 时输出完整标题。
+  - 数据规则：取数自发文标题和原文链接；筛选规则支持标题模糊匹配；排序默认按发布时间倒序；后台导出 Excel 时输出完整标题。
 
 - **发布时间**
   - 展示规则：展示为 YYYY-MM-DD HH:mm。
@@ -535,12 +532,12 @@ tbody tr:last-child td{border-bottom:none}
 - **展示规则**
   - 页面右上角展示“导出”按钮。
   - 导出内容包含发布平台、发布账号、发文标题、发布时间和原文链接。
-  - 导出文件格式为 Excel，文件名规则为：涉杭自媒体监测_发文列表_YYYYMMDD-HHmm.xls，其中时间取用户点击导出时的本地时间。
+  - 导出文件由后台生成，文件格式为 Excel，文件名规则为：涉杭自媒体监测_发文列表_YYYYMMDD-HHmm.xls。
 - **交互规则**
-  - 点击导出按钮后生成当前筛选结果的 Excel 文件。
-  - 导出完成后展示成功提示。
+  - 点击导出按钮后提交后台导出任务。
+  - 任务提交后展示成功提示；导出结果由后台生成并提供下载。
 - **数据规则**
-  - **取数规则**：读取当前筛选结果中的内容字段和来源字段。
+  - **取数规则**：后台读取当前筛选结果中的内容字段和来源字段。
   - **数据筛选规则**：导出结果与当前平台、账号、发布时间、标题检索条件保持一致。
   - **数据排序规则**：导出结果与当前列表排序一致，默认按发布时间倒序。
 
@@ -614,7 +611,7 @@ tbody tr:last-child td{border-bottom:none}
 - 支持平台、账号、发布时间和标题检索筛选。
 - 列表包含发布时间字段，并默认按发布时间倒序排列。
 - 点击发文标题可在新窗口打开原文链接。
-- 导出文件为 Excel 格式，文件名包含导出时间，格式为涉杭自媒体监测_发文列表_YYYYMMDD-HHmm.xls。
+- 导出由后台生成 Excel 文件，文件名包含导出时间，格式为涉杭自媒体监测_发文列表_YYYYMMDD-HHmm.xls。
 - 权限点包含“正能量监测 &gt; 涉杭重点监测 &gt; 涉杭自媒体监测 &gt; 列表查看 / 导出”。
 - PRD 与原型中的字段、筛选、排序和导出口径保持一致。
 </textarea>
@@ -743,21 +740,15 @@ function highlightTitle(title){
   return out;
 }
 function escapeReg(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}
-function exportStamp(){
-  var d = new Date();
-  function pad(n){return String(n).padStart(2,"0")}
-  return d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + "-" + pad(d.getHours()) + pad(d.getMinutes());
-}
 function renderTable(){
   var rows = filteredPosts();
   var start = (state.page-1)*state.pageSize;
   var pageRows = rows.slice(start,start+state.pageSize);
   if(!pageRows.length){
-    qs("postRows").innerHTML = '<tr><td colspan="6" style="height:120px;text-align:center;color:#86909c;background:#fff;">暂无匹配发文，请调整筛选条件</td></tr>';
+    qs("postRows").innerHTML = '<tr><td colspan="5" style="height:120px;text-align:center;color:#86909c;background:#fff;">暂无匹配发文，请调整筛选条件</td></tr>';
   } else {
     qs("postRows").innerHTML = pageRows.map(function(p,idx){
       return '<tr>'
-        + '<td class="col-check"><span class="checkbox"></span></td>'
         + '<td class="col-index">'+(start+idx+1)+'</td>'
         + '<td><button class="platform-tag '+platformClass(p.platform)+'" data-platform="'+escapeHtml(p.platform)+'">'+escapeHtml(p.platform)+'</button></td>'
         + '<td><button class="account-name" data-account="'+escapeHtml(p.account)+'">'+escapeHtml(p.account)+'</button></td>'
@@ -784,28 +775,7 @@ function showToast(text){
 }
 function exportCurrent(){
   var rows = filteredPosts();
-  var headers = ["平台","账号","标题","发布时间","原文链接"];
-  var sheetRows = [
-    "<Row>" + headers.map(function(h){return '<Cell><Data ss:Type="String">'+escapeHtml(h)+"</Data></Cell>"}).join("") + "</Row>"
-  ].concat(rows.map(function(p){
-    return "<Row>" + [p.platform,p.account,p.title,p.time,p.source].map(function(v){
-      return '<Cell><Data ss:Type="String">'+escapeHtml(v)+"</Data></Cell>";
-    }).join("") + "</Row>";
-  })).join("");
-  var workbook = '<?xml version="1.0" encoding="UTF-8"?>'
-    + '<?mso-application progid="Excel.Sheet"?>'
-    + '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" '
-    + 'xmlns:o="urn:schemas-microsoft-com:office:office" '
-    + 'xmlns:x="urn:schemas-microsoft-com:office:excel" '
-    + 'xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">'
-    + '<Worksheet ss:Name="发文列表"><Table>' + sheetRows + '</Table></Worksheet></Workbook>';
-  var blob = new Blob(["\ufeff"+workbook], {type:"application/vnd.ms-excel;charset=utf-8"});
-  var a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "涉杭自媒体监测_发文列表_" + exportStamp() + ".xls";
-  a.click();
-  URL.revokeObjectURL(a.href);
-  showToast("已导出当前筛选结果为 Excel");
+  showToast("已提交后台导出任务，共 " + rows.length + " 条");
 }
 
 document.addEventListener("DOMContentLoaded",function(){
@@ -847,6 +817,7 @@ function downloadPrd(){
   URL.revokeObjectURL(a.href);
 }
 var changelogData = [
+  {time:"2026-06-03 17:34",desc:"恢复列表序号列，并将导出口径调整为后端导出任务。"},
   {time:"2026-06-03 17:20",desc:"调整涉杭自媒体监测导航归属，左侧选中涉杭重点监测，并补充权限点清单与本期新增权限说明。"},
   {time:"2026-06-03 17:11",desc:"新增涉杭自媒体监测原型与 PRD，支持平台、账号、发布时间和标题检索，标题跳转原文，Excel 导出和标题截断规则。"}
 ];
