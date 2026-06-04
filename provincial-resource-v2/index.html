@@ -369,7 +369,6 @@
         .legacy-label { color: var(--muted); font-size: 12px; margin-bottom: 12px; }
         .legacy-value { font-size: 25px; font-weight: 780; line-height: 1; }
         .legacy-unit { color: var(--subtle); font-size: 12px; margin-left: 5px; }
-        .legacy-foot { margin-top: 9px; color: var(--green); font-size: 12px; }
         .trend-card {
             background: #fff;
             border: 1px solid var(--line);
@@ -1768,7 +1767,7 @@
 
 		                <div class="content-shell">
 	                    <div class="home-resource-tabs" id="homeResourceTabs" aria-label="首页资源范围">
-	                        <button class="home-resource-tab active" type="button" data-home-tab="media" onclick="switchHomeResourceTab('media')">本地资源库</button>
+	                        <button class="home-resource-tab active" type="button" data-home-tab="media" onclick="switchHomeResourceTab('media')">资源总览</button>
 	                        <button class="home-resource-tab" type="button" data-home-tab="province" onclick="switchHomeResourceTab('province')">全省资源库</button>
 	                    </div>
 
@@ -1857,9 +1856,9 @@
                             </div>
                         </div>
                         <div class="legacy-stats-grid" id="legacyStatsGrid">
-                            <div class="legacy-stat"><div class="legacy-label">图片资源总量</div><div class="legacy-value">1,942<span class="legacy-unit">张</span></div><div class="legacy-foot">近两周 +2,938</div></div>
-                            <div class="legacy-stat"><div class="legacy-label">视频资源总量</div><div class="legacy-value">6.47<span class="legacy-unit">小时</span></div><div class="legacy-foot">近两周 +365</div></div>
-                            <div class="legacy-stat"><div class="legacy-label">音频资源总量</div><div class="legacy-value">17<span class="legacy-unit">条</span></div><div class="legacy-foot">近两周 +26</div></div>
+                            <div class="legacy-stat"><div class="legacy-label">图片资源总量</div><div class="legacy-value">1,942<span class="legacy-unit">张</span></div></div>
+                            <div class="legacy-stat"><div class="legacy-label">视频资源总量</div><div class="legacy-value">6.47<span class="legacy-unit">小时</span></div></div>
+                            <div class="legacy-stat"><div class="legacy-label">音频资源总量</div><div class="legacy-value">17<span class="legacy-unit">条</span></div></div>
                         </div>
                     </section>
 
@@ -2191,8 +2190,8 @@
 	        <span class="permission-note">仅原型展示，不做开发</span>
 	    </div>
 	    <div class="permission-switch" aria-label="首页资源权限视图">
-	        <button class="active" data-permission="both" onclick="setHomePermission('both')">本地+全省</button>
-	        <button data-permission="media" onclick="setHomePermission('media')">仅本地资源库</button>
+	        <button class="active" data-permission="both" onclick="setHomePermission('both')">总览+全省</button>
+	        <button data-permission="media" onclick="setHomePermission('media')">仅资源总览</button>
 	        <button data-permission="province" onclick="setHomePermission('province')">仅全省资源库</button>
 	    </div>
 	</div>
@@ -2368,20 +2367,19 @@
   - 原有模块包括首页搜索区、最新图片资源、资源聚合、资源入库趋势等。
   - Web 首页搜索框下不展示资源库范围或资源类型 tab；资源库范围 tab 仅在搜索结果页展示，沿用线上已有逻辑。
   - 线上搜索结果页资源范围 tab 中，原“媒资素材库”命名调整为“素材中心”。
-  - 首页在“最新图片资源”上方展示资源范围 tab，包含“本地资源库”和“全省资源库”。
-  - “本地资源库”tab 下展示最新图片资源、资源聚合、资源入库趋势。
+  - 首页在“最新图片资源”上方展示资源范围 tab，包含“资源总览”和“全省资源库”。
+  - “资源总览”tab 下展示最新图片资源、资源聚合、资源入库趋势。
   - “全省资源库”tab 下展示最新素材、全省资源库数据统计、入库统计趋势。
-  - 本期优化“资源聚合”的数据统计展示，图片、视频、音频数据卡片展示资源总量和当前统计周期增量。
+  - 本期优化“资源聚合”的数据统计展示，图片、视频、音频数据卡片仅展示资源总量。
   - 无全省资源库权限时，首页仅展示线上已有模块，整体顺序和默认状态保持不变。
 - **交互规则**：
   - 原有模块沿用线上交互规则。
-  - 用户同时具备本地资源库和全省资源库权限时，首页默认选中“本地资源库”tab；点击 tab 后切换对应模块组。
-  - 用户切换“资源入库趋势”统计周期时，同步刷新“资源聚合”数据卡片的周期增量和趋势图；统计周期包括近两周、近一个月、近三个月。
+  - 用户同时具备素材中心权限和全省资源库权限时，首页默认选中“资源总览”tab；点击 tab 后切换对应模块组。
+  - 用户切换“资源入库趋势”统计周期时，仅刷新资源入库趋势图；资源聚合数据卡片保持资源总量展示，不随统计周期变化。
 - **数据规则**：
-  - **取数规则**：资源聚合总量沿用线上当前素材中心累计统计口径；周期增量读取当前素材中心中按入库时间落在所选统计周期内的新增图片、视频、音频素材。
+  - **取数规则**：资源聚合总量沿用线上当前素材中心累计统计口径。
   - **数据筛选规则**：仅统计当前用户可见、已入库且状态正常的公共媒资素材；下架、删除、权限不可见资源不纳入统计。
   - **数据排序规则**：趋势图按统计周期时间正序展示；数据卡片按图片、视频、音频固定顺序展示。
-  - **数据聚合规则**：近两周增量为“资源入库趋势”近两周视图中最近 14 个统计日的新增入库量求和；近一个月增量为近一个月视图中各周新增入库量求和；近三个月增量为近三个月视图中各月新增入库量求和。
 
 ### 2.2 最新素材
 
@@ -2423,9 +2421,9 @@
 
 - **展示规则**：
   - 首页资源范围由素材中心权限和全省资源库权限共同决定。
-  - 用户同时具备素材中心权限和全省资源库权限时，展示“本地资源库”“全省资源库”两个 tab，默认选中“本地资源库”。
+  - 用户同时具备素材中心权限和全省资源库权限时，展示“资源总览”“全省资源库”两个 tab，默认选中“资源总览”。
   - 用户具备全省资源库权限但不具备素材中心权限时，仅展示全省资源库内容，资源范围 tab 隐藏。
-  - 用户具备素材中心权限但不具备全省资源库权限时，仅展示本地资源库内容，资源范围 tab 隐藏。
+  - 用户具备素材中心权限但不具备全省资源库权限时，仅展示资源总览内容，资源范围 tab 隐藏。
   - 权限差异不影响当前可见模块内部的展示、顺序和交互。
 - **交互规则**：
   - 账号权限由系统权限配置决定，权限状态变化后按最新权限刷新首页可见内容。
@@ -3376,7 +3374,6 @@ function backToResource() {
 function renderLegacyTrend(range) {
     var key = range || 'last14';
     var data = legacyTrendData[key] || legacyTrendData.last14;
-    renderLegacyTrendMetrics(key, data);
     var max = Math.max.apply(null, data.map(function(item) { return item[1] + item[2] + item[3]; }));
     var points = [];
     var html = '';
@@ -3395,21 +3392,6 @@ function renderLegacyTrend(range) {
     points.forEach(function(point) { html += '<circle class="trend-line-dot" cx="' + point.x + '" cy="' + point.y + '" r="1.5"></circle>'; });
     html += '</svg>';
     document.getElementById('legacyTrendChart').innerHTML = html;
-}
-
-function renderLegacyTrendMetrics(range, data) {
-    var foots = document.querySelectorAll('#legacyStatsGrid .legacy-foot');
-    if (!foots.length) return;
-    var label = trendRangeLabels[range] || trendRangeLabels.last14;
-    var totals = [0, 0, 0];
-    data.forEach(function(item) {
-        totals[0] += item[1];
-        totals[1] += item[2];
-        totals[2] += item[3];
-    });
-    totals.forEach(function(value, index) {
-        if (foots[index]) foots[index].textContent = label + ' +' + formatMetricDelta(value);
-    });
 }
 
 function renderTrend(range) {
@@ -3487,6 +3469,7 @@ function downloadPrd() {
 }
 
 var changelogData = [
+    { time: '2026-06-04 10:40', desc: '将首页资源范围命名调整为资源总览，资源聚合仅展示资源总量，并取消统计周期增量联动，同步 PRD 规则。' },
     { time: '2026-06-02 19:36', desc: '优化全省资源库详情页上下切换范围、成品图片/视频检索能力和单框时间筛选布局，同步 PRD 规则。' },
     { time: '2026-06-02 17:51', desc: '优化首页本地资源库与全省资源库分区、最新素材命名和移动端权限切换，同步全省资源库筛选、详情页及 PRD 规则。' },
     { time: '2026-06-02 11:00', desc: '优化首页资源聚合与全省资源库统计，支持周期增量联动，并补充移动端无权限推荐素材兜底规则。' },
