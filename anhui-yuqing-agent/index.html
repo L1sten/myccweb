@@ -4,7 +4,7 @@
 <script src="../auth.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>安徽日报社舆情智能体演示系统</title>
+<title>安徽日报社舆情智能体工作台</title>
 <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
 <style>
 :root{
@@ -220,6 +220,10 @@ button{cursor:pointer}
 }
 .btn i{font-size:16px}
 .btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft)}
+.btn:focus-visible,.nav-btn:focus-visible,.chip-btn:focus-visible,.doc-tab:focus-visible{
+  outline:3px solid rgba(11,92,173,.24);
+  outline-offset:2px;
+}
 .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
 .btn.primary:hover{background:var(--primary-strong);border-color:var(--primary-strong);color:#fff}
 .btn.success{background:var(--green);border-color:var(--green);color:#fff}
@@ -622,6 +626,12 @@ button{cursor:pointer}
 }
 .kv span:nth-child(odd){color:var(--muted)}
 .kv span:nth-child(even){color:var(--text);font-weight:600}
+.event-actions{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  margin-top:14px;
+}
 .process-list{display:grid;gap:8px}
 .process-item{
   display:flex;
@@ -676,6 +686,7 @@ button{cursor:pointer}
   padding:13px;
   background:#fff;
 }
+.knowledge-card[hidden]{display:none}
 .knowledge-card h4{font-size:14px;margin-bottom:8px}
 .knowledge-card p{font-size:12px;color:var(--muted);line-height:1.55}
 .quality-list{display:grid;gap:10px}
@@ -758,9 +769,24 @@ button{cursor:pointer}
   align-items:flex-start;
   background:#fff;
 }
-.audit-check input{margin-top:3px;accent-color:var(--primary)}
+.audit-icon{
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  flex-shrink:0;
+  background:var(--green);
+  color:#fff;
+  font-size:13px;
+}
+.audit-check[data-result="block"]{border-color:#f3c8c5;background:#fffafa}
+.audit-check[data-result="warn"]{border-color:#ffd9a8;background:#fffdfa}
+.audit-check[data-result="block"] .audit-icon{background:var(--red)}
+.audit-check[data-result="warn"] .audit-icon{background:var(--orange)}
 .audit-check strong{display:block;font-size:13px;margin-bottom:3px}
 .audit-check span{display:block;font-size:12px;color:var(--muted)}
+.audit-check .status{margin-left:auto;flex-shrink:0}
 .review-queue{
   display:grid;
   gap:10px;
@@ -1044,6 +1070,12 @@ button{cursor:pointer}
   .top-actions{width:100%;overflow:auto}
   .content{padding:12px;overflow:visible}
   .grid.cols-4,.grid.cols-3,.grid.cols-2,.pipeline,.agent-mini-list,.agent-grid,.agent-detail,.knowledge-list,.audit-checks,.login-modes{grid-template-columns:1fr}
+  .event-actions{grid-template-columns:1fr}
+  .task-table,.task-table tbody,.task-table tr,.task-table td{display:block;width:100%}
+  .task-table thead{display:none}
+  .task-table tr{border-bottom:1px solid var(--line-soft);padding:10px 12px}
+  .task-table td{border:0;padding:4px 0}
+  .module-table{font-size:12px}
   .doc-paper{padding:24px 18px}
 }
 </style>
@@ -1054,24 +1086,24 @@ button{cursor:pointer}
     <div class="brand">
       <div class="brand-mark">皖</div>
       <div>
-        <h1>舆情智能体<br>演示系统</h1>
-        <p>安徽日报社 · Demo</p>
+        <h1>舆情智能体<br>工作台</h1>
+        <p>安徽日报社 · 原型验证</p>
       </div>
     </div>
     <nav class="nav" aria-label="主导航">
-      <div class="nav-label">工作区</div>
-      <button class="nav-btn active" data-page="overview"><i class="ri-dashboard-3-line"></i><span>演示总览</span><small>8</small></button>
-      <button class="nav-btn" data-page="agents"><i class="ri-robot-2-line"></i><span>智能体编排</span><small>8</small></button>
-      <button class="nav-btn" data-page="tasks"><i class="ri-loop-left-line"></i><span>任务处理</span><small>5</small></button>
-      <button class="nav-btn" data-page="hotspots"><i class="ri-fire-line"></i><span>热点展示</span><small>6</small></button>
-      <button class="nav-btn" data-page="chat"><i class="ri-chat-voice-line"></i><span>智能交互</span><small>6</small></button>
-      <button class="nav-btn" data-page="knowledge"><i class="ri-book-open-line"></i><span>知识资源库</span><small>4</small></button>
-      <button class="nav-btn" data-page="stats"><i class="ri-bar-chart-box-line"></i><span>统计留痕</span><small>5</small></button>
-      <button class="nav-btn" data-page="access"><i class="ri-lock-password-line"></i><span>权限访问</span><small>3</small></button>
-      <button class="nav-btn" data-page="audit"><i class="ri-shield-check-line"></i><span>审核校验</span><small>8</small></button>
-      <button class="nav-btn" data-page="outputs"><i class="ri-file-list-3-line"></i><span>输出交付</span><small>3</small></button>
-      <div class="nav-label">管理</div>
-      <button class="nav-btn" data-page="modules"><i class="ri-list-check-3"></i><span>清单映射</span><small>255</small></button>
+      <div class="nav-label">业务流程</div>
+      <button class="nav-btn active" data-page="overview"><i class="ri-dashboard-3-line"></i><span>工作台</span><small>总览</small></button>
+      <button class="nav-btn" data-page="hotspots"><i class="ri-fire-line"></i><span>线索发现</span><small>热点</small></button>
+      <button class="nav-btn" data-page="tasks"><i class="ri-loop-left-line"></i><span>研判处置</span><small>任务</small></button>
+      <button class="nav-btn" data-page="outputs"><i class="ri-file-list-3-line"></i><span>报告函件</span><small>输出</small></button>
+      <button class="nav-btn" data-page="audit"><i class="ri-shield-check-line"></i><span>复核中心</span><small>人审</small></button>
+      <button class="nav-btn" data-page="stats"><i class="ri-bar-chart-box-line"></i><span>统计留痕</span><small>审计</small></button>
+      <div class="nav-label">支撑能力</div>
+      <button class="nav-btn" data-page="chat"><i class="ri-chat-voice-line"></i><span>智能问答</span><small>问答</small></button>
+      <button class="nav-btn" data-page="knowledge"><i class="ri-book-open-line"></i><span>知识库</span><small>引用</small></button>
+      <button class="nav-btn" data-page="access"><i class="ri-lock-password-line"></i><span>账号权限</span><small>权限</small></button>
+      <button class="nav-btn" data-page="agents"><i class="ri-robot-2-line"></i><span>能力说明</span><small>智能体</small></button>
+      <button class="nav-btn" data-page="modules"><i class="ri-list-check-3"></i><span>需求清单</span><small>核对</small></button>
     </nav>
     <div class="sidebar-foot">
       <div class="source-box">
@@ -1084,66 +1116,75 @@ button{cursor:pointer}
   <main class="main">
     <header class="topbar">
       <div class="crumb">
-        <span class="badge"><i class="ri-sparkling-2-line"></i> 多智能体协同</span>
-        <h2 id="pageTitle">演示总览</h2>
+        <span class="badge"><i class="ri-sparkling-2-line"></i> 舆情值班闭环</span>
+        <h2 id="pageTitle">工作台</h2>
       </div>
       <div class="top-actions">
-        <span class="time-chip">2026-06-10 · 演示环境</span>
+        <span class="time-chip">2026-06-10 · 值班工作台</span>
         <button class="btn" id="resetBtn"><i class="ri-refresh-line"></i>重置</button>
-        <button class="btn primary" id="runBtn"><i class="ri-play-circle-line"></i>模拟处理</button>
+        <button class="btn primary" id="runBtn"><i class="ri-play-circle-line"></i>运行处理流程</button>
       </div>
     </header>
 
     <section class="content">
       <div class="page active" id="overview">
+        <section class="panel" style="margin-bottom:14px">
+          <div class="panel-head">
+            <div>
+              <h3>安徽日报社舆情值班一体化工作台</h3>
+              <p>面向舆情值班场景，完成热点线索发现、风险研判、报告生成、处置建议、函件复核和统计留痕的一体化闭环。</p>
+            </div>
+            <span class="status info">脱敏数据</span>
+          </div>
+        </section>
         <div class="grid cols-4">
           <article class="panel metric">
-            <div class="icon"><i class="ri-layout-grid-line"></i></div>
-            <strong>8</strong>
-            <span>业务模块来自评估清单</span>
+            <div class="icon"><i class="ri-fire-line"></i></div>
+            <strong>24</strong>
+            <span>今日热点线索</span>
           </article>
           <article class="panel metric cyan">
-            <div class="icon"><i class="ri-robot-2-line"></i></div>
-            <strong>8</strong>
-            <span>系统内多智能体分工</span>
+            <div class="icon"><i class="ri-search-eye-line"></i></div>
+            <strong>5</strong>
+            <span>待研判任务</span>
           </article>
           <article class="panel metric green">
-            <div class="icon"><i class="ri-time-line"></i></div>
-            <strong>255</strong>
-            <span>已评估产品工时合计</span>
+            <div class="icon"><i class="ri-alarm-warning-line"></i></div>
+            <strong>2</strong>
+            <span>高风险待复核</span>
           </article>
           <article class="panel metric orange">
-            <div class="icon"><i class="ri-shield-check-line"></i></div>
-            <strong>8</strong>
-            <span>演示审核项输出前复核</span>
+            <div class="icon"><i class="ri-draft-line"></i></div>
+            <strong>3</strong>
+            <span>报告与函件草稿</span>
           </article>
         </div>
 
         <section class="panel" style="margin-top:14px">
           <div class="panel-head">
             <div>
-              <h3>本次交付处理方式</h3>
-              <p>先不写 PRD，按需求清单快速构建可演示系统；页面内事件、时间、编号和命中结果均为演示样例，非真实舆情数据。</p>
+              <h3>今日业务闭环</h3>
+              <p>数据为脱敏样例，正式范围以双方确认的需求清单为准。</p>
             </div>
-            <span class="status info">交付审核</span>
+            <span class="status info">流程可验证</span>
           </div>
           <div class="panel-body">
             <div class="agent-mini-list">
               <article class="agent-mini">
-                <div class="mini-icon"><i class="ri-file-search-line"></i></div>
-                <div><strong>需求核对智能体</strong><span>核对 Excel 模块覆盖与演示边界</span></div>
+                <div class="mini-icon"><i class="ri-fire-line"></i></div>
+                <div><strong>线索发现</strong><span>聚合安徽属地、同城热搜和行业热点</span></div>
               </article>
               <article class="agent-mini">
-                <div class="mini-icon"><i class="ri-edit-box-line"></i></div>
-                <div><strong>内容审核智能体</strong><span>检查过度承诺、样例数据和口径风险</span></div>
+                <div class="mini-icon"><i class="ri-line-chart-line"></i></div>
+                <div><strong>风险研判</strong><span>给出情感倾向、风险等级和处置优先级</span></div>
               </article>
               <article class="agent-mini">
-                <div class="mini-icon"><i class="ri-checkbox-circle-line"></i></div>
-                <div><strong>验收校验智能体</strong><span>检查首页入口、PRD 缺省与交互可用性</span></div>
+                <div class="mini-icon"><i class="ri-file-chart-line"></i></div>
+                <div><strong>报告处置</strong><span>生成报告草稿、处置建议和函件草稿</span></div>
               </article>
               <article class="agent-mini">
                 <div class="mini-icon"><i class="ri-shield-check-line"></i></div>
-                <div><strong>人工最终确认</strong><span>部署前只纳入本次演示相关文件</span></div>
+                <div><strong>复核留痕</strong><span>人工确认后导出推送，保留审计记录</span></div>
               </article>
             </div>
           </div>
@@ -1154,7 +1195,7 @@ button{cursor:pointer}
             <div class="panel-head">
               <div>
                 <h3>事件处理链路</h3>
-                <p>从演示舆情线索进入，到报告、处置建议、函件草稿输出前完成校验</p>
+                <p>从舆情线索进入，到报告、处置建议、函件草稿输出前完成校验</p>
               </div>
               <span class="status info" id="pipelineStatus">待处理</span>
             </div>
@@ -1169,7 +1210,7 @@ button{cursor:pointer}
                 <div class="stage" data-step="2">
                   <div class="stage-num">2</div>
                   <h4>风险研判</h4>
-                  <p>演示情感分析、风险等级判定与趋势文字摘要。</p>
+                  <p>展示情感分析、风险等级判定与趋势文字摘要。</p>
                   <span class="agent-tag"><i class="ri-line-chart-line"></i>研判智能体</span>
                 </div>
                 <div class="stage" data-step="3">
@@ -1180,9 +1221,9 @@ button{cursor:pointer}
                 </div>
                 <div class="stage" data-step="4">
                   <div class="stage-num">4</div>
-                  <h4>审核校验</h4>
+                  <h4>复核校验</h4>
                   <p>自动校验项先完成，人审项进入复核，不自动外发。</p>
-                  <span class="agent-tag"><i class="ri-shield-keyhole-line"></i>审核校验智能体</span>
+                  <span class="agent-tag"><i class="ri-shield-keyhole-line"></i>复核校验智能体</span>
                 </div>
               </div>
             </div>
@@ -1199,21 +1240,21 @@ button{cursor:pointer}
             <div class="panel-body">
               <div class="review-card">
                 <div class="review-top">
-                  <strong>示例专题报告：本地民生事件关注度上升</strong>
+                  <strong>专题报告：本地民生事件关注度上升</strong>
                   <span class="status wait">待人工复核</span>
                 </div>
                 <p>图表引用、数据来源、风险等级说明已通过机器校验，等待值班编辑确认。</p>
               </div>
               <div class="review-card">
                 <div class="review-top">
-                  <strong>示例侵权投诉函：平台删除申请</strong>
+                  <strong>侵权投诉函：平台删除申请</strong>
                   <span class="status bad">禁止自动发送</span>
                 </div>
                 <p>函件草稿可生成，但必须由人工确认对象、事实与附件后发送。</p>
               </div>
               <div class="review-card">
                 <div class="review-top">
-                  <strong>示例知识库入库：历史案例脱敏</strong>
+                  <strong>知识库入库：历史案例脱敏</strong>
                   <span class="status ok">可入库</span>
                 </div>
                 <p>姓名、电话、账号标识完成脱敏，案例已关联处置法规标签。</p>
@@ -1225,7 +1266,7 @@ button{cursor:pointer}
         <section class="panel" style="margin-top:14px">
           <div class="panel-head">
             <div>
-              <h3>智能体快速入口</h3>
+              <h3>能力快速入口</h3>
               <p>点击卡片可查看对应输入、处理动作与输出边界</p>
             </div>
           </div>
@@ -1238,17 +1279,17 @@ button{cursor:pointer}
       <div class="page" id="agents">
         <div class="section-title">
           <div>
-            <h3>多智能体编排</h3>
-            <p>按清单中的采集、研判、报告、处置、交互、配套能力拆成可演示角色</p>
+            <h3>多智能体能力说明</h3>
+            <p>按清单中的采集、研判、报告、处置、交互、配套能力拆成业务角色</p>
           </div>
-          <button class="btn primary" id="agentDemoBtn"><i class="ri-node-tree"></i>编排演示</button>
+          <button class="btn primary" id="agentDemoBtn"><i class="ri-node-tree"></i>运行链路</button>
         </div>
         <section class="agent-grid" id="agentGrid"></section>
         <section class="panel" style="margin-top:14px">
           <div class="panel-head">
             <div>
               <h3 id="agentDetailTitle">采集智能体</h3>
-              <p id="agentDetailDesc">聚焦安徽属地舆情数据，联动热点信息获取与展示。</p>
+              <p id="agentDetailDesc">聚焦安徽属地舆情数据，联动线索发现与热点展示。</p>
             </div>
             <span class="status ok" id="agentDetailStatus">可启用</span>
           </div>
@@ -1315,10 +1356,15 @@ button{cursor:pointer}
                 <div class="kv">
                   <span>事件编号</span><span id="selectedId">DEMO-AH-01</span>
                   <span>处置模板</span><span id="selectedTemplate">专题报告 + 处置建议</span>
-                  <span>知识引用</span><span>示例法规 / 示例案例</span>
+                  <span>知识引用</span><span>处置法规 / 脱敏案例</span>
                   <span>人工确认</span><span>输出前必需</span>
                 </div>
-                <button class="btn primary" id="singleRunBtn"><i class="ri-flashlight-line"></i>处理当前事件</button>
+                <div class="event-actions">
+                  <button class="btn primary event-action" data-action="risk"><i class="ri-line-chart-line"></i>生成风险研判</button>
+                  <button class="btn event-action" data-action="report"><i class="ri-file-chart-line"></i>生成专题报告</button>
+                  <button class="btn event-action" data-action="letter"><i class="ri-mail-send-line"></i>生成处置/函件</button>
+                  <button class="btn success event-action" data-action="review"><i class="ri-shield-check-line"></i>提交复核</button>
+                </div>
               </div>
             </section>
             <section class="panel">
@@ -1338,8 +1384,8 @@ button{cursor:pointer}
           <section class="panel">
             <div class="panel-head">
               <div>
-                <h3>热点信息获取与展示</h3>
-                <p>演示全网、同城和行业热点的采集、筛选、定制展示能力</p>
+                <h3>线索发现</h3>
+                <p>汇聚全网、同城和行业热点，展示触发原因、来源与风险理由</p>
               </div>
               <div class="hotspot-tabs">
                 <button class="chip-btn active" data-hot-filter="all">全部</button>
@@ -1371,7 +1417,7 @@ button{cursor:pointer}
                   <strong>展示规则</strong>
                   <span class="status info">可配置</span>
                 </div>
-                <p>按行业、地域、风险等级和用户关注主题展示热点；当前均为演示样例。</p>
+                <p>按行业、地域、风险等级和用户关注主题展示热点；当前使用脱敏样例数据。</p>
               </div>
             </div>
           </aside>
@@ -1383,17 +1429,17 @@ button{cursor:pointer}
           <section class="panel">
             <div class="panel-head">
               <div>
-                <h3>自然语言对话与智能体执行</h3>
-                <p>演示多轮问答、传播量查询、媒体报道查询、主体信息搜集、报告与函件草稿生成</p>
+                <h3>智能问答与任务执行</h3>
+                <p>支持多轮问答、传播量查询、媒体报道查询、主体信息搜集、报告与函件草稿生成</p>
               </div>
-              <span class="status info">演示对话</span>
+              <span class="status info">值班问答</span>
             </div>
             <div class="panel-body">
               <div class="chat-shell">
                 <div class="chat-messages" id="chatMessages">
                   <div class="message agent">可以直接询问舆情事件、主体信息、传播量、媒体报道，或要求生成报告/函件草稿。所有外发内容都会进入人工复核。</div>
                   <div class="message user">查询 DEMO-AH-02 的传播量和媒体报道</div>
-                  <div class="message agent">已调用传播量查询和媒体报道查询：示例传播热度为高，媒体报道呈上升趋势。建议进入侵权应对流程并生成投诉函草稿，发送前需人工确认。</div>
+                  <div class="message agent">已调用传播量查询和媒体报道查询：传播热度为高，媒体报道呈上升趋势。建议进入侵权应对流程并生成投诉函草稿，发送前需人工确认。</div>
                 </div>
                 <div class="chat-input">
                   <input id="chatInput" value="生成 DEMO-AH-02 的侵权函草稿">
@@ -1436,10 +1482,10 @@ button{cursor:pointer}
             </div>
             <div class="panel-body">
               <div class="tree">
-                <div class="tree-item active"><strong>舆情知识</strong><span>研判规则、风险解释</span></div>
-                <div class="tree-item"><strong>舆情案例</strong><span>脱敏后的通用案例</span></div>
-                <div class="tree-item"><strong>处置法规</strong><span>法规与处置流程关联</span></div>
-                <div class="tree-item"><strong>分析报告</strong><span>日报/周报/月报/专题</span></div>
+                <div class="tree-item active" data-k-filter="knowledge"><strong>舆情知识</strong><span>研判规则、风险解释</span></div>
+                <div class="tree-item" data-k-filter="case"><strong>舆情案例</strong><span>脱敏后的通用案例</span></div>
+                <div class="tree-item" data-k-filter="law"><strong>处置法规</strong><span>法规与处置流程关联</span></div>
+                <div class="tree-item" data-k-filter="report"><strong>分析报告</strong><span>日报/周报/月报/专题</span></div>
               </div>
             </div>
           </section>
@@ -1456,21 +1502,25 @@ button{cursor:pointer}
             </div>
             <div class="panel-body">
               <div class="knowledge-list">
-                <article class="knowledge-card">
+                <article class="knowledge-card" data-k-type="knowledge">
                   <h4>负面评论引导话术样例</h4>
                   <p>用于舆论引导场景，输出前需要完成敏感词与事实一致性校验。</p>
                 </article>
-                <article class="knowledge-card">
+                <article class="knowledge-card" data-k-type="law">
                   <h4>平台侵权投诉通知书模板</h4>
                   <p>面向抖音、微博、微信等平台，草稿生成后必须人工确认发送。</p>
                 </article>
-                <article class="knowledge-card">
+                <article class="knowledge-card" data-k-type="knowledge">
                   <h4>突发舆情风险等级说明</h4>
                   <p>提供情感倾向、传播量、媒体报道变化的等级判定依据。</p>
                 </article>
-                <article class="knowledge-card">
+                <article class="knowledge-card" data-k-type="case">
                   <h4>历史案例脱敏入库规范</h4>
                   <p>历史舆情数据与经验数据入库前需去除个人敏感信息与账号标识。</p>
+                </article>
+                <article class="knowledge-card" data-k-type="report">
+                  <h4>月度舆情报告复用口径</h4>
+                  <p>沉淀月报结构、统计口径和图表说明，生成草稿后进入人工编辑。</p>
                 </article>
               </div>
             </div>
@@ -1514,7 +1564,7 @@ button{cursor:pointer}
             <div class="panel-head">
               <div>
                 <h3>数据统计分析与任务留痕</h3>
-                <p>演示内部运营、服务对象、舆情数据统计报表和智能体任务交互记录</p>
+                <p>统计内部运营、服务对象、舆情数据报表和智能体任务交互记录</p>
               </div>
               <button class="btn" id="exportStatsBtn"><i class="ri-download-2-line"></i>导出报表</button>
             </div>
@@ -1545,7 +1595,7 @@ button{cursor:pointer}
             <div class="panel-head">
               <div>
                 <h3>留痕明细</h3>
-                <p>演示口径：任务、操作者、动作、结果</p>
+                <p>留痕口径：任务、操作者、动作、结果</p>
               </div>
             </div>
             <div class="panel-body log-list" id="traceList"></div>
@@ -1594,7 +1644,7 @@ button{cursor:pointer}
               <div class="role-list" style="margin-top:14px">
                 <article class="role-card">
                   <header><h4>系统安全策略</h4><span class="status ok">启用</span></header>
-                  <p>演示数据加密存储、操作安全校验、系统维护与故障处理入口。</p>
+                  <p>数据加密存储、操作安全校验、系统维护与故障处理入口。</p>
                   <div class="role-perms"><span>数据加密</span><span>操作安全</span><span>维护工单</span><span>故障处理</span></div>
                 </article>
               </div>
@@ -1604,7 +1654,7 @@ button{cursor:pointer}
             <div class="panel-head">
               <div>
                 <h3>访问日志</h3>
-                <p>演示样例，支持查询和导出</p>
+                <p>脱敏样例，支持查询和导出</p>
               </div>
             </div>
             <div class="panel-body log-list">
@@ -1621,8 +1671,8 @@ button{cursor:pointer}
           <section class="panel">
             <div class="panel-head">
               <div>
-                <h3>演示审核校验中心</h3>
-                <p>演示覆盖数据、知识、模型输出、函件发送、权限审计与留痕；不等同正式 PRD 范围承诺</p>
+                <h3>复核中心</h3>
+                <p>覆盖数据、知识、模型输出、函件发送、权限审计与留痕；数据为脱敏样例，正式范围以双方确认的需求清单为准</p>
               </div>
               <button class="btn primary" id="recheckBtn"><i class="ri-shield-check-line"></i>重新校验</button>
             </div>
@@ -1630,14 +1680,14 @@ button{cursor:pointer}
               <div class="score-board">
                 <div class="score-ring"><strong id="scoreNum">6/8</strong><span>项</span></div>
                 <div class="audit-checks" id="auditChecks">
-                  <label class="audit-check"><input type="checkbox" checked><span><strong>敏感信息脱敏</strong><span>入库数据与输出文本均需检查</span></span></label>
-                  <label class="audit-check"><input type="checkbox" checked><span><strong>来源可追溯</strong><span>采集来源、引用报告、法规案例留存</span></span></label>
-                  <label class="audit-check"><input type="checkbox" checked><span><strong>事实一致性</strong><span>主体、时间、地点、风险等级不冲突</span></span></label>
-                  <label class="audit-check"><input type="checkbox" checked><span><strong>权限隔离</strong><span>账号隔离、角色分级、导出权限受控</span></span></label>
-                  <label class="audit-check"><input type="checkbox" checked><span><strong>话术合规</strong><span>舆论引导内容避免过度承诺</span></span></label>
-                  <label class="audit-check"><input type="checkbox"><span><strong>函件人工确认</strong><span>处置函/侵权函不能自动外发</span></span></label>
-                  <label class="audit-check"><input type="checkbox" checked><span><strong>操作留痕</strong><span>智能体任务交互记录可查询分析</span></span></label>
-                  <label class="audit-check"><input type="checkbox"><span><strong>推送复核</strong><span>定期推送前确认报告版本</span></span></label>
+                  <div class="audit-check" data-result="pass"><div class="audit-icon"><i class="ri-check-line"></i></div><span><strong>敏感信息脱敏</strong><span>入库数据与输出文本均需检查</span></span><span class="status ok">通过</span></div>
+                  <div class="audit-check" data-result="pass"><div class="audit-icon"><i class="ri-check-line"></i></div><span><strong>来源可追溯</strong><span>采集来源、引用报告、法规案例留存</span></span><span class="status ok">通过</span></div>
+                  <div class="audit-check" data-result="pass"><div class="audit-icon"><i class="ri-check-line"></i></div><span><strong>事实一致性</strong><span>主体、时间、地点、风险等级不冲突</span></span><span class="status ok">通过</span></div>
+                  <div class="audit-check" data-result="pass"><div class="audit-icon"><i class="ri-check-line"></i></div><span><strong>权限隔离</strong><span>账号隔离、角色分级、导出权限受控</span></span><span class="status ok">通过</span></div>
+                  <div class="audit-check" data-result="pass"><div class="audit-icon"><i class="ri-check-line"></i></div><span><strong>话术合规</strong><span>舆论引导内容避免过度承诺</span></span><span class="status ok">通过</span></div>
+                  <div class="audit-check" data-result="block"><div class="audit-icon"><i class="ri-stop-circle-line"></i></div><span><strong>函件人工确认</strong><span>处置函/侵权函不能自动外发</span></span><span class="status bad">阻断</span></div>
+                  <div class="audit-check" data-result="pass"><div class="audit-icon"><i class="ri-check-line"></i></div><span><strong>操作留痕</strong><span>智能体任务交互记录可查询分析</span></span><span class="status ok">通过</span></div>
+                  <div class="audit-check" data-result="warn"><div class="audit-icon"><i class="ri-time-line"></i></div><span><strong>推送复核</strong><span>定期推送前确认报告版本</span></span><span class="status wait">待复核</span></div>
                 </div>
               </div>
             </div>
@@ -1671,7 +1721,7 @@ button{cursor:pointer}
         <div class="doc-layout">
           <aside class="panel">
             <div class="panel-head">
-              <h3>输出类型</h3>
+              <h3>报告与函件</h3>
             </div>
             <div class="panel-body doc-menu">
               <button class="doc-tab active" data-doc="report"><strong>舆情专题报告</strong><span>日报/周报/月报/专题报告</span></button>
@@ -1683,7 +1733,7 @@ button{cursor:pointer}
           <aside class="panel">
             <div class="panel-head">
               <div>
-                <h3>交付前校验</h3>
+                <h3>导出前复核</h3>
                 <p>导出与推送前置条件</p>
               </div>
             </div>
@@ -1694,13 +1744,13 @@ button{cursor:pointer}
               </div>
               <div class="handoff-item">
                 <strong>多格式导出</strong>
-                <p>演示支持报告预览、导出与定期推送入口，实际输出前走复核。</p>
+                <p>支持报告预览、导出与定期推送入口，实际输出前走复核。</p>
               </div>
               <div class="handoff-item">
                 <strong>发送控制</strong>
                 <p>处置函和侵权函只生成草稿，人工确认后才能进入发送流程。</p>
               </div>
-              <button class="btn success" id="exportDemoBtn"><i class="ri-download-line"></i>模拟导出演示报告</button>
+              <button class="btn success" id="exportDemoBtn"><i class="ri-download-line"></i>导出报告草稿</button>
               <button class="btn" id="submitReviewBtn"><i class="ri-send-plane-line"></i>提交人工复核</button>
             </div>
           </aside>
@@ -1711,8 +1761,8 @@ button{cursor:pointer}
         <section class="panel">
           <div class="panel-head">
             <div>
-              <h3>需求清单映射</h3>
-              <p>先不写 PRD，仅把 Excel 清单字段快速映射为演示界面；具体范围待后续确认</p>
+              <h3>需求清单核对</h3>
+              <p>基于 Excel 清单核对当前原型覆盖的可落地功能，正式范围后续确认</p>
             </div>
             <span class="status info">Excel 映射</span>
           </div>
@@ -1722,7 +1772,7 @@ button{cursor:pointer}
                 <tr>
                   <th>清单模块</th>
                   <th>清单子模块</th>
-                  <th>演示映射（非 PRD 承诺）</th>
+                  <th>功能映射</th>
                   <th>清单工时</th>
                 </tr>
               </thead>
@@ -1730,49 +1780,49 @@ button{cursor:pointer}
                 <tr>
                   <td class="module-name">统一多端访问</td>
                   <td><div class="sub-list"><span>多端适配</span><span>认证方式</span><span>权限管理</span></div></td>
-                  <td>演示 PC 后台与移动端响应式入口；认证方式、角色分级与访问日志按清单表达。</td>
+                  <td>覆盖 PC 后台与移动端响应式入口；认证方式、角色分级与访问日志按清单表达。</td>
                   <td class="hours">30</td>
                 </tr>
                 <tr>
                   <td class="module-name">知识资源库</td>
                   <td><div class="sub-list"><span>知识数据录入</span><span>数据来源与脱敏</span><span>分类检索复用</span></div></td>
-                  <td>演示知识分类、入库校验、法规与案例关联、权限管控。</td>
+                  <td>覆盖知识分类、入库校验、法规与案例关联、权限管控。</td>
                   <td class="hours">45</td>
                 </tr>
                 <tr>
                   <td class="module-name">舆情风险研判</td>
                   <td><div class="sub-list"><span>多源数据采集</span><span>风险研判</span></div></td>
-                  <td>演示安徽属地数据采集、情感分析、风险等级、趋势文字摘要。</td>
+                  <td>覆盖安徽属地数据采集、情感分析、风险等级、趋势文字摘要。</td>
                   <td class="hours">12</td>
                 </tr>
                 <tr>
                   <td class="module-name">舆情报告</td>
                   <td><div class="sub-list"><span>智能生成</span><span>人工编辑</span><span>导出与推送</span></div></td>
-                  <td>演示日报/周报/月报/专题报告生成，人工微调，导出与定期推送入口。</td>
+                  <td>覆盖日报/周报/月报/专题报告生成，人工微调，导出与定期推送入口。</td>
                   <td class="hours">22</td>
                 </tr>
                 <tr>
                   <td class="module-name">舆情协助处置</td>
                   <td><div class="sub-list"><span>舆情处置功能</span><span>智能体协助处置</span></div></td>
-                  <td>演示处置建议、流程管理、话术支撑、舆论引导、侵权应对。</td>
+                  <td>覆盖处置建议、流程管理、话术支撑、舆论引导、侵权应对。</td>
                   <td class="hours">39</td>
                 </tr>
                 <tr>
                   <td class="module-name">热点信息获取与展示</td>
                   <td><div class="sub-list"><span>热点信息获取</span><span>热点信息展示</span></div></td>
-                  <td>演示全网/同城热搜、行业热点，PC 与移动端展示。</td>
+                  <td>覆盖全网/同城热搜、行业热点，PC 与移动端展示。</td>
                   <td class="hours">9</td>
                 </tr>
                 <tr>
                   <td class="module-name">智能交互</td>
                   <td><div class="sub-list"><span>自然语言对话</span><span>智能体执行服务</span><span>人工干预与留痕</span></div></td>
-                  <td>演示多轮问答、传播量/媒体报道/主体信息查询、报告与函件生成、操作留痕。</td>
+                  <td>覆盖多轮问答、传播量/媒体报道/主体信息查询、报告与函件生成、操作留痕。</td>
                   <td class="hours">68</td>
                 </tr>
                 <tr>
                   <td class="module-name">配套功能</td>
                   <td><div class="sub-list"><span>数据统计分析</span><span>权限管理</span><span>系统安全</span></div></td>
-                  <td>演示内部运营、服务对象、舆情数据统计报表；权限审计；数据加密与运维保障。</td>
+                  <td>覆盖内部运营、服务对象、舆情数据统计报表；权限审计；数据加密与运维保障。</td>
                   <td class="hours">30</td>
                 </tr>
               </tbody>
@@ -1797,7 +1847,7 @@ const agents = [
   },
   {
     id:"risk", name:"风险研判智能体", icon:"ri-line-chart-line", module:"舆情风险研判",
-    desc:"演示情感分析、风险等级判定与趋势研判文字摘要。",
+    desc:"展示情感分析、风险等级判定与趋势研判文字摘要。",
     inputs:["结构化事件卡片","情感倾向文本","传播量变化","媒体报道变化"],
     actions:["情感分析","风险等级判定","趋势研判摘要","风险理由解释"],
     outputs:["高/中/低风险等级","研判摘要","处置优先级","报告候选材料"]
@@ -1838,7 +1888,7 @@ const agents = [
     outputs:["问答结果","任务执行记录","人工干预记录","可追溯日志"]
   },
   {
-    id:"audit", name:"审核校验智能体", icon:"ri-shield-check-line", module:"配套功能 / 系统安全",
+    id:"audit", name:"复核校验智能体", icon:"ri-shield-check-line", module:"配套功能 / 系统安全",
     desc:"对入库数据、模型输出、导出推送和函件发送做统一校验。",
     inputs:["知识入库材料","报告草稿","函件草稿","操作日志"],
     actions:["脱敏校验","事实一致性检查","权限审计","发送前人工确认"],
@@ -1847,26 +1897,26 @@ const agents = [
 ];
 
 const tasks = [
-  {id:"DEMO-AH-01", title:"示例：本地民生事件关注度上升", desc:"演示样例模拟同城热搜与媒体报道同步增加，用于展示专题摘要流程。", source:"演示源：安徽属地 + 同城热搜", risk:"mid", riskText:"中", agent:"风险研判智能体", audit:"待人工复核", time:"示例 10:28", template:"专题报告 + 处置建议"},
-  {id:"DEMO-AH-02", title:"示例：网络平台疑似侵权内容扩散", desc:"演示样例模拟短视频平台出现未经授权内容，用于展示投诉函草稿流程。", source:"演示源：平台线索", risk:"high", riskText:"高", agent:"函件生成智能体", audit:"禁止自动发送", time:"示例 10:17", template:"侵权投诉函 + 附件清单"},
-  {id:"DEMO-AH-03", title:"示例：行业热点带动政策咨询增加", desc:"演示样例模拟行业热点进入问答高频主题，用于展示知识库引用与问答口径。", source:"演示源：行业热点", risk:"low", riskText:"低", agent:"交互问答智能体", audit:"通过", time:"示例 09:54", template:"问答口径 + 知识入库"},
-  {id:"DEMO-AH-04", title:"示例：突发事件相关评论情绪分化", desc:"演示样例模拟评论中出现多类观点，用于展示情感分析和舆论引导话术。", source:"演示源：媒体报道 + 评论", risk:"high", riskText:"高", agent:"协助处置智能体", audit:"待人工复核", time:"示例 09:41", template:"处置建议 + 话术支撑"},
-  {id:"DEMO-AH-05", title:"示例：月度舆情报告待生成", desc:"演示样例按月报模板汇总安徽属地重点舆情与热点趋势。", source:"演示源：报告任务", risk:"low", riskText:"低", agent:"报告生成智能体", audit:"待编辑", time:"示例 09:20", template:"月报 + 图表可视化"}
+  {id:"DEMO-AH-01", title:"本地民生事件关注度上升", desc:"脱敏样例显示同城热搜与媒体报道同步增加，用于展示专题摘要流程。", source:"安徽属地 + 同城热搜", risk:"mid", riskText:"中", agent:"风险研判智能体", audit:"待人工复核", time:"10:28", template:"专题报告 + 处置建议"},
+  {id:"DEMO-AH-02", title:"网络平台疑似侵权内容扩散", desc:"脱敏样例显示短视频平台出现未经授权内容，用于展示投诉函草稿流程。", source:"平台线索", risk:"high", riskText:"高", agent:"函件生成智能体", audit:"禁止自动发送", time:"10:17", template:"侵权投诉函 + 附件清单"},
+  {id:"DEMO-AH-03", title:"行业热点带动政策咨询增加", desc:"脱敏样例显示行业热点进入问答高频主题，用于展示知识库引用与问答口径。", source:"行业热点", risk:"low", riskText:"低", agent:"交互问答智能体", audit:"通过", time:"09:54", template:"问答口径 + 知识入库"},
+  {id:"DEMO-AH-04", title:"突发事件相关评论情绪分化", desc:"脱敏样例显示评论中出现多类观点，用于展示情感分析和舆论引导话术。", source:"媒体报道 + 评论", risk:"high", riskText:"高", agent:"协助处置智能体", audit:"待人工复核", time:"09:41", template:"处置建议 + 话术支撑"},
+  {id:"DEMO-AH-05", title:"月度舆情报告待生成", desc:"脱敏样例按月报模板汇总安徽属地重点舆情与热点趋势。", source:"报告任务", risk:"low", riskText:"低", agent:"报告生成智能体", audit:"待编辑", time:"09:20", template:"月报 + 图表可视化"}
 ];
 
 const docs = {
-  report:`<div class="doc-head"><div class="doc-kicker">安徽日报社舆情智能体 · 演示样例</div><h3>舆情专题报告</h3><div class="doc-meta">报告周期：2026-06-10 · 状态：机器草稿，待人工编辑</div></div><h4>一、事件概述</h4><p>演示样例模拟采集到安徽属地相关舆情线索，传播量与媒体报道在短时间内同步上升。风险研判智能体根据情感倾向、传播变化和媒体关注度，给出示例风险判断。</p><h4>二、趋势研判</h4><p>当前讨论集中在事件事实、处置进展与公众关切回应。建议在实际接入后持续监测全网和同城热搜，并在后续报告中补充趋势变化说明。</p><h4>三、处置建议</h4><p>建议由人工确认事实口径后，采用标准流程进行回应。涉及外部平台内容时，先完成侵权类型识别与证据附件核验。</p><p class="doc-note">校验要求：数据来源、事实一致性、敏感信息脱敏、报告版本和推送对象均需确认。</p>`,
-  advice:`<div class="doc-head"><div class="doc-kicker">协助处置智能体输出 · 演示样例</div><h3>舆情处置建议</h3><div class="doc-meta">适用场景：负面评论、错误舆论、处置流程管理</div></div><h4>一、标准流程</h4><p>完成事件事实核查后，按风险等级进入处置流程。高风险事件优先生成复核任务，并要求负责人确认回应口径。</p><h4>二、话术支撑</h4><p>回应内容应围绕事实、进展和后续措施展开，避免未经确认的信息扩散。对负面评论可生成引导性评论草稿，但必须人工复核。</p><h4>三、留痕要求</h4><p>智能体生成建议、人工调整、最终采用版本均进入任务交互记录，支持后续查询分析与权限审计。</p><p class="doc-note">边界：处置建议不直接替代人工决策，所有外发内容均需确认。</p>`,
-  letter:`<div class="doc-head"><div class="doc-kicker">函件生成智能体草稿 · 演示样例</div><h3>侵权投诉通知书</h3><div class="doc-meta">发送对象：网络平台 · 状态：草稿，禁止自动发送</div></div><h4>一、投诉事项</h4><p>演示样例中，相关网络内容可能涉及对服务对象合法权益的侵犯。请平台依据投诉材料核查并采取相应处理措施。</p><h4>二、证据附件</h4><p>需人工补充并确认原始链接、截图、发布时间、传播范围、权利证明材料等附件。附件不完整时不得提交。</p><h4>三、处理请求</h4><p>请求平台对涉嫌侵权内容进行审核，并根据平台规则采取删除、屏蔽或限制传播等措施。</p><p class="doc-note">强校验：函件生成后只进入人工确认流程，不支持智能体自动外发。</p>`
+  report:`<div class="doc-head"><div class="doc-kicker">安徽日报社舆情智能体 · 脱敏样例</div><h3>舆情专题报告</h3><div class="doc-meta">报告周期：2026-06-10 · 状态：机器草稿，待人工编辑</div></div><h4>一、事件概述</h4><p>采集到安徽属地相关舆情线索，传播量与媒体报道在短时间内同步上升。风险研判智能体根据情感倾向、传播变化和媒体关注度，给出风险判断。</p><h4>二、趋势研判</h4><p>当前讨论集中在事件事实、处置进展与公众关切回应。建议在实际接入后持续监测全网和同城热搜，并在后续报告中补充趋势变化说明。</p><h4>三、处置建议</h4><p>建议由人工确认事实口径后，采用标准流程进行回应。涉及外部平台内容时，先完成侵权类型识别与证据附件核验。</p><p class="doc-note">校验要求：数据来源、事实一致性、敏感信息脱敏、报告版本和推送对象均需确认。</p>`,
+  advice:`<div class="doc-head"><div class="doc-kicker">协助处置智能体输出 · 脱敏样例</div><h3>舆情处置建议</h3><div class="doc-meta">适用场景：负面评论、错误舆论、处置流程管理</div></div><h4>一、标准流程</h4><p>完成事件事实核查后，按风险等级进入处置流程。高风险事件优先生成复核任务，并要求负责人确认回应口径。</p><h4>二、话术支撑</h4><p>回应内容应围绕事实、进展和后续措施展开，避免未经确认的信息扩散。对负面评论可生成引导性评论草稿，但必须人工复核。</p><h4>三、留痕要求</h4><p>智能体生成建议、人工调整、最终采用版本均进入任务交互记录，支持后续查询分析与权限审计。</p><p class="doc-note">边界：处置建议不直接替代人工决策，所有外发内容均需确认。</p>`,
+  letter:`<div class="doc-head"><div class="doc-kicker">函件生成智能体草稿 · 脱敏样例</div><h3>侵权投诉通知书</h3><div class="doc-meta">发送对象：网络平台 · 状态：草稿，禁止自动发送</div></div><h4>一、投诉事项</h4><p>相关网络内容可能涉及对服务对象合法权益的侵犯。请平台依据投诉材料核查并采取相应处理措施。</p><h4>二、证据附件</h4><p>需人工补充并确认原始链接、截图、发布时间、传播范围、权利证明材料等附件。附件不完整时不得提交。</p><h4>三、处理请求</h4><p>请求平台对涉嫌侵权内容进行审核，并根据平台规则采取删除、屏蔽或限制传播等措施。</p><p class="doc-note">强校验：函件生成后只进入人工确认流程，不支持智能体自动外发。</p>`
 };
 
 const hotspots = [
-  {rank:1, type:"city", title:"示例：安徽属地民生话题讨论升温", desc:"同城热搜与媒体报道同步增加，建议进入风险研判队列。", source:"同城热搜", score:82, status:"待研判"},
-  {rank:2, type:"web", title:"示例：平台侵权相关讨论扩散", desc:"全网热点中出现疑似侵权传播线索，建议触发函件草稿流程。", source:"全网热点", score:76, status:"需复核"},
-  {rank:3, type:"industry", title:"示例：教育行业政策咨询增加", desc:"行业热点问答频次增加，可沉淀为知识库问答口径。", source:"行业热点", score:64, status:"可入库"},
-  {rank:4, type:"city", title:"示例：本地活动舆情关注度上升", desc:"属地媒体报道增多，适合生成日报摘要和图表说明。", source:"安徽属地", score:58, status:"生成报告"},
-  {rank:5, type:"industry", title:"示例：医疗服务评价讨论集中", desc:"服务评价类话题集中出现，需要观察情绪变化趋势。", source:"行业热点", score:52, status:"观察"},
-  {rank:6, type:"web", title:"示例：网络误读内容被转发", desc:"存在错误舆论扩散苗头，可生成引导话术并进入人工复核。", source:"全网热点", score:49, status:"待处置"}
+  {rank:1, type:"city", title:"安徽属地民生话题讨论升温", desc:"同城热搜与媒体报道同步增加，建议进入风险研判队列。", source:"同城热搜", score:82, status:"待研判", updated:"10:31", reason:"同城热度 2 小时内连续上升", riskReason:"媒体报道增加且评论情绪分化"},
+  {rank:2, type:"web", title:"平台侵权相关讨论扩散", desc:"全网热点中出现疑似侵权传播线索，建议触发函件草稿流程。", source:"全网热点", score:76, status:"需复核", updated:"10:24", reason:"短视频平台转发量快速增加", riskReason:"涉及权属争议，函件外发必须人工确认"},
+  {rank:3, type:"industry", title:"教育行业政策咨询增加", desc:"行业热点问答频次增加，可沉淀为知识库问答口径。", source:"行业热点", score:64, status:"可入库", updated:"10:02", reason:"政策类问答请求集中出现", riskReason:"低风险，但需要统一口径避免误读"},
+  {rank:4, type:"city", title:"本地活动舆情关注度上升", desc:"属地媒体报道增多，适合生成日报摘要和图表说明。", source:"安徽属地", score:58, status:"生成报告", updated:"09:49", reason:"本地媒体报道和搜索词同步增加", riskReason:"关注度上升，适合纳入日报跟踪"},
+  {rank:5, type:"industry", title:"医疗服务评价讨论集中", desc:"服务评价类话题集中出现，需要观察情绪变化趋势。", source:"行业热点", score:52, status:"观察", updated:"09:37", reason:"评价关键词聚集在同一服务主题", riskReason:"情绪暂未恶化，保持观察"},
+  {rank:6, type:"web", title:"网络误读内容被转发", desc:"存在错误舆论扩散苗头，可生成引导话术并进入人工复核。", source:"全网热点", score:49, status:"待处置", updated:"09:18", reason:"误读内容出现跨平台搬运", riskReason:"事实表述可能被放大，需要话术复核"}
 ];
 
 const traceRows = [
@@ -1878,24 +1928,24 @@ const traceRows = [
 ];
 
 const pageTitles = {
-  overview:"演示总览",
-  agents:"智能体编排",
-  tasks:"任务处理",
-  hotspots:"热点展示",
-  chat:"智能交互",
-  knowledge:"知识资源库",
+  overview:"工作台",
+  agents:"能力说明",
+  tasks:"研判处置",
+  hotspots:"线索发现",
+  chat:"智能问答",
+  knowledge:"知识库",
   stats:"统计留痕",
-  access:"权限访问",
-  audit:"审核校验",
-  outputs:"输出交付",
-  modules:"清单映射"
+  access:"账号权限",
+  audit:"复核中心",
+  outputs:"报告函件",
+  modules:"需求清单"
 };
 
 const processItems = [
-  ["采集智能体","已完成演示样例线索与热点信息汇聚","done"],
+  ["采集智能体","已完成脱敏样例线索与热点信息汇聚","done"],
   ["风险研判智能体","正在判定情感倾向、风险等级与趋势摘要","wait"],
-  ["知识增强智能体","已命中示例法规与脱敏案例","done"],
-  ["审核校验智能体","等待人工确认输出版本与发送对象","wait"]
+  ["知识增强智能体","已命中处置法规与脱敏案例","done"],
+  ["复核校验智能体","等待人工确认输出版本与发送对象","wait"]
 ];
 
 function qs(sel){return document.querySelector(sel)}
@@ -1913,7 +1963,7 @@ function showToast(title, text){
 function showPage(id){
   qsa(".page").forEach(p=>p.classList.toggle("active", p.id === id));
   qsa(".nav-btn").forEach(btn=>btn.classList.toggle("active", btn.dataset.page === id));
-  qs("#pageTitle").textContent = pageTitles[id] || "演示系统";
+  qs("#pageTitle").textContent = pageTitles[id] || "工作台";
 }
 
 function renderOverviewAgents(){
@@ -1967,7 +2017,7 @@ function renderDoc(type="report"){
 
 function renderHotspots(type="all"){
   const rows = hotspots.filter(item => type === "all" || item.type === type);
-  qs("#hotspotList").innerHTML = rows.map(item=>`<article class="hot-item"><div class="hot-rank">${item.rank}</div><div><h4>${item.title}</h4><p>${item.desc}</p></div><div class="hot-meta"><strong>${item.score}</strong><span>${item.source}</span><span class="status ${item.status.includes("复核") || item.status.includes("研判") ? "wait" : item.status.includes("入库") || item.status.includes("完成") ? "ok" : "info"}">${item.status}</span></div></article>`).join("");
+  qs("#hotspotList").innerHTML = rows.map(item=>`<article class="hot-item"><div class="hot-rank">${item.rank}</div><div><h4>${item.title}</h4><p>${item.desc}</p><p>触发原因：${item.reason}</p><p>风险理由：${item.riskReason}</p></div><div class="hot-meta"><strong>${item.score}</strong><span>${item.source}</span><span>${item.updated} 更新</span><span class="status ${item.status.includes("复核") || item.status.includes("研判") ? "wait" : item.status.includes("入库") || item.status.includes("完成") ? "ok" : "info"}">${item.status}</span></div></article>`).join("");
   qsa("[data-hot-filter]").forEach(btn=>btn.classList.toggle("active", btn.dataset.hotFilter === type));
 }
 
@@ -1980,19 +2030,52 @@ function sendChat(query){
   if(!text) return;
   const box = qs("#chatMessages");
   box.insertAdjacentHTML("beforeend", `<div class="message user">${text}</div>`);
-  const reply = text.includes("函") ? "已生成演示函件草稿，并自动加入人工确认清单；不会自动发送。" :
-    text.includes("传播") ? "已返回演示传播量、媒体报道和趋势摘要，可继续生成专题报告。" :
-    text.includes("主体") ? "已汇总演示主体信息、相关事件和历史处置记录，可写入知识库引用。" :
-    "已完成演示查询，并记录本次智能体执行服务留痕。";
+  const reply = text.includes("函") ? "已生成函件草稿，并自动加入人工确认清单；不会自动发送。" :
+    text.includes("传播") ? "已返回传播量、媒体报道和趋势摘要，可继续生成专题报告。" :
+    text.includes("主体") ? "已汇总主体信息、相关事件和历史处置记录，可写入知识库引用。" :
+    "已完成查询，并记录本次智能体执行服务留痕。";
   box.insertAdjacentHTML("beforeend", `<div class="message agent">${reply}</div>`);
   box.scrollTop = box.scrollHeight;
 }
 
-function filterKnowledge(){
+let activeKnowledgeType = "knowledge";
+
+function filterKnowledge(type){
+  if(type) activeKnowledgeType = type;
   const keyword = qs("#knowledgeSearch").value.trim();
   qsa(".knowledge-card").forEach(card=>{
-    card.style.display = !keyword || card.innerText.includes(keyword) ? "" : "none";
+    const categoryMatched = activeKnowledgeType === "all" || card.dataset.kType === activeKnowledgeType;
+    const keywordMatched = !keyword || card.innerText.includes(keyword);
+    card.hidden = !(categoryMatched && keywordMatched);
   });
+  qsa("[data-k-filter]").forEach(item=>item.classList.toggle("active", item.dataset.kFilter === activeKnowledgeType));
+}
+
+function handleEventAction(action){
+  const id = qs("#selectedId").textContent;
+  if(action === "risk"){
+    qs("#selectedStage").textContent = "研判完成";
+    qs("#selectedStage").className = "status ok";
+    qs("#processList").insertAdjacentHTML("afterbegin", `<div class="process-item done"><i class="ri-check-line"></i><div><strong>风险研判已生成</strong><span>${id} 已形成风险等级、风险理由和处置优先级。</span></div></div>`);
+    showToast("风险研判已生成", `${id} 已补充风险理由与处置优先级`);
+    return;
+  }
+  if(action === "report"){
+    renderDoc("report");
+    showPage("outputs");
+    showToast("报告草稿已生成", `${id} 已进入导出前复核`);
+    return;
+  }
+  if(action === "letter"){
+    renderDoc("letter");
+    showPage("outputs");
+    showToast("函件草稿已生成", `${id} 已加入人工确认清单`);
+    return;
+  }
+  if(action === "review"){
+    showPage("audit");
+    showToast("已提交复核", `${id} 已进入复核中心，不会自动外发`);
+  }
 }
 
 function runPipeline(){
@@ -2017,21 +2100,21 @@ function runPipeline(){
       }
     }, idx * 620);
   });
-  showToast("多智能体处理已启动","采集、研判、生成与审核链路正在模拟执行");
+  showToast("处理流程已启动","采集、研判、生成与复核链路正在执行");
 }
 
 function resetPipeline(){
   qsa(".stage").forEach(stage=>stage.classList.remove("running","done","warn"));
   qs("#pipelineStatus").className = "status info";
   qs("#pipelineStatus").textContent = "待处理";
-  showToast("演示状态已重置","可重新运行多智能体处理链路");
+  showToast("处理状态已重置","可重新运行多智能体处理链路");
 }
 
 function updateScore(){
-  const checks = qsa("#auditChecks input");
-  const checked = checks.filter(input=>input.checked).length;
-  const pct = Math.round(checked / checks.length * 100);
-  qs("#scoreNum").textContent = `${checked}/${checks.length}`;
+  const checks = qsa("#auditChecks .audit-check");
+  const passed = checks.filter(item=>item.dataset.result === "pass").length;
+  const pct = Math.round(passed / checks.length * 100);
+  qs("#scoreNum").textContent = `${passed}/${checks.length}`;
   qs(".score-ring").style.background = `conic-gradient(${pct >= 86 ? "var(--green)" : pct >= 76 ? "var(--orange)" : "var(--red)"} 0 ${pct}%, #e8eef5 ${pct}% 100%)`;
 }
 
@@ -2043,6 +2126,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderDoc("report");
   renderHotspots("all");
   renderTrace();
+  filterKnowledge("knowledge");
   updateScore();
 
   qsa(".nav-btn").forEach(btn => btn.addEventListener("click", () => showPage(btn.dataset.page)));
@@ -2060,15 +2144,21 @@ document.addEventListener("DOMContentLoaded", () => {
     if(docTab) renderDoc(docTab.dataset.doc);
     const hotTab = e.target.closest("[data-hot-filter]");
     if(hotTab) renderHotspots(hotTab.dataset.hotFilter);
+    const eventAction = e.target.closest(".event-action");
+    if(eventAction) handleEventAction(eventAction.dataset.action);
+    const knowledgeFilter = e.target.closest("[data-k-filter]");
+    if(knowledgeFilter) {
+      filterKnowledge(knowledgeFilter.dataset.kFilter);
+      showToast("知识分类已切换", knowledgeFilter.querySelector("strong").textContent + " 条目已筛选");
+    }
   });
   qs("#runBtn").addEventListener("click", runPipeline);
   qs("#resetBtn").addEventListener("click", resetPipeline);
   qs("#agentDemoBtn").addEventListener("click", () => { showPage("overview"); runPipeline(); });
   qs("#batchRunBtn").addEventListener("click", () => showToast("批量处理已创建","5 条任务进入采集、研判、生成与审核队列"));
-  qs("#singleRunBtn").addEventListener("click", () => showToast("当前事件处理中","已调度知识增强、报告生成与审核校验智能体"));
-  qs("#recheckBtn").addEventListener("click", () => { updateScore(); showToast("校验完成","已刷新脱敏、来源、事实、权限与人工确认检查项"); });
-  qs("#addKnowledgeBtn").addEventListener("click", () => showToast("演示新增条目","已打开知识入库校验流程示意"));
-  qs("#exportDemoBtn").addEventListener("click", () => showToast("模拟导出完成","演示报告已进入下载前复核状态"));
+  qs("#recheckBtn").addEventListener("click", () => { updateScore(); showToast("复核结果已刷新","已刷新脱敏、来源、事实、权限与人工确认检查项"); });
+  qs("#addKnowledgeBtn").addEventListener("click", () => showToast("知识条目已进入入库流程","待完成脱敏、来源说明和权限校验"));
+  qs("#exportDemoBtn").addEventListener("click", () => showToast("报告草稿已生成","报告已进入下载前复核状态"));
   qs("#submitReviewBtn").addEventListener("click", () => showToast("已提交人工复核","报告、处置建议和函件草稿等待人工确认"));
   qs("#chatSendBtn").addEventListener("click", () => sendChat());
   qs("#chatInput").addEventListener("keydown", (e) => { if(e.key === "Enter") sendChat(); });
@@ -2078,7 +2168,6 @@ document.addEventListener("DOMContentLoaded", () => {
   qs("#exportAccessBtn").addEventListener("click", () => showToast("访问日志已生成","账号、角色、访问动作和审计结果已进入导出队列"));
   qs("#riskFilter").addEventListener("change", renderTasks);
   qs("#taskSearch").addEventListener("input", renderTasks);
-  qsa("#auditChecks input").forEach(input => input.addEventListener("change", updateScore));
 });
 </script>
 </body>
