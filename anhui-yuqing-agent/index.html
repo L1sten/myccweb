@@ -845,6 +845,166 @@ button{cursor:pointer}
 }
 .handoff-item strong{font-size:13px}
 .handoff-item p{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.55}
+.hotspot-layout,.chat-layout,.stats-layout,.access-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 360px;
+  gap:14px;
+}
+.hotspot-tabs,.quick-actions,.stat-tabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.chip-btn{
+  height:30px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--text);
+  border-radius:15px;
+  padding:0 12px;
+  font-size:12px;
+}
+.chip-btn.active,.chip-btn:hover{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+.hot-list,.chat-messages,.stat-list,.role-list,.log-list{display:grid;gap:10px}
+.hot-item{
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr) auto;
+  gap:12px;
+  align-items:flex-start;
+  border:1px solid var(--line-soft);
+  border-radius:8px;
+  padding:12px;
+  background:#fff;
+}
+.hot-rank{
+  width:28px;
+  height:28px;
+  border-radius:7px;
+  background:var(--primary-soft);
+  color:var(--primary);
+  display:grid;
+  place-items:center;
+  font-weight:800;
+  font-size:13px;
+}
+.hot-item h4,.chat-card h4,.stat-card-row h4,.role-card h4{font-size:14px;margin-bottom:5px}
+.hot-item p,.chat-card p,.stat-card-row p,.role-card p{font-size:12px;color:var(--muted);line-height:1.55}
+.hot-meta{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:7px;
+  font-size:12px;
+  color:var(--muted);
+  white-space:nowrap;
+}
+.trend-bars{display:grid;gap:10px}
+.trend-row{
+  display:grid;
+  grid-template-columns:92px minmax(0,1fr) 42px;
+  gap:9px;
+  align-items:center;
+  font-size:12px;
+  color:var(--text);
+}
+.trend-track{height:8px;background:#edf2f7;border-radius:99px;overflow:hidden}
+.trend-fill{height:100%;background:var(--primary);border-radius:99px}
+.chat-shell{
+  border:1px solid var(--line-soft);
+  border-radius:8px;
+  background:#fff;
+  overflow:hidden;
+}
+.chat-messages{
+  min-height:368px;
+  padding:16px;
+  align-content:start;
+  background:linear-gradient(180deg,#fbfdff 0%,#fff 100%);
+}
+.message{
+  max-width:78%;
+  border-radius:8px;
+  padding:10px 12px;
+  font-size:13px;
+  line-height:1.65;
+}
+.message.user{justify-self:end;background:var(--primary);color:#fff}
+.message.agent{justify-self:start;background:#eef4fb;color:var(--text)}
+.chat-input{
+  display:flex;
+  gap:8px;
+  padding:12px;
+  border-top:1px solid var(--line-soft);
+}
+.chat-input input{flex:1;height:34px;border:1px solid var(--line);border-radius:6px;padding:0 10px;font-size:13px}
+.chat-card,.stat-card-row,.role-card,.log-row{
+  border:1px solid var(--line-soft);
+  border-radius:8px;
+  padding:12px;
+  background:#fff;
+}
+.stat-card-row{
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr) auto;
+  align-items:center;
+  gap:12px;
+}
+.stat-icon-small{
+  width:36px;
+  height:36px;
+  border-radius:8px;
+  background:var(--primary-soft);
+  color:var(--primary);
+  display:grid;
+  place-items:center;
+  font-size:18px;
+}
+.stat-value{font-size:20px;font-weight:800;color:var(--ink)}
+.role-card header,.log-row{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start;
+}
+.role-perms{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:8px;
+}
+.role-perms span{
+  font-size:11px;
+  color:#516172;
+  background:#eef3f8;
+  padding:3px 7px;
+  border-radius:4px;
+}
+.login-modes{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.login-mode{
+  border:1px solid var(--line-soft);
+  border-radius:8px;
+  padding:12px;
+  background:#fff;
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+}
+.login-mode i{
+  width:30px;
+  height:30px;
+  border-radius:7px;
+  background:var(--primary-soft);
+  color:var(--primary);
+  display:grid;
+  place-items:center;
+  flex-shrink:0;
+}
+.login-mode strong{display:block;font-size:13px}
+.login-mode span{display:block;font-size:12px;color:var(--muted);margin-top:3px}
 .toast{
   position:fixed;
   right:22px;
@@ -867,7 +1027,7 @@ button{cursor:pointer}
   body{min-width:1000px}
   .grid.cols-4{grid-template-columns:repeat(2,minmax(0,1fr))}
   .agent-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .workbench,.task-layout,.audit-layout{grid-template-columns:1fr}
+  .workbench,.task-layout,.audit-layout,.hotspot-layout,.chat-layout,.stats-layout,.access-layout{grid-template-columns:1fr}
   .knowledge-layout,.doc-layout{grid-template-columns:1fr}
 }
 @media (max-width:760px){
@@ -883,7 +1043,7 @@ button{cursor:pointer}
   .topbar{height:auto;align-items:flex-start;flex-direction:column;padding:14px}
   .top-actions{width:100%;overflow:auto}
   .content{padding:12px;overflow:visible}
-  .grid.cols-4,.grid.cols-3,.grid.cols-2,.pipeline,.agent-mini-list,.agent-grid,.agent-detail,.knowledge-list,.audit-checks{grid-template-columns:1fr}
+  .grid.cols-4,.grid.cols-3,.grid.cols-2,.pipeline,.agent-mini-list,.agent-grid,.agent-detail,.knowledge-list,.audit-checks,.login-modes{grid-template-columns:1fr}
   .doc-paper{padding:24px 18px}
 }
 </style>
@@ -903,7 +1063,11 @@ button{cursor:pointer}
       <button class="nav-btn active" data-page="overview"><i class="ri-dashboard-3-line"></i><span>演示总览</span><small>8</small></button>
       <button class="nav-btn" data-page="agents"><i class="ri-robot-2-line"></i><span>智能体编排</span><small>8</small></button>
       <button class="nav-btn" data-page="tasks"><i class="ri-loop-left-line"></i><span>任务处理</span><small>5</small></button>
+      <button class="nav-btn" data-page="hotspots"><i class="ri-fire-line"></i><span>热点展示</span><small>6</small></button>
+      <button class="nav-btn" data-page="chat"><i class="ri-chat-voice-line"></i><span>智能交互</span><small>6</small></button>
       <button class="nav-btn" data-page="knowledge"><i class="ri-book-open-line"></i><span>知识资源库</span><small>4</small></button>
+      <button class="nav-btn" data-page="stats"><i class="ri-bar-chart-box-line"></i><span>统计留痕</span><small>5</small></button>
+      <button class="nav-btn" data-page="access"><i class="ri-lock-password-line"></i><span>权限访问</span><small>3</small></button>
       <button class="nav-btn" data-page="audit"><i class="ri-shield-check-line"></i><span>审核校验</span><small>8</small></button>
       <button class="nav-btn" data-page="outputs"><i class="ri-file-list-3-line"></i><span>输出交付</span><small>3</small></button>
       <div class="nav-label">管理</div>
@@ -1169,6 +1333,98 @@ button{cursor:pointer}
         </div>
       </div>
 
+      <div class="page" id="hotspots">
+        <div class="hotspot-layout">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>热点信息获取与展示</h3>
+                <p>演示全网、同城和行业热点的采集、筛选、定制展示能力</p>
+              </div>
+              <div class="hotspot-tabs">
+                <button class="chip-btn active" data-hot-filter="all">全部</button>
+                <button class="chip-btn" data-hot-filter="city">同城热搜</button>
+                <button class="chip-btn" data-hot-filter="industry">行业热点</button>
+                <button class="chip-btn" data-hot-filter="web">全网热点</button>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="hot-list" id="hotspotList"></div>
+            </div>
+          </section>
+          <aside class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>定制展示</h3>
+                <p>PC / 移动端共用同一筛选口径</p>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="trend-bars">
+                <div class="trend-row"><span>安徽属地</span><div class="trend-track"><div class="trend-fill" style="width:82%"></div></div><strong>82</strong></div>
+                <div class="trend-row"><span>教育行业</span><div class="trend-track"><div class="trend-fill" style="width:64%"></div></div><strong>64</strong></div>
+                <div class="trend-row"><span>医疗行业</span><div class="trend-track"><div class="trend-fill" style="width:58%"></div></div><strong>58</strong></div>
+                <div class="trend-row"><span>同城热搜</span><div class="trend-track"><div class="trend-fill" style="width:73%"></div></div><strong>73</strong></div>
+              </div>
+              <div class="review-card" style="margin-top:14px">
+                <div class="review-top">
+                  <strong>展示规则</strong>
+                  <span class="status info">可配置</span>
+                </div>
+                <p>按行业、地域、风险等级和用户关注主题展示热点；当前均为演示样例。</p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <div class="page" id="chat">
+        <div class="chat-layout">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>自然语言对话与智能体执行</h3>
+                <p>演示多轮问答、传播量查询、媒体报道查询、主体信息搜集、报告与函件草稿生成</p>
+              </div>
+              <span class="status info">演示对话</span>
+            </div>
+            <div class="panel-body">
+              <div class="chat-shell">
+                <div class="chat-messages" id="chatMessages">
+                  <div class="message agent">可以直接询问舆情事件、主体信息、传播量、媒体报道，或要求生成报告/函件草稿。所有外发内容都会进入人工复核。</div>
+                  <div class="message user">查询 DEMO-AH-02 的传播量和媒体报道</div>
+                  <div class="message agent">已调用传播量查询和媒体报道查询：示例传播热度为高，媒体报道呈上升趋势。建议进入侵权应对流程并生成投诉函草稿，发送前需人工确认。</div>
+                </div>
+                <div class="chat-input">
+                  <input id="chatInput" value="生成 DEMO-AH-02 的侵权函草稿">
+                  <button class="btn primary" id="chatSendBtn"><i class="ri-send-plane-line"></i>发送</button>
+                </div>
+              </div>
+            </div>
+          </section>
+          <aside class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>快捷任务</h3>
+                <p>覆盖清单中的智能体执行服务场景</p>
+              </div>
+            </div>
+            <div class="panel-body quick-actions">
+              <button class="chip-btn chat-quick" data-query="查询事件传播量">传播量</button>
+              <button class="chip-btn chat-quick" data-query="查询媒体报道">媒体报道</button>
+              <button class="chip-btn chat-quick" data-query="查询舆情事件">事件查询</button>
+              <button class="chip-btn chat-quick" data-query="搜集主体信息">主体信息</button>
+              <button class="chip-btn chat-quick" data-query="生成舆情报告">生成报告</button>
+              <button class="chip-btn chat-quick" data-query="生成处置函或侵权函">生成函件</button>
+              <div class="chat-card" style="width:100%;margin-top:10px">
+                <h4>人工干预与留痕</h4>
+                <p>每次问答、任务调用、人工修改和复核结果都会进入统计留痕页，便于查询分析。</p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+
       <div class="page" id="knowledge">
         <div class="knowledge-layout">
           <section class="panel">
@@ -1193,7 +1449,10 @@ button{cursor:pointer}
                 <h3>知识条目</h3>
                 <p>支持分类、检索、更新与复用</p>
               </div>
-              <button class="btn" id="addKnowledgeBtn"><i class="ri-add-line"></i>新增条目</button>
+              <div class="filters">
+                <input class="input" id="knowledgeSearch" placeholder="检索法规、案例、话术">
+                <button class="btn" id="addKnowledgeBtn"><i class="ri-add-line"></i>新增条目</button>
+              </div>
             </div>
             <div class="panel-body">
               <div class="knowledge-list">
@@ -1244,6 +1503,114 @@ button{cursor:pointer}
                 <div><strong>法规关联</strong><span>处置流程已关联法规标签</span></div>
                 <span class="status ok">通过</span>
               </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <div class="page" id="stats">
+        <div class="stats-layout">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>数据统计分析与任务留痕</h3>
+                <p>演示内部运营、服务对象、舆情数据统计报表和智能体任务交互记录</p>
+              </div>
+              <button class="btn" id="exportStatsBtn"><i class="ri-download-2-line"></i>导出报表</button>
+            </div>
+            <div class="panel-body stat-list">
+              <article class="stat-card-row">
+                <div class="stat-icon-small"><i class="ri-robot-2-line"></i></div>
+                <div><h4>智能体任务交互</h4><p>采集、研判、报告、处置、函件、问答等任务调用记录</p></div>
+                <strong class="stat-value">128</strong>
+              </article>
+              <article class="stat-card-row">
+                <div class="stat-icon-small"><i class="ri-file-chart-line"></i></div>
+                <div><h4>报告生成与导出</h4><p>日报、周报、月报、专题报告草稿和人工编辑版本</p></div>
+                <strong class="stat-value">24</strong>
+              </article>
+              <article class="stat-card-row">
+                <div class="stat-icon-small"><i class="ri-shield-check-line"></i></div>
+                <div><h4>审核复核记录</h4><p>敏感信息、来源、事实、权限、函件人工确认等校验</p></div>
+                <strong class="stat-value">46</strong>
+              </article>
+              <article class="stat-card-row">
+                <div class="stat-icon-small"><i class="ri-user-voice-line"></i></div>
+                <div><h4>人工干预</h4><p>值班编辑修改、复核意见、最终采用版本均可追踪</p></div>
+                <strong class="stat-value">17</strong>
+              </article>
+            </div>
+          </section>
+          <aside class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>留痕明细</h3>
+                <p>演示口径：任务、操作者、动作、结果</p>
+              </div>
+            </div>
+            <div class="panel-body log-list" id="traceList"></div>
+          </aside>
+        </div>
+      </div>
+
+      <div class="page" id="access">
+        <div class="access-layout">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>统一多端访问、认证与权限</h3>
+                <p>覆盖账号密码、短信验证码、分级权限、账号隔离、访问日志查询导出</p>
+              </div>
+              <button class="btn" id="exportAccessBtn"><i class="ri-download-line"></i>导出访问日志</button>
+            </div>
+            <div class="panel-body">
+              <div class="login-modes">
+                <div class="login-mode">
+                  <i class="ri-key-2-line"></i>
+                  <div><strong>账号密码登录</strong><span>用于 PC 端后台和值班编辑日常访问</span></div>
+                </div>
+                <div class="login-mode">
+                  <i class="ri-smartphone-line"></i>
+                  <div><strong>短信验证码登录</strong><span>用于移动端快速确认与复核场景</span></div>
+                </div>
+              </div>
+              <div class="role-list" style="margin-top:14px">
+                <article class="role-card">
+                  <header><h4>值班编辑</h4><span class="status info">账号隔离</span></header>
+                  <p>查看舆情任务、编辑报告草稿、提交人工复核。</p>
+                  <div class="role-perms"><span>任务查看</span><span>报告编辑</span><span>提交复核</span></div>
+                </article>
+                <article class="role-card">
+                  <header><h4>审核负责人</h4><span class="status wait">复核权限</span></header>
+                  <p>确认处置建议、函件草稿、推送版本和外发对象。</p>
+                  <div class="role-perms"><span>内容复核</span><span>函件确认</span><span>推送审批</span></div>
+                </article>
+                <article class="role-card">
+                  <header><h4>系统管理员</h4><span class="status ok">审计权限</span></header>
+                  <p>维护角色权限、查询访问日志、导出审计记录。</p>
+                  <div class="role-perms"><span>角色配置</span><span>日志查询</span><span>审计导出</span></div>
+                </article>
+              </div>
+              <div class="role-list" style="margin-top:14px">
+                <article class="role-card">
+                  <header><h4>系统安全策略</h4><span class="status ok">启用</span></header>
+                  <p>演示数据加密存储、操作安全校验、系统维护与故障处理入口。</p>
+                  <div class="role-perms"><span>数据加密</span><span>操作安全</span><span>维护工单</span><span>故障处理</span></div>
+                </article>
+              </div>
+            </div>
+          </section>
+          <aside class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>访问日志</h3>
+                <p>演示样例，支持查询和导出</p>
+              </div>
+            </div>
+            <div class="panel-body log-list">
+              <div class="log-row"><div><strong>值班编辑</strong><p>查看 DEMO-AH-01 专题报告</p></div><span class="status ok">成功</span></div>
+              <div class="log-row"><div><strong>审核负责人</strong><p>复核 DEMO-AH-02 侵权函草稿</p></div><span class="status wait">待确认</span></div>
+              <div class="log-row"><div><strong>系统管理员</strong><p>导出访问日志与权限审计记录</p></div><span class="status info">记录</span></div>
             </div>
           </aside>
         </div>
@@ -1408,12 +1775,6 @@ button{cursor:pointer}
                   <td>演示内部运营、服务对象、舆情数据统计报表；权限审计；数据加密与运维保障。</td>
                   <td class="hours">30</td>
                 </tr>
-                <tr>
-                  <td class="module-name">基础设施与运维</td>
-                  <td><div class="sub-list"><span>云资源及云服务</span><span>本地资源</span><span>部署</span><span>实施</span><span>运维</span></div></td>
-                  <td>按清单表达混合部署思路：大模型能力调用云端，业务系统及关键数据或结果部署于本地机房；资源口径待确认。</td>
-                  <td class="hours">按期/实施</td>
-                </tr>
               </tbody>
             </table>
           </div>
@@ -1457,7 +1818,7 @@ const agents = [
   },
   {
     id:"advice", name:"协助处置智能体", icon:"ri-route-line", module:"舆情协助处置",
-    desc:"生成可复用处置建议、标准流程、话术支撑与舆论引导内容。",
+    desc:"自动推荐可复用处置建议、标准流程、话术支撑与舆论引导内容。",
     inputs:["风险等级","事件主体","知识库处置案例","舆论反馈"],
     actions:["处置流程推荐","话术生成","负面评论引导","侵权类型识别"],
     outputs:["处置建议","流程清单","回应话术","侵权应对建议"]
@@ -1499,11 +1860,32 @@ const docs = {
   letter:`<div class="doc-head"><div class="doc-kicker">函件生成智能体草稿 · 演示样例</div><h3>侵权投诉通知书</h3><div class="doc-meta">发送对象：网络平台 · 状态：草稿，禁止自动发送</div></div><h4>一、投诉事项</h4><p>演示样例中，相关网络内容可能涉及对服务对象合法权益的侵犯。请平台依据投诉材料核查并采取相应处理措施。</p><h4>二、证据附件</h4><p>需人工补充并确认原始链接、截图、发布时间、传播范围、权利证明材料等附件。附件不完整时不得提交。</p><h4>三、处理请求</h4><p>请求平台对涉嫌侵权内容进行审核，并根据平台规则采取删除、屏蔽或限制传播等措施。</p><p class="doc-note">强校验：函件生成后只进入人工确认流程，不支持智能体自动外发。</p>`
 };
 
+const hotspots = [
+  {rank:1, type:"city", title:"示例：安徽属地民生话题讨论升温", desc:"同城热搜与媒体报道同步增加，建议进入风险研判队列。", source:"同城热搜", score:82, status:"待研判"},
+  {rank:2, type:"web", title:"示例：平台侵权相关讨论扩散", desc:"全网热点中出现疑似侵权传播线索，建议触发函件草稿流程。", source:"全网热点", score:76, status:"需复核"},
+  {rank:3, type:"industry", title:"示例：教育行业政策咨询增加", desc:"行业热点问答频次增加，可沉淀为知识库问答口径。", source:"行业热点", score:64, status:"可入库"},
+  {rank:4, type:"city", title:"示例：本地活动舆情关注度上升", desc:"属地媒体报道增多，适合生成日报摘要和图表说明。", source:"安徽属地", score:58, status:"生成报告"},
+  {rank:5, type:"industry", title:"示例：医疗服务评价讨论集中", desc:"服务评价类话题集中出现，需要观察情绪变化趋势。", source:"行业热点", score:52, status:"观察"},
+  {rank:6, type:"web", title:"示例：网络误读内容被转发", desc:"存在错误舆论扩散苗头，可生成引导话术并进入人工复核。", source:"全网热点", score:49, status:"待处置"}
+];
+
+const traceRows = [
+  ["采集智能体", "DEMO-AH-01", "汇聚安徽属地与同城热搜线索", "完成"],
+  ["风险研判智能体", "DEMO-AH-01", "生成情感分析、风险等级与趋势摘要", "待复核"],
+  ["报告生成智能体", "DEMO-AH-05", "生成月报草稿并提交人工编辑", "待编辑"],
+  ["函件生成智能体", "DEMO-AH-02", "生成侵权投诉函草稿，阻断自动发送", "待确认"],
+  ["交互问答智能体", "DEMO-AH-03", "回答主体信息与媒体报道查询", "完成"]
+];
+
 const pageTitles = {
   overview:"演示总览",
   agents:"智能体编排",
   tasks:"任务处理",
+  hotspots:"热点展示",
+  chat:"智能交互",
   knowledge:"知识资源库",
+  stats:"统计留痕",
+  access:"权限访问",
   audit:"审核校验",
   outputs:"输出交付",
   modules:"清单映射"
@@ -1583,6 +1965,36 @@ function renderDoc(type="report"){
   qsa(".doc-tab").forEach(tab=>tab.classList.toggle("active", tab.dataset.doc === type));
 }
 
+function renderHotspots(type="all"){
+  const rows = hotspots.filter(item => type === "all" || item.type === type);
+  qs("#hotspotList").innerHTML = rows.map(item=>`<article class="hot-item"><div class="hot-rank">${item.rank}</div><div><h4>${item.title}</h4><p>${item.desc}</p></div><div class="hot-meta"><strong>${item.score}</strong><span>${item.source}</span><span class="status ${item.status.includes("复核") || item.status.includes("研判") ? "wait" : item.status.includes("入库") || item.status.includes("完成") ? "ok" : "info"}">${item.status}</span></div></article>`).join("");
+  qsa("[data-hot-filter]").forEach(btn=>btn.classList.toggle("active", btn.dataset.hotFilter === type));
+}
+
+function renderTrace(){
+  qs("#traceList").innerHTML = traceRows.map(row=>`<div class="log-row"><div><strong>${row[0]} · ${row[1]}</strong><p>${row[2]}</p></div><span class="status ${row[3].includes("完成") ? "ok" : row[3].includes("待") ? "wait" : "info"}">${row[3]}</span></div>`).join("");
+}
+
+function sendChat(query){
+  const text = query || qs("#chatInput").value.trim();
+  if(!text) return;
+  const box = qs("#chatMessages");
+  box.insertAdjacentHTML("beforeend", `<div class="message user">${text}</div>`);
+  const reply = text.includes("函") ? "已生成演示函件草稿，并自动加入人工确认清单；不会自动发送。" :
+    text.includes("传播") ? "已返回演示传播量、媒体报道和趋势摘要，可继续生成专题报告。" :
+    text.includes("主体") ? "已汇总演示主体信息、相关事件和历史处置记录，可写入知识库引用。" :
+    "已完成演示查询，并记录本次智能体执行服务留痕。";
+  box.insertAdjacentHTML("beforeend", `<div class="message agent">${reply}</div>`);
+  box.scrollTop = box.scrollHeight;
+}
+
+function filterKnowledge(){
+  const keyword = qs("#knowledgeSearch").value.trim();
+  qsa(".knowledge-card").forEach(card=>{
+    card.style.display = !keyword || card.innerText.includes(keyword) ? "" : "none";
+  });
+}
+
 function runPipeline(){
   const stages = qsa(".stage");
   qs("#pipelineStatus").className = "status wait";
@@ -1629,6 +2041,8 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTasks();
   renderProcess();
   renderDoc("report");
+  renderHotspots("all");
+  renderTrace();
   updateScore();
 
   qsa(".nav-btn").forEach(btn => btn.addEventListener("click", () => showPage(btn.dataset.page)));
@@ -1644,6 +2058,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if(taskRow) renderSelectedTask(taskRow.dataset.task);
     const docTab = e.target.closest(".doc-tab");
     if(docTab) renderDoc(docTab.dataset.doc);
+    const hotTab = e.target.closest("[data-hot-filter]");
+    if(hotTab) renderHotspots(hotTab.dataset.hotFilter);
   });
   qs("#runBtn").addEventListener("click", runPipeline);
   qs("#resetBtn").addEventListener("click", resetPipeline);
@@ -1654,6 +2070,12 @@ document.addEventListener("DOMContentLoaded", () => {
   qs("#addKnowledgeBtn").addEventListener("click", () => showToast("演示新增条目","已打开知识入库校验流程示意"));
   qs("#exportDemoBtn").addEventListener("click", () => showToast("模拟导出完成","演示报告已进入下载前复核状态"));
   qs("#submitReviewBtn").addEventListener("click", () => showToast("已提交人工复核","报告、处置建议和函件草稿等待人工确认"));
+  qs("#chatSendBtn").addEventListener("click", () => sendChat());
+  qs("#chatInput").addEventListener("keydown", (e) => { if(e.key === "Enter") sendChat(); });
+  qs("#knowledgeSearch").addEventListener("input", filterKnowledge);
+  qsa(".chat-quick").forEach(btn=>btn.addEventListener("click", () => { qs("#chatInput").value = btn.dataset.query; sendChat(btn.dataset.query); }));
+  qs("#exportStatsBtn").addEventListener("click", () => showToast("统计报表已生成","任务交互、审核复核和人工干预记录已进入导出队列"));
+  qs("#exportAccessBtn").addEventListener("click", () => showToast("访问日志已生成","账号、角色、访问动作和审计结果已进入导出队列"));
   qs("#riskFilter").addEventListener("change", renderTasks);
   qs("#taskSearch").addEventListener("input", renderTasks);
   qsa("#auditChecks input").forEach(input => input.addEventListener("change", updateScore));
