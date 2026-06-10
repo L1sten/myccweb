@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<script src="../auth.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>安徽日报社舆情智能体演示系统</title>
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+<style>
+:root{
+  --primary:#0b5cad;
+  --primary-strong:#064a8f;
+  --primary-soft:#eaf4ff;
+  --cyan:#007d8d;
+  --cyan-soft:#e9f7f8;
+  --green:#11835b;
+  --green-soft:#e9f7f1;
+  --orange:#b86100;
+  --orange-soft:#fff3e4;
+  --red:#bf2f2f;
+  --red-soft:#fff0ef;
+  --violet:#6554c0;
+  --violet-soft:#f1efff;
+  --ink:#1d2733;
+  --text:#344357;
+  --muted:#6f7d90;
+  --faint:#9aa6b5;
+  --line:#dce3ec;
+  --line-soft:#edf1f6;
+  --panel:#fff;
+  --bg:#f5f7fb;
+  --nav:#102840;
+  --nav-2:#0d3458;
+  --shadow:0 12px 32px rgba(23,43,77,.08);
+  --radius:8px;
+  --sidebar:248px;
+  --topbar:62px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.5;
+  min-width:1180px;
+  overflow:hidden;
+}
+button,input,select,textarea{font-family:inherit}
+button{cursor:pointer}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:#c7d1dd;border-radius:10px}
+::-webkit-scrollbar-track{background:transparent}
+.app{
+  display:grid;
+  grid-template-columns:var(--sidebar) minmax(0,1fr);
+  min-height:100vh;
+}
+.sidebar{
+  background:linear-gradient(180deg,var(--nav) 0%,var(--nav-2) 100%);
+  color:#dbe8f7;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+.brand{
+  height:74px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:0 20px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.brand-mark{
+  width:38px;
+  height:38px;
+  border-radius:8px;
+  background:#fff;
+  color:var(--primary);
+  display:grid;
+  place-items:center;
+  font-weight:800;
+  letter-spacing:0;
+  box-shadow:0 10px 22px rgba(0,0,0,.18);
+}
+.brand h1{
+  font-size:16px;
+  line-height:1.25;
+  font-weight:700;
+  letter-spacing:0;
+}
+.brand p{
+  margin-top:2px;
+  color:#9eb8d2;
+  font-size:12px;
+}
+.nav{
+  flex:1;
+  padding:14px 12px;
+  overflow:auto;
+}
+.nav-label{
+  padding:12px 12px 8px;
+  color:#8fb0d0;
+  font-size:12px;
+  font-weight:700;
+}
+.nav-btn{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:#dbe8f7;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:11px 12px;
+  border-radius:7px;
+  text-align:left;
+  transition:background .18s ease,color .18s ease;
+}
+.nav-btn i{font-size:18px;color:#a8c2dc}
+.nav-btn span{font-size:14px}
+.nav-btn small{
+  margin-left:auto;
+  min-width:22px;
+  height:20px;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  background:rgba(255,255,255,.11);
+  color:#b9cce0;
+  font-size:11px;
+}
+.nav-btn:hover{background:rgba(255,255,255,.08)}
+.nav-btn.active{background:#fff;color:var(--primary-strong);font-weight:700}
+.nav-btn.active i{color:var(--primary)}
+.nav-btn.active small{background:var(--primary-soft);color:var(--primary)}
+.sidebar-foot{
+  padding:14px 16px 18px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.source-box{
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  border-radius:8px;
+  padding:12px;
+  color:#c7d9eb;
+  font-size:12px;
+}
+.source-box strong{display:block;color:#fff;font-size:13px;margin-bottom:4px}
+.main{
+  min-width:0;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+.topbar{
+  height:var(--topbar);
+  background:#fff;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  padding:0 24px;
+  flex-shrink:0;
+}
+.crumb{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+.crumb .badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  height:26px;
+  padding:0 10px;
+  border-radius:14px;
+  background:var(--primary-soft);
+  color:var(--primary);
+  font-size:12px;
+  font-weight:700;
+  white-space:nowrap;
+}
+.crumb h2{
+  font-size:18px;
+  font-weight:700;
+  letter-spacing:0;
+  white-space:nowrap;
+}
+.top-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.time-chip{
+  color:var(--muted);
+  font-size:13px;
+  padding:6px 10px;
+  background:#f7f9fc;
+  border:1px solid var(--line-soft);
+  border-radius:6px;
+}
+.btn{
+  height:34px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--text);
+  border-radius:6px;
+  padding:0 12px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  font-size:13px;
+  transition:all .18s ease;
+}
+.btn i{font-size:16px}
+.btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft)}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn.primary:hover{background:var(--primary-strong);border-color:var(--primary-strong);color:#fff}
+.btn.success{background:var(--green);border-color:var(--green);color:#fff}
+.btn.danger{background:var(--red-soft);border-color:#f4c4c0;color:var(--red)}
+.content{
+  flex:1;
+  overflow:auto;
+  padding:18px;
+}
+.page{display:none;animation:fadeIn .18s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+.grid{
+  display:grid;
+  gap:14px;
+}
+.grid.cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.panel{
+  background:var(--panel);
+  border:1px solid var(--line-soft);
+  border-radius:var(--radius);
+  box-shadow:0 1px 0 rgba(255,255,255,.8) inset;
+}
+.panel-head{
+  min-height:48px;
+  padding:13px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  border-bottom:1px solid var(--line-soft);
+}
+.panel-head h3{
+  font-size:15px;
+  font-weight:700;
+  letter-spacing:0;
+}
+.panel-head p{
+  margin-top:2px;
+  color:var(--muted);
+  font-size:12px;
+}
+.panel-body{padding:16px}
+.metric{
+  min-height:116px;
+  padding:16px;
+  position:relative;
+  overflow:hidden;
+}
+.metric::before{
+  content:"";
+  position:absolute;
+  inset:0 0 auto;
+  height:3px;
+  background:var(--accent,var(--primary));
+}
+.metric .icon{
+  width:34px;
+  height:34px;
+  border-radius:7px;
+  display:grid;
+  place-items:center;
+  background:var(--soft,var(--primary-soft));
+  color:var(--accent,var(--primary));
+  font-size:18px;
+  margin-bottom:14px;
+}
+.metric strong{
+  display:block;
+  font-size:28px;
+  line-height:1;
+  font-weight:780;
+  letter-spacing:0;
+}
+.metric span{
+  display:block;
+  margin-top:8px;
+  color:var(--muted);
+  font-size:13px;
+}
+.metric.cyan{--accent:var(--cyan);--soft:var(--cyan-soft)}
+.metric.green{--accent:var(--green);--soft:var(--green-soft)}
+.metric.orange{--accent:var(--orange);--soft:var(--orange-soft)}
+.metric.violet{--accent:var(--violet);--soft:var(--violet-soft)}
+.workbench{
+  display:grid;
+  grid-template-columns:minmax(0,1.55fr) minmax(340px,.85fr);
+  gap:14px;
+  margin-top:14px;
+}
+.pipeline{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+}
+.stage{
+  border:1px solid var(--line);
+  border-radius:8px;
+  min-height:138px;
+  padding:12px;
+  background:#fff;
+  position:relative;
+}
+.stage.running{border-color:var(--primary);box-shadow:0 0 0 3px rgba(11,92,173,.08)}
+.stage.done{border-color:#b8e4ce;background:linear-gradient(180deg,#fff,#f5fcf8)}
+.stage.warn{border-color:#ffd49a;background:linear-gradient(180deg,#fff,#fffaf1)}
+.stage .stage-num{
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:#f0f4f9;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+  margin-bottom:10px;
+}
+.stage.done .stage-num{background:var(--green);color:#fff}
+.stage.running .stage-num{background:var(--primary);color:#fff}
+.stage.warn .stage-num{background:var(--orange);color:#fff}
+.stage h4{font-size:14px;margin-bottom:7px}
+.stage p{color:var(--muted);font-size:12px;line-height:1.55}
+.stage .agent-tag{
+  margin-top:10px;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  font-size:11px;
+  color:var(--primary);
+  background:var(--primary-soft);
+  padding:3px 7px;
+  border-radius:10px;
+}
+.agent-mini-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.agent-mini{
+  border:1px solid var(--line-soft);
+  border-radius:8px;
+  padding:11px;
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  transition:all .16s ease;
+  cursor:pointer;
+}
+.agent-mini:hover,.agent-mini.active{border-color:var(--primary);background:var(--primary-soft)}
+.agent-mini .mini-icon{
+  width:30px;
+  height:30px;
+  border-radius:7px;
+  display:grid;
+  place-items:center;
+  background:#eef4fb;
+  color:var(--primary);
+  flex-shrink:0;
+}
+.agent-mini strong{
+  display:block;
+  font-size:13px;
+  margin-bottom:2px;
+}
+.agent-mini span{
+  display:block;
+  font-size:12px;
+  color:var(--muted);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.review-card{
+  border:1px solid var(--line-soft);
+  border-radius:8px;
+  padding:12px;
+  margin-bottom:10px;
+  background:#fff;
+}
+.review-card:last-child{margin-bottom:0}
+.review-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:8px;
+}
+.review-top strong{font-size:13px}
+.status{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  height:22px;
+  padding:0 8px;
+  border-radius:11px;
+  font-size:11px;
+  font-weight:700;
+  white-space:nowrap;
+}
+.status::before{
+  content:"";
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:currentColor;
+}
+.status.ok{background:var(--green-soft);color:var(--green)}
+.status.wait{background:var(--orange-soft);color:var(--orange)}
+.status.bad{background:var(--red-soft);color:var(--red)}
+.status.info{background:var(--primary-soft);color:var(--primary)}
+.status.gray{background:#f0f3f7;color:var(--muted)}
+.review-card p{font-size:12px;color:var(--muted)}
+.section-title{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  margin:0 0 12px;
+}
+.section-title h3{font-size:16px}
+.section-title p{color:var(--muted);font-size:13px;margin-top:3px}
+.module-table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  font-size:13px;
+}
+.module-table th{
+  text-align:left;
+  color:#516172;
+  background:#f7f9fc;
+  border-bottom:1px solid var(--line);
+  padding:10px 12px;
+  font-weight:700;
+}
+.module-table td{
+  border-bottom:1px solid var(--line-soft);
+  padding:12px;
+  vertical-align:top;
+  color:var(--text);
+}
+.module-table tr:last-child td{border-bottom:0}
+.module-table tr:hover td{background:#fbfdff}
+.module-name{font-weight:700;color:var(--ink);white-space:nowrap}
+.sub-list{display:flex;flex-wrap:wrap;gap:6px}
+.sub-list span{
+  display:inline-flex;
+  padding:3px 7px;
+  border-radius:4px;
+  background:#eef3f8;
+  color:#516172;
+  font-size:12px;
+}
+.hours{font-weight:800;color:var(--primary);font-variant-numeric:tabular-nums}
+.agent-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+}
+.agent-card{
+  border:1px solid var(--line-soft);
+  background:#fff;
+  border-radius:8px;
+  min-height:218px;
+  padding:14px;
+  cursor:pointer;
+  transition:all .18s ease;
+  display:flex;
+  flex-direction:column;
+}
+.agent-card:hover,.agent-card.active{
+  border-color:var(--primary);
+  box-shadow:var(--shadow);
+  transform:translateY(-1px);
+}
+.agent-card .card-icon{
+  width:38px;
+  height:38px;
+  border-radius:8px;
+  display:grid;
+  place-items:center;
+  background:var(--primary-soft);
+  color:var(--primary);
+  font-size:20px;
+  margin-bottom:12px;
+}
+.agent-card h4{font-size:15px;margin-bottom:8px}
+.agent-card p{font-size:12px;color:var(--muted);line-height:1.55;min-height:56px}
+.agent-meta{
+  margin-top:auto;
+  padding-top:12px;
+  border-top:1px dashed var(--line);
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  color:var(--faint);
+  font-size:12px;
+}
+.agent-detail{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:12px;
+}
+.detail-box{
+  border:1px solid var(--line-soft);
+  border-radius:8px;
+  padding:12px;
+  background:#fbfdff;
+}
+.detail-box h4{font-size:13px;margin-bottom:8px;color:var(--primary)}
+.detail-box ul{list-style:none;display:grid;gap:7px}
+.detail-box li{
+  position:relative;
+  padding-left:14px;
+  font-size:12px;
+  color:var(--text);
+}
+.detail-box li::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:.68em;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:var(--primary);
+}
+.task-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 360px;
+  gap:14px;
+}
+.toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 16px;
+  border-bottom:1px solid var(--line-soft);
+}
+.filters{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.input,.select{
+  height:32px;
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:6px;
+  padding:0 10px;
+  color:var(--text);
+  font-size:13px;
+}
+.input{width:220px}
+.task-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+.task-table th{
+  text-align:left;
+  padding:10px 12px;
+  color:#556579;
+  background:#f8fafc;
+  border-bottom:1px solid var(--line);
+}
+.task-table td{
+  padding:12px;
+  border-bottom:1px solid var(--line-soft);
+  vertical-align:middle;
+}
+.task-table tr{cursor:pointer}
+.task-table tr:hover td,.task-table tr.active td{background:var(--primary-soft)}
+.task-title{font-weight:700;color:var(--ink);margin-bottom:3px}
+.task-sub{font-size:12px;color:var(--muted)}
+.risk{
+  display:inline-flex;
+  min-width:44px;
+  justify-content:center;
+  border-radius:4px;
+  padding:3px 7px;
+  font-size:12px;
+  font-weight:800;
+}
+.risk.high{background:var(--red-soft);color:var(--red)}
+.risk.mid{background:var(--orange-soft);color:var(--orange)}
+.risk.low{background:var(--green-soft);color:var(--green)}
+.side-stack{display:grid;gap:14px}
+.selected-event h3{
+  font-size:16px;
+  line-height:1.4;
+  margin-bottom:10px;
+}
+.kv{
+  display:grid;
+  grid-template-columns:86px 1fr;
+  gap:7px 10px;
+  font-size:13px;
+  margin:12px 0;
+}
+.kv span:nth-child(odd){color:var(--muted)}
+.kv span:nth-child(even){color:var(--text);font-weight:600}
+.process-list{display:grid;gap:8px}
+.process-item{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  padding:10px;
+  border:1px solid var(--line-soft);
+  border-radius:7px;
+}
+.process-item i{
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  flex-shrink:0;
+  color:#fff;
+  background:var(--primary);
+  font-size:13px;
+}
+.process-item.done i{background:var(--green)}
+.process-item.wait i{background:var(--orange)}
+.process-item strong{display:block;font-size:13px}
+.process-item span{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.knowledge-layout{
+  display:grid;
+  grid-template-columns:260px minmax(0,1fr) 330px;
+  gap:14px;
+}
+.tree{
+  display:grid;
+  gap:8px;
+}
+.tree-item{
+  border:1px solid var(--line-soft);
+  border-radius:7px;
+  padding:11px;
+  background:#fff;
+  cursor:pointer;
+}
+.tree-item.active{border-color:var(--primary);background:var(--primary-soft)}
+.tree-item strong{font-size:13px}
+.tree-item span{display:block;margin-top:3px;font-size:12px;color:var(--muted)}
+.knowledge-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.knowledge-card{
+  border:1px solid var(--line-soft);
+  border-radius:8px;
+  padding:13px;
+  background:#fff;
+}
+.knowledge-card h4{font-size:14px;margin-bottom:8px}
+.knowledge-card p{font-size:12px;color:var(--muted);line-height:1.55}
+.quality-list{display:grid;gap:10px}
+.quality-row{
+  display:grid;
+  grid-template-columns:24px 1fr auto;
+  gap:10px;
+  align-items:center;
+  border:1px solid var(--line-soft);
+  border-radius:7px;
+  padding:10px;
+  background:#fff;
+}
+.quality-row .check{
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:var(--green);
+  color:#fff;
+  font-size:13px;
+}
+.quality-row.warn .check{background:var(--orange)}
+.quality-row.bad .check{background:var(--red)}
+.quality-row strong{font-size:13px}
+.quality-row span{display:block;font-size:12px;color:var(--muted)}
+.audit-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 390px;
+  gap:14px;
+}
+.score-board{
+  display:grid;
+  grid-template-columns:180px minmax(0,1fr);
+  gap:16px;
+  align-items:center;
+}
+.score-ring{
+  width:156px;
+  height:156px;
+  border-radius:50%;
+  background:conic-gradient(var(--green) 0 86%, #e8eef5 86% 100%);
+  display:grid;
+  place-items:center;
+  margin:auto;
+  position:relative;
+}
+.score-ring::after{
+  content:"";
+  position:absolute;
+  width:112px;
+  height:112px;
+  border-radius:50%;
+  background:#fff;
+}
+.score-ring strong{
+  position:relative;
+  z-index:1;
+  font-size:32px;
+}
+.score-ring span{
+  position:relative;
+  z-index:1;
+  color:var(--muted);
+  font-size:12px;
+  margin-left:4px;
+}
+.audit-checks{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.audit-check{
+  border:1px solid var(--line-soft);
+  border-radius:8px;
+  padding:11px;
+  display:flex;
+  gap:9px;
+  align-items:flex-start;
+  background:#fff;
+}
+.audit-check input{margin-top:3px;accent-color:var(--primary)}
+.audit-check strong{display:block;font-size:13px;margin-bottom:3px}
+.audit-check span{display:block;font-size:12px;color:var(--muted)}
+.review-queue{
+  display:grid;
+  gap:10px;
+}
+.queue-item{
+  border:1px solid var(--line-soft);
+  border-radius:8px;
+  padding:12px;
+  background:#fff;
+}
+.queue-item header{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:8px;
+}
+.queue-item strong{font-size:13px}
+.queue-item p{font-size:12px;color:var(--muted);line-height:1.5}
+.doc-layout{
+  display:grid;
+  grid-template-columns:280px minmax(0,1fr) 330px;
+  gap:14px;
+}
+.doc-menu{display:grid;gap:8px}
+.doc-tab{
+  border:1px solid var(--line-soft);
+  background:#fff;
+  border-radius:7px;
+  padding:12px;
+  text-align:left;
+  transition:all .16s ease;
+}
+.doc-tab.active,.doc-tab:hover{border-color:var(--primary);background:var(--primary-soft)}
+.doc-tab strong{display:block;font-size:13px}
+.doc-tab span{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+.doc-paper{
+  background:#fff;
+  border:1px solid var(--line-soft);
+  border-radius:8px;
+  padding:34px 42px;
+  min-height:650px;
+  box-shadow:0 16px 38px rgba(23,43,77,.08);
+  color:#303b48;
+}
+.doc-paper .doc-head{
+  text-align:center;
+  padding-bottom:22px;
+  margin-bottom:22px;
+  border-bottom:2px solid #26374b;
+}
+.doc-paper .doc-kicker{font-size:13px;color:var(--muted);margin-bottom:8px}
+.doc-paper h3{font-size:21px;letter-spacing:0;font-weight:800}
+.doc-paper .doc-meta{margin-top:10px;font-size:13px;color:var(--muted)}
+.doc-paper h4{
+  margin:22px 0 9px;
+  font-size:15px;
+  padding-left:10px;
+  border-left:3px solid var(--primary);
+}
+.doc-paper p{
+  font-size:13.5px;
+  line-height:1.9;
+  margin-bottom:8px;
+  text-indent:2em;
+}
+.doc-paper .doc-note{
+  margin-top:18px;
+  padding:12px;
+  background:#f7fafc;
+  border:1px solid var(--line-soft);
+  border-radius:7px;
+  font-size:12px;
+  color:var(--muted);
+  text-indent:0;
+}
+.handoff-list{display:grid;gap:10px}
+.handoff-item{
+  border:1px solid var(--line-soft);
+  border-radius:8px;
+  padding:12px;
+  background:#fff;
+}
+.handoff-item strong{font-size:13px}
+.handoff-item p{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.55}
+.toast{
+  position:fixed;
+  right:22px;
+  bottom:22px;
+  min-width:280px;
+  max-width:380px;
+  padding:13px 14px;
+  border-radius:8px;
+  background:#172b4d;
+  color:#fff;
+  box-shadow:0 18px 45px rgba(23,43,77,.22);
+  display:none;
+  z-index:20;
+}
+.toast.show{display:block;animation:toastIn .2s ease}
+.toast strong{display:block;font-size:13px;margin-bottom:2px}
+.toast span{display:block;color:#c7d6e8;font-size:12px}
+@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (max-width:1280px){
+  body{min-width:1000px}
+  .grid.cols-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .agent-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .workbench,.task-layout,.audit-layout{grid-template-columns:1fr}
+  .knowledge-layout,.doc-layout{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  body{min-width:0;overflow:auto}
+  .app{display:block}
+  .sidebar{min-height:auto}
+  .brand{height:auto;padding:16px}
+  .nav{display:flex;overflow:auto;padding:10px}
+  .nav-label,.sidebar-foot{display:none}
+  .nav-btn{width:auto;min-width:92px;justify-content:center}
+  .nav-btn small{display:none}
+  .main{height:auto;min-height:100vh}
+  .topbar{height:auto;align-items:flex-start;flex-direction:column;padding:14px}
+  .top-actions{width:100%;overflow:auto}
+  .content{padding:12px;overflow:visible}
+  .grid.cols-4,.grid.cols-3,.grid.cols-2,.pipeline,.agent-mini-list,.agent-grid,.agent-detail,.knowledge-list,.audit-checks{grid-template-columns:1fr}
+  .doc-paper{padding:24px 18px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">皖</div>
+      <div>
+        <h1>舆情智能体<br>演示系统</h1>
+        <p>安徽日报社 · Demo</p>
+      </div>
+    </div>
+    <nav class="nav" aria-label="主导航">
+      <div class="nav-label">工作区</div>
+      <button class="nav-btn active" data-page="overview"><i class="ri-dashboard-3-line"></i><span>演示总览</span><small>8</small></button>
+      <button class="nav-btn" data-page="agents"><i class="ri-robot-2-line"></i><span>智能体编排</span><small>8</small></button>
+      <button class="nav-btn" data-page="tasks"><i class="ri-loop-left-line"></i><span>任务处理</span><small>5</small></button>
+      <button class="nav-btn" data-page="knowledge"><i class="ri-book-open-line"></i><span>知识资源库</span><small>4</small></button>
+      <button class="nav-btn" data-page="audit"><i class="ri-shield-check-line"></i><span>审核校验</span><small>8</small></button>
+      <button class="nav-btn" data-page="outputs"><i class="ri-file-list-3-line"></i><span>输出交付</span><small>3</small></button>
+      <div class="nav-label">管理</div>
+      <button class="nav-btn" data-page="modules"><i class="ri-list-check-3"></i><span>清单映射</span><small>255</small></button>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="source-box">
+        <strong>需求清单来源</strong>
+        安徽日报社舆情智能体需求评估清单260610.xlsx
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="crumb">
+        <span class="badge"><i class="ri-sparkling-2-line"></i> 多智能体协同</span>
+        <h2 id="pageTitle">演示总览</h2>
+      </div>
+      <div class="top-actions">
+        <span class="time-chip">2026-06-10 · 演示环境</span>
+        <button class="btn" id="resetBtn"><i class="ri-refresh-line"></i>重置</button>
+        <button class="btn primary" id="runBtn"><i class="ri-play-circle-line"></i>模拟处理</button>
+      </div>
+    </header>
+
+    <section class="content">
+      <div class="page active" id="overview">
+        <div class="grid cols-4">
+          <article class="panel metric">
+            <div class="icon"><i class="ri-layout-grid-line"></i></div>
+            <strong>8</strong>
+            <span>业务模块来自评估清单</span>
+          </article>
+          <article class="panel metric cyan">
+            <div class="icon"><i class="ri-robot-2-line"></i></div>
+            <strong>8</strong>
+            <span>系统内多智能体分工</span>
+          </article>
+          <article class="panel metric green">
+            <div class="icon"><i class="ri-time-line"></i></div>
+            <strong>255</strong>
+            <span>已评估产品工时合计</span>
+          </article>
+          <article class="panel metric orange">
+            <div class="icon"><i class="ri-shield-check-line"></i></div>
+            <strong>8</strong>
+            <span>演示审核项输出前复核</span>
+          </article>
+        </div>
+
+        <section class="panel" style="margin-top:14px">
+          <div class="panel-head">
+            <div>
+              <h3>本次交付处理方式</h3>
+              <p>先不写 PRD，按需求清单快速构建可演示系统；页面内事件、时间、编号和命中结果均为演示样例，非真实舆情数据。</p>
+            </div>
+            <span class="status info">交付审核</span>
+          </div>
+          <div class="panel-body">
+            <div class="agent-mini-list">
+              <article class="agent-mini">
+                <div class="mini-icon"><i class="ri-file-search-line"></i></div>
+                <div><strong>需求核对智能体</strong><span>核对 Excel 模块覆盖与演示边界</span></div>
+              </article>
+              <article class="agent-mini">
+                <div class="mini-icon"><i class="ri-edit-box-line"></i></div>
+                <div><strong>内容审核智能体</strong><span>检查过度承诺、样例数据和口径风险</span></div>
+              </article>
+              <article class="agent-mini">
+                <div class="mini-icon"><i class="ri-checkbox-circle-line"></i></div>
+                <div><strong>验收校验智能体</strong><span>检查首页入口、PRD 缺省与交互可用性</span></div>
+              </article>
+              <article class="agent-mini">
+                <div class="mini-icon"><i class="ri-shield-check-line"></i></div>
+                <div><strong>人工最终确认</strong><span>部署前只纳入本次演示相关文件</span></div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <div class="workbench">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>事件处理链路</h3>
+                <p>从演示舆情线索进入，到报告、处置建议、函件草稿输出前完成校验</p>
+              </div>
+              <span class="status info" id="pipelineStatus">待处理</span>
+            </div>
+            <div class="panel-body">
+              <div class="pipeline" id="pipeline">
+                <div class="stage" data-step="1">
+                  <div class="stage-num">1</div>
+                  <h4>多源采集</h4>
+                  <p>聚焦安徽属地舆情数据，兼顾全网/同城热搜与行业热点。</p>
+                  <span class="agent-tag"><i class="ri-radar-line"></i>采集智能体</span>
+                </div>
+                <div class="stage" data-step="2">
+                  <div class="stage-num">2</div>
+                  <h4>风险研判</h4>
+                  <p>演示情感分析、风险等级判定与趋势文字摘要。</p>
+                  <span class="agent-tag"><i class="ri-line-chart-line"></i>研判智能体</span>
+                </div>
+                <div class="stage" data-step="3">
+                  <div class="stage-num">3</div>
+                  <h4>协同生成</h4>
+                  <p>生成日报/周报/月报/专题报告、处置建议、话术与函件草稿。</p>
+                  <span class="agent-tag"><i class="ri-draft-line"></i>报告/处置智能体</span>
+                </div>
+                <div class="stage" data-step="4">
+                  <div class="stage-num">4</div>
+                  <h4>审核校验</h4>
+                  <p>自动校验项先完成，人审项进入复核，不自动外发。</p>
+                  <span class="agent-tag"><i class="ri-shield-keyhole-line"></i>审核校验智能体</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <aside class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>审核队列</h3>
+                <p>所有对外内容先校验后确认</p>
+              </div>
+              <button class="btn" data-page-jump="audit"><i class="ri-arrow-right-line"></i>进入</button>
+            </div>
+            <div class="panel-body">
+              <div class="review-card">
+                <div class="review-top">
+                  <strong>示例专题报告：本地民生事件关注度上升</strong>
+                  <span class="status wait">待人工复核</span>
+                </div>
+                <p>图表引用、数据来源、风险等级说明已通过机器校验，等待值班编辑确认。</p>
+              </div>
+              <div class="review-card">
+                <div class="review-top">
+                  <strong>示例侵权投诉函：平台删除申请</strong>
+                  <span class="status bad">禁止自动发送</span>
+                </div>
+                <p>函件草稿可生成，但必须由人工确认对象、事实与附件后发送。</p>
+              </div>
+              <div class="review-card">
+                <div class="review-top">
+                  <strong>示例知识库入库：历史案例脱敏</strong>
+                  <span class="status ok">可入库</span>
+                </div>
+                <p>姓名、电话、账号标识完成脱敏，案例已关联处置法规标签。</p>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <section class="panel" style="margin-top:14px">
+          <div class="panel-head">
+            <div>
+              <h3>智能体快速入口</h3>
+              <p>点击卡片可查看对应输入、处理动作与输出边界</p>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="agent-mini-list" id="overviewAgents"></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="page" id="agents">
+        <div class="section-title">
+          <div>
+            <h3>多智能体编排</h3>
+            <p>按清单中的采集、研判、报告、处置、交互、配套能力拆成可演示角色</p>
+          </div>
+          <button class="btn primary" id="agentDemoBtn"><i class="ri-node-tree"></i>编排演示</button>
+        </div>
+        <section class="agent-grid" id="agentGrid"></section>
+        <section class="panel" style="margin-top:14px">
+          <div class="panel-head">
+            <div>
+              <h3 id="agentDetailTitle">采集智能体</h3>
+              <p id="agentDetailDesc">聚焦安徽属地舆情数据，联动热点信息获取与展示。</p>
+            </div>
+            <span class="status ok" id="agentDetailStatus">可启用</span>
+          </div>
+          <div class="panel-body agent-detail">
+            <div class="detail-box">
+              <h4>输入</h4>
+              <ul id="agentInputs"></ul>
+            </div>
+            <div class="detail-box">
+              <h4>处理动作</h4>
+              <ul id="agentActions"></ul>
+            </div>
+            <div class="detail-box">
+              <h4>输出与边界</h4>
+              <ul id="agentOutputs"></ul>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="page" id="tasks">
+        <div class="task-layout">
+          <section class="panel">
+            <div class="toolbar">
+              <div class="filters">
+                <input class="input" id="taskSearch" placeholder="搜索舆情事件/主体">
+                <select class="select" id="riskFilter">
+                  <option value="all">全部风险</option>
+                  <option value="high">高风险</option>
+                  <option value="mid">中风险</option>
+                  <option value="low">低风险</option>
+                </select>
+                <select class="select">
+                  <option>安徽属地</option>
+                  <option>全网热点</option>
+                  <option>行业热点</option>
+                </select>
+              </div>
+              <button class="btn primary" id="batchRunBtn"><i class="ri-play-list-2-line"></i>批量处理</button>
+            </div>
+            <table class="task-table">
+              <thead>
+                <tr>
+                  <th>事件</th>
+                  <th>来源</th>
+                  <th>风险</th>
+                  <th>当前智能体</th>
+                  <th>审核状态</th>
+                  <th>更新时间</th>
+                </tr>
+              </thead>
+              <tbody id="taskRows"></tbody>
+            </table>
+          </section>
+          <aside class="side-stack">
+            <section class="panel selected-event">
+              <div class="panel-head">
+                <h3>事件详情</h3>
+                <span class="status info" id="selectedStage">研判中</span>
+              </div>
+              <div class="panel-body">
+                <h3 id="selectedTitle">本地民生事件关注度上升</h3>
+                <p id="selectedDesc" style="font-size:13px;color:var(--muted);line-height:1.7">采集到同城热搜与媒体报道同步增加，需完成风险研判并生成专题摘要。</p>
+                <div class="kv">
+                  <span>事件编号</span><span id="selectedId">DEMO-AH-01</span>
+                  <span>处置模板</span><span id="selectedTemplate">专题报告 + 处置建议</span>
+                  <span>知识引用</span><span>示例法规 / 示例案例</span>
+                  <span>人工确认</span><span>输出前必需</span>
+                </div>
+                <button class="btn primary" id="singleRunBtn"><i class="ri-flashlight-line"></i>处理当前事件</button>
+              </div>
+            </section>
+            <section class="panel">
+              <div class="panel-head">
+                <h3>处理轨迹</h3>
+              </div>
+              <div class="panel-body">
+                <div class="process-list" id="processList"></div>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </div>
+
+      <div class="page" id="knowledge">
+        <div class="knowledge-layout">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>知识分类</h3>
+                <p>初始知识资源库</p>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="tree">
+                <div class="tree-item active"><strong>舆情知识</strong><span>研判规则、风险解释</span></div>
+                <div class="tree-item"><strong>舆情案例</strong><span>脱敏后的通用案例</span></div>
+                <div class="tree-item"><strong>处置法规</strong><span>法规与处置流程关联</span></div>
+                <div class="tree-item"><strong>分析报告</strong><span>日报/周报/月报/专题</span></div>
+              </div>
+            </div>
+          </section>
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>知识条目</h3>
+                <p>支持分类、检索、更新与复用</p>
+              </div>
+              <button class="btn" id="addKnowledgeBtn"><i class="ri-add-line"></i>新增条目</button>
+            </div>
+            <div class="panel-body">
+              <div class="knowledge-list">
+                <article class="knowledge-card">
+                  <h4>负面评论引导话术样例</h4>
+                  <p>用于舆论引导场景，输出前需要完成敏感词与事实一致性校验。</p>
+                </article>
+                <article class="knowledge-card">
+                  <h4>平台侵权投诉通知书模板</h4>
+                  <p>面向抖音、微博、微信等平台，草稿生成后必须人工确认发送。</p>
+                </article>
+                <article class="knowledge-card">
+                  <h4>突发舆情风险等级说明</h4>
+                  <p>提供情感倾向、传播量、媒体报道变化的等级判定依据。</p>
+                </article>
+                <article class="knowledge-card">
+                  <h4>历史案例脱敏入库规范</h4>
+                  <p>历史舆情数据与经验数据入库前需去除个人敏感信息与账号标识。</p>
+                </article>
+              </div>
+            </div>
+          </section>
+          <aside class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>入库校验</h3>
+                <p>知识增强前置质检</p>
+              </div>
+            </div>
+            <div class="panel-body quality-list">
+              <div class="quality-row">
+                <div class="check"><i class="ri-check-line"></i></div>
+                <div><strong>数据脱敏</strong><span>姓名、电话、账号、地址等字段已处理</span></div>
+                <span class="status ok">通过</span>
+              </div>
+              <div class="quality-row">
+                <div class="check"><i class="ri-check-line"></i></div>
+                <div><strong>权限管控</strong><span>按角色隔离知识库访问范围</span></div>
+                <span class="status ok">通过</span>
+              </div>
+              <div class="quality-row warn">
+                <div class="check"><i class="ri-error-warning-line"></i></div>
+                <div><strong>来源说明</strong><span>经验数据需补充来源备注</span></div>
+                <span class="status wait">待补</span>
+              </div>
+              <div class="quality-row">
+                <div class="check"><i class="ri-check-line"></i></div>
+                <div><strong>法规关联</strong><span>处置流程已关联法规标签</span></div>
+                <span class="status ok">通过</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <div class="page" id="audit">
+        <div class="audit-layout">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>演示审核校验中心</h3>
+                <p>演示覆盖数据、知识、模型输出、函件发送、权限审计与留痕；不等同正式 PRD 范围承诺</p>
+              </div>
+              <button class="btn primary" id="recheckBtn"><i class="ri-shield-check-line"></i>重新校验</button>
+            </div>
+            <div class="panel-body">
+              <div class="score-board">
+                <div class="score-ring"><strong id="scoreNum">6/8</strong><span>项</span></div>
+                <div class="audit-checks" id="auditChecks">
+                  <label class="audit-check"><input type="checkbox" checked><span><strong>敏感信息脱敏</strong><span>入库数据与输出文本均需检查</span></span></label>
+                  <label class="audit-check"><input type="checkbox" checked><span><strong>来源可追溯</strong><span>采集来源、引用报告、法规案例留存</span></span></label>
+                  <label class="audit-check"><input type="checkbox" checked><span><strong>事实一致性</strong><span>主体、时间、地点、风险等级不冲突</span></span></label>
+                  <label class="audit-check"><input type="checkbox" checked><span><strong>权限隔离</strong><span>账号隔离、角色分级、导出权限受控</span></span></label>
+                  <label class="audit-check"><input type="checkbox" checked><span><strong>话术合规</strong><span>舆论引导内容避免过度承诺</span></span></label>
+                  <label class="audit-check"><input type="checkbox"><span><strong>函件人工确认</strong><span>处置函/侵权函不能自动外发</span></span></label>
+                  <label class="audit-check"><input type="checkbox" checked><span><strong>操作留痕</strong><span>智能体任务交互记录可查询分析</span></span></label>
+                  <label class="audit-check"><input type="checkbox"><span><strong>推送复核</strong><span>定期推送前确认报告版本</span></span></label>
+                </div>
+              </div>
+            </div>
+          </section>
+          <aside class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>人工复核清单</h3>
+                <p>需要人审的节点不自动放行</p>
+              </div>
+            </div>
+            <div class="panel-body review-queue">
+              <article class="queue-item">
+                <header><strong>处置函发送对象</strong><span class="status wait">待确认</span></header>
+                <p>正式函件可能发送至涉事单位、上级主管部门或外部平台，需要确认对象与依据。</p>
+              </article>
+              <article class="queue-item">
+                <header><strong>侵权投诉附件</strong><span class="status wait">待确认</span></header>
+                <p>面向平台的投诉通知书需要人工核对截图、链接、权利证明与删除诉求。</p>
+              </article>
+              <article class="queue-item">
+                <header><strong>专题报告发布版本</strong><span class="status ok">可通过</span></header>
+                <p>编辑已调整摘要、图表与风险表述，等待推送操作。</p>
+              </article>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <div class="page" id="outputs">
+        <div class="doc-layout">
+          <aside class="panel">
+            <div class="panel-head">
+              <h3>输出类型</h3>
+            </div>
+            <div class="panel-body doc-menu">
+              <button class="doc-tab active" data-doc="report"><strong>舆情专题报告</strong><span>日报/周报/月报/专题报告</span></button>
+              <button class="doc-tab" data-doc="advice"><strong>处置建议</strong><span>流程、话术、舆论引导建议</span></button>
+              <button class="doc-tab" data-doc="letter"><strong>函件草稿</strong><span>处置函/侵权投诉通知书</span></button>
+            </div>
+          </aside>
+          <section class="doc-paper" id="docPaper"></section>
+          <aside class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>交付前校验</h3>
+                <p>导出与推送前置条件</p>
+              </div>
+            </div>
+            <div class="panel-body handoff-list">
+              <div class="handoff-item">
+                <strong>人工编辑</strong>
+                <p>报告、图表与正文允许人工微调，并保留修改记录。</p>
+              </div>
+              <div class="handoff-item">
+                <strong>多格式导出</strong>
+                <p>演示支持报告预览、导出与定期推送入口，实际输出前走复核。</p>
+              </div>
+              <div class="handoff-item">
+                <strong>发送控制</strong>
+                <p>处置函和侵权函只生成草稿，人工确认后才能进入发送流程。</p>
+              </div>
+              <button class="btn success" id="exportDemoBtn"><i class="ri-download-line"></i>模拟导出演示报告</button>
+              <button class="btn" id="submitReviewBtn"><i class="ri-send-plane-line"></i>提交人工复核</button>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <div class="page" id="modules">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>需求清单映射</h3>
+              <p>先不写 PRD，仅把 Excel 清单字段快速映射为演示界面；具体范围待后续确认</p>
+            </div>
+            <span class="status info">Excel 映射</span>
+          </div>
+          <div class="panel-body" style="padding:0">
+            <table class="module-table">
+              <thead>
+                <tr>
+                  <th>清单模块</th>
+                  <th>清单子模块</th>
+                  <th>演示映射（非 PRD 承诺）</th>
+                  <th>清单工时</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="module-name">统一多端访问</td>
+                  <td><div class="sub-list"><span>多端适配</span><span>认证方式</span><span>权限管理</span></div></td>
+                  <td>演示 PC 后台与移动端响应式入口；认证方式、角色分级与访问日志按清单表达。</td>
+                  <td class="hours">30</td>
+                </tr>
+                <tr>
+                  <td class="module-name">知识资源库</td>
+                  <td><div class="sub-list"><span>知识数据录入</span><span>数据来源与脱敏</span><span>分类检索复用</span></div></td>
+                  <td>演示知识分类、入库校验、法规与案例关联、权限管控。</td>
+                  <td class="hours">45</td>
+                </tr>
+                <tr>
+                  <td class="module-name">舆情风险研判</td>
+                  <td><div class="sub-list"><span>多源数据采集</span><span>风险研判</span></div></td>
+                  <td>演示安徽属地数据采集、情感分析、风险等级、趋势文字摘要。</td>
+                  <td class="hours">12</td>
+                </tr>
+                <tr>
+                  <td class="module-name">舆情报告</td>
+                  <td><div class="sub-list"><span>智能生成</span><span>人工编辑</span><span>导出与推送</span></div></td>
+                  <td>演示日报/周报/月报/专题报告生成，人工微调，导出与定期推送入口。</td>
+                  <td class="hours">22</td>
+                </tr>
+                <tr>
+                  <td class="module-name">舆情协助处置</td>
+                  <td><div class="sub-list"><span>舆情处置功能</span><span>智能体协助处置</span></div></td>
+                  <td>演示处置建议、流程管理、话术支撑、舆论引导、侵权应对。</td>
+                  <td class="hours">39</td>
+                </tr>
+                <tr>
+                  <td class="module-name">热点信息获取与展示</td>
+                  <td><div class="sub-list"><span>热点信息获取</span><span>热点信息展示</span></div></td>
+                  <td>演示全网/同城热搜、行业热点，PC 与移动端展示。</td>
+                  <td class="hours">9</td>
+                </tr>
+                <tr>
+                  <td class="module-name">智能交互</td>
+                  <td><div class="sub-list"><span>自然语言对话</span><span>智能体执行服务</span><span>人工干预与留痕</span></div></td>
+                  <td>演示多轮问答、传播量/媒体报道/主体信息查询、报告与函件生成、操作留痕。</td>
+                  <td class="hours">68</td>
+                </tr>
+                <tr>
+                  <td class="module-name">配套功能</td>
+                  <td><div class="sub-list"><span>数据统计分析</span><span>权限管理</span><span>系统安全</span></div></td>
+                  <td>演示内部运营、服务对象、舆情数据统计报表；权限审计；数据加密与运维保障。</td>
+                  <td class="hours">30</td>
+                </tr>
+                <tr>
+                  <td class="module-name">基础设施与运维</td>
+                  <td><div class="sub-list"><span>云资源及云服务</span><span>本地资源</span><span>部署</span><span>实施</span><span>运维</span></div></td>
+                  <td>按清单表达混合部署思路：大模型能力调用云端，业务系统及关键数据或结果部署于本地机房；资源口径待确认。</td>
+                  <td class="hours">按期/实施</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"><strong>已启动处理</strong><span>多智能体任务正在排队执行</span></div>
+
+<script>
+const agents = [
+  {
+    id:"collect", name:"采集智能体", icon:"ri-radar-line", module:"舆情风险研判 / 热点信息获取",
+    desc:"聚焦安徽属地舆情数据，补充全网、同城热搜与行业热点。",
+    inputs:["安徽属地舆情线索","媒体报道与传播量","全网/同城热搜","行业热点订阅"],
+    actions:["多源采集去重","事件主体识别","热点归类展示","采集来源留痕"],
+    outputs:["结构化事件卡片","来源列表","热点趋势摘要","进入风险研判队列"]
+  },
+  {
+    id:"risk", name:"风险研判智能体", icon:"ri-line-chart-line", module:"舆情风险研判",
+    desc:"演示情感分析、风险等级判定与趋势研判文字摘要。",
+    inputs:["结构化事件卡片","情感倾向文本","传播量变化","媒体报道变化"],
+    actions:["情感分析","风险等级判定","趋势研判摘要","风险理由解释"],
+    outputs:["高/中/低风险等级","研判摘要","处置优先级","报告候选材料"]
+  },
+  {
+    id:"knowledge", name:"知识增强智能体", icon:"ri-book-open-line", module:"知识资源库",
+    desc:"从舆情知识、案例、法规、分析报告中检索并增强生成结果。",
+    inputs:["舆情知识","脱敏案例","处置法规","历史分析报告"],
+    actions:["分类检索","法规案例关联","脱敏检查","知识复用记录"],
+    outputs:["引用依据清单","可复用处置经验","知识命中说明","入库校验结果"]
+  },
+  {
+    id:"report", name:"报告生成智能体", icon:"ri-file-chart-line", module:"舆情报告",
+    desc:"按日报、周报、月报、专题报告模板生成标准化内容。",
+    inputs:["风险研判摘要","热点事件列表","图表数据","报告模板"],
+    actions:["模板匹配","报告段落生成","图表说明生成","导出推送准备"],
+    outputs:["报告草稿","人工编辑版本","导出文件","定期推送任务"]
+  },
+  {
+    id:"advice", name:"协助处置智能体", icon:"ri-route-line", module:"舆情协助处置",
+    desc:"生成可复用处置建议、标准流程、话术支撑与舆论引导内容。",
+    inputs:["风险等级","事件主体","知识库处置案例","舆论反馈"],
+    actions:["处置流程推荐","话术生成","负面评论引导","侵权类型识别"],
+    outputs:["处置建议","流程清单","回应话术","侵权应对建议"]
+  },
+  {
+    id:"letter", name:"函件生成智能体", icon:"ri-mail-send-line", module:"智能交互 / 舆情协助处置",
+    desc:"根据事件生成处置函或侵权投诉函草稿，发送前必须人工确认。",
+    inputs:["事件事实","涉事单位/平台","侵权类型","处置诉求"],
+    actions:["函件模板匹配","事实要点填充","附件清单提示","发送前阻断校验"],
+    outputs:["处置函草稿","侵权投诉通知书","附件核对清单","人工确认任务"]
+  },
+  {
+    id:"chat", name:"交互问答智能体", icon:"ri-chat-voice-line", module:"智能交互",
+    desc:"支持多轮对话，执行传播量、媒体报道、事件与主体信息查询。",
+    inputs:["自然语言问题","事件编号","主体名称","用户角色权限"],
+    actions:["意图识别","任务路由","结果汇总","人工干预留痕"],
+    outputs:["问答结果","任务执行记录","人工干预记录","可追溯日志"]
+  },
+  {
+    id:"audit", name:"审核校验智能体", icon:"ri-shield-check-line", module:"配套功能 / 系统安全",
+    desc:"对入库数据、模型输出、导出推送和函件发送做统一校验。",
+    inputs:["知识入库材料","报告草稿","函件草稿","操作日志"],
+    actions:["脱敏校验","事实一致性检查","权限审计","发送前人工确认"],
+    outputs:["校验分数","阻断原因","复核清单","审计日志"]
+  }
+];
+
+const tasks = [
+  {id:"DEMO-AH-01", title:"示例：本地民生事件关注度上升", desc:"演示样例模拟同城热搜与媒体报道同步增加，用于展示专题摘要流程。", source:"演示源：安徽属地 + 同城热搜", risk:"mid", riskText:"中", agent:"风险研判智能体", audit:"待人工复核", time:"示例 10:28", template:"专题报告 + 处置建议"},
+  {id:"DEMO-AH-02", title:"示例：网络平台疑似侵权内容扩散", desc:"演示样例模拟短视频平台出现未经授权内容，用于展示投诉函草稿流程。", source:"演示源：平台线索", risk:"high", riskText:"高", agent:"函件生成智能体", audit:"禁止自动发送", time:"示例 10:17", template:"侵权投诉函 + 附件清单"},
+  {id:"DEMO-AH-03", title:"示例：行业热点带动政策咨询增加", desc:"演示样例模拟行业热点进入问答高频主题，用于展示知识库引用与问答口径。", source:"演示源：行业热点", risk:"low", riskText:"低", agent:"交互问答智能体", audit:"通过", time:"示例 09:54", template:"问答口径 + 知识入库"},
+  {id:"DEMO-AH-04", title:"示例：突发事件相关评论情绪分化", desc:"演示样例模拟评论中出现多类观点，用于展示情感分析和舆论引导话术。", source:"演示源：媒体报道 + 评论", risk:"high", riskText:"高", agent:"协助处置智能体", audit:"待人工复核", time:"示例 09:41", template:"处置建议 + 话术支撑"},
+  {id:"DEMO-AH-05", title:"示例：月度舆情报告待生成", desc:"演示样例按月报模板汇总安徽属地重点舆情与热点趋势。", source:"演示源：报告任务", risk:"low", riskText:"低", agent:"报告生成智能体", audit:"待编辑", time:"示例 09:20", template:"月报 + 图表可视化"}
+];
+
+const docs = {
+  report:`<div class="doc-head"><div class="doc-kicker">安徽日报社舆情智能体 · 演示样例</div><h3>舆情专题报告</h3><div class="doc-meta">报告周期：2026-06-10 · 状态：机器草稿，待人工编辑</div></div><h4>一、事件概述</h4><p>演示样例模拟采集到安徽属地相关舆情线索，传播量与媒体报道在短时间内同步上升。风险研判智能体根据情感倾向、传播变化和媒体关注度，给出示例风险判断。</p><h4>二、趋势研判</h4><p>当前讨论集中在事件事实、处置进展与公众关切回应。建议在实际接入后持续监测全网和同城热搜，并在后续报告中补充趋势变化说明。</p><h4>三、处置建议</h4><p>建议由人工确认事实口径后，采用标准流程进行回应。涉及外部平台内容时，先完成侵权类型识别与证据附件核验。</p><p class="doc-note">校验要求：数据来源、事实一致性、敏感信息脱敏、报告版本和推送对象均需确认。</p>`,
+  advice:`<div class="doc-head"><div class="doc-kicker">协助处置智能体输出 · 演示样例</div><h3>舆情处置建议</h3><div class="doc-meta">适用场景：负面评论、错误舆论、处置流程管理</div></div><h4>一、标准流程</h4><p>完成事件事实核查后，按风险等级进入处置流程。高风险事件优先生成复核任务，并要求负责人确认回应口径。</p><h4>二、话术支撑</h4><p>回应内容应围绕事实、进展和后续措施展开，避免未经确认的信息扩散。对负面评论可生成引导性评论草稿，但必须人工复核。</p><h4>三、留痕要求</h4><p>智能体生成建议、人工调整、最终采用版本均进入任务交互记录，支持后续查询分析与权限审计。</p><p class="doc-note">边界：处置建议不直接替代人工决策，所有外发内容均需确认。</p>`,
+  letter:`<div class="doc-head"><div class="doc-kicker">函件生成智能体草稿 · 演示样例</div><h3>侵权投诉通知书</h3><div class="doc-meta">发送对象：网络平台 · 状态：草稿，禁止自动发送</div></div><h4>一、投诉事项</h4><p>演示样例中，相关网络内容可能涉及对服务对象合法权益的侵犯。请平台依据投诉材料核查并采取相应处理措施。</p><h4>二、证据附件</h4><p>需人工补充并确认原始链接、截图、发布时间、传播范围、权利证明材料等附件。附件不完整时不得提交。</p><h4>三、处理请求</h4><p>请求平台对涉嫌侵权内容进行审核，并根据平台规则采取删除、屏蔽或限制传播等措施。</p><p class="doc-note">强校验：函件生成后只进入人工确认流程，不支持智能体自动外发。</p>`
+};
+
+const pageTitles = {
+  overview:"演示总览",
+  agents:"智能体编排",
+  tasks:"任务处理",
+  knowledge:"知识资源库",
+  audit:"审核校验",
+  outputs:"输出交付",
+  modules:"清单映射"
+};
+
+const processItems = [
+  ["采集智能体","已完成演示样例线索与热点信息汇聚","done"],
+  ["风险研判智能体","正在判定情感倾向、风险等级与趋势摘要","wait"],
+  ["知识增强智能体","已命中示例法规与脱敏案例","done"],
+  ["审核校验智能体","等待人工确认输出版本与发送对象","wait"]
+];
+
+function qs(sel){return document.querySelector(sel)}
+function qsa(sel){return Array.from(document.querySelectorAll(sel))}
+
+function showToast(title, text){
+  const toast = qs("#toast");
+  toast.querySelector("strong").textContent = title;
+  toast.querySelector("span").textContent = text;
+  toast.classList.add("show");
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(()=>toast.classList.remove("show"), 2600);
+}
+
+function showPage(id){
+  qsa(".page").forEach(p=>p.classList.toggle("active", p.id === id));
+  qsa(".nav-btn").forEach(btn=>btn.classList.toggle("active", btn.dataset.page === id));
+  qs("#pageTitle").textContent = pageTitles[id] || "演示系统";
+}
+
+function renderOverviewAgents(){
+  const root = qs("#overviewAgents");
+  root.innerHTML = agents.map(a=>`<article class="agent-mini" data-agent="${a.id}" data-page-jump="agents"><div class="mini-icon"><i class="${a.icon}"></i></div><div><strong>${a.name}</strong><span>${a.module}</span></div></article>`).join("");
+}
+
+function renderAgents(){
+  qs("#agentGrid").innerHTML = agents.map((a,i)=>`<article class="agent-card ${i===0?"active":""}" data-agent="${a.id}"><div class="card-icon"><i class="${a.icon}"></i></div><h4>${a.name}</h4><p>${a.desc}</p><div class="agent-meta"><span>${a.module}</span><span>Agent-${String(i+1).padStart(2,"0")}</span></div></article>`).join("");
+  renderAgentDetail(agents[0].id);
+}
+
+function renderAgentDetail(id){
+  const agent = agents.find(a=>a.id === id) || agents[0];
+  qs("#agentDetailTitle").textContent = agent.name;
+  qs("#agentDetailDesc").textContent = agent.desc;
+  qs("#agentInputs").innerHTML = agent.inputs.map(x=>`<li>${x}</li>`).join("");
+  qs("#agentActions").innerHTML = agent.actions.map(x=>`<li>${x}</li>`).join("");
+  qs("#agentOutputs").innerHTML = agent.outputs.map(x=>`<li>${x}</li>`).join("");
+  qsa(".agent-card").forEach(card=>card.classList.toggle("active", card.dataset.agent === id));
+}
+
+function renderTasks(){
+  const risk = qs("#riskFilter").value;
+  const keyword = qs("#taskSearch").value.trim();
+  const filtered = tasks.filter(t => (risk === "all" || t.risk === risk) && (!keyword || (t.title + t.desc + t.id).includes(keyword)));
+  qs("#taskRows").innerHTML = filtered.map((t,i)=>`<tr data-task="${t.id}" class="${i===0?"active":""}"><td><div class="task-title">${t.title}</div><div class="task-sub">${t.id}</div></td><td>${t.source}</td><td><span class="risk ${t.risk}">${t.riskText}</span></td><td>${t.agent}</td><td>${t.audit}</td><td>${t.time}</td></tr>`).join("");
+  const first = filtered[0] || tasks[0];
+  renderSelectedTask(first.id);
+}
+
+function renderSelectedTask(id){
+  const task = tasks.find(t=>t.id === id) || tasks[0];
+  qs("#selectedTitle").textContent = task.title;
+  qs("#selectedDesc").textContent = task.desc;
+  qs("#selectedId").textContent = task.id;
+  qs("#selectedTemplate").textContent = task.template;
+  qs("#selectedStage").textContent = task.audit.includes("禁止") ? "需人工确认" : task.audit;
+  qs("#selectedStage").className = "status " + (task.audit.includes("禁止") ? "bad" : task.audit.includes("通过") ? "ok" : "wait");
+  qsa("#taskRows tr").forEach(row=>row.classList.toggle("active", row.dataset.task === id));
+}
+
+function renderProcess(){
+  qs("#processList").innerHTML = processItems.map(item=>`<div class="process-item ${item[2]}"><i class="${item[2] === "done" ? "ri-check-line" : "ri-time-line"}"></i><div><strong>${item[0]}</strong><span>${item[1]}</span></div></div>`).join("");
+}
+
+function renderDoc(type="report"){
+  qs("#docPaper").innerHTML = docs[type] || docs.report;
+  qsa(".doc-tab").forEach(tab=>tab.classList.toggle("active", tab.dataset.doc === type));
+}
+
+function runPipeline(){
+  const stages = qsa(".stage");
+  qs("#pipelineStatus").className = "status wait";
+  qs("#pipelineStatus").textContent = "处理中";
+  stages.forEach(stage=>stage.classList.remove("running","done","warn"));
+  stages.forEach((stage, idx)=>{
+    setTimeout(()=>{
+      stages.forEach((s,i)=>{
+        if(i < idx) s.classList.add("done");
+        s.classList.remove("running");
+      });
+      stage.classList.add(idx === 3 ? "warn" : "running");
+      if(idx === stages.length - 1){
+        setTimeout(()=>{
+          stage.classList.remove("running");
+          stage.classList.add("warn");
+          qs("#pipelineStatus").className = "status wait";
+          qs("#pipelineStatus").textContent = "待人工复核";
+        }, 650);
+      }
+    }, idx * 620);
+  });
+  showToast("多智能体处理已启动","采集、研判、生成与审核链路正在模拟执行");
+}
+
+function resetPipeline(){
+  qsa(".stage").forEach(stage=>stage.classList.remove("running","done","warn"));
+  qs("#pipelineStatus").className = "status info";
+  qs("#pipelineStatus").textContent = "待处理";
+  showToast("演示状态已重置","可重新运行多智能体处理链路");
+}
+
+function updateScore(){
+  const checks = qsa("#auditChecks input");
+  const checked = checks.filter(input=>input.checked).length;
+  const pct = Math.round(checked / checks.length * 100);
+  qs("#scoreNum").textContent = `${checked}/${checks.length}`;
+  qs(".score-ring").style.background = `conic-gradient(${pct >= 86 ? "var(--green)" : pct >= 76 ? "var(--orange)" : "var(--red)"} 0 ${pct}%, #e8eef5 ${pct}% 100%)`;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderOverviewAgents();
+  renderAgents();
+  renderTasks();
+  renderProcess();
+  renderDoc("report");
+  updateScore();
+
+  qsa(".nav-btn").forEach(btn => btn.addEventListener("click", () => showPage(btn.dataset.page)));
+  document.body.addEventListener("click", (e) => {
+    const jump = e.target.closest("[data-page-jump]");
+    if(jump) showPage(jump.dataset.pageJump);
+    const agentCard = e.target.closest("[data-agent]");
+    if(agentCard){
+      showPage("agents");
+      renderAgentDetail(agentCard.dataset.agent);
+    }
+    const taskRow = e.target.closest("#taskRows tr");
+    if(taskRow) renderSelectedTask(taskRow.dataset.task);
+    const docTab = e.target.closest(".doc-tab");
+    if(docTab) renderDoc(docTab.dataset.doc);
+  });
+  qs("#runBtn").addEventListener("click", runPipeline);
+  qs("#resetBtn").addEventListener("click", resetPipeline);
+  qs("#agentDemoBtn").addEventListener("click", () => { showPage("overview"); runPipeline(); });
+  qs("#batchRunBtn").addEventListener("click", () => showToast("批量处理已创建","5 条任务进入采集、研判、生成与审核队列"));
+  qs("#singleRunBtn").addEventListener("click", () => showToast("当前事件处理中","已调度知识增强、报告生成与审核校验智能体"));
+  qs("#recheckBtn").addEventListener("click", () => { updateScore(); showToast("校验完成","已刷新脱敏、来源、事实、权限与人工确认检查项"); });
+  qs("#addKnowledgeBtn").addEventListener("click", () => showToast("演示新增条目","已打开知识入库校验流程示意"));
+  qs("#exportDemoBtn").addEventListener("click", () => showToast("模拟导出完成","演示报告已进入下载前复核状态"));
+  qs("#submitReviewBtn").addEventListener("click", () => showToast("已提交人工复核","报告、处置建议和函件草稿等待人工确认"));
+  qs("#riskFilter").addEventListener("change", renderTasks);
+  qs("#taskSearch").addEventListener("input", renderTasks);
+  qsa("#auditChecks input").forEach(input => input.addEventListener("change", updateScore));
+});
+</script>
+</body>
+</html>
