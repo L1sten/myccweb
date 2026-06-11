@@ -31,6 +31,8 @@
       "03f8d06ec73b71a457b9b752c4a5ba4f07a5faa53a779b65e4e294da09e36b01",
     "hz-self-media-monitor":
       "d2a0c556a51b27e5a165ffc9b57638ca8ea1e256a4f2a47114a20ebf87c7cdb8",
+    "media-asset-catalog":
+      "8a25aa76f0f82ad107132629ce7a51f58d5f65916c5b82582b8075e6f312ba4c",
   };
 
   var projectKey = "root";

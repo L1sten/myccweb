@@ -58,38 +58,49 @@
         .prd-panel.collapsed { width: 0; opacity: 0; overflow: hidden; border: none; }
 
         .top-nav {
-            height: 58px;
+            height: 42px;
             flex-shrink: 0;
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 0 18px;
+            gap: 18px;
+            padding: 0 12px;
             background: #fff;
             border-bottom: 1px solid var(--line);
             z-index: 40;
         }
-        .brand { display: flex; align-items: center; gap: 10px; min-width: 168px; }
+        .brand { display: flex; align-items: center; gap: 8px; min-width: 210px; }
         .brand-mark {
-            width: 32px;
-            height: 32px;
-            display: grid;
-            place-items: center;
-            color: #fff;
-            font-weight: 760;
-            background: var(--primary);
-            border-radius: 7px;
+            width: 22px;
+            height: 22px;
+            position: relative;
+            color: transparent;
+            background: linear-gradient(180deg, #2f7bff, #1d63e9);
+            clip-path: polygon(50% 0, 100% 22%, 50% 44%, 0 22%);
         }
-        .brand-text { font-weight: 700; white-space: nowrap; letter-spacing: 0; }
-        .nav-items { display: flex; align-items: center; gap: 2px; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+        .brand-mark::before, .brand-mark::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            width: 22px;
+            height: 22px;
+            background: inherit;
+            clip-path: inherit;
+        }
+        .brand-mark::before { top: 6px; opacity: .82; }
+        .brand-mark::after { top: 12px; opacity: .65; }
+        .brand-text { font-weight: 760; white-space: nowrap; letter-spacing: 0; color: var(--ink); font-size: 16px; }
+        .brand-sub { color: #c4cbd6; font-weight: 650; white-space: nowrap; }
+        .nav-items { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
         .nav-items::-webkit-scrollbar { display: none; }
         .nav-item {
             border: 0;
             background: transparent;
             color: var(--muted);
             border-radius: 6px;
-            padding: 8px 9px;
+            padding: 7px 11px;
             transition: color .15s, background .15s;
             white-space: nowrap;
+            font-weight: 650;
         }
         .nav-item:hover { color: var(--primary); background: var(--primary-soft); }
         .nav-item.active { color: var(--primary); background: var(--primary-soft); font-weight: 700; }
@@ -110,6 +121,7 @@
         svg { width: 16px; height: 16px; display: block; }
 
         .side-nav {
+            display: none;
             width: 198px;
             flex-shrink: 0;
             border-right: 1px solid var(--line);
@@ -157,12 +169,36 @@
             flex-direction: column;
             overflow: hidden;
         }
+        .workbench.module-templates .page-head,
+        .workbench.module-templates .toolbar { display: none; }
+        .workbench.module-templates .content-scroll { padding: 30px 20px; }
+        .workbench.module-templates .template-layout { margin-top: 0; }
+        .workbench.module-detail .page-head,
+        .workbench.module-detail .toolbar { display: none; }
+        .workbench.module-detail .content-scroll { padding: 14px 14px 22px; }
         .page-head {
             flex-shrink: 0;
             background: #fff;
             border-bottom: 1px solid var(--line);
-            padding: 14px 20px 12px;
+            padding: 0;
         }
+        .material-tabs-line {
+            min-height: 48px;
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 0 10px;
+        }
+        .material-scope {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            color: var(--muted);
+            font-weight: 650;
+            white-space: nowrap;
+        }
+        .material-scope strong { color: var(--ink); }
         .crumb { color: var(--subtle); font-size: 12px; display: flex; align-items: center; gap: 6px; margin-bottom: 9px; }
         .head-row { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
         .head-title { display: flex; align-items: center; gap: 10px; min-width: 0; }
@@ -198,6 +234,8 @@
         .btn.primary:hover { background: var(--primary-deep); border-color: var(--primary-deep); color: #fff; transform: translateY(-1px); }
         .btn.ghost { border-color: transparent; background: transparent; }
         .btn.danger { color: var(--red); }
+        .upload-combo { position: relative; display: inline-flex; }
+        .hidden-upload-input { display: none; }
         .upload-menu {
             display: none;
             position: absolute;
@@ -231,7 +269,7 @@
             display: flex;
             align-items: center;
             gap: 26px;
-            margin-top: 14px;
+            margin-top: 0;
         }
         .lib-tab {
             position: relative;
@@ -248,7 +286,7 @@
             position: absolute;
             left: 0;
             right: 0;
-            bottom: -12px;
+            bottom: -9px;
             height: 2px;
             background: var(--primary);
             border-radius: 999px;
@@ -257,12 +295,60 @@
         .toolbar {
             flex-shrink: 0;
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            align-items: stretch;
             gap: 10px;
-            padding: 12px 20px;
+            padding: 12px 10px;
             border-bottom: 1px solid var(--line);
             background: #fff;
         }
+        .asset-action-bar, .asset-filter-row, .selection-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+        .asset-action-bar { min-height: 34px; }
+        .asset-filter-row { padding-top: 2px; }
+        .selection-row {
+            min-height: 28px;
+            color: var(--muted);
+            font-size: 13px;
+            border-top: 1px solid var(--line-soft);
+            padding-top: 8px;
+        }
+        .selection-row strong { color: var(--ink); font-size: 16px; }
+        .selection-row a { color: var(--primary); font-weight: 700; text-decoration: none; }
+        .field-chip {
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 0 9px;
+            border-radius: 6px;
+            border: 1px solid var(--line);
+            background: #fff;
+            color: var(--text);
+            font-size: 12px;
+        }
+        .field-chip input { accent-color: var(--primary); }
+        .btn.success { background: #10b981; border-color: #10b981; color: #fff; font-weight: 700; }
+        .btn.success:hover { background: #059669; border-color: #059669; color: #fff; }
+        .usage-meter {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 142px;
+            height: 32px;
+            padding: 0 10px;
+            border: 1px solid var(--line-soft);
+            border-radius: 6px;
+            color: var(--muted);
+            font-size: 12px;
+            background: #fbfcff;
+        }
+        .usage-bar { width: 54px; height: 6px; border-radius: 999px; background: #e5e7eb; overflow: hidden; }
+        .usage-bar span { display: block; width: 28%; height: 100%; background: var(--primary); border-radius: inherit; }
         .select, .search, .datebox {
             height: 34px;
             border: 1px solid var(--line);
@@ -283,7 +369,7 @@
         .view-switch button { width: 34px; height: 32px; border: 0; background: #fff; color: var(--muted); display: grid; place-items: center; }
         .view-switch button.active { background: var(--primary-soft); color: var(--primary); }
 
-        .content-scroll { flex: 1; min-height: 0; overflow: auto; padding: 16px 20px 22px; }
+        .content-scroll { flex: 1; min-height: 0; overflow: auto; padding: 20px 10px 22px; background: #f4f7fb; }
         .summary-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
         .summary-card {
             min-height: 84px;
@@ -316,7 +402,7 @@
         .view-panel { display: none; }
         .view-panel.active { display: block; }
 
-        .asset-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+        .asset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
         .asset-card {
             background: #fff;
             border: 1px solid var(--line);
@@ -324,12 +410,38 @@
             overflow: hidden;
             transition: border-color .15s, box-shadow .15s, transform .15s;
         }
-        .asset-card:hover { border-color: var(--primary-line); box-shadow: var(--shadow); transform: translateY(-2px); }
+        .asset-card:hover, .asset-card.selected { border-color: #60a5fa; box-shadow: 0 0 0 1px #60a5fa inset; transform: translateY(-2px); }
         .asset-thumb {
-            height: 128px;
+            height: 242px;
             position: relative;
             overflow: hidden;
             background: #e9eef7;
+        }
+        .asset-folder {
+            height: 242px;
+            display: grid;
+            place-items: center;
+            background: #fffbea;
+        }
+        .folder-icon {
+            width: 70px;
+            height: 54px;
+            border-radius: 10px;
+            background: #ffd34d;
+            border: 7px solid #ffb800;
+            position: relative;
+        }
+        .folder-icon::before {
+            content: "";
+            position: absolute;
+            left: -7px;
+            top: -18px;
+            width: 34px;
+            height: 18px;
+            border-radius: 8px 8px 0 0;
+            background: #ffd34d;
+            border: 7px solid #ffb800;
+            border-bottom: 0;
         }
         .thumb-scene-a { background: linear-gradient(160deg, #b8d9ff 0 30%, #eff6ff 30% 47%, #3f6ca8 47% 49%, #d7e7f7 49% 100%); }
         .thumb-scene-b { background: linear-gradient(135deg, #e0f2fe, #dbeafe 42%, #fef3c7 43%, #bfdbfe 65%, #14532d 66%); }
@@ -383,13 +495,14 @@
         .asset-body { padding: 10px 12px 12px; }
         .asset-title { font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 7px; }
         .asset-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--subtle); font-size: 12px; margin-bottom: 9px; }
+        .asset-time { color: var(--subtle); font-size: 12px; margin-top: 8px; }
         .progress-line { height: 6px; border-radius: 999px; background: #eef2f7; overflow: hidden; }
         .progress-line span { display: block; height: 100%; border-radius: inherit; background: var(--primary); }
         .asset-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
         .mini-tag { height: 22px; border-radius: 999px; padding: 0 7px; background: #f3f6fb; color: var(--muted); font-size: 12px; display: inline-flex; align-items: center; }
         .mini-tag.ai { background: #ecfeff; color: var(--cyan); }
 
-        .catalog-layout { display: grid; grid-template-columns: minmax(0, 1fr) 334px; gap: 14px; align-items: start; }
+        .catalog-layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(480px, 1.1fr); gap: 14px; align-items: start; }
         .catalog-list, .catalog-side, .task-panel {
             background: #fff;
             border: 1px solid var(--line);
@@ -407,6 +520,462 @@
         }
         .panel-title { font-weight: 700; color: var(--ink); }
         .panel-sub { color: var(--subtle); font-size: 12px; }
+        .detail-preview-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .detail-toolbar {
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--line-soft);
+        }
+        .detail-page-toolbar {
+            min-height: 58px;
+            display: grid;
+            grid-template-columns: 180px minmax(0, 1fr) 180px;
+            align-items: center;
+            gap: 12px;
+            padding: 0 16px;
+            margin-bottom: 12px;
+            background: #fff;
+            border: 1px solid var(--line-soft);
+            border-radius: 8px;
+        }
+        .detail-page-actions {
+            justify-self: center;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-weight: 650; }
+        .preview-canvas {
+            margin: 18px;
+            height: 392px;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            background: #f8fafc;
+        }
+        .preview-photo {
+            width: min(82%, 760px);
+            height: 330px;
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 24% 46%, #475569 0 8%, transparent 9%),
+                radial-gradient(circle at 42% 50%, #e0f2fe 0 10%, transparent 11%),
+                radial-gradient(circle at 61% 48%, #7f1d1d 0 9%, transparent 10%),
+                linear-gradient(180deg, #fed7aa 0 38%, #fef3c7 39% 43%, #d6d3d1 44% 100%);
+        }
+        .preview-photo::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(15,23,42,.12), transparent 18% 82%, rgba(15,23,42,.1));
+        }
+        .play-overlay {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: rgba(15,23,42,.48);
+            color: #fff;
+            position: absolute;
+        }
+        .preview-meta {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 12px 18px 16px;
+            color: var(--muted);
+            border-top: 1px solid var(--line-soft);
+        }
+        .preview-meta b { color: var(--text); margin-left: 4px; }
+        .catalog-detail-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .detail-tabs {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            height: 46px;
+            padding: 0 16px;
+            border-bottom: 1px solid var(--line-soft);
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+        .detail-tab {
+            position: relative;
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            padding: 0;
+            height: 46px;
+            font-weight: 650;
+        }
+        .detail-tab.active { color: var(--primary); }
+        .detail-tab.active::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 2px;
+            border-radius: 999px;
+            background: var(--primary);
+        }
+        .catalog-form-shell { padding: 16px 18px 18px; }
+        .template-line, .catalog-action-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+        .template-line label { color: var(--muted); }
+        .template-line select { width: 214px; height: 34px; border: 1px solid var(--primary-line); border-radius: 6px; padding: 0 10px; color: var(--text); background: #fff; }
+        .auto-save { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; color: var(--muted); }
+        .catalog-section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 18px 0 10px;
+            color: var(--ink);
+            font-weight: 760;
+        }
+        .catalog-section-title::before {
+            content: "";
+            width: 3px;
+            height: 18px;
+            border-radius: 999px;
+            background: var(--primary);
+        }
+        .catalog-form-grid {
+            display: grid;
+            grid-template-columns: 92px minmax(0, 1fr);
+            gap: 10px 12px;
+            align-items: center;
+        }
+        .catalog-form-grid label { color: var(--muted); text-align: right; }
+        .catalog-form-grid label.required::before { content: "* "; color: var(--red); }
+        .catalog-form-grid input, .catalog-form-grid select, .catalog-form-grid textarea {
+            min-width: 0;
+            width: 100%;
+            min-height: 34px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 7px 10px;
+            color: var(--text);
+            background: #fff;
+            outline: 0;
+        }
+        .catalog-form-grid textarea { min-height: 78px; resize: vertical; }
+        .catalog-form-grid input:focus, .catalog-form-grid select:focus, .catalog-form-grid textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,82,217,.08); }
+        .catalog-form-grid .full-field { grid-column: 2; }
+        .album-detail {
+            display: grid;
+            grid-template-columns: 360px minmax(0, 1fr);
+            gap: 14px;
+        }
+        .album-side, .album-main {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .album-cover {
+            height: 260px;
+            display: grid;
+            place-items: center;
+            position: relative;
+            color: #fff;
+            background: #1e293b;
+        }
+        .album-cover.video { background: linear-gradient(135deg, #1d4ed8, #0f172a); }
+        .album-cover.audio { background: linear-gradient(135deg, #0f766e, #172554); }
+        .album-cover::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent, rgba(15, 23, 42, .32));
+        }
+        .album-cover .state {
+            position: absolute;
+            left: 14px;
+            top: 14px;
+            z-index: 1;
+            background: rgba(255, 255, 255, .92);
+        }
+        .album-player-caption {
+            position: absolute;
+            left: 16px;
+            right: 16px;
+            bottom: 14px;
+            z-index: 1;
+            display: grid;
+            gap: 4px;
+            color: #fff;
+        }
+        .album-player-title {
+            font-size: 15px;
+            font-weight: 760;
+            line-height: 1.45;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .album-player-meta { color: rgba(255, 255, 255, .78); font-size: 12px; }
+        .album-mark {
+            position: relative;
+            z-index: 1;
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: rgba(255, 255, 255, .18);
+            border: 1px solid rgba(255, 255, 255, .34);
+        }
+        .album-summary { padding: 14px 16px 16px; }
+        .album-title { color: var(--ink); font-size: 16px; font-weight: 760; line-height: 1.5; }
+        .album-desc { margin-top: 6px; color: var(--muted); line-height: 1.6; }
+        .album-stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+            margin-top: 14px;
+        }
+        .album-stat {
+            border: 1px solid var(--line-soft);
+            border-radius: 6px;
+            padding: 9px 10px;
+            background: #fbfcff;
+        }
+        .album-stat span { display: block; color: var(--subtle); font-size: 12px; }
+        .album-stat b { display: block; margin-top: 4px; color: var(--ink); font-size: 15px; }
+        .album-article {
+            border-top: 1px solid var(--line-soft);
+            padding: 14px 16px 16px;
+        }
+        .album-article-title {
+            color: var(--ink);
+            font-weight: 760;
+            margin-bottom: 8px;
+        }
+        .album-article p {
+            margin: 0;
+            color: var(--text);
+            line-height: 1.75;
+            font-size: 13px;
+        }
+        .album-main-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            min-height: 54px;
+            padding: 0 16px;
+            border-bottom: 1px solid var(--line-soft);
+        }
+        .album-main-title { color: var(--ink); font-weight: 760; }
+        .album-main-body { padding: 16px 18px 18px; }
+        .album-now {
+            display: grid;
+            grid-template-columns: 42px 180px minmax(0, 1fr) 42px;
+            gap: 14px;
+            align-items: stretch;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+            margin-bottom: 14px;
+        }
+        .album-switch {
+            border: 0;
+            border-right: 1px solid var(--line-soft);
+            background: #fbfcff;
+            color: var(--muted);
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+        }
+        .album-switch.next { border-right: 0; border-left: 1px solid var(--line-soft); }
+        .album-switch:hover { background: var(--primary-soft); color: var(--primary); }
+        .album-now-player {
+            min-height: 126px;
+            display: grid;
+            place-items: center;
+            position: relative;
+            color: #fff;
+            background: linear-gradient(135deg, #1d4ed8, #0f172a);
+        }
+        .album-now.audio .album-now-player { background: linear-gradient(135deg, #0f766e, #172554); }
+        .album-now-player .state {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            background: rgba(255, 255, 255, .9);
+        }
+        .album-now-info {
+            min-width: 0;
+            display: grid;
+            align-content: center;
+            gap: 8px;
+            padding: 14px 16px;
+        }
+        .album-now-title { color: var(--ink); font-weight: 760; font-size: 16px; line-height: 1.5; }
+        .album-now-meta { color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .album-side .album-now {
+            grid-template-columns: 42px minmax(0, 1fr) 42px;
+            gap: 0;
+            margin: 14px 16px;
+        }
+        .album-side .album-switch { min-height: 86px; }
+        .album-side .album-switch.prev { grid-column: 1; grid-row: 1; }
+        .album-side .album-switch.next { grid-column: 3; grid-row: 1; }
+        .album-side .album-now-info {
+            grid-column: 2;
+            grid-row: 1;
+            padding: 12px 14px;
+        }
+        .waveform {
+            width: 88px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        .waveform span {
+            width: 5px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .82);
+        }
+        .waveform span:nth-child(1) { height: 18px; }
+        .waveform span:nth-child(2) { height: 30px; }
+        .waveform span:nth-child(3) { height: 22px; }
+        .waveform span:nth-child(4) { height: 36px; }
+        .waveform span:nth-child(5) { height: 24px; }
+        .waveform span:nth-child(6) { height: 32px; }
+        .album-field-grid {
+            display: grid;
+            grid-template-columns: 92px minmax(0, 1fr) 92px minmax(0, 1fr);
+            gap: 10px 12px;
+            align-items: center;
+        }
+        .album-field-grid label { color: var(--muted); text-align: right; }
+        .album-value {
+            min-height: 34px;
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 7px 10px;
+            color: var(--text);
+            background: #fff;
+            min-width: 0;
+        }
+        .album-value.full { grid-column: span 3; }
+        .catalog-status-bar {
+            display: grid;
+            grid-template-columns: 120px minmax(160px, 1fr) 120px auto;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 14px;
+            padding: 10px 12px;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+        }
+        .status-unit {
+            display: grid;
+            gap: 3px;
+            min-width: 0;
+        }
+        .status-unit span { color: var(--subtle); font-size: 12px; }
+        .status-unit strong { color: var(--ink); font-size: 14px; }
+        .status-flow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .flow-step {
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            padding: 0 8px;
+            border-radius: 999px;
+            background: #f3f6fb;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 650;
+        }
+        .flow-step.active { background: var(--primary-soft); color: var(--primary); }
+        .flow-step.blocked { background: #fff7ed; color: #b45309; }
+        .completion-bar {
+            height: 7px;
+            border-radius: 999px;
+            background: #edf2f7;
+            overflow: hidden;
+            margin: 8px 0 10px;
+        }
+        .completion-bar span { display: block; width: 83%; height: 100%; border-radius: inherit; background: var(--primary); }
+        .check-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 12px;
+            padding: 2px 0;
+        }
+        .check-row b { color: var(--ink); }
+        .field-token-list { display: flex; flex-wrap: wrap; gap: 6px; }
+        .field-token {
+            display: inline-flex;
+            align-items: center;
+            height: 24px;
+            padding: 0 8px;
+            border-radius: 999px;
+            background: #ecfdf5;
+            color: #047857;
+            font-size: 12px;
+            font-weight: 650;
+        }
+        .field-token.locked { background: #fff7ed; color: #b45309; }
+        .metadata-picker {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            border-radius: 8px;
+            padding: 8px 10px;
+            margin: -2px 0 14px;
+            background: #f8fbff;
+            border: 1px solid #dbeafe;
+        }
+        .metadata-picker span { color: var(--muted); font-size: 12px; font-weight: 650; }
+        .role-note {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            height: 26px;
+            border-radius: 999px;
+            padding: 0 10px;
+            background: #f3f6fb;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 650;
+        }
         .batch-bar {
             display: flex;
             align-items: center;
@@ -476,6 +1045,7 @@
             gap: 1px;
             background: #dbeafe;
         }
+        .review-agent-grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
         .review-question {
             min-height: 82px;
             background: #fff;
@@ -582,12 +1152,21 @@
         .exception-file { font-weight: 650; color: var(--ink); font-size: 13px; }
         .exception-reason { color: var(--subtle); font-size: 12px; }
 
-        .template-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 14px; align-items: start; }
+        .template-layout { display: grid; grid-template-columns: 1fr; gap: 16px; align-items: start; max-width: 1020px; margin: 0 auto; }
         .template-list, .template-editor {
             background: #fff;
             border: 1px solid var(--line);
             border-radius: 8px;
             overflow: hidden;
+        }
+        .template-list.reference-list {
+            background: transparent;
+            border: 0;
+            overflow: visible;
+        }
+        .reference-list .panel-head {
+            padding: 8px 0 18px;
+            border-bottom: 0;
         }
         .template-card {
             display: grid;
@@ -599,10 +1178,89 @@
         }
         .template-card:hover { background: #fbfdff; }
         .template-card:last-child { border-bottom: 0; }
+        .template-card.reference {
+            min-height: 92px;
+            align-items: center;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            padding: 18px 22px;
+            background: #fff;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.035);
+        }
         .template-name { display: flex; align-items: center; gap: 8px; font-weight: 760; color: var(--ink); }
         .template-desc { margin-top: 4px; color: var(--muted); font-size: 13px; }
         .template-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; color: var(--subtle); font-size: 12px; }
         .template-actions { display: flex; align-items: center; gap: 6px; }
+        .template-state {
+            display: inline-flex;
+            align-items: center;
+            height: 22px;
+            padding: 0 8px;
+            border-radius: 6px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 760;
+        }
+        .set-default {
+            color: var(--amber);
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-right: 8px;
+        }
+        .template-editor-full {
+            margin-top: 0;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .template-layout > .template-editor-full { display: none; }
+        .template-editor-full.compact { margin-top: 10px; }
+        .template-form-top {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            padding: 16px;
+            border-bottom: 1px solid var(--line-soft);
+        }
+        .template-form-top .field { margin-bottom: 0; }
+        .config-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+        }
+        .config-title { color: var(--ink); font-weight: 760; }
+        .config-title span { color: var(--muted); font-weight: 650; }
+        .config-list { padding: 0 16px 16px; display: grid; gap: 10px; }
+        .config-row {
+            display: grid;
+            grid-template-columns: 26px 26px minmax(100px, 1fr) 130px minmax(100px, 1fr) minmax(110px, 1fr) 56px 34px;
+            gap: 10px;
+            align-items: end;
+            min-height: 82px;
+            border: 1px solid var(--line-soft);
+            border-radius: 8px;
+            padding: 12px;
+        }
+        .drag-handle { color: #cbd5e1; align-self: center; font-size: 16px; }
+        .config-index { color: var(--subtle); align-self: center; }
+        .config-cell { display: grid; gap: 5px; color: var(--subtle); font-size: 12px; }
+        .config-cell input, .config-cell select {
+            width: 100%;
+            height: 34px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 0 10px;
+            color: var(--text);
+            background: #fff;
+        }
+        .config-required { display: grid; justify-items: start; gap: 7px; color: var(--subtle); font-size: 12px; }
         .field-list { padding: 0 14px 14px; }
         .field-row {
             display: grid;
@@ -640,6 +1298,90 @@
             flex-direction: column;
         }
         .business-drawer.show { transform: translateX(0); }
+        .modal-overlay {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, .36);
+            z-index: 420;
+        }
+        .modal-overlay.show { display: block; }
+        .template-modal {
+            display: none;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: min(1040px, calc(100vw - 48px));
+            max-height: min(86vh, 860px);
+            transform: translate(-50%, -50%);
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: 0 22px 60px rgba(15, 23, 42, .22);
+            z-index: 430;
+            overflow: hidden;
+        }
+        .template-modal.show {
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-head {
+            min-height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 0 18px;
+            border-bottom: 1px solid var(--line-soft);
+            background: #fff;
+        }
+        .modal-title {
+            color: var(--ink);
+            font-size: 16px;
+            font-weight: 760;
+        }
+        .modal-body {
+            flex: 1;
+            min-height: 0;
+            overflow: auto;
+            padding: 18px;
+            background: #fbfcff;
+        }
+        .modal-footer {
+            min-height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 0 18px;
+            border-top: 1px solid var(--line-soft);
+            background: #fff;
+        }
+        .template-modal .template-editor-full {
+            display: block;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            overflow: visible;
+        }
+        .template-modal .template-form-top {
+            margin-bottom: 14px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #fff;
+        }
+        .template-modal .config-head {
+            border: 1px solid var(--line);
+            border-bottom: 0;
+            border-radius: 8px 8px 0 0;
+            background: #fff;
+        }
+        .template-modal .config-list {
+            border: 1px solid var(--line);
+            border-radius: 0 0 8px 8px;
+            background: #fff;
+            padding-top: 12px;
+        }
         .drawer-head {
             min-height: 58px;
             flex-shrink: 0;
@@ -746,7 +1488,11 @@
             .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .asset-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
             .catalog-layout, .task-grid { grid-template-columns: 1fr; }
-            .catalog-side { display: none; }
+            .catalog-side { display: block; }
+            .template-layout { grid-template-columns: 1fr; }
+            .catalog-status-bar { grid-template-columns: 1fr 1fr; }
+            .config-row { grid-template-columns: 22px 24px repeat(2, minmax(0, 1fr)); }
+            .config-row .config-cell:nth-of-type(n+3), .config-required, .config-row .icon-btn { grid-column: auto; }
         }
         @media (max-width: 820px) {
             .prd-panel, .split-drag { display: none; }
@@ -754,8 +1500,27 @@
             .asset-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .review-agent-grid { grid-template-columns: 1fr; }
             .toolbar { flex-wrap: wrap; }
+            .asset-action-bar, .asset-filter-row, .selection-row, .template-line, .catalog-action-line { flex-wrap: wrap; }
+            .catalog-status-bar { grid-template-columns: 1fr; }
             .toolbar-spacer { display: none; }
+            .review-agent-grid, .review-agent-grid.four { grid-template-columns: 1fr; }
+            .catalog-form-grid { grid-template-columns: 1fr; }
+            .catalog-form-grid label { text-align: left; }
+            .catalog-form-grid .full-field { grid-column: 1; }
+            .detail-page-toolbar { grid-template-columns: 1fr; padding: 10px; }
+            .detail-page-actions { justify-self: start; }
+            .album-detail { grid-template-columns: 1fr; }
+            .album-now { grid-template-columns: 42px minmax(0, 1fr) 42px; }
+            .album-now-player { display: none; }
+            .album-field-grid { grid-template-columns: 1fr; }
+            .album-field-grid label { text-align: left; }
+            .album-value.full { grid-column: 1; }
+            .template-form-top { grid-template-columns: 1fr; }
+            .config-row { grid-template-columns: 22px 24px 1fr; }
+            .config-cell, .config-required { grid-column: 3; }
             .business-drawer { width: min(100%, 430px); }
+            .template-modal { width: calc(100vw - 20px); max-height: 92vh; }
+            .modal-body { padding: 12px; }
             .top-controls { display: none; }
         }
         @media (prefers-reduced-motion: reduce) {
@@ -771,23 +1536,30 @@
                     <div class="brand">
                         <div class="brand-mark">媒</div>
                         <div class="brand-text">智能媒资系统</div>
+                        <div class="brand-sub">部门素材库</div>
                     </div>
                     <nav class="nav-items" aria-label="主导航">
                         <button class="nav-item">首页</button>
                         <button class="nav-item">搜索中心</button>
                         <button class="nav-item">资源中心</button>
-                        <button class="nav-item active">素材中心</button>
+                        <button class="nav-item active" data-module="assets" onclick="switchModule('assets')">素材中心</button>
                         <button class="nav-item">审批中心</button>
                         <button class="nav-item">同步中心</button>
                         <button class="nav-item">智能标签库</button>
-                        <button class="nav-item" onclick="switchPanel('templates')">编目管理</button>
+                        <button class="nav-item" data-module="templates" onclick="switchModule('templates')">编目管理</button>
                         <button class="nav-item">业务管理</button>
                     </nav>
                     <div class="nav-right">
-                        <button class="nav-icon-btn" aria-label="通知" title="通知">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                        </button>
-                        <div class="avatar">张</div>
+                        <div class="upload-combo">
+                            <button class="btn primary" onclick="toggleUploadMenu(event, 'topUploadMenu')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>上传</button>
+                            <div class="upload-menu" id="topUploadMenu">
+                                <button onclick="chooseUpload('file')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>上传文件</button>
+                                <button onclick="chooseUpload('folder')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h5l2 2h11v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>上传文件夹</button>
+                            </div>
+                        </div>
+                        <span class="material-scope"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5Z"/></svg>内置租户</span>
+                        <div class="avatar">传</div>
+                        <span class="material-scope"><strong>传播大脑</strong></span>
                     </div>
                 </header>
 
@@ -811,48 +1583,62 @@
 
                     <section class="workbench">
                         <div class="page-head">
-                            <div class="crumb">素材中心 <span>/</span> 个人素材库 <span>/</span> 活动素材</div>
-                            <div class="head-row">
-                                <div class="head-title">
-                                    <h1>活动素材</h1>
-                                    <span class="badge">批次编目优化</span>
+                            <div class="material-tabs-line">
+                                <div class="tab-row">
+                                    <button class="lib-tab active">全部</button>
+                                    <button class="lib-tab">视频</button>
+                                    <button class="lib-tab">音频</button>
+                                    <button class="lib-tab">图片</button>
+                                    <button class="lib-tab">文件</button>
                                 </div>
-                                <div class="head-actions">
-                                    <button class="btn" onclick="switchPanel('catalog')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>待编目</button>
-                                    <button class="btn" onclick="switchPanel('templates')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5V4a2 2 0 0 1 2-2h11v20H6a2 2 0 0 1-2-2.5Z"/><path d="M8 7h5"/><path d="M8 11h5"/><path d="M8 15h3"/></svg>模板管理</button>
-                                    <button class="btn" onclick="showToast('已发起批量结构化分析')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18"/><path d="M3 12h18"/><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg>结构化分析</button>
-                                    <button class="btn primary" onclick="toggleUploadMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>上传</button>
-                                    <div class="upload-menu" id="uploadMenu">
-                                        <button onclick="openUploadDrawer('file')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>上传文件</button>
-                                        <button onclick="openUploadDrawer('folder')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h5l2 2h11v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>上传文件夹</button>
-                                        <button onclick="openUploadDrawer('archive')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>上传压缩包</button>
-                                    </div>
+                                <div class="material-scope">
+                                    <span>部门回收站</span>
+                                    <strong>A部门素材</strong>
                                 </div>
-                            </div>
-                            <div class="tab-row">
-                                <button class="lib-tab active">个人素材库</button>
-                                <button class="lib-tab">部门素材库</button>
-                                <button class="lib-tab">公共素材库</button>
-                                <button class="lib-tab">上传任务</button>
-                                <button class="lib-tab" onclick="switchPanel('templates')">编目管理</button>
                             </div>
                         </div>
 
                         <div class="toolbar">
-                            <div class="datebox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg>近一个月</div>
-                            <div class="select">全部类型</div>
-                            <div class="select">编目状态</div>
-                            <div class="select">上传批次</div>
-                            <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg><input placeholder="按标题、标签、路径搜索"></div>
-                            <div class="toolbar-spacer"></div>
-                            <div class="view-switch" aria-label="视图切换">
-                                <button class="active" title="卡片视图"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></button>
-                                <button title="表格视图"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg></button>
+                            <div class="asset-action-bar">
+                                <div class="upload-combo">
+                                    <button class="btn primary" onclick="toggleUploadMenu(event, 'assetUploadMenu')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>上传</button>
+                                    <div class="upload-menu" id="assetUploadMenu">
+                                        <button onclick="chooseUpload('file')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>上传文件</button>
+                                        <button onclick="chooseUpload('folder')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h5l2 2h11v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>上传文件夹</button>
+                                    </div>
+                                </div>
+                                <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg>新建</button>
+                                <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>下载</button>
+                                <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4"/><path d="M15.4 6.5l-6.8 4"/></svg>分享</button>
+                                <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6"/><path d="M22 11h-6"/></svg>取至个人</button>
+                                <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 9l-3 3 3 3"/><path d="M9 5l3-3 3 3"/><path d="M15 19l-3 3-3-3"/><path d="M19 9l3 3-3 3"/><path d="M2 12h20"/><path d="M12 2v20"/></svg>移动</button>
+                                <button class="btn danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>删除</button>
+                                <button class="btn success" onclick="switchPanel('catalog')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>批量编目 (13)</button>
+                                <div class="toolbar-spacer"></div>
+                                <div class="usage-meter"><span class="usage-bar"><span></span></span>1.1GB/0.1T</div>
+                                <div class="view-switch" aria-label="视图切换">
+                                    <button class="active" title="卡片视图"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></button>
+                                    <button title="表格视图"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg></button>
+                                </div>
+                            </div>
+                            <div class="asset-filter-row">
+                                <div class="select">修改时间</div>
+                                <div class="datebox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg>选择开始日期</div>
+                                <span style="color:var(--subtle)">~</span>
+                                <div class="datebox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg>选择结束日期</div>
+                                <div class="toolbar-spacer"></div>
+                                <div class="search"><input placeholder="请输入相关关键词搜索"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg></div>
+                            </div>
+                            <div class="selection-row">
+                                <input type="checkbox" checked>
+                                <strong>全选</strong>
+                                <span>已选 15</span>
+                                <a href="javascript:void(0)">清除</a>
                             </div>
                         </div>
 
                         <div class="content-scroll">
-                            <div class="summary-grid">
+                            <div class="summary-grid hidden">
                                 <div class="summary-card">
                                     <div class="summary-label">待编目素材</div>
                                     <div class="summary-value">128</div>
@@ -877,219 +1663,364 @@
 
                             <div class="view-panel active" id="panel-assets">
                                 <div class="asset-grid">
-                                    <article class="asset-card" onclick="openCatalogDrawer()">
-                                        <div class="asset-thumb thumb-scene-a">
-                                            <span class="status-chip warn">待补充</span>
+                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+                                        <div class="asset-folder">
                                             <input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()">
+                                            <div class="folder-icon"></div>
                                         </div>
                                         <div class="asset-body">
-                                            <div class="asset-title">世界互联网大会开幕式现场</div>
-                                            <div class="asset-meta"><span>JPG · 5.8MB</span><span>完整度 72%</span></div>
-                                            <div class="progress-line"><span style="width:72%"></span></div>
-                                            <div class="asset-tags"><span class="mini-tag ai">会议</span><span class="mini-tag ai">乌镇</span><span class="mini-tag">待确认 6</span></div>
+                                            <div class="asset-title">美术报第四届“新芽杯”国际少儿书画大赛</div>
+                                            <div class="asset-time">2025-12-01 17:15:24</div>
                                         </div>
                                     </article>
-                                    <article class="asset-card" onclick="openCatalogDrawer()">
-                                        <div class="asset-thumb thumb-scene-b">
-                                            <span class="status-chip">待编目</span>
-                                            <input class="asset-check" type="checkbox" onclick="event.stopPropagation(); updateSelectedCount()">
+                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+                                        <div class="asset-folder">
+                                            <input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()">
+                                            <div class="folder-icon"></div>
                                         </div>
                                         <div class="asset-body">
-                                            <div class="asset-title">端午龙舟赛观众区</div>
-                                            <div class="asset-meta"><span>PNG · 3.1MB</span><span>完整度 54%</span></div>
-                                            <div class="progress-line"><span style="width:54%"></span></div>
-                                            <div class="asset-tags"><span class="mini-tag ai">龙舟</span><span class="mini-tag ai">水域</span><span class="mini-tag">待确认 4</span></div>
+                                            <div class="asset-title">美术报第五届“新芽杯”国际少儿书画大赛 传承经典 筑梦未来</div>
+                                            <div class="asset-time">2025-12-01 16:11:42</div>
                                         </div>
                                     </article>
-                                    <article class="asset-card" onclick="openCatalogDrawer()">
+                                    <article class="asset-card selected" onclick="switchPanel('videoAlbum')">
                                         <div class="asset-thumb thumb-scene-c thumb-video">
-                                            <span class="status-chip ok">已分析</span>
                                             <input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()">
                                         </div>
                                         <div class="asset-body">
-                                            <div class="asset-title">新闻发布会采访片段</div>
-                                            <div class="asset-meta"><span>MP4 · 286MB</span><span>完整度 88%</span></div>
-                                            <div class="progress-line"><span style="width:88%; background: var(--green)"></span></div>
-                                            <div class="asset-tags"><span class="mini-tag ai">发布会</span><span class="mini-tag ai">同期声</span><span class="mini-tag">可提交</span></div>
+                                            <div class="asset-title">《越城新闻》2026年5月19日</div>
+                                            <div class="asset-meta"><span>视频专辑 · 10 条</span><span class="state">专辑</span></div>
+                                            <div class="asset-time">2026-05-19 20:30:00</div>
                                         </div>
                                     </article>
-                                    <article class="asset-card" onclick="openCatalogDrawer()">
-                                        <div class="asset-thumb thumb-scene-d">
-                                            <span class="status-chip warn">疑似重复</span>
-                                            <input class="asset-check" type="checkbox" onclick="event.stopPropagation(); updateSelectedCount()">
+                                    <article class="asset-card selected" onclick="switchPanel('audioAlbum')">
+                                        <div class="asset-thumb thumb-scene-b">
+                                            <input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()">
+                                            <div class="play-overlay" style="width:42px;height:42px;"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
                                         </div>
                                         <div class="asset-body">
-                                            <div class="asset-title">会场外景与签到台</div>
+                                            <div class="asset-title">《971健康吧》【20250317周一】</div>
+                                            <div class="asset-meta"><span>音频专辑 · 1 条</span><span class="state">专辑</span></div>
+                                            <div class="asset-time">2025-03-17 09:30:00</div>
+                                        </div>
+                                    </article>
+                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+                                        <div class="asset-thumb thumb-scene-c thumb-video">
+                                            <input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()">
+                                        </div>
+                                        <div class="asset-body">
+                                            <div class="asset-title">秀我中国｜张海迪在全球妇女峰会担振心愿.mp4</div>
+                                            <div class="asset-meta"><span>MP4 · 156.78MB</span><span class="state red">原创</span></div>
+                                            <div class="asset-time">2026-02-05 15:03:12</div>
+                                        </div>
+                                    </article>
+                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+                                        <div class="asset-thumb thumb-scene-a thumb-video">
+                                            <input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()">
+                                        </div>
+                                        <div class="asset-body">
+                                            <div class="asset-title">“别怕，我们一起走！”云南鲁甸三名中学生在地震中抱起玩同学安全撤离.mp4</div>
+                                            <div class="asset-meta"><span>MP4 · 286MB</span><span class="state red">原创</span></div>
+                                            <div class="asset-time">2026-01-28 11:32:11</div>
+                                        </div>
+                                    </article>
+                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+                                        <div class="asset-thumb thumb-scene-d">
+                                            <input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()">
+                                        </div>
+                                        <div class="asset-body">
+                                            <div class="asset-title">上传图片测试</div>
                                             <div class="asset-meta"><span>JPG · 4.4MB</span><span>完整度 81%</span></div>
-                                            <div class="progress-line"><span style="width:81%; background: var(--amber)"></span></div>
-                                            <div class="asset-tags"><span class="mini-tag ai">签到</span><span class="mini-tag ai">会场</span><span class="mini-tag">相似 2</span></div>
+                                            <div class="asset-time">2026-01-21 14:46:16</div>
+                                        </div>
+                                    </article>
+                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+                                        <div class="asset-thumb thumb-scene-b thumb-video">
+                                            <input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()">
+                                        </div>
+                                        <div class="asset-body">
+                                            <div class="asset-title">v0269cg10004d4e669vog65imi2ols60.MP4</div>
+                                            <div class="asset-meta"><span>MP4 · 320MB</span><span>完整度 66%</span></div>
+                                            <div class="asset-time">2025-12-26 14:05:40</div>
+                                        </div>
+                                    </article>
+                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+                                        <div class="asset-thumb thumb-scene-c thumb-video">
+                                            <input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()">
+                                        </div>
+                                        <div class="asset-body">
+                                            <div class="asset-title">v0269cg10004d4e669vog65imi2ols60.MP4</div>
+                                            <div class="asset-time">2025-12-26 14:05:40</div>
+                                        </div>
+                                    </article>
+                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+                                        <div class="asset-thumb thumb-scene-b">
+                                            <input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()">
+                                        </div>
+                                        <div class="asset-body">
+                                            <div class="asset-title">刘清霞 秋日浪漫(1).jpg</div>
+                                            <div class="asset-time">2025-12-02 17:59:46</div>
+                                        </div>
+                                    </article>
+                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+                                        <div class="asset-thumb thumb-scene-d">
+                                            <input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()">
+                                        </div>
+                                        <div class="asset-body">
+                                            <div class="asset-title">曹宇萌 古诗二首(1).jpg</div>
+                                            <div class="asset-time">2025-12-02 17:59:46</div>
+                                        </div>
+                                    </article>
+                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+                                        <div class="asset-thumb thumb-scene-a">
+                                            <input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()">
+                                        </div>
+                                        <div class="asset-body">
+                                            <div class="asset-title">DSC00077.jpeg</div>
+                                            <div class="asset-meta"><span>JPEG · 8.6MB</span><span class="state red">原创</span></div>
+                                            <div class="asset-time">2025-12-02 17:27:06</div>
+                                        </div>
+                                    </article>
+                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+                                        <div class="asset-thumb thumb-scene-d">
+                                            <input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()">
+                                        </div>
+                                        <div class="asset-body">
+                                            <div class="asset-title">何祈寂 梦入敦煌(1).jpg</div>
+                                            <div class="asset-time">2025-12-02 17:59:46</div>
+                                        </div>
+                                    </article>
+                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+                                        <div class="asset-thumb thumb-scene-a">
+                                            <input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()">
+                                        </div>
+                                        <div class="asset-body">
+                                            <div class="asset-title">logo@2x.png</div>
+                                            <div class="asset-time">2025-12-02 17:59:46</div>
                                         </div>
                                     </article>
                                 </div>
                             </div>
 
                             <div class="view-panel" id="panel-catalog">
-                                <div class="catalog-layout">
-                                    <div class="catalog-list">
-                                        <div class="panel-head">
-                                            <div>
-                                                <div class="panel-title">批量编目工作台</div>
-                                                <div class="panel-sub">已选 <span id="selectedCount">2</span> 项，可批量套用字段</div>
-                                            </div>
-                                            <div class="head-actions">
-                                                <button class="btn" onclick="showToast('已套用分类和版权字段')">批量套用</button>
-                                                <button class="btn primary" onclick="showToast('已提交 2 条素材进入共享审批')">提交审核</button>
-                                            </div>
-                                        </div>
-                                        <div class="batch-bar">
-                                            <span class="batch-pill active">端午龙舟赛素材包.zip</span>
-                                            <span class="batch-pill">互联网大会文件夹</span>
-                                            <span class="batch-pill">今日散图上传</span>
-                                        </div>
-                                        <div class="review-agent">
-                                            <div class="review-agent-head">
-                                                <div class="review-agent-title">
-                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 4v5c0 4.5-2.9 7.5-7 9-4.1-1.5-7-4.5-7-9V7l7-4z"/><path d="M9 12l2 2 4-5"/></svg>
-                                                    审查智能体 · 可用性与易用性质疑
-                                                </div>
-                                                <span class="review-score"><span class="score-dot"></span>体验风险 中</span>
-                                            </div>
-                                            <div class="review-agent-grid">
-                                                <div class="review-question">
-                                                    <strong>字段负担</strong>
-                                                    版权状态、来源、地点是否能从批次默认值或 EXIF 自动带出，避免 178 个文件重复填写？
-                                                </div>
-                                                <div class="review-question">
-                                                    <strong>用户能否理解下一步</strong>
-                                                    完整度 72% 为什么不能提交，应直接定位缺失字段，而不是只显示百分比。
-                                                </div>
-                                                <div class="review-question">
-                                                    <strong>错误恢复</strong>
-                                                    6 个失败文件是否能一键重试或下载清单，驳回后是否能批量修复同类问题？
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <table>
-                                            <thead>
-                                                <tr>
-                                                    <th style="width:42px"><input type="checkbox" checked></th>
-                                                    <th>素材</th>
-                                                    <th>类型</th>
-                                                    <th>完整度</th>
-                                                    <th>状态</th>
-                                                    <th>操作</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td><input type="checkbox" checked></td>
-                                                    <td>
-                                                        <div class="file-cell">
-                                                            <div class="tiny-thumb thumb-scene-a"></div>
-                                                            <div>
-                                                                <div class="file-name">世界互联网大会开幕式现场.jpg</div>
-                                                                <div class="file-path">/活动素材/互联网大会/开幕式</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>图片</td>
-                                                    <td>72%</td>
-                                                    <td><span class="state amber">需补充</span></td>
-                                                    <td><button class="btn ghost" onclick="openCatalogDrawer()">编目</button></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><input type="checkbox" checked></td>
-                                                    <td>
-                                                        <div class="file-cell">
-                                                            <div class="tiny-thumb thumb-scene-c"></div>
-                                                            <div>
-                                                                <div class="file-name">新闻发布会采访片段.mp4</div>
-                                                                <div class="file-path">/活动素材/互联网大会/采访视频</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>视频</td>
-                                                    <td>88%</td>
-                                                    <td><span class="state green">可提交</span></td>
-                                                    <td><button class="btn ghost" onclick="openCatalogDrawer()">编目</button></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><input type="checkbox"></td>
-                                                    <td>
-                                                        <div class="file-cell">
-                                                            <div class="tiny-thumb thumb-scene-b"></div>
-                                                            <div>
-                                                                <div class="file-name">端午龙舟赛观众区.png</div>
-                                                                <div class="file-path">/活动素材/端午龙舟赛/现场</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>图片</td>
-                                                    <td>54%</td>
-                                                    <td><span class="state">待编目</span></td>
-                                                    <td><button class="btn ghost" onclick="openCatalogDrawer()">编目</button></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><input type="checkbox"></td>
-                                                    <td>
-                                                        <div class="file-cell">
-                                                            <div class="tiny-thumb thumb-scene-d"></div>
-                                                            <div>
-                                                                <div class="file-name">会场外景与签到台.jpg</div>
-                                                                <div class="file-path">/活动素材/互联网大会/外景</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>图片</td>
-                                                    <td>81%</td>
-                                                    <td><span class="state amber">疑似重复</span></td>
-                                                    <td><button class="btn ghost" onclick="openCatalogDrawer()">编目</button></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                <div class="detail-page-toolbar">
+                                    <button class="btn ghost" onclick="switchPanel('assets')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>返回列表</button>
+                                    <div class="detail-page-actions">
+                                        <button class="btn">下载</button>
+                                        <button class="btn">分享</button>
+                                        <button class="btn">以图搜图</button>
+                                        <button class="btn">图搜视频</button>
                                     </div>
-                                    <aside class="catalog-side">
-                                        <div class="panel-head">
-                                            <div>
-                                                <div class="panel-title">图片编目</div>
-                                                <div class="panel-sub">字段完整度 72%</div>
-                                            </div>
-                                            <span class="state amber">需补充</span>
-                                        </div>
-                                        <div class="side-form">
-                                            <div class="preview-large thumb-scene-a"></div>
-                                            <div class="field">
-                                                <label>编目模板</label>
-                                                <select><option>通用图片编目模板</option><option>人物库编目模板</option><option>新闻资源编目模板</option></select>
-                                            </div>
-                                            <div class="field">
-                                                <label>内部标识号</label>
-                                                <input class="readonly-field" value="NW-20260610-001" readonly>
-                                            </div>
-                                            <div class="field">
-                                                <label>标题</label>
-                                                <input value="世界互联网大会开幕式现场">
-                                            </div>
-                                            <div class="field">
-                                                <label>描述</label>
-                                                <textarea>嘉宾在主会场参加开幕式，现场大屏展示大会主题。</textarea>
-                                            </div>
-                                            <div class="field">
-                                                <label>分类</label>
-                                                <select><option>新闻活动 / 会议会展 / 开幕式</option></select>
-                                            </div>
-                                            <div class="form-section">
-                                                <div class="form-title">系统建议</div>
-                                                <div class="suggestions">
-                                                    <button class="suggestion active" onclick="toggleSuggestion(this)">会议</button>
-                                                    <button class="suggestion active" onclick="toggleSuggestion(this)">乌镇</button>
-                                                    <button class="suggestion" onclick="toggleSuggestion(this)">嘉宾</button>
-                                                    <button class="suggestion" onclick="toggleSuggestion(this)">主会场</button>
-                                                    <button class="suggestion" onclick="toggleSuggestion(this)">大屏</button>
-                                                </div>
+                                    <span></span>
+                                </div>
+                                <div class="catalog-layout">
+                                    <section class="detail-preview-card">
+                                        <div class="preview-canvas">
+                                            <div class="preview-photo">
+                                                <div class="play-overlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
                                             </div>
                                         </div>
-                                    </aside>
+                                        <div class="preview-meta">
+                                            <span>大小 <b>156.78 MB</b></span>
+                                            <span>格式 <b>mp4</b></span>
+                                            <span>尺寸 <b>1920*1080</b></span>
+                                            <span class="state red" style="margin-left:auto">原创</span>
+                                        </div>
+                                    </section>
+                                    <section class="catalog-detail-card">
+                                        <div class="detail-tabs">
+                                            <button class="detail-tab">基本信息</button>
+                                            <button class="detail-tab active">编目信息</button>
+                                            <button class="detail-tab">结构化信息</button>
+                                            <button class="detail-tab">共享记录</button>
+                                            <button class="detail-tab">敏感信息识别</button>
+                                            <button class="detail-tab">下载记录</button>
+                                            <span class="state amber" style="margin-left:auto">草稿 · 缺版权</span>
+                                        </div>
+                                        <div class="catalog-form-shell">
+                                            <div class="template-line">
+                                                <label>编目界面模板</label>
+                                                <select><option>人物库编目模板</option><option>新闻图片编目模板</option><option>非遗文化编目模板</option></select>
+                                                <label class="auto-save"><input type="checkbox" checked> 自动保存草稿</label>
+                                            </div>
+                                            <div class="catalog-action-line">
+                                                <button class="btn">保存草稿</button>
+                                                <button class="btn primary">完成编目</button>
+                                                <button class="btn" onclick="switchPanel('templates')">模板管理</button>
+                                            </div>
+                                            <div class="catalog-section-title">基础信息</div>
+                                            <div class="catalog-form-grid">
+                                                <label class="required">内部标识号</label><input placeholder="请输入内部标识号" value="RW-20260611-001">
+                                                <label class="required">资源名称</label><input placeholder="请输入" value="秀我中国｜张海迪在全球妇女峰会担振心愿.mp4">
+                                            </div>
+                                            <div class="catalog-section-title">人物信息</div>
+                                            <div class="catalog-form-grid">
+                                                <label>拼音</label><input placeholder="请输入" value="zhang hai di">
+                                                <label>出生年份</label><input placeholder="整数" value="1955">
+                                                <label>生卒年</label><input placeholder="请输入">
+                                                <label>国别</label><input placeholder="请输入" value="中国">
+                                                <label>民族</label><input placeholder="请输入">
+                                                <label>性别</label><select><option>请选择</option><option selected>女</option><option>男</option></select>
+                                                <label>其他姓名</label><input placeholder="请输入">
+                                                <label>籍贯/出生地</label><input placeholder="请输入">
+                                                <label>学科/领域</label><input placeholder="请输入" value="文学 / 公益 / 残疾人事业">
+                                                <label>身份/职业</label><input placeholder="请输入" value="作家、社会活动家">
+                                                <label>著作/作品</label><input placeholder="请输入">
+                                                <label>个人简介</label><textarea class="full-field" placeholder="文本内容">系统建议：适合作为人物库条目归档，建议补充代表作品和关联机构。</textarea>
+                                            </div>
+                                            <div class="catalog-section-title">关联信息</div>
+                                            <div class="catalog-form-grid">
+                                                <label>相关人物</label><input placeholder="请输入" value="全球妇女峰会参会嘉宾">
+                                                <label>相关地点</label><input placeholder="请输入" value="北京">
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+
+                            <div class="view-panel" id="panel-video-album">
+                                <div class="detail-page-toolbar">
+                                    <button class="btn ghost" onclick="switchPanel('assets')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>返回列表</button>
+                                    <div class="detail-page-actions">
+                                        <button class="btn">下载</button>
+                                        <button class="btn">分享</button>
+                                        <button class="btn">以图搜图</button>
+                                        <button class="btn">图搜视频</button>
+                                    </div>
+                                    <span></span>
+                                </div>
+                                <div class="album-detail">
+                                    <section class="album-side">
+                                        <div class="album-cover video">
+                                            <span class="state" id="videoAlbumBadge">当前 1/4</span>
+                                            <div class="album-mark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+                                            <div class="album-player-caption">
+                                                <div class="album-player-title" id="videoAlbumPlayerTitle">《越城新闻》2026年5月19日</div>
+                                                <div class="album-player-meta" id="videoAlbumPlayerMeta">MP4 · 14:52 · 296.5MB</div>
+                                            </div>
+                                        </div>
+                                        <div class="album-now" id="videoAlbumNow">
+                                            <button class="album-switch prev" onclick="stepAlbumMedia('video', -1)" aria-label="上一个视频"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+                                            <div class="album-now-info">
+                                                <div class="album-now-title" id="videoAlbumCurrentTitle">《越城新闻》2026年5月19日</div>
+                                                <div class="album-now-meta" id="videoAlbumCurrentMeta">MP4 · 14:52 · 296.5MB</div>
+                                            </div>
+                                            <button class="album-switch next" onclick="stepAlbumMedia('video', 1)" aria-label="下一个视频"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+                                        </div>
+                                        <div class="album-article">
+                                            <div class="album-article-title">稿件正文</div>
+                                            <p>本期《越城新闻》聚焦科技金融、河湖治理、低空经济、交通建设、医养服务等内容，汇集正片与多条新闻片段，供素材归档、检索和复用。</p>
+                                        </div>
+                                    </section>
+                                    <section class="album-main">
+                                        <div class="detail-tabs">
+                                            <button class="detail-tab active">基本信息</button>
+                                            <button class="detail-tab">编目信息</button>
+                                            <button class="detail-tab">结构化信息</button>
+                                            <button class="detail-tab">共享记录</button>
+                                            <button class="detail-tab">敏感信息识别</button>
+                                            <button class="detail-tab">下载记录</button>
+                                        </div>
+                                        <div class="album-main-body">
+                                            <div class="catalog-section-title">稿件信息</div>
+                                            <div class="album-field-grid">
+                                                <label>稿件ID</label><div class="album-value">2056717025963757568</div>
+                                                <label>来源</label><div class="album-value">蓝云 / 媒立方</div>
+                                                <label>列表标题</label><div class="album-value full">《越城新闻》2026年5月19日</div>
+                                            </div>
+                                            <div class="catalog-section-title">共性字段</div>
+                                            <div class="album-field-grid">
+                                                <label>版权信息</label><div class="album-value">内部原创</div>
+                                                <label>标签</label><div class="album-value">待补充</div>
+                                                <label>评论设置</label><div class="album-value">先审后发</div>
+                                                <label>点赞设置</label><div class="album-value">开启</div>
+                                                <label>签发后隐藏</label><div class="album-value">否</div>
+                                                <label>相关新闻</label><div class="album-value">可关联</div>
+                                                <label>备注</label><div class="album-value full">节目专辑，适合按音视频条目切换查看和复用。</div>
+                                            </div>
+                                            <div class="catalog-section-title">视频信息</div>
+                                            <div class="album-field-grid">
+                                                <label>视频类型</label><div class="album-value">普通视频</div>
+                                                <label>拍摄地点</label><div class="album-value">待补充</div>
+                                                <label>电视台</label><div class="album-value">待补充</div>
+                                                <label>拍摄时间</label><div class="album-value">待补充</div>
+                                                <label>导演</label><div class="album-value">待补充</div>
+                                                <label>主持人</label><div class="album-value">待补充</div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+
+                            <div class="view-panel" id="panel-audio-album">
+                                <div class="detail-page-toolbar">
+                                    <button class="btn ghost" onclick="switchPanel('assets')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>返回列表</button>
+                                    <div class="detail-page-actions">
+                                        <button class="btn">下载</button>
+                                        <button class="btn">分享</button>
+                                        <button class="btn">以图搜图</button>
+                                        <button class="btn">图搜视频</button>
+                                    </div>
+                                    <span></span>
+                                </div>
+                                <div class="album-detail">
+                                    <section class="album-side">
+                                        <div class="album-cover audio">
+                                            <span class="state" id="audioAlbumBadge">当前 1/3</span>
+                                            <div class="album-mark"><div class="waveform"><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
+                                            <div class="album-player-caption">
+                                                <div class="album-player-title" id="audioAlbumPlayerTitle">《971健康吧》【20250317周一】.wav</div>
+                                                <div class="album-player-meta" id="audioAlbumPlayerMeta">WAV · 20:47 · 256k</div>
+                                            </div>
+                                        </div>
+                                        <div class="album-now audio" id="audioAlbumNow">
+                                            <button class="album-switch prev" onclick="stepAlbumMedia('audio', -1)" aria-label="上一个音频"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+                                            <div class="album-now-info">
+                                                <div class="album-now-title" id="audioAlbumCurrentTitle">《971健康吧》【20250317周一】.wav</div>
+                                                <div class="album-now-meta" id="audioAlbumCurrentMeta">WAV · 20:47 · 256k</div>
+                                            </div>
+                                            <button class="album-switch next" onclick="stepAlbumMedia('audio', 1)" aria-label="下一个音频"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+                                        </div>
+                                        <div class="album-article">
+                                            <div class="album-article-title">稿件正文</div>
+                                            <p>本期《971健康吧》围绕日常健康管理展开，包含节目主音频、健康知识讲解和问答片段，适合按期归档并进入音频素材检索。</p>
+                                        </div>
+                                    </section>
+                                    <section class="album-main">
+                                        <div class="detail-tabs">
+                                            <button class="detail-tab active">基本信息</button>
+                                            <button class="detail-tab">编目信息</button>
+                                            <button class="detail-tab">结构化信息</button>
+                                            <button class="detail-tab">共享记录</button>
+                                            <button class="detail-tab">敏感信息识别</button>
+                                            <button class="detail-tab">下载记录</button>
+                                        </div>
+                                        <div class="album-main-body">
+                                            <div class="catalog-section-title">稿件信息</div>
+                                            <div class="album-field-grid">
+                                                <label>稿件ID</label><div class="album-value">1901474101736198144</div>
+                                                <label>来源</label><div class="album-value">蓝云 / 媒立方</div>
+                                                <label>列表标题</label><div class="album-value full">《971健康吧》【20250317周一】</div>
+                                            </div>
+                                            <div class="catalog-section-title">共性字段</div>
+                                            <div class="album-field-grid">
+                                                <label>版权信息</label><div class="album-value">内部原创</div>
+                                                <label>标签</label><div class="album-value">待补充</div>
+                                                <label>评论设置</label><div class="album-value">先审后发</div>
+                                                <label>点赞设置</label><div class="album-value">开启</div>
+                                                <label>签发后隐藏</label><div class="album-value">否</div>
+                                                <label>相关新闻</label><div class="album-value">可关联</div>
+                                                <label>备注</label><div class="album-value full">广播节目专辑，可按期数进入素材库检索。</div>
+                                            </div>
+                                            <div class="catalog-section-title">音频信息</div>
+                                            <div class="album-field-grid">
+                                                <label>人员选择</label><div class="album-value">待补充</div>
+                                                <label>新闻附件</label><div class="album-value">无</div>
+                                                <label>授权人</label><div class="album-value">范婧</div>
+                                                <label>授权单位</label><div class="album-value">桐乡市传媒中心 / 电视部</div>
+                                            </div>
+                                        </div>
+                                    </section>
                                 </div>
                             </div>
 
@@ -1156,126 +2087,256 @@
 
                             <div class="view-panel" id="panel-templates">
                                 <div class="template-layout">
-                                    <section class="template-list">
+                                    <section class="template-list reference-list">
                                         <div class="panel-head">
                                             <div>
                                                 <div class="panel-title">编目模板管理</div>
-                                                <div class="panel-sub">字段名称、类型、分组、必填与自动生成规则</div>
+                                                <div class="panel-sub">模板、字段、默认项配置</div>
                                             </div>
-                                            <button class="btn primary" onclick="showToast('已进入新建模板编辑态')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg>新建模板</button>
+                                            <button class="btn primary" onclick="openTemplateModal('create')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg>新建模板</button>
                                         </div>
-                                        <article class="template-card">
+                                        <article class="template-card reference">
                                             <div>
-                                                <div class="template-name">通用图片编目模板 <span class="state">默认</span></div>
-                                                <div class="template-desc">适用于新闻活动、会议会展、现场图片等通用资源。</div>
-                                                <div class="template-meta"><span>11 个字段</span><span>创建 2026-01-10</span><span>更新 2026-03-20</span></div>
+                                                <div class="template-name">新闻图片编目模板 <span class="template-state">默认</span></div>
+                                                <div class="template-desc">适用于新闻类图片资源的编目</div>
+                                                <div class="template-meta"><span>11 个字段</span><span>创建于 2026-01-10 10:00:00</span><span>更新于 2026-03-20 14:30:00</span></div>
                                             </div>
                                             <div class="template-actions">
-                                                <button class="icon-btn" title="编辑" onclick="showToast('已打开模板编辑')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>
+                                                <button class="icon-btn" title="编辑" onclick="openTemplateModal('edit', '新闻图片编目模板')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>
                                                 <button class="icon-btn" title="复制" onclick="showToast('已复制模板副本')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><rect x="2" y="2" width="13" height="13" rx="2"/></svg></button>
                                                 <button class="icon-btn" title="删除" onclick="showToast('默认模板不可删除')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
                                             </div>
                                         </article>
-                                        <article class="template-card">
+                                        <article class="template-card reference">
                                             <div>
                                                 <div class="template-name">人物库编目模板</div>
-                                                <div class="template-desc">适用于人物图片资源，扩展姓名、职务、机构、履历、人物标签。</div>
-                                                <div class="template-meta"><span>16 个字段</span><span>创建 2026-01-15</span><span>更新 2026-03-18</span></div>
+                                                <div class="template-desc">适用于人物图片资源的编目</div>
+                                                <div class="template-meta"><span>16 个字段</span><span>创建于 2026-01-15 09:00:00</span><span>更新于 2026-03-18 11:00:00</span></div>
                                             </div>
                                             <div class="template-actions">
-                                                <button class="icon-btn" title="编辑" onclick="showToast('已打开模板编辑')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>
+                                                <span class="set-default">☆ 设为默认</span>
+                                                <button class="icon-btn" title="编辑" onclick="openTemplateModal('edit', '人物库编目模板')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>
                                                 <button class="icon-btn" title="复制" onclick="showToast('已复制模板副本')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><rect x="2" y="2" width="13" height="13" rx="2"/></svg></button>
                                                 <button class="icon-btn danger" title="删除" onclick="showToast('删除前需确认模板未被素材使用')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
                                             </div>
                                         </article>
-                                        <article class="template-card">
+                                        <article class="template-card reference">
                                             <div>
-                                                <div class="template-name">新闻资源编目模板</div>
-                                                <div class="template-desc">适用于新闻图片，配置新闻类型、重要级别、关联稿件、报道主题。</div>
-                                                <div class="template-meta"><span>8 个字段</span><span>创建 2026-02-01</span><span>更新 2026-03-15</span></div>
+                                                <div class="template-name">非遗文化编目模板</div>
+                                                <div class="template-desc">适用于非物质文化遗产类图片的编目</div>
+                                                <div class="template-meta"><span>8 个字段</span><span>创建于 2026-02-01 08:30:00</span><span>更新于 2026-03-15 16:00:00</span></div>
                                             </div>
                                             <div class="template-actions">
-                                                <button class="icon-btn" title="编辑" onclick="showToast('已打开模板编辑')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>
+                                                <span class="set-default">☆ 设为默认</span>
+                                                <button class="icon-btn" title="编辑" onclick="openTemplateModal('edit', '非遗文化编目模板')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>
+                                                <button class="icon-btn" title="复制" onclick="showToast('已复制模板副本')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><rect x="2" y="2" width="13" height="13" rx="2"/></svg></button>
+                                                <button class="icon-btn danger" title="删除" onclick="showToast('删除前需确认模板未被素材使用')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
+                                            </div>
+                                        </article>
+                                        <article class="template-card reference">
+                                            <div>
+                                                <div class="template-name">新闻图片编目模板（副本）</div>
+                                                <div class="template-desc">适用于新闻类图片资源的编目</div>
+                                                <div class="template-meta"><span>11 个字段</span><span>创建于 2026/6/11 10:39:05</span><span>更新于 2026/6/11 10:39:05</span></div>
+                                            </div>
+                                            <div class="template-actions">
+                                                <span class="set-default">☆ 设为默认</span>
+                                                <button class="icon-btn" title="编辑" onclick="openTemplateModal('edit', '新闻图片编目模板（副本）')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>
                                                 <button class="icon-btn" title="复制" onclick="showToast('已复制模板副本')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><rect x="2" y="2" width="13" height="13" rx="2"/></svg></button>
                                                 <button class="icon-btn danger" title="删除" onclick="showToast('删除前需确认模板未被素材使用')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
                                             </div>
                                         </article>
                                     </section>
-                                    <aside class="template-editor">
+                                    <section class="template-editor-full">
                                         <div class="panel-head">
                                             <div>
-                                                <div class="panel-title">字段配置预览</div>
-                                                <div class="panel-sub">通用图片编目模板</div>
+                                                <div class="panel-title"><span style="color:var(--subtle); margin-right:12px;">←</span>编辑模板</div>
+                                                <div class="panel-sub">字段配置直接决定详情页“编目信息”表单</div>
                                             </div>
-                                            <button class="btn" onclick="showToast('模板已保存')">保存</button>
+                                            <div class="head-actions">
+                                                <button class="btn" onclick="showToast('已取消编辑')">取消</button>
+                                                <button class="btn primary" onclick="showToast('模板已保存')">保存模板</button>
+                                            </div>
                                         </div>
-                                        <div class="side-form">
+                                        <div class="template-form-top">
                                             <div class="field">
                                                 <label>模板名称 <span style="color:var(--red)">*</span></label>
-                                                <input value="通用图片编目模板">
+                                                <input value="人物库编目模板">
                                             </div>
                                             <div class="field">
                                                 <label>模板描述</label>
-                                                <input value="适用于新闻活动、会议会展、现场图片等通用资源">
+                                                <input value="适用于人物图片资源的编目">
                                             </div>
                                         </div>
-                                        <div class="field-list">
-                                            <div class="field-row">
-                                                <div class="field-drag">1</div>
-                                                <div class="field-main"><div class="field-label">内部标识号</div><div class="field-group">基本信息 · 自动生成</div></div>
-                                                <div class="field-type">文本</div>
-                                                <span class="state green">必填</span>
+                                        <div class="config-head">
+                                            <div class="config-title">字段配置 <span>(16)</span></div>
+                                            <button class="btn primary" onclick="showToast('已新增字段')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg>添加字段</button>
+                                        </div>
+                                        <div class="config-list">
+                                            <div class="config-row">
+                                                <div class="drag-handle">⋮⋮</div><div class="config-index">1</div>
+                                                <label class="config-cell">字段名<input value="内部标识号"></label>
+                                                <label class="config-cell">类型<select><option>文本</option></select></label>
+                                                <label class="config-cell">分组<input value="基础信息"></label>
+                                                <label class="config-cell">占位文字<input value="请输入内部标识号"></label>
+                                                <label class="config-required">必填<input type="checkbox" checked></label>
+                                                <button class="icon-btn" title="删除字段"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
                                             </div>
-                                            <div class="field-row">
-                                                <div class="field-drag">2</div>
-                                                <div class="field-main"><div class="field-label">标题</div><div class="field-group">基本信息</div></div>
-                                                <div class="field-type">文本</div>
-                                                <span class="state green">必填</span>
+                                            <div class="config-row">
+                                                <div class="drag-handle">⋮⋮</div><div class="config-index">2</div>
+                                                <label class="config-cell">字段名<input value="资源名称"></label>
+                                                <label class="config-cell">类型<select><option>文本</option></select></label>
+                                                <label class="config-cell">分组<input value="基础信息"></label>
+                                                <label class="config-cell">占位文字<input value="请输入"></label>
+                                                <label class="config-required">必填<input type="checkbox" checked></label>
+                                                <button class="icon-btn" title="删除字段"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
                                             </div>
-                                            <div class="field-row">
-                                                <div class="field-drag">3</div>
-                                                <div class="field-main"><div class="field-label">关键词</div><div class="field-group">编目信息</div></div>
-                                                <div class="field-type">文本</div>
-                                                <span class="state gray">选填</span>
+                                            <div class="config-row">
+                                                <div class="drag-handle">⋮⋮</div><div class="config-index">3</div>
+                                                <label class="config-cell">字段名<input value="拼音"></label>
+                                                <label class="config-cell">类型<select><option>文本</option></select></label>
+                                                <label class="config-cell">分组<input value="人物信息"></label>
+                                                <label class="config-cell">占位文字<input value="请输入"></label>
+                                                <label class="config-required">必填<input type="checkbox"></label>
+                                                <button class="icon-btn" title="删除字段"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
                                             </div>
-                                            <div class="field-row">
-                                                <div class="field-drag">4</div>
-                                                <div class="field-main"><div class="field-label">描述</div><div class="field-group">编目信息</div></div>
-                                                <div class="field-type">多行</div>
-                                                <span class="state gray">选填</span>
+                                            <div class="config-row">
+                                                <div class="drag-handle">⋮⋮</div><div class="config-index">4</div>
+                                                <label class="config-cell">字段名<input value="出生年份"></label>
+                                                <label class="config-cell">类型<select><option>数字</option></select></label>
+                                                <label class="config-cell">分组<input value="人物信息"></label>
+                                                <label class="config-cell">占位文字<input value="整数"></label>
+                                                <label class="config-required">必填<input type="checkbox"></label>
+                                                <button class="icon-btn" title="删除字段"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
                                             </div>
-                                            <div class="field-row">
-                                                <div class="field-drag">5</div>
-                                                <div class="field-main"><div class="field-label">版权状态</div><div class="field-group">版权授权</div></div>
-                                                <div class="field-type">下拉</div>
-                                                <span class="state green">必填</span>
+                                            <div class="config-row">
+                                                <div class="drag-handle">⋮⋮</div><div class="config-index">5</div>
+                                                <label class="config-cell">字段名<input value="生卒年"></label>
+                                                <label class="config-cell">类型<select><option>文本</option></select></label>
+                                                <label class="config-cell">分组<input value="人物信息"></label>
+                                                <label class="config-cell">占位文字<input value="请输入"></label>
+                                                <label class="config-required">必填<input type="checkbox"></label>
+                                                <button class="icon-btn" title="删除字段"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+                                            </div>
+                                            <div class="config-row">
+                                                <div class="drag-handle">⋮⋮</div><div class="config-index">6</div>
+                                                <label class="config-cell">字段名<input value="国别"></label>
+                                                <label class="config-cell">类型<select><option>文本</option></select></label>
+                                                <label class="config-cell">分组<input value="人物信息"></label>
+                                                <label class="config-cell">占位文字<input value="请输入"></label>
+                                                <label class="config-required">必填<input type="checkbox"></label>
+                                                <button class="icon-btn" title="删除字段"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+                                            </div>
+                                            <div class="config-row">
+                                                <div class="drag-handle">⋮⋮</div><div class="config-index">7</div>
+                                                <label class="config-cell">字段名<input value="民族"></label>
+                                                <label class="config-cell">类型<select><option>文本</option></select></label>
+                                                <label class="config-cell">分组<input value="人物信息"></label>
+                                                <label class="config-cell">占位文字<input value="请输入"></label>
+                                                <label class="config-required">必填<input type="checkbox"></label>
+                                                <button class="icon-btn" title="删除字段"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
                                             </div>
                                         </div>
-                                        <div class="side-form form-section">
-                                            <div class="form-title">自动生成规则</div>
+                                    </section>
+                                    <section class="template-editor-full compact">
+                                        <div class="panel-head">
+                                            <div>
+                                                <div class="panel-title">新建模板初始态</div>
+                                                <div class="panel-sub">点击新建模板后默认带出两个空字段，减少从零配置的困惑</div>
+                                            </div>
+                                            <div class="head-actions">
+                                                <button class="btn">取消</button>
+                                                <button class="btn primary">保存模板</button>
+                                            </div>
+                                        </div>
+                                        <div class="template-form-top">
                                             <div class="field">
-                                                <label>内部标识号规则</label>
-                                                <input class="readonly-field" value="NW-{yyyyMMdd}-{seq3}" readonly>
+                                                <label>模板名称 <span style="color:var(--red)">*</span></label>
+                                                <input value="新建编目模板">
                                             </div>
-                                            <button class="btn" onclick="showToast('已新增字段')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg>新增字段</button>
+                                            <div class="field">
+                                                <label>模板描述</label>
+                                                <input placeholder="">
+                                            </div>
                                         </div>
-                                    </aside>
+                                        <div class="config-head">
+                                            <div class="config-title">字段配置 <span>(2)</span></div>
+                                            <button class="btn primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg>添加字段</button>
+                                        </div>
+                                        <div class="config-list">
+                                            <div class="config-row">
+                                                <div class="drag-handle">⋮⋮</div><div class="config-index">1</div>
+                                                <label class="config-cell">字段名<input value="新字段"></label>
+                                                <label class="config-cell">类型<select><option>文本</option></select></label>
+                                                <label class="config-cell">分组<input value="基础信息"></label>
+                                                <label class="config-cell">占位文字<input value="请输入"></label>
+                                                <label class="config-required">必填<input type="checkbox"></label>
+                                                <button class="icon-btn" title="删除字段"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+                                            </div>
+                                            <div class="config-row">
+                                                <div class="drag-handle">⋮⋮</div><div class="config-index">2</div>
+                                                <label class="config-cell">字段名<input value="新字段"></label>
+                                                <label class="config-cell">类型<select><option>文本</option></select></label>
+                                                <label class="config-cell">分组<input value="基础信息"></label>
+                                                <label class="config-cell">占位文字<input value="请输入"></label>
+                                                <label class="config-required">必填<input type="checkbox"></label>
+                                                <button class="icon-btn" title="删除字段"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+                                            </div>
+                                        </div>
+                                    </section>
                                 </div>
                             </div>
                         </div>
                     </section>
                 </main>
 
+                <div class="modal-overlay" id="templateModalOverlay" onclick="closeTemplateModal()"></div>
+                <section class="template-modal" id="templateModal" role="dialog" aria-modal="true" aria-labelledby="templateModalTitle">
+                    <div class="modal-head">
+                        <div>
+                            <div class="modal-title" id="templateModalTitle">编辑模板</div>
+                            <div class="panel-sub" id="templateModalSub">模板字段配置</div>
+                        </div>
+                        <button class="icon-btn" onclick="closeTemplateModal()" aria-label="关闭"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg></button>
+                    </div>
+                    <div class="modal-body">
+                        <section class="template-editor-full">
+                            <div class="template-form-top">
+                                <div class="field">
+                                    <label>模板名称 <span style="color:var(--red)">*</span></label>
+                                    <input id="modalTemplateName" value="">
+                                </div>
+                                <div class="field">
+                                    <label>模板描述</label>
+                                    <input id="modalTemplateDesc" value="">
+                                </div>
+                            </div>
+                            <div class="config-head">
+                                <div class="config-title">字段配置 <span id="modalFieldCount">(0)</span></div>
+                                <button class="btn primary" onclick="addTemplateField()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg>添加字段</button>
+                            </div>
+                            <div class="config-list" id="modalConfigList"></div>
+                        </section>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn" onclick="closeTemplateModal()">取消</button>
+                        <button class="btn primary" onclick="saveTemplateModal()">保存模板</button>
+                    </div>
+                </section>
+
+                <input class="hidden-upload-input" id="uploadFileInput" type="file" multiple onchange="handleUploadSelection(event, 'file')">
+                <input class="hidden-upload-input" id="uploadFolderInput" type="file" multiple webkitdirectory directory onchange="handleUploadSelection(event, 'folder')">
+
                 <aside class="business-drawer" id="uploadDrawer">
                     <div class="drawer-head">
-                        <div class="drawer-title" id="drawerTitle">上传压缩包</div>
+                        <div class="drawer-title" id="drawerTitle">上传文件</div>
                         <button class="icon-btn" onclick="closeUploadDrawer()" aria-label="关闭"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg></button>
                     </div>
                     <div class="drawer-body">
                         <div class="upload-drop">
                             <div class="drop-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg></div>
-                            <strong id="dropTitle">端午龙舟赛素材包.zip</strong>
-                            <span id="dropDesc">已完成解压预检，保留目录结构</span>
+                            <strong id="dropTitle">本地选择 24 个文件</strong>
+                            <span id="dropDesc">按当前目录入库</span>
                         </div>
                         <div class="precheck">
                             <div><span>文件数量</span><b id="preFileCount">186</b></div>
@@ -1296,13 +2357,9 @@
                             <select><option>自有版权</option><option>授权使用</option><option>版权待确认</option></select>
                         </div>
                         <div class="form-section">
-                            <div class="form-title">目录映射</div>
-                            <div class="dir-tree">
-                                <div class="dir-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h5l2 2h11v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>端午龙舟赛素材包<span class="right">186</span></div>
-                                <div class="dir-row child">开幕式<span class="right">42</span></div>
-                                <div class="dir-row child">龙舟赛现场<span class="right">91</span></div>
-                                <div class="dir-row child">采访视频<span class="right">18</span></div>
-                                <div class="dir-row child">音频同期声<span class="right">35</span></div>
+                            <div class="form-title" id="dirTreeTitle">目录结构</div>
+                            <div class="dir-tree" id="uploadDirTree">
+                                <div class="dir-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h5l2 2h11v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>当前目录<span class="right">24</span></div>
                             </div>
                         </div>
                     </div>
@@ -1347,506 +2404,392 @@
     <textarea id="prdMdSource" style="display:none">
 # 智能媒资素材上传与编目优化 PRD
 
-**版本**：v1.0  
-**日期**：2026-06-10  
-**关联资料**：智能媒资系统使用手册 v2.0、Figma Make 参考《新增图片编目能力》
+**版本**：v1.4
+**日期**：2026-06-11
+**适用范围**：智能媒资系统素材中心、素材详情、编目管理
 
 ---
 
-## 1. 产品概述
+## 1. 产品目标
 
-### 1.1 背景
+智能媒资系统在现有素材上传、素材库管理、结构化分析、搜索、共享审批能力基础上，补齐文件夹上传、素材编目、专辑详情和编目模板管理能力，提升素材入库后的可检索、可复用和可治理水平。
 
-智能媒资系统现有素材中心已支持个人素材库、部门素材库、公共素材库的素材上传、文件夹管理、素材详情、结构化分析、共享审批、检索、移动、删除、同步至天目蓝云等能力。现有上传入口以单个或多文件上传为主，面对采编团队常见的拍摄任务、活动素材包、外部渠道回传压缩包时，用户仍需要先在本地拆包、整理目录、逐批上传和补录基础信息，效率较低。
+### 1.1 核心目标
 
-本次需求在现有素材中心能力上新增“上传文件夹”“上传压缩包”，并新增素材编目能力。Figma Make 参考《新增图片编目能力》代码层已确认其核心页面包括资源列表页、资源详情页、编目信息 Tab、编目模板管理页，业务闭环为“资源列表进入详情 → 选择编目模板 → 填写编目信息 → 保存或完成编目 → 编目状态回写列表”。本 PRD 在该参考基础上，结合智能媒资系统现有上传、结构化、标签、审批和检索能力，设计面向图片、视频、音频、文档等素材的统一编目优化方案，其中图片编目和模板化编目作为首期重点。
+- 素材中心支持上传文件和上传文件夹，文件夹上传保留嵌套目录结构。
+- 素材上传后可进入编目流程，补齐标题、标签、分类、版权、关联信息等检索字段。
+- 素材详情支持按模板填写编目信息，并保存草稿或完成编目。
+- 视频专辑、音频专辑支持在详情页顶部切换专辑内音视频条目。
+- 编目管理作为独立模块，支持管理员维护编目模板和字段配置。
 
-### 1.2 目标
+### 1.2 用户角色
 
-- 支持按文件夹和压缩包批量导入素材，保留目录层级并降低上传前本地整理成本。
-- 上传后进入编目工作台，由系统预分析生成基础信息、标签、人物、地标、物体、版权和质量提示。
-- 支持单素材精编、批量套用字段、批量结构化分析和批量提交入库。
-- 支持编目模板管理，可按通用图片、人物库、新闻资源等场景配置字段名称、字段类型、分组、必填和自动生成规则。
-- 编目信息进入素材详情、搜索中心、智能标签库和共享审批链路，提升素材可检索、可复用和可治理能力。
-
-### 1.3 用户角色
-
-- **采编人员**：上传活动、采访、拍摄任务产生的图片、视频、音频和文档素材，快速补齐标题、描述、标签、分类和版权信息。
-- **素材管理员**：批量整理部门或公共素材库中的素材，检查字段完整度、去重结果、敏感提示和编目质量。
-- **审核人员**：审核提交至部门素材库或公共素材库的编目信息，决定通过、驳回或要求补充。
-- **系统管理员**：配置素材类型、类目字段、必填规则、自动结构化开关、压缩包限制和存储配额。
-- **审查智能体**：作为系统内置辅助审查角色，站在采编人员、素材管理员和审核人员视角，对流程可用性、易用性、字段负担、异常恢复和真实工作效率提出质疑，不替代人工审核结论。
-
-### 1.4 范围
-
-- **本期新增**：
-  - 素材中心上传入口新增上传文件夹、上传压缩包。
-  - 上传任务抽屉新增目录映射、解压清单、异常文件和重复文件提示。
-  - 新增素材编目工作台，支持待编目列表、字段完整度、系统建议、批量套用和提交审核。
-  - 图片编目支持大图预览、基础信息、分类标签、内容识别、版权授权、关联稿件、质量检查和操作记录。
-  - 新增编目模板管理，支持模板新建、编辑、复制、删除和字段可视化配置。
-  - 支持“内部标识号”字段系统自动生成，格式为“前缀-日期-序号”，如 `NW-20260330-001`。
-  - 编目状态进入素材列表筛选、详情页展示和搜索字段。
-- **沿用现有能力**：
-  - 个人素材库、部门素材库、公共素材库的权限与库范围。
-  - 新建文件夹、移动、删除、下载、共享、取至个人、同步至天目蓝云。
-  - 结构化分析、智能标签库、搜索中心精准检索与 AI 检索。
-  - 审批中心中个人共享至部门、部门共享至公共素材库的审核流程。
-- **暂不包含**：
-  - 压缩包内加密文件的密码破解。
-  - 对损坏文件进行修复。
-  - 新增独立移动端编目工作台。
+- 采编人员：上传素材、查看素材详情、补充编目信息、完成编目。
+- 素材管理员：维护素材库、批量编目、检查字段质量、管理模板。
+- 审核人员：在审批中心审核共享入库申请及其编目信息。
+- 系统管理员：配置上传限制、素材类型、模板权限、自动结构化开关和字段规则。
 
 ---
 
-## 2. 现有能力承接
+## 2. 素材中心列表
 
-### 2.1 素材中心
+### 2.1 展示规则
 
-- 个人素材库、部门素材库、公共素材库均已支持上传视频、音频、图片、文档及其他类型素材。
-- 素材列表已支持新建文件夹，并可在文件夹目录下继续上传素材。
-- 上传时已要求填写素材名称、素材类型、素材描述；原创素材需填写素材作者，默认关联当前登录用户。
-- 素材详情已展示基本信息、结构化信息、共享记录、敏感信息识别结果和下载记录。
-- 个人素材库支持结构化分析、同步至天目蓝云个人盘；公共素材库支持同步至天目蓝云企业盘。
+- 顶部主导航包含首页、搜索中心、资源中心、素材中心、审批中心、同步中心、智能标签库、编目管理等模块。
+- 素材中心首屏保持线上素材管理页布局，包含类型 Tab、操作条、筛选搜索条、选中条、库位置入口和卡片网格。
+- 类型 Tab 包含全部、视频、音频、图片、文件。
+- 操作条包含上传、新建、下载、分享、取至个人、移动、删除、批量编目。
+- 勾选素材后展示全选、已选数量和清除。
+- 卡片视图支持文件夹、图片、视频、文件、视频专辑、音频专辑混合展示。
+- 视频卡片展示播放标识；原创素材展示原创标签；专辑卡片展示专辑类型和条目数量。
 
-### 2.2 搜索中心
+### 2.2 交互规则
 
-- 精准检索字段包括标题、正文、作者、编辑、标签、关键词、摘要、人脸、物体等。
-- AI 检索支持文搜图、文搜视频、图搜图、图搜视频。
-- 编目字段需进入检索索引，支持按标题、描述、标签、关键词、人物、地标、物体、版权状态、素材类型等条件查询。
-
-### 2.3 审批中心
-
-- 个人素材库共享至部门素材库、部门素材库共享至公共素材库已具备审核流程。
-- 编目提交审核复用现有审批中心，不新增孤立审批入口。
-- 审核通过后，素材及其编目信息在目标素材库展示；审核驳回后保留驳回原因并回到待补充状态。
-
-### 2.4 智能标签库
-
-- 系统已维护人物、机构、地标等智能识别实体及样本图片。
-- 编目工作台应调用智能标签库结果作为系统建议，用户确认后写入素材标签、人物、机构、地标字段。
-
-### 2.5 业务管理
-
-- 部门素材库管理已支持配置启用状态、功能可见范围、审核人员、可投稿人员、自动结构化开关。
-- 上传文件夹、上传压缩包和编目必填项受部门素材库配置控制。
-- 配额管理继续控制用户、部门和公共库的上传容量。
+- 点击普通素材卡片进入素材详情编目页。
+- 点击视频专辑卡片进入视频专辑详情页。
+- 点击音频专辑卡片进入音频专辑详情页。
+- 点击批量编目进入批量编目处理界面。
 
 ---
 
-## 3. 功能需求
+## 3. 上传能力
 
-### 3.1 上传入口优化
+### 3.1 上传入口
 
-**功能描述**：素材中心列表页上传按钮改为组合入口，支持上传文件、上传文件夹、上传压缩包三种方式。
+**展示规则**
 
-**展示规则**：
-- 顶部操作区保留主按钮“上传”，点击后展开菜单。
-- 菜单项包含“上传文件”“上传文件夹”“上传压缩包”。
-- 个人素材库、部门素材库、公共素材库根据权限展示可用入口；无上传权限时隐藏上传按钮。
-- 当前所在文件夹作为默认上传目录，上传弹窗顶部展示目标路径。
+- 上传按钮点击后展示两个选项：上传文件、上传文件夹。
+- 上传文件夹入口直接调用系统文件夹选择窗口。
 
-**交互规则**：
-- 点击上传文件调用现有文件选择流程。
-- 点击上传文件夹调用浏览器目录选择能力，读取文件夹内文件及相对路径。
-- 点击上传压缩包选择 zip、rar、7z、tar、tar.gz 等压缩包文件，进入解压预检。
-- 用户可在上传前修改目标目录、素材类型默认值、素材来源、版权状态和是否自动结构化。
-- 上传任务启动后，右侧展示上传任务抽屉，用户可继续浏览素材列表。
+**交互规则**
 
-**数据规则**：
-- 上传文件夹时保留相对目录结构，在目标路径下自动创建同名文件夹和子文件夹。
-- 上传压缩包时解压后的目录结构与压缩包内部路径一致。
-- 对隐藏文件、系统文件、空文件、临时文件进行自动过滤。
-- 文件名、目录名、上传人、目标库、目标路径、素材类型默认值、上传批次号进入上传任务记录。
+- 点击上传文件直接调用系统文件选择窗口。
+- 点击上传文件夹直接调用系统文件夹选择窗口。
+- 文件夹选择支持嵌套子目录。
+- 用户取消系统选择窗口时，不创建上传任务。
+- 选择完成后打开上传任务抽屉。
 
-### 3.2 上传文件夹
+**数据规则**
 
-**展示规则**：
-- 选择文件夹后展示预检页，包含文件夹名称、文件数量、总大小、素材类型分布、目录层级预览。
-- 文件清单按目录树展示，可展开查看文件列表。
-- 异常文件以状态标签标识：格式不支持、大小超限、重名冲突、配额不足、路径过长。
+- 文件夹上传保留相对目录路径。
+- 目标路径下按文件夹层级创建目录。
+- 文件名、目录名、上传人、目标库、目标路径、文件数量、上传批次号进入上传任务记录。
+- 压缩包文件通过上传文件入口处理。
 
-**交互规则**：
-- 用户可取消勾选不上传的文件。
-- 用户可选择“保留目录结构”或“上传至当前目录并扁平化”。
+### 3.2 上传任务抽屉
+
+**展示规则**
+
+- 展示当前批次的文件数量、预计体积、异常文件数、待编目数量。
+- 展示目标目录、重名处理、默认版权状态。
+- 文件夹上传展示目录结构。
+- 抽屉底部提供上传任务和进入编目工作台。
+
+**交互规则**
+
+- 用户可调整目标目录。
 - 用户可设置重名处理策略：跳过、保留两份并自动改名、覆盖旧文件。
-- 点击开始上传后，任务抽屉展示总体进度和逐文件状态。
-
-**数据规则**：
-- 默认保留目录结构。
-- 文件夹上传不改变源文件夹结构。
-- 同一批次内文件路径相同视为重复，需按重名策略处理。
-- 上传成功的文件进入待编目状态；若所在库配置自动结构化，则同步发起结构化分析。
-
-### 3.3 上传压缩包
-
-**展示规则**：
-- 选择压缩包后展示解压预检，包含压缩包名称、格式、压缩包大小、解压后预计文件数、预计解压体积、目录层级。
-- 解压清单展示可入库文件、被过滤文件和异常文件数量。
-- 支持查看“异常明细”，展示文件路径、异常原因和处理建议。
-
-**交互规则**：
-- 用户可选择解压目标目录，默认以压缩包名称创建文件夹。
-- 用户可选择是否保留压缩包原文件入库。
-- 若解压后体积超过剩余配额，禁止开始上传并提示当前配额差额。
-- 若检测到压缩包嵌套压缩包，默认只入库嵌套压缩包原文件，不继续递归解压；管理员可在系统参数中配置递归层级。
-- 用户可下载异常清单。
-
-**数据规则**：
-- 支持格式由系统参数配置，默认支持 zip、rar、7z、tar、tar.gz。
-- 单个压缩包大小、解压后文件数量、解压后总大小受系统参数和配额控制。
-- 解压任务需记录批次号、压缩包原始文件、解压耗时、成功数、失败数、过滤数。
-- 解压成功文件进入待编目状态；解压失败文件不占用入库素材数量。
-
-### 3.4 上传任务抽屉
-
-**展示规则**：
-- 右侧抽屉展示当前批次进度、已完成、失败、待处理、待编目数量。
-- 文件列表展示缩略图或类型图标、文件名、路径、大小、状态、异常原因。
-- 抽屉底部提供“进入编目工作台”“下载失败清单”“关闭”。
-
-**交互规则**：
-- 上传进行中可暂停或取消未开始上传的文件。
-- 上传完成后点击进入编目工作台，自动筛选当前上传批次。
-- 上传失败文件可重试；异常不可重试文件需重新选择或调整配置。
-
-**数据规则**：
-- 上传状态包括排队中、上传中、解压中、结构化中、待编目、已完成、失败、已跳过。
-- 任务记录进入同步中心或上传任务日志，支持按上传人、时间、目标库、状态查询。
-
-### 3.5 素材编目工作台
-
-**功能描述**：新增“待编目”工作台，用于集中处理上传后尚未补齐编目信息的素材。
-
-**展示规则**：
-- 页面顶部展示状态统计：待编目、需补充、待审核、已入库、驳回。
-- 筛选条件包含上传批次、素材类型、目标库、上传人、创建时间、字段完整度、AI 预分析状态。
-- 主体支持卡片视图和表格视图。
-- 每条素材展示缩略图、标题、路径、素材类型、字段完整度、系统标签、编目状态。
-- 批量操作条展示已选数量，并提供批量套用、批量结构化、提交审核、移出批次。
-
-**交互规则**：
-- 点击素材打开编目侧栏或详情页。
-- 勾选多条素材后可批量套用分类、标签、版权状态、来源、关联项目和可见范围。
-- 字段完整度低于提交门槛时，提交审核按钮置灰，并在字段面板中标出缺失项。
-- 用户可保存草稿，草稿不进入审核流程。
-- 支持按上传批次快速切换，便于处理文件夹或压缩包导入后的整批素材。
-
-**数据规则**：
-- 字段完整度 = 已完成必填字段数 / 当前素材类型必填字段数。
-- 图片素材首期必填字段包括标题、素材类型、分类、描述或关键词、版权状态、可见范围。
-- 视频、音频、文档可沿用同一框架，但字段规则由素材类型配置决定。
-
-### 3.6 图片编目
-
-**功能描述**：图片编目提供大图预览和结构化字段编辑，结合系统建议完成图片可检索信息补齐。
-
-**展示规则**：
-- 左侧展示图片预览、缩放、原图查看、相似图片、EXIF 信息和质量检查。
-- 右侧字段分组包括基本信息、编目信息、分类信息、版权授权、关联信息、操作记录。
-- 图片详情页右侧采用多 Tab 信息面板，至少包含基本信息、结构化信息、编目信息、共享记录、敏感信息识别、下载记录。
-- 编目信息 Tab 顶部展示当前编目模板、编目状态和操作按钮。
-- 系统建议以可接受标签展示，如人物、机构、地标、物体、场景、关键词。
-- 必填字段带明确标识，缺失字段在保存和提交时高亮。
-
-**交互规则**：
-- 点击系统建议标签可接受为正式标签，再次点击可移除。
-- 用户先选择编目模板，再按模板生成字段表单；切换模板时需提示未保存内容。
-- 分类支持级联选择，标签支持输入、选择已有标签和批量粘贴。
-- 描述字段支持使用系统建议生成初稿，用户可编辑。
-- 用户可将当前图片字段套用至同批次其他图片。
-- 图片存在相似素材时可查看相似项，决定继续入库、合并记录或标记重复。
-- 点击保存仅保存草稿，状态可为编目中；点击完成编目后校验必填项并将状态回写为已编目。
-
-**数据规则**：
-- 标题默认取文件名去扩展名，用户可修改。
-- 内部标识号由系统自动生成，用户不可手工修改；生成规则为模板前缀 + 当前日期 + 当日递增序号，示例 `NW-20260330-001`。
-- 系统建议写入前标记为“建议”，用户确认后写入正式编目字段。
-- EXIF、尺寸、格式、大小、拍摄时间为系统自动字段，用户不可直接改写；如需修正拍摄时间，应通过“补充拍摄时间”字段记录。
-- 版权状态选项包括自有版权、授权使用、转载授权、版权待确认。
-
-### 3.7 编目模板管理
-
-**功能描述**：提供编目模板管理页，支撑不同图片业务场景的字段配置和复用。Figma 参考确认模板管理需支持新建、编辑、复制、删除模板，并可视化配置字段名称、字段类型、分组、必填等属性。
-
-**展示规则**：
-- 顶部导航新增“编目管理”入口，具备权限的用户可进入模板列表。
-- 模板列表展示模板名称、描述、字段数量、创建时间、更新时间、是否默认模板和操作按钮。
-- 操作按钮包括编辑、复制、删除；默认模板需展示默认标识。
-- 模板编辑页展示模板名称、描述、字段配置区。
-- 字段配置区以字段卡片或表格形式展示字段顺序、字段名称、字段类型、字段分组、占位提示、是否必填、是否自动生成。
-- 字段类型支持文本、数字、下拉选择、多行文本、日期。
-- 下拉选择字段需配置选项，选项以逗号或独立项维护。
-
-**交互规则**：
-- 点击新建模板进入编辑页，默认创建空模板。
-- 点击编辑复制当前模板字段并允许修改。
-- 点击复制生成副本，副本名称默认追加“副本”。
-- 点击删除需二次确认；已被素材使用的模板不允许直接删除，只能停用或复制后调整。
-- 编辑模板时可新增字段、删除字段、调整字段顺序、修改字段属性。
-- 保存模板时校验模板名称必填、字段名称不可为空、下拉字段至少包含一个选项。
-
-**数据规则**：
-- 模板字段需保存字段 ID、名称、类型、分组、占位提示、选项、必填、自动生成、排序。
-- 通用图片模板默认字段包含内部标识号、标题、关键词、描述、拍摄时间、作者、来源、地点、版权状态、分类、备注。
-- 人物库模板可扩展姓名、性别、年龄、职务、机构、履历、人物标签等字段。
-- 新闻资源模板可扩展新闻类型、重要级别、关联稿件、来源渠道、报道主题等字段。
-- 自动生成字段仅由系统写入，用户端显示只读。
-
-### 3.8 AI 预分析与结构化
-
-**展示规则**：
-- 编目工作台展示 AI 预分析状态：未分析、分析中、已生成建议、分析失败。
-- 字段面板展示系统建议来源：文件名解析、EXIF、智能标签库、人脸识别、物体识别、地标识别、OCR、敏感识别。
-
-**交互规则**：
-- 用户可对单条或批量素材发起结构化分析。
-- 分析结果生成后，用户确认或修改后才能进入正式编目信息。
-- 分析失败时可重试，重试次数和失败原因进入任务记录。
-
-**数据规则**：
-- 自动结构化开关沿用部门素材库配置。
-- 识别结果未确认前不进入正式检索标签，但可作为低权重候选参与内部推荐。
-- 敏感识别命中高风险时，素材状态变为需复核，不允许直接提交公共库审核。
-
-### 3.9 审查智能体与可用性评审
-
-**功能描述**：审查智能体不仅检查字段是否合规，也要为系统可用性和易用性负责。它从用户完成任务的第一性原理出发，持续质疑流程是否必要、信息是否可理解、操作是否可恢复、批量场景是否足够省力，并把质疑转化为可执行的体验问题清单。
-
-**第一性原理**：
-- 用户来到素材中心的根本目标不是“填写表单”，而是让素材更快被找到、复用、共享和追责。
-- 好的编目流程应减少用户判断成本，而不是把系统无法判断的内容全部转嫁给用户。
-- 审查结果应帮助用户完成任务，而不是只告诉用户“不通过”。
-- 批量上传后的默认路径应是“少打断、可回退、可批量修正”，不是逐条重复确认。
-
-**触发点**：
-- 上传文件夹或压缩包预检完成后，审查智能体检查目录层级、失败清单、重名策略和默认字段是否会让用户困惑。
-- 批量编目提交前，检查字段完整度、必填项数量、批量套用结果和异常素材是否会造成重复劳动。
-- 图片编目保存或完成前，检查字段命名、系统建议、只读字段、版权提示和错误恢复是否容易理解。
-- 模板发布前，检查模板字段数量、分组顺序、必填比例、自动生成规则和默认值是否符合实际采编工作。
-- 审核驳回前，检查驳回理由是否具体到用户可修复的动作。
-
-**质疑清单**：
-- 这个字段为什么必须由用户填写，系统是否已有来源可以自动带出或建议？
-- 用户能否在 30 秒内理解当前素材为什么不能提交？
-- 这个错误是否告诉用户下一步怎么改，而不是只说明失败？
-- 对 100 个文件的批量场景，用户是否需要重复做同一种判断？
-- 当前默认值是否符合多数场景，还是把少数场景当成默认？
-- 审核驳回后，用户能否一键定位缺失字段、风险素材和可批量修复项？
-- 模板新增字段后，会不会让一线采编多填但对检索复用没有贡献？
-
-**输出结果**：
-- 每次审查输出体验风险等级：低、中、高。
-- 输出问题类型：可理解性、操作成本、错误恢复、批量效率、字段负担、反馈不足。
-- 输出用户影响说明，避免只给技术原因。
-- 输出建议动作：自动带出、降低必填、批量修复、补充提示、改默认值、拆分高级项、允许稍后补齐。
-- 高风险体验问题进入需求评审清单；未解决前不得把能力标记为“可上线”。
-
-**交互规则**：
-- 审查智能体建议以旁路提示呈现，不阻塞普通保存；仅当字段完整度、版权风险、敏感风险或审批规则不满足时才阻塞提交。
-- 用户可展开查看“为什么被质疑”和“如何修复”，并可反馈“建议无效”。
-- 审查建议进入操作记录，便于产品、前端、后端和测试在评审时共同追踪。
-
-### 3.10 审核与入库
-
-**展示规则**：
-- 提交审核弹窗展示本次提交数量、目标库、字段完整度、风险提示和审核流程。
-- 审核页面展示素材预览、编目信息、系统建议、修改记录和风险提示。
-
-**交互规则**：
-- 用户提交个人素材库共享至部门素材库时，进入个人素材共享审批。
-- 用户提交部门素材库共享至公共素材库时，进入部门素材共享审批。
-- 审核通过后编目状态变为已入库或已共享。
-- 审核驳回时需填写原因，素材回到驳回状态，上传人可修改后再次提交。
-
-**数据规则**：
-- 审核通过后，正式编目字段进入目标素材库检索索引。
-- 审核记录保留审核人、审核时间、审核意见和字段快照。
-- 驳回后再次提交需生成新的审核记录，不覆盖历史记录。
-
-### 3.11 列表与详情改造
-
-**展示规则**：
-- 素材列表新增编目状态筛选：全部、待编目、需补充、待审核、已入库、驳回。
-- 列表卡片或表格新增字段完整度和标签摘要。
-- 素材详情基本信息中新增编目信息分组，展示分类、标签、关键词、版权、关联项目、字段完整度。
-
-**交互规则**：
-- 从素材列表点击“编目”进入编目侧栏。
-- 已入库素材仍可编辑编目信息；保存后记录变更历史，必要时触发复审。
-
-**数据规则**：
-- 编目字段变更需记录操作人、操作时间、变更前后内容。
-- 已共享至公共素材库的核心编目字段修改，是否重新审核由业务管理配置控制。
+- 上传完成后可进入当前批次编目工作台。
 
 ---
 
-## 4. 权限与配置
+## 4. 素材详情编目
 
-### 4.1 权限点
+### 4.1 页面结构
+
+- 详情页采用左侧预览、右侧信息面板布局。
+- 左侧展示素材预览、大小、格式、尺寸或时长、原创状态。
+- 顶部操作区包含返回列表、下载、分享、取至个人、以图搜图、图搜视频。
+- 右侧 Tab 包含基本信息、编目信息、结构化信息、共享记录、敏感信息识别、下载记录。
+
+### 4.2 编目信息
+
+**展示规则**
+
+- 编目信息 Tab 展示编目模板选择、自动保存草稿、保存草稿、完成编目、模板管理。
+- 字段按当前模板配置动态展示。
+- 模板可配置字段分组、字段名称、字段类型、必填状态、占位文字、默认值和排序。
+- 人物库、新闻图片、非遗文化、音视频节目等均作为可配置模板示例，不作为固定字段范围。
+
+**交互规则**
+
+- 用户选择编目模板后，右侧表单按模板字段生成。
+- 保存草稿仅保存当前填写内容。
+- 完成编目校验当前模板必填字段。
+- 模板管理入口跳转至编目管理模块。
+
+### 4.3 通用模板字段配置
+
+| 配置项 | 说明 |
+|---|---|
+| 基础字段 | 内部标识号、资源名称等系统通用字段 |
+| 业务字段 | 按模板配置人物、地点、事件、栏目、版权、标签、来源、领域等字段 |
+| 关联字段 | 按模板配置相关人物、相关地点、相关新闻、关联素材等字段 |
+| 字段分组 | 支持按基础信息、业务信息、关联信息等分组展示 |
+| 字段类型 | 支持文本、数字、下拉、日期、多行文本等类型 |
+| 字段控制 | 支持必填、占位文字、默认值和排序配置 |
+
+### 4.4 数据规则
+
+- 内部标识号由系统自动生成。
+- 资源名称默认取文件名，用户可修改。
+- 系统自动字段包含格式、大小、尺寸、时长、上传人、上传时间。
+- 版权状态缺失时允许保存草稿，不允许完成编目。
+
+---
+
+## 5. 视频专辑详情
+
+### 5.1 页面结构
+
+- 顶部操作区包含返回列表、下载、分享、以图搜图、图搜视频。
+- 左侧展示当前视频播放器、当前视频切换和稿件正文。
+- 当前视频切换位于播放器下方、稿件正文上方。
+- 切换当前视频时，同步更新上方播放器展示。
+- 右侧采用素材详情统一标签页：基本信息、编目信息、结构化信息、共享记录、敏感信息识别、下载记录。
+- 专辑信息归属于基本信息 Tab，默认选中基本信息。
+
+### 5.2 顶部切换
+
+**展示规则**
+
+- 当前视频播放器展示当前序号、视频标题、格式、时长、大小。
+- 当前视频切换区展示视频标题、格式、时长、大小。
+- 左右按钮位于当前视频区域两侧。
+
+**交互规则**
+
+- 点击左侧按钮切换上一个视频。
+- 点击右侧按钮切换下一个视频。
+- 切换到首尾时循环切换。
+- 切换后更新标题、格式、时长和大小。
+
+### 5.3 字段
+
+| 分组 | 字段 |
+|---|---|
+| 稿件信息 | 稿件ID、来源、列表标题 |
+| 正文信息 | 稿件正文 |
+| 共性字段 | 版权信息、标签、评论设置、点赞设置、签发后隐藏、相关新闻、备注 |
+| 视频信息 | 视频类型、拍摄地点、电视台、拍摄时间、导演、主持人 |
+| 当前视频 | 标题、格式、时长、大小 |
+
+---
+
+## 6. 音频专辑详情
+
+### 6.1 页面结构
+
+- 顶部操作区包含返回列表、下载、分享、以图搜图、图搜视频。
+- 左侧展示当前音频播放器、当前音频切换和稿件正文。
+- 当前音频切换位于播放器下方、稿件正文上方。
+- 切换当前音频时，同步更新上方播放器展示。
+- 右侧采用素材详情统一标签页：基本信息、编目信息、结构化信息、共享记录、敏感信息识别、下载记录。
+- 专辑信息归属于基本信息 Tab，默认选中基本信息。
+
+### 6.2 顶部切换
+
+**展示规则**
+
+- 当前音频播放器展示当前序号、音频标题、格式、时长、码率。
+- 当前音频切换区展示音频标题、格式、时长、码率。
+- 左右按钮位于当前音频区域两侧。
+
+**交互规则**
+
+- 点击左侧按钮切换上一个音频。
+- 点击右侧按钮切换下一个音频。
+- 切换到首尾时循环切换。
+- 切换后更新标题、格式、时长和码率。
+
+### 6.3 字段
+
+| 分组 | 字段 |
+|---|---|
+| 稿件信息 | 稿件ID、来源、列表标题 |
+| 正文信息 | 稿件正文 |
+| 共性字段 | 版权信息、标签、评论设置、点赞设置、签发后隐藏、相关新闻、备注 |
+| 音频信息 | 人员选择、新闻附件、授权人、授权单位 |
+| 当前音频 | 标题、格式、时长、码率 |
+
+---
+
+## 7. 编目管理
+
+### 7.1 模板列表
+
+**展示规则**
+
+- 编目管理作为顶部独立模块进入。
+- 模板列表展示模板名称、描述、字段数量、创建时间、更新时间、默认标识和操作按钮。
+- 模板列表支持展示适用范围，包括素材类型、素材库范围或业务场景。
+- 操作按钮包含设为默认、编辑、复制、删除。
+- 默认模板展示默认标识。
+- 人物库模板仅为内置示例模板之一，管理员可按业务需要新增任意编目模板。
+
+### 7.2 新建与编辑模板
+
+**展示规则**
+
+- 新建模板和编辑模板均使用弹窗。
+- 弹窗包含模板名称、模板描述、适用范围、字段配置、取消、保存模板。
+- 字段配置包含字段名、类型、分组、占位文字、必填、删除操作。
+- 字段类型支持文本、数字、下拉、日期、多行文本。
+
+**交互规则**
+
+- 点击新建模板打开弹窗，默认生成 2 个可编辑字段。
+- 点击编辑打开弹窗并加载当前模板字段。
+- 点击添加字段在弹窗内新增字段。
+- 点击删除字段移除当前字段并重排序号。
+- 保存模板校验模板名称、字段名和字段类型。
+
+### 7.3 数据规则
+
+- 模板支持按素材类型、素材库、部门或业务场景配置适用范围。
+- 模板字段保存字段 ID、字段名、类型、分组、占位文字、必填、排序。
+- 同一素材库范围内仅允许一个默认模板。
+- 已被素材使用的模板不允许直接删除。
+
+---
+
+## 8. 权限与配置
 
 | 权限点 | 说明 |
 |---|---|
 | 上传文件 | 使用现有上传文件能力 |
-| 上传文件夹 | 新增权限点，可独立配置 |
-| 上传压缩包 | 新增权限点，可独立配置 |
-| 查看待编目 | 查看当前权限范围内待编目素材 |
+| 上传文件夹 | 使用系统文件夹选择并保留目录结构 |
+| 查看素材详情 | 查看当前权限范围内素材详情 |
 | 编辑编目 | 编辑素材编目字段 |
-| 批量编目 | 执行批量套用和批量提交 |
-| 编目模板管理 | 新建、编辑、复制、删除编目模板 |
-| 审核编目 | 在审批中心审核带编目信息的共享申请 |
-| 配置编目规则 | 管理员配置字段、必填项和自动结构化规则 |
+| 批量编目 | 对多条素材执行批量编目 |
+| 编目模板管理 | 新建、编辑、复制、删除、设置默认模板 |
+| 审核编目 | 审核带编目信息的共享申请 |
 
-### 4.2 系统参数
+### 8.1 系统参数
 
-- 支持的压缩包格式。
-- 单压缩包最大体积。
-- 单次上传最大文件数量。
-- 解压后最大文件数量和最大总大小。
-- 递归解压层级。
+- 单次上传最大文件数。
+- 单文件最大体积。
+- 文件夹最大层级。
 - 文件路径最大长度。
 - 默认重名策略。
-- 图片编目必填字段。
+- 默认版权状态。
 - 默认编目模板。
 - 内部标识号前缀和序号规则。
-- 字段完整度提交门槛。
 - 自动结构化开关默认值。
 
 ---
 
-## 5. 数据字段建议
+## 9. 验收标准
 
-### 5.1 上传批次
-
-```json
-{
-  "batchId": "string",
-  "sourceType": "folder | archive | files",
-  "sourceName": "2026世界互联网大会素材包.zip",
-  "targetLibrary": "department",
-  "targetPath": "/活动素材/2026世界互联网大会",
-  "uploaderId": "string",
-  "uploaderName": "张三",
-  "fileCount": 186,
-  "successCount": 178,
-  "failedCount": 6,
-  "skippedCount": 2,
-  "catalogPendingCount": 171,
-  "createdAt": "2026-06-10 16:30:00"
-}
-```
-
-### 5.2 图片编目信息
-
-```json
-{
-  "assetId": "string",
-  "catalogStatus": "pending | incomplete | draft | review | approved | rejected",
-  "templateId": "tpl-news-image",
-  "internalCode": "NW-20260330-001",
-  "title": "世界互联网大会开幕式现场",
-  "description": "嘉宾在主会场参加开幕式，现场大屏展示大会主题。",
-  "categoryPath": ["新闻活动", "会议会展", "开幕式"],
-  "keywords": ["世界互联网大会", "乌镇", "开幕式"],
-  "confirmedTags": ["会议", "嘉宾", "大屏", "会场"],
-  "suggestedTags": ["人物", "发布会", "舞台"],
-  "persons": ["string"],
-  "organizations": ["string"],
-  "locations": ["乌镇"],
-  "copyrightStatus": "owned",
-  "visibility": "department",
-  "relatedArticleId": "string",
-  "qualityWarnings": ["similar_asset_found"],
-  "completeness": 92
-}
-```
-
-### 5.3 编目模板
-
-```json
-{
-  "templateId": "tpl-news-image",
-  "templateName": "新闻图片编目模板",
-  "description": "适用于新闻活动、会议会展等图片资源",
-  "isDefault": true,
-  "fields": [
-    {
-      "fieldId": "internal_code",
-      "label": "内部标识号",
-      "type": "text",
-      "group": "基本信息",
-      "required": true,
-      "autoGenerate": true,
-      "generateRule": "NW-{yyyyMMdd}-{seq3}"
-    },
-    {
-      "fieldId": "title",
-      "label": "标题",
-      "type": "text",
-      "group": "基本信息",
-      "required": true
-    }
-  ]
-}
-```
-
----
-
-## 6. 验收标准
-
-- 素材中心上传按钮下可选择上传文件、上传文件夹、上传压缩包。
-- 上传文件夹后，系统能展示目录预检、保留目录结构并按批次进入待编目。
-- 上传压缩包后，系统能展示解压预检、异常清单、配额校验和解压结果。
-- 上传任务抽屉能展示进度、失败原因、待编目数量，并可跳转至当前批次编目工作台。
-- 编目工作台支持按批次、状态、素材类型、完整度筛选，支持卡片和表格视图。
-- 图片编目支持基础信息、分类标签、内容识别、版权授权、关联信息和操作记录。
-- 资源详情页需包含编目信息 Tab，并能选择编目模板、填写模板字段、保存草稿和完成编目。
-- 编目模板管理页支持新建、编辑、复制、删除模板，并支持字段名称、类型、分组、必填和自动生成配置。
-- 内部标识号按模板规则自动生成，用户不可手工修改，生成后在详情和列表中可见。
-- 系统建议标签需由用户确认后进入正式编目字段。
-- 字段完整度不足时不允许提交审核，并明确提示缺失字段。
-- 审查智能体需输出可用性与易用性质疑，至少覆盖字段负担、批量效率、错误恢复和用户是否理解下一步。
-- 编目信息进入素材详情、素材列表筛选和搜索中心检索字段。
-- 共享至部门或公共素材库时复用现有审批中心流程。
-
----
-
-## 7. 原型说明
-
-原型以素材中心“个人素材库”为主入口，展示上传菜单、上传任务抽屉、批次编目工作台、图片编目侧栏和编目模板管理。页面中的图片编目字段、系统建议、模板字段和异常数据为评审用样例，正式开发以接口返回和业务配置为准。
-
----
-
-## 8. 评审检查清单
-
-- **上传方式**：确认上传文件、上传文件夹、上传压缩包三种入口的权限点、格式限制、配额限制和异常提示是否满足现有素材中心规则。
-- **目录与批次**：确认文件夹层级、压缩包解压目录、批次号、失败清单和待编目数量是否足够支撑采编批量导入场景。
-- **编目流程**：确认待编目、需补充、待审核、已入库、驳回等状态是否覆盖素材从上传到共享入库的完整闭环。
-- **图片编目字段**：确认基础信息、分类标签、内容识别、版权授权、关联信息、质量检查和操作记录是否满足首期图片编目要求。
-- **模板管理**：确认模板新建、编辑、复制、删除、字段分组、字段类型、必填校验和内部标识号自动生成规则是否满足业务配置诉求。
-- **审查智能体**：确认审查智能体能站在用户视角提出第一性原理质疑，并把问题落到可理解性、操作成本、错误恢复、批量效率和字段负担。
-- **既有能力衔接**：确认编目信息进入素材详情、列表筛选、搜索中心、智能标签库和审批中心后，不破坏现有个人/部门/公共素材库流程。
-- **开发边界**：确认移动端独立编目、加密压缩包破解、跨租户模板市场、长视频逐帧编目和模型训练后台不进入本期范围。
-
+- 上传按钮下仅展示上传文件、上传文件夹两个选项。
+- 点击上传文件夹直接弹出系统文件夹选择窗口。
+- 文件夹上传支持嵌套目录并保留相对路径。
+- 素材列表展示视频专辑和音频专辑卡片。
+- 视频专辑详情支持顶部左右切换当前视频。
+- 音频专辑详情支持顶部左右切换当前音频。
+- 素材详情编目信息展示模板选择、保存草稿、完成编目和模板管理。
+- 素材详情支持选择编目模板、保存草稿、完成编目和进入模板管理。
+- 编目管理支持新建模板弹窗和编辑模板弹窗。
+- 新建模板默认生成 2 个可编辑字段。
+- 编辑模板可新增字段、删除字段并更新字段序号。
+- PRD 独立 Markdown 与 HTML 内嵌 PRD 内容保持一致。
     </textarea>
 
     <script>
         var changelogData = [
-            { time: '2026-06-10 17:05', desc: '根据 Figma Make 代码层补充编目模板管理、编目信息 Tab 规则与内部标识号自动生成能力。' },
-            { time: '2026-06-10 16:40', desc: '初始创建：新增上传文件夹、上传压缩包、素材编目工作台与图片编目侧栏原型，补充完整 PRD。' }
+            { time: '2026-06-11 19:37', desc: '发布素材中心编目优化：补齐通用模板配置 PRD、音视频专辑详情播放器切换、线上素材中心列表和上传文件夹入口' },
+            { time: '2026-06-11 15:42', desc: '简化上传入口：上传按钮改为上传文件/上传文件夹两个选择，文件夹选择直接调用系统文件夹窗口并支持嵌套目录' },
+            { time: '2026-06-11 14:43', desc: '优化新建模板和编辑模板：模板管理列表保留上下文，改为弹窗完成新建/编辑，字段配置支持新增、删除、计数和序号更新' },
+            { time: '2026-06-11 11:55', desc: '按线上素材中心截图重构首屏：编目管理改为顶部独立模块，素材中心移除左侧库树和模板配置入口，列表布局对齐线上操作条与卡片网格' },
+            { time: '2026-06-11 11:35', desc: '按产品反馈收敛界面表达：功能层仅保留字段选择、预览、写入、状态和完整度等控件，规则说明回收到 PRD' },
+            { time: '2026-06-11 11:20', desc: '根据产品经理智能体审核建议优化：补齐编目状态机、最小完成标准、批量编辑安全预览、元数据粘贴保护、模板权限边界和成功指标' },
+            { time: '2026-06-11 10:50', desc: '参考截图优化编目能力：补齐素材列表批量编辑态、详情页编目信息表单、模板管理列表、编辑模板和新建模板初始态' },
+            { time: '2026-06-10 18:05', desc: '补充审查智能体职责：从用户视角负责可用性、易用性和第一性原理质疑，并在原型中展示体验风险面板' },
+            { time: '2026-06-10 17:45', desc: '复核交付质量：补充 PRD 评审检查清单，完成需求覆盖矩阵、脚本语法、桌面与移动运行态校验' },
+            { time: '2026-06-10 17:05', desc: '初始创建：智能媒资素材上传与编目优化原型 + PRD，包含上传文件夹、上传压缩包、批次编目、图片编目、编目模板管理和内部标识号自动生成' }
         ];
 
-        function toggleUploadMenu(event) {
+        function closeUploadMenus() {
+            document.querySelectorAll('.upload-menu.show').forEach(function (menu) {
+                menu.classList.remove('show');
+            });
+        }
+
+        function toggleUploadMenu(event, menuId) {
             event.stopPropagation();
-            document.getElementById('uploadMenu').classList.toggle('show');
+            var menu = document.getElementById(menuId);
+            document.querySelectorAll('.upload-menu').forEach(function (item) {
+                if (item !== menu) item.classList.remove('show');
+            });
+            if (menu) menu.classList.toggle('show');
         }
 
         document.addEventListener('click', function () {
-            var menu = document.getElementById('uploadMenu');
-            if (menu) menu.classList.remove('show');
+            closeUploadMenus();
         });
 
-        function openUploadDrawer(type) {
+        function chooseUpload(type) {
+            closeUploadMenus();
+            var input = document.getElementById(type === 'folder' ? 'uploadFolderInput' : 'uploadFileInput');
+            if (!input) return;
+            input.value = '';
+            input.click();
+        }
+
+        function handleUploadSelection(event, type) {
+            var files = Array.prototype.slice.call(event.target.files || []);
+            if (!files.length) return;
+            openUploadDrawer(type, files);
+        }
+
+        function formatBytes(bytes) {
+            if (!bytes) return '0MB';
+            var units = ['B', 'KB', 'MB', 'GB', 'TB'];
+            var size = bytes;
+            var unit = 0;
+            while (size >= 1024 && unit < units.length - 1) {
+                size = size / 1024;
+                unit++;
+            }
+            return (unit >= 2 ? size.toFixed(size >= 10 ? 1 : 2) : Math.round(size)) + units[unit];
+        }
+
+        function folderRootName(files) {
+            var first = files && files[0];
+            var relative = first && first.webkitRelativePath;
+            return relative ? relative.split('/')[0] : '已选择文件夹';
+        }
+
+        function renderUploadDirectory(type, files) {
+            var tree = document.getElementById('uploadDirTree');
+            var title = document.getElementById('dirTreeTitle');
+            if (!tree) return;
+            if (type === 'folder') {
+                var counts = {};
+                files.forEach(function (file) {
+                    var parts = (file.webkitRelativePath || file.name).split('/').filter(Boolean);
+                    var root = parts[0] || '已选择文件夹';
+                    counts[root] = (counts[root] || 0) + 1;
+                    if (parts.length > 2) {
+                        var child = root + '/' + parts[1];
+                        counts[child] = (counts[child] || 0) + 1;
+                    }
+                });
+                var rootName = folderRootName(files);
+                var rows = ['<div class="dir-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h5l2 2h11v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>' + escapeHtml(rootName) + '<span class="right">' + files.length + '</span></div>'];
+                Object.keys(counts).filter(function (key) { return key.indexOf('/') > -1; }).slice(0, 5).forEach(function (key) {
+                    rows.push('<div class="dir-row child">' + escapeHtml(key.split('/').slice(1).join('/')) + '<span class="right">' + counts[key] + '</span></div>');
+                });
+                title.textContent = '目录结构';
+                tree.innerHTML = rows.join('');
+                return;
+            }
+            title.textContent = '文件列表';
+            tree.innerHTML = '<div class="dir-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>当前目录<span class="right">' + files.length + '</span></div>';
+        }
+
+        function openUploadDrawer(type, selectedFiles) {
+            var files = selectedFiles || [];
             var drawer = document.getElementById('uploadDrawer');
             var title = document.getElementById('drawerTitle');
             var dropTitle = document.getElementById('dropTitle');
@@ -1855,33 +2798,27 @@
             var preSize = document.getElementById('preSize');
             var preErrors = document.getElementById('preErrors');
             var preCatalog = document.getElementById('preCatalog');
+            var totalSize = files.reduce(function (sum, file) { return sum + (file.size || 0); }, 0);
             if (type === 'folder') {
                 title.textContent = '上传文件夹';
-                dropTitle.textContent = '互联网大会素材文件夹';
-                dropDesc.textContent = '已读取目录结构，默认保留层级';
-                preFileCount.textContent = '214';
-                preSize.textContent = '3.6GB';
-                preErrors.textContent = '4';
-                preCatalog.textContent = '171';
-            } else if (type === 'archive') {
-                title.textContent = '上传压缩包';
-                dropTitle.textContent = '端午龙舟赛素材包.zip';
-                dropDesc.textContent = '已完成解压预检，保留目录结构';
-                preFileCount.textContent = '186';
-                preSize.textContent = '2.8GB';
-                preErrors.textContent = '6';
-                preCatalog.textContent = '128';
+                dropTitle.textContent = folderRootName(files);
+                dropDesc.textContent = '已选择系统文件夹，包含嵌套目录';
+                preFileCount.textContent = files.length || '214';
+                preSize.textContent = files.length ? formatBytes(totalSize) : '3.6GB';
+                preErrors.textContent = '0';
+                preCatalog.textContent = files.length || '214';
             } else {
                 title.textContent = '上传文件';
-                dropTitle.textContent = '本地选择 24 个文件';
-                dropDesc.textContent = '按当前目录入库，可批量设置默认字段';
-                preFileCount.textContent = '24';
-                preSize.textContent = '640MB';
-                preErrors.textContent = '1';
-                preCatalog.textContent = '23';
+                dropTitle.textContent = files.length ? '本地选择 ' + files.length + ' 个文件' : '本地选择 24 个文件';
+                dropDesc.textContent = '按当前目录入库';
+                preFileCount.textContent = files.length || '24';
+                preSize.textContent = files.length ? formatBytes(totalSize) : '640MB';
+                preErrors.textContent = '0';
+                preCatalog.textContent = files.length || '24';
             }
+            renderUploadDirectory(type, files);
             drawer.classList.add('show');
-            document.getElementById('uploadMenu').classList.remove('show');
+            closeUploadMenus();
         }
 
         function closeUploadDrawer() {
@@ -1897,11 +2834,59 @@
             var panels = {
                 assets: document.getElementById('panel-assets'),
                 catalog: document.getElementById('panel-catalog'),
+                videoAlbum: document.getElementById('panel-video-album'),
+                audioAlbum: document.getElementById('panel-audio-album'),
                 tasks: document.getElementById('panel-tasks'),
                 templates: document.getElementById('panel-templates')
             };
             Object.keys(panels).forEach(function (key) { panels[key].classList.remove('active'); });
             panels[name].classList.add('active');
+            var workbench = document.querySelector('.workbench');
+            var isDetail = name === 'catalog' || name === 'videoAlbum' || name === 'audioAlbum';
+            if (workbench) {
+                workbench.classList.toggle('module-templates', name === 'templates');
+                workbench.classList.toggle('module-detail', isDetail);
+            }
+            document.querySelectorAll('.nav-item[data-module]').forEach(function (item) {
+                var module = item.getAttribute('data-module');
+                item.classList.toggle('active', (name === 'templates' && module === 'templates') || (name !== 'templates' && module === 'assets'));
+            });
+        }
+
+        function switchModule(name) {
+            switchPanel(name === 'templates' ? 'templates' : 'assets');
+        }
+
+        var albumMediaData = {
+            video: [
+                { title: '《越城新闻》2026年5月19日', meta: 'MP4 · 14:52 · 296.5MB' },
+                { title: '科技金融精准对接 解决企业融资难题', meta: 'MP4 · 02:22 · 49.6MB' },
+                { title: '区人大常委会举行专题讲座', meta: 'MP4 · 01:18 · 27.2MB' },
+                { title: '越城发布低空经济高质量发展“路线图”', meta: 'MP4 · 02:47 · 56.0MB' }
+            ],
+            audio: [
+                { title: '《971健康吧》【20250317周一】.wav', meta: 'WAV · 20:47 · 256k' },
+                { title: '971健康吧｜脂肪肝日常管理.mp3', meta: 'MP3 · 08:32 · 192k' },
+                { title: '971健康吧｜专家问答精选.mp3', meta: 'MP3 · 06:18 · 192k' }
+            ]
+        };
+        var albumMediaIndex = { video: 0, audio: 0 };
+
+        function switchAlbumMedia(kind, index) {
+            var media = albumMediaData[kind][index];
+            var prefix = kind === 'video' ? 'videoAlbum' : 'audioAlbum';
+            albumMediaIndex[kind] = index;
+            document.getElementById(prefix + 'CurrentTitle').textContent = media.title;
+            document.getElementById(prefix + 'CurrentMeta').textContent = media.meta;
+            document.getElementById(prefix + 'PlayerTitle').textContent = media.title;
+            document.getElementById(prefix + 'PlayerMeta').textContent = media.meta;
+            document.getElementById(prefix + 'Badge').textContent = '当前 ' + (index + 1) + '/' + albumMediaData[kind].length;
+        }
+
+        function stepAlbumMedia(kind, delta) {
+            var list = albumMediaData[kind];
+            var next = (albumMediaIndex[kind] + delta + list.length) % list.length;
+            switchAlbumMedia(kind, next);
         }
 
         function toggleSuggestion(el) {
@@ -1925,7 +2910,150 @@
         }
 
         function escapeHtml(s) {
-            return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        var templateProfiles = {
+            '新闻图片编目模板': {
+                desc: '适用于新闻类图片资源的编目',
+                fields: [
+                    { name: '内部标识号', type: '文本', group: '基础信息', placeholder: '请输入内部标识号', required: true },
+                    { name: '资源名称', type: '文本', group: '基础信息', placeholder: '请输入', required: true },
+                    { name: '新闻标题', type: '文本', group: '新闻信息', placeholder: '请输入', required: true },
+                    { name: '关键词', type: '文本', group: '新闻信息', placeholder: '请输入', required: false },
+                    { name: '摘要', type: '多行文本', group: '新闻信息', placeholder: '请输入', required: false },
+                    { name: '拍摄时间', type: '日期', group: '拍摄信息', placeholder: '请选择', required: false },
+                    { name: '作者', type: '文本', group: '拍摄信息', placeholder: '请输入', required: false },
+                    { name: '来源', type: '文本', group: '版权信息', placeholder: '请输入', required: false },
+                    { name: '地点', type: '文本', group: '关联信息', placeholder: '请输入', required: false },
+                    { name: '版权状态', type: '下拉', group: '版权信息', placeholder: '请选择', required: true },
+                    { name: '备注', type: '多行文本', group: '补充信息', placeholder: '请输入', required: false }
+                ]
+            },
+            '人物库编目模板': {
+                desc: '适用于人物图片资源的编目',
+                fields: [
+                    { name: '内部标识号', type: '文本', group: '基础信息', placeholder: '请输入内部标识号', required: true },
+                    { name: '资源名称', type: '文本', group: '基础信息', placeholder: '请输入', required: true },
+                    { name: '拼音', type: '文本', group: '人物信息', placeholder: '请输入', required: false },
+                    { name: '出生年份', type: '数字', group: '人物信息', placeholder: '整数', required: false },
+                    { name: '生卒年', type: '文本', group: '人物信息', placeholder: '请输入', required: false },
+                    { name: '国别', type: '文本', group: '人物信息', placeholder: '请输入', required: false },
+                    { name: '民族', type: '文本', group: '人物信息', placeholder: '请输入', required: false },
+                    { name: '性别', type: '下拉', group: '人物信息', placeholder: '请选择', required: false },
+                    { name: '其他姓名', type: '文本', group: '人物信息', placeholder: '请输入', required: false },
+                    { name: '籍贯/出生地', type: '文本', group: '人物信息', placeholder: '请输入', required: false },
+                    { name: '学科/领域', type: '文本', group: '人物信息', placeholder: '请输入', required: false },
+                    { name: '身份/职业', type: '文本', group: '人物信息', placeholder: '请输入', required: false },
+                    { name: '著作/作品', type: '文本', group: '人物信息', placeholder: '请输入', required: false },
+                    { name: '个人简介', type: '多行文本', group: '人物信息', placeholder: '文本内容', required: false },
+                    { name: '相关人物', type: '文本', group: '关联信息', placeholder: '请输入', required: false },
+                    { name: '相关地点', type: '文本', group: '关联信息', placeholder: '请输入', required: false }
+                ]
+            },
+            '非遗文化编目模板': {
+                desc: '适用于非物质文化遗产类图片的编目',
+                fields: [
+                    { name: '内部标识号', type: '文本', group: '基础信息', placeholder: '请输入内部标识号', required: true },
+                    { name: '资源名称', type: '文本', group: '基础信息', placeholder: '请输入', required: true },
+                    { name: '非遗项目', type: '文本', group: '非遗信息', placeholder: '请输入', required: true },
+                    { name: '项目级别', type: '下拉', group: '非遗信息', placeholder: '请选择', required: false },
+                    { name: '代表性传承人', type: '文本', group: '非遗信息', placeholder: '请输入', required: false },
+                    { name: '地域', type: '文本', group: '关联信息', placeholder: '请输入', required: false },
+                    { name: '拍摄时间', type: '日期', group: '拍摄信息', placeholder: '请选择', required: false },
+                    { name: '版权状态', type: '下拉', group: '版权信息', placeholder: '请选择', required: true }
+                ]
+            },
+            '新闻图片编目模板（副本）': null
+        };
+        templateProfiles['新闻图片编目模板（副本）'] = templateProfiles['新闻图片编目模板'];
+
+        function cloneTemplateFields(fields) {
+            return fields.map(function (item) {
+                return {
+                    name: item.name,
+                    type: item.type,
+                    group: item.group,
+                    placeholder: item.placeholder,
+                    required: item.required
+                };
+            });
+        }
+
+        function templateTypeOptions(current) {
+            return ['文本', '数字', '下拉', '日期', '多行文本'].map(function (type) {
+                return '<option' + (type === current ? ' selected' : '') + '>' + type + '</option>';
+            }).join('');
+        }
+
+        function templateFieldRow(field, index) {
+            var checked = field.required ? ' checked' : '';
+            return '<div class="config-row">'
+                + '<div class="drag-handle">⋮⋮</div><div class="config-index">' + (index + 1) + '</div>'
+                + '<label class="config-cell">字段名<input value="' + escapeHtml(field.name) + '"></label>'
+                + '<label class="config-cell">类型<select>' + templateTypeOptions(field.type) + '</select></label>'
+                + '<label class="config-cell">分组<input value="' + escapeHtml(field.group) + '"></label>'
+                + '<label class="config-cell">占位文字<input value="' + escapeHtml(field.placeholder) + '"></label>'
+                + '<label class="config-required">必填<input type="checkbox"' + checked + '></label>'
+                + '<button class="icon-btn" title="删除字段" onclick="deleteTemplateField(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg></button>'
+                + '</div>';
+        }
+
+        function renderTemplateFields(fields) {
+            document.getElementById('modalConfigList').innerHTML = fields.map(templateFieldRow).join('');
+            updateTemplateFieldCount();
+        }
+
+        function updateTemplateFieldCount() {
+            var rows = document.querySelectorAll('#modalConfigList .config-row');
+            rows.forEach(function (row, index) {
+                var idx = row.querySelector('.config-index');
+                if (idx) idx.textContent = index + 1;
+            });
+            document.getElementById('modalFieldCount').textContent = '(' + rows.length + ')';
+        }
+
+        function openTemplateModal(mode, name) {
+            var isCreate = mode === 'create';
+            var profile = templateProfiles[name] || templateProfiles['人物库编目模板'];
+            var fields = isCreate
+                ? [
+                    { name: '新字段', type: '文本', group: '基础信息', placeholder: '请输入', required: false },
+                    { name: '新字段', type: '文本', group: '基础信息', placeholder: '请输入', required: false }
+                ]
+                : cloneTemplateFields(profile.fields);
+            document.getElementById('templateModalTitle').textContent = isCreate ? '新建模板' : '编辑模板';
+            document.getElementById('templateModalSub').textContent = isCreate ? '新建编目模板' : name;
+            document.getElementById('modalTemplateName').value = isCreate ? '新建编目模板' : name;
+            document.getElementById('modalTemplateDesc').value = isCreate ? '' : profile.desc;
+            renderTemplateFields(fields);
+            document.getElementById('templateModalOverlay').classList.add('show');
+            document.getElementById('templateModal').classList.add('show');
+            setTimeout(function () { document.getElementById('modalTemplateName').focus(); }, 0);
+        }
+
+        function closeTemplateModal() {
+            document.getElementById('templateModalOverlay').classList.remove('show');
+            document.getElementById('templateModal').classList.remove('show');
+        }
+
+        function addTemplateField() {
+            var list = document.getElementById('modalConfigList');
+            var index = list.querySelectorAll('.config-row').length;
+            list.insertAdjacentHTML('beforeend', templateFieldRow({ name: '新字段', type: '文本', group: '基础信息', placeholder: '请输入', required: false }, index));
+            updateTemplateFieldCount();
+            showToast('已新增字段');
+        }
+
+        function deleteTemplateField(button) {
+            var row = button.closest('.config-row');
+            if (row) row.remove();
+            updateTemplateFieldCount();
+        }
+
+        function saveTemplateModal() {
+            closeTemplateModal();
+            showToast('模板已保存');
         }
 
         function inlineFmt(s) {
@@ -2102,6 +3230,22 @@
             });
         }
 
+        window.switchPanel = switchPanel;
+        window.switchModule = switchModule;
+        window.toggleUploadMenu = toggleUploadMenu;
+        window.chooseUpload = chooseUpload;
+        window.handleUploadSelection = handleUploadSelection;
+        window.openUploadDrawer = openUploadDrawer;
+        window.closeUploadDrawer = closeUploadDrawer;
+        window.switchAlbumMedia = switchAlbumMedia;
+        window.stepAlbumMedia = stepAlbumMedia;
+        window.openTemplateModal = openTemplateModal;
+        window.closeTemplateModal = closeTemplateModal;
+        window.addTemplateField = addTemplateField;
+        window.deleteTemplateField = deleteTemplateField;
+        window.saveTemplateModal = saveTemplateModal;
+        window.showToast = showToast;
+
         document.addEventListener('DOMContentLoaded', function () {
             var md = document.getElementById('prdMdSource').textContent;
             document.getElementById('prdContent').innerHTML = mdToHtml(md);
@@ -2109,6 +3253,14 @@
             renderChangelog();
             initSplitDrag();
             updateSelectedCount();
+            document.querySelectorAll('.nav-item[data-module]').forEach(function (item) {
+                item.addEventListener('click', function () {
+                    switchModule(item.getAttribute('data-module'));
+                });
+            });
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') closeTemplateModal();
+            });
         });
     </script>
 </body>
