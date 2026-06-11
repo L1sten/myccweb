@@ -220,7 +220,7 @@ button{cursor:pointer}
 }
 .btn i{font-size:16px}
 .btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft)}
-.btn:focus-visible,.nav-btn:focus-visible,.chip-btn:focus-visible,.doc-tab:focus-visible{
+.btn:focus-visible,.nav-btn:focus-visible,.chip-btn:focus-visible,.doc-tab:focus-visible,.hot-action:focus-visible,.review-action:focus-visible{
   outline:3px solid rgba(11,92,173,.24);
   outline-offset:2px;
 }
@@ -915,6 +915,29 @@ button{cursor:pointer}
 }
 .hot-item h4,.chat-card h4,.stat-card-row h4,.role-card h4{font-size:14px;margin-bottom:5px}
 .hot-item p,.chat-card p,.stat-card-row p,.role-card p{font-size:12px;color:var(--muted);line-height:1.55}
+.hot-actions,.queue-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:10px;
+}
+.hot-action,.review-action{
+  height:28px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--text);
+  border-radius:6px;
+  padding:0 8px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  font-size:12px;
+  white-space:nowrap;
+}
+.hot-action:hover,.review-action:hover{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+.review-action.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.review-action.danger{background:var(--red-soft);border-color:#f4c4c0;color:var(--red)}
 .hot-meta{
   display:flex;
   flex-direction:column;
@@ -1071,6 +1094,11 @@ button{cursor:pointer}
   .content{padding:12px;overflow:visible}
   .grid.cols-4,.grid.cols-3,.grid.cols-2,.pipeline,.agent-mini-list,.agent-grid,.agent-detail,.knowledge-list,.audit-checks,.login-modes{grid-template-columns:1fr}
   .event-actions{grid-template-columns:1fr}
+  .btn{min-height:40px}
+  .chip-btn{min-height:36px}
+  .hot-item{grid-template-columns:30px minmax(0,1fr)}
+  .hot-meta{grid-column:2;align-items:flex-start;white-space:normal}
+  .hot-action,.review-action{min-height:36px}
   .task-table,.task-table tbody,.task-table tr,.task-table td{display:block;width:100%}
   .task-table thead{display:none}
   .task-table tr{border-bottom:1px solid var(--line-soft);padding:10px 12px}
@@ -1232,7 +1260,7 @@ button{cursor:pointer}
           <aside class="panel">
             <div class="panel-head">
               <div>
-                <h3>审核队列</h3>
+                <h3>复核队列</h3>
                 <p>所有对外内容先校验后确认</p>
               </div>
               <button class="btn" data-page-jump="audit"><i class="ri-arrow-right-line"></i>进入</button>
@@ -1700,17 +1728,32 @@ button{cursor:pointer}
               </div>
             </div>
             <div class="panel-body review-queue">
-              <article class="queue-item">
+              <article class="queue-item" data-review-item="letter-target">
                 <header><strong>处置函发送对象</strong><span class="status wait">待确认</span></header>
                 <p>正式函件可能发送至涉事单位、上级主管部门或外部平台，需要确认对象与依据。</p>
+                <div class="queue-actions">
+                  <button class="review-action" data-review-action="open" data-doc-open="letter"><i class="ri-eye-line"></i>查看材料</button>
+                  <button class="review-action primary" data-review-action="approve"><i class="ri-check-line"></i>确认通过</button>
+                  <button class="review-action danger" data-review-action="reject"><i class="ri-arrow-go-back-line"></i>退回修改</button>
+                </div>
               </article>
-              <article class="queue-item">
+              <article class="queue-item" data-review-item="evidence">
                 <header><strong>侵权投诉附件</strong><span class="status wait">待确认</span></header>
                 <p>面向平台的投诉通知书需要人工核对截图、链接、权利证明与删除诉求。</p>
+                <div class="queue-actions">
+                  <button class="review-action" data-review-action="open" data-doc-open="letter"><i class="ri-eye-line"></i>查看材料</button>
+                  <button class="review-action primary" data-review-action="approve"><i class="ri-check-line"></i>确认通过</button>
+                  <button class="review-action danger" data-review-action="reject"><i class="ri-arrow-go-back-line"></i>退回修改</button>
+                </div>
               </article>
-              <article class="queue-item">
+              <article class="queue-item" data-review-item="report-version">
                 <header><strong>专题报告发布版本</strong><span class="status ok">可通过</span></header>
                 <p>编辑已调整摘要、图表与风险表述，等待推送操作。</p>
+                <div class="queue-actions">
+                  <button class="review-action" data-review-action="open" data-doc-open="report"><i class="ri-eye-line"></i>查看报告</button>
+                  <button class="review-action primary" data-review-action="approve"><i class="ri-check-line"></i>确认通过</button>
+                  <button class="review-action danger" data-review-action="reject"><i class="ri-arrow-go-back-line"></i>退回修改</button>
+                </div>
               </article>
             </div>
           </aside>
@@ -1911,12 +1954,12 @@ const docs = {
 };
 
 const hotspots = [
-  {rank:1, type:"city", title:"安徽属地民生话题讨论升温", desc:"同城热搜与媒体报道同步增加，建议进入风险研判队列。", source:"同城热搜", score:82, status:"待研判", updated:"10:31", reason:"同城热度 2 小时内连续上升", riskReason:"媒体报道增加且评论情绪分化"},
-  {rank:2, type:"web", title:"平台侵权相关讨论扩散", desc:"全网热点中出现疑似侵权传播线索，建议触发函件草稿流程。", source:"全网热点", score:76, status:"需复核", updated:"10:24", reason:"短视频平台转发量快速增加", riskReason:"涉及权属争议，函件外发必须人工确认"},
-  {rank:3, type:"industry", title:"教育行业政策咨询增加", desc:"行业热点问答频次增加，可沉淀为知识库问答口径。", source:"行业热点", score:64, status:"可入库", updated:"10:02", reason:"政策类问答请求集中出现", riskReason:"低风险，但需要统一口径避免误读"},
-  {rank:4, type:"city", title:"本地活动舆情关注度上升", desc:"属地媒体报道增多，适合生成日报摘要和图表说明。", source:"安徽属地", score:58, status:"生成报告", updated:"09:49", reason:"本地媒体报道和搜索词同步增加", riskReason:"关注度上升，适合纳入日报跟踪"},
-  {rank:5, type:"industry", title:"医疗服务评价讨论集中", desc:"服务评价类话题集中出现，需要观察情绪变化趋势。", source:"行业热点", score:52, status:"观察", updated:"09:37", reason:"评价关键词聚集在同一服务主题", riskReason:"情绪暂未恶化，保持观察"},
-  {rank:6, type:"web", title:"网络误读内容被转发", desc:"存在错误舆论扩散苗头，可生成引导话术并进入人工复核。", source:"全网热点", score:49, status:"待处置", updated:"09:18", reason:"误读内容出现跨平台搬运", riskReason:"事实表述可能被放大，需要话术复核"}
+  {rank:1, type:"city", title:"安徽属地民生话题讨论升温", desc:"同城热搜与媒体报道同步增加，建议进入风险研判队列。", source:"同城热搜", score:82, status:"待研判", updated:"10:31", reason:"同城热度 2 小时内连续上升", riskReason:"媒体报道增加且评论情绪分化", taskId:"DEMO-AH-01", nextLabel:"进入研判"},
+  {rank:2, type:"web", title:"平台侵权相关讨论扩散", desc:"全网热点中出现疑似侵权传播线索，建议触发函件草稿流程。", source:"全网热点", score:76, status:"需复核", updated:"10:24", reason:"短视频平台转发量快速增加", riskReason:"涉及权属争议，函件外发必须人工确认", taskId:"DEMO-AH-02", nextLabel:"生成函件"},
+  {rank:3, type:"industry", title:"教育行业政策咨询增加", desc:"行业热点问答频次增加，可沉淀为知识库问答口径。", source:"行业热点", score:64, status:"可入库", updated:"10:02", reason:"政策类问答请求集中出现", riskReason:"低风险，但需要统一口径避免误读", taskId:"DEMO-AH-03", nextLabel:"查看任务"},
+  {rank:4, type:"city", title:"本地活动舆情关注度上升", desc:"属地媒体报道增多，适合生成日报摘要和图表说明。", source:"安徽属地", score:58, status:"生成报告", updated:"09:49", reason:"本地媒体报道和搜索词同步增加", riskReason:"关注度上升，适合纳入日报跟踪", taskId:"DEMO-AH-01", nextLabel:"生成报告"},
+  {rank:5, type:"industry", title:"医疗服务评价讨论集中", desc:"服务评价类话题集中出现，需要观察情绪变化趋势。", source:"行业热点", score:52, status:"观察", updated:"09:37", reason:"评价关键词聚集在同一服务主题", riskReason:"情绪暂未恶化，保持观察", taskId:"DEMO-AH-04", nextLabel:"观察处置"},
+  {rank:6, type:"web", title:"网络误读内容被转发", desc:"存在错误舆论扩散苗头，可生成引导话术并进入人工复核。", source:"全网热点", score:49, status:"待处置", updated:"09:18", reason:"误读内容出现跨平台搬运", riskReason:"事实表述可能被放大，需要话术复核", taskId:"DEMO-AH-04", nextLabel:"进入处置"}
 ];
 
 const traceRows = [
@@ -2017,7 +2060,7 @@ function renderDoc(type="report"){
 
 function renderHotspots(type="all"){
   const rows = hotspots.filter(item => type === "all" || item.type === type);
-  qs("#hotspotList").innerHTML = rows.map(item=>`<article class="hot-item"><div class="hot-rank">${item.rank}</div><div><h4>${item.title}</h4><p>${item.desc}</p><p>触发原因：${item.reason}</p><p>风险理由：${item.riskReason}</p></div><div class="hot-meta"><strong>${item.score}</strong><span>${item.source}</span><span>${item.updated} 更新</span><span class="status ${item.status.includes("复核") || item.status.includes("研判") ? "wait" : item.status.includes("入库") || item.status.includes("完成") ? "ok" : "info"}">${item.status}</span></div></article>`).join("");
+  qs("#hotspotList").innerHTML = rows.map(item=>`<article class="hot-item"><div class="hot-rank">${item.rank}</div><div><h4>${item.title}</h4><p>${item.desc}</p><p>触发原因：${item.reason}</p><p>风险理由：${item.riskReason}</p><div class="hot-actions"><button class="hot-action" data-hot-rank="${item.rank}" data-hot-task="${item.taskId}"><i class="ri-arrow-right-line"></i>${item.nextLabel}</button></div></div><div class="hot-meta"><strong>${item.score}</strong><span>${item.source}</span><span>${item.updated} 更新</span><span class="status ${item.status.includes("复核") || item.status.includes("研判") ? "wait" : item.status.includes("入库") || item.status.includes("完成") ? "ok" : "info"}">${item.status}</span></div></article>`).join("");
   qsa("[data-hot-filter]").forEach(btn=>btn.classList.toggle("active", btn.dataset.hotFilter === type));
 }
 
@@ -2075,6 +2118,40 @@ function handleEventAction(action){
   if(action === "review"){
     showPage("audit");
     showToast("已提交复核", `${id} 已进入复核中心，不会自动外发`);
+  }
+}
+
+function openTaskFromHotspot(taskId){
+  qs("#riskFilter").value = "all";
+  qs("#taskSearch").value = "";
+  renderTasks();
+  renderSelectedTask(taskId);
+  showPage("tasks");
+  qs(".selected-event").scrollIntoView({behavior:"smooth", block:"start"});
+  showToast("线索已进入研判", `${taskId} 已定位到研判处置任务`);
+}
+
+function handleReviewAction(button){
+  const item = button.closest(".queue-item");
+  const title = item.querySelector("strong").textContent;
+  const status = item.querySelector(".status");
+  const action = button.dataset.reviewAction;
+  if(action === "open"){
+    renderDoc(button.dataset.docOpen || "report");
+    showPage("outputs");
+    showToast("复核材料已打开", `${title} 的关联材料已切换到报告函件`);
+    return;
+  }
+  if(action === "approve"){
+    status.className = "status ok";
+    status.textContent = "已通过";
+    showToast("复核已通过", `${title} 已记录人工确认结果`);
+    return;
+  }
+  if(action === "reject"){
+    status.className = "status bad";
+    status.textContent = "已退回";
+    showToast("已退回修改", `${title} 已回到编辑处理队列`);
   }
 }
 
@@ -2142,10 +2219,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if(taskRow) renderSelectedTask(taskRow.dataset.task);
     const docTab = e.target.closest(".doc-tab");
     if(docTab) renderDoc(docTab.dataset.doc);
+    const hotAction = e.target.closest("[data-hot-task]");
+    if(hotAction) openTaskFromHotspot(hotAction.dataset.hotTask);
     const hotTab = e.target.closest("[data-hot-filter]");
     if(hotTab) renderHotspots(hotTab.dataset.hotFilter);
     const eventAction = e.target.closest(".event-action");
     if(eventAction) handleEventAction(eventAction.dataset.action);
+    const reviewAction = e.target.closest("[data-review-action]");
+    if(reviewAction) handleReviewAction(reviewAction);
     const knowledgeFilter = e.target.closest("[data-k-filter]");
     if(knowledgeFilter) {
       filterKnowledge(knowledgeFilter.dataset.kFilter);
@@ -2155,7 +2236,7 @@ document.addEventListener("DOMContentLoaded", () => {
   qs("#runBtn").addEventListener("click", runPipeline);
   qs("#resetBtn").addEventListener("click", resetPipeline);
   qs("#agentDemoBtn").addEventListener("click", () => { showPage("overview"); runPipeline(); });
-  qs("#batchRunBtn").addEventListener("click", () => showToast("批量处理已创建","5 条任务进入采集、研判、生成与审核队列"));
+  qs("#batchRunBtn").addEventListener("click", () => showToast("批量处理已创建","5 条任务进入采集、研判、生成与复核队列"));
   qs("#recheckBtn").addEventListener("click", () => { updateScore(); showToast("复核结果已刷新","已刷新脱敏、来源、事实、权限与人工确认检查项"); });
   qs("#addKnowledgeBtn").addEventListener("click", () => showToast("知识条目已进入入库流程","待完成脱敏、来源说明和权限校验"));
   qs("#exportDemoBtn").addEventListener("click", () => showToast("报告草稿已生成","报告已进入下载前复核状态"));
