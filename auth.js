@@ -33,7 +33,18 @@
       "d2a0c556a51b27e5a165ffc9b57638ca8ea1e256a4f2a47114a20ebf87c7cdb8",
     "media-asset-catalog":
       "8a25aa76f0f82ad107132629ce7a51f58d5f65916c5b82582b8075e6f312ba4c",
+    "positive-energy-situation-optimization":
+      "99a71ba25cb60402863f541504360aead30e8e86515e8fb80c605ebf395a99ba",
   };
+
+  var isLocalPreview =
+    location.protocol === "file:" ||
+    location.hostname === "localhost" ||
+    location.hostname === "127.0.0.1" ||
+    location.hostname === "0.0.0.0" ||
+    location.hostname === "::1" ||
+    location.hostname === "[::1]";
+  if (isLocalPreview) return;
 
   var projectKey = "root";
   var path = location.pathname;

@@ -1,0 +1,3757 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<script src="../auth.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>正能量态势感知优化项目 - 原型</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --primary:#0052D9;
+  --primary-600:#003EAA;
+  --primary-50:#E8F0FE;
+  --bg:#F5F7FA;
+  --panel:#FFFFFF;
+  --line:#E5E6EB;
+  --line-soft:#F2F3F5;
+  --text:#1D2129;
+  --muted:#4E5969;
+  --weak:#86909C;
+  --soft:#C9CDD4;
+  --green:#00A870;
+  --green-50:#E8F8F0;
+  --orange:#FF7D00;
+  --orange-50:#FFF3E0;
+  --red:#F53F3F;
+  --red-50:#FFECE8;
+  --cyan:#0E8A9E;
+  --cyan-50:#E8F7FA;
+  --header:64px;
+  --radius:8px;
+}
+html{font-size:14px}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+  color:var(--text);
+  background:var(--bg);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select{font:inherit}
+button{border:0;background:none;cursor:pointer}
+a{color:inherit;text-decoration:none}
+.app{min-height:100vh}
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:50;
+  height:var(--header);
+  background:#fff;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 18px;
+}
+.brand{display:flex;align-items:center;gap:12px;min-width:230px}
+.brand-mark{
+  width:36px;
+  height:36px;
+  border-radius:8px;
+  display:grid;
+  place-items:center;
+  background:var(--primary-50);
+  color:var(--primary);
+  font-weight:900;
+  box-shadow:inset 0 0 0 1px rgba(0,82,217,.14);
+}
+.brand-title{font-size:18px;font-weight:800;white-space:nowrap}
+.nav{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  overflow:auto hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+  scrollbar-color:var(--soft) transparent;
+}
+.nav::-webkit-scrollbar{height:4px}
+.nav::-webkit-scrollbar-thumb{background:var(--soft);border-radius:999px}
+.nav button{
+  position:relative;
+  height:var(--header);
+  padding:0 14px;
+  color:var(--muted);
+  white-space:nowrap;
+  font-weight:700;
+  scroll-snap-align:start;
+}
+.nav button:hover{color:var(--primary)}
+.nav-static{cursor:default}
+.nav-static:hover{color:var(--muted)}
+.nav button.active{color:var(--primary)}
+.nav button.active::after{
+  content:"";
+  position:absolute;
+  left:12px;
+  right:12px;
+  bottom:0;
+  height:3px;
+  background:var(--primary);
+  border-radius:3px 3px 0 0;
+}
+.user{display:flex;align-items:center;justify-content:flex-end;gap:10px;min-width:190px;color:var(--muted)}
+.avatar{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  background:var(--primary);
+  font-size:12px;
+  font-weight:800;
+}
+.shell{
+  width:min(1720px,calc(100% - 32px));
+  margin:0 auto;
+  padding:16px 0 28px;
+}
+.view{display:none}
+.view.active{display:block}
+.page-head{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:16px 18px;
+  margin-bottom:14px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+}
+.eyebrow{color:var(--weak);font-size:12px;margin-bottom:4px}
+.page-title{margin:0;font-size:20px;line-height:1.25;font-weight:800}
+.page-desc{margin:6px 0 0;color:var(--muted);max-width:760px}
+.head-actions,.inline-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.btn{
+  height:32px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:0 12px;
+  border:1px solid var(--line);
+  border-radius:4px;
+  color:var(--muted);
+  background:#fff;
+  font-weight:700;
+  white-space:nowrap;
+  transition:border-color .16s ease,color .16s ease,background-color .16s ease,opacity .16s ease;
+}
+.btn:hover{border-color:var(--primary);color:var(--primary)}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn.danger{background:var(--red-50);border-color:#FFD3CC;color:var(--red)}
+.btn.ghost{background:var(--primary-50);border-color:var(--primary-50);color:var(--primary)}
+.btn.small{height:28px;padding:0 9px;font-size:12px}
+.btn:focus-visible,.nav button:focus-visible,.check:focus-within{
+  outline:2px solid rgba(0,82,217,.32);
+  outline-offset:2px;
+}
+.btn:disabled,.btn.is-loading{opacity:.72;cursor:not-allowed}
+.btn.is-loading{position:relative}
+.btn-icon{
+  width:14px;
+  height:14px;
+  display:inline-block;
+  position:relative;
+}
+.btn-icon.add::before,.btn-icon.add::after{content:"";position:absolute;background:currentColor;border-radius:1px}
+.btn-icon.add::before{left:6px;top:1px;width:2px;height:12px}
+.btn-icon.add::after{left:1px;top:6px;width:12px;height:2px}
+.btn-icon.export::before{content:"";position:absolute;left:3px;right:3px;bottom:1px;height:5px;border:1.5px solid currentColor;border-top:0}
+.btn-icon.export::after{content:"";position:absolute;left:5px;top:1px;width:5px;height:9px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg)}
+.btn-icon.refresh::before{content:"";position:absolute;inset:1px;border:1.5px solid currentColor;border-left-color:transparent;border-radius:50%}
+.btn-icon.refresh::after{content:"";position:absolute;right:0;top:1px;width:5px;height:5px;border-top:1.5px solid currentColor;border-right:1.5px solid currentColor;transform:rotate(25deg)}
+.filter-panel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:12px 14px;
+  margin-bottom:14px;
+}
+.filters{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(120px,1fr)) minmax(180px,1.4fr);
+  gap:10px;
+  align-items:end;
+}
+.field{min-width:0}
+.field label{
+  display:block;
+  margin-bottom:5px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:700;
+}
+.input,.select{
+  width:100%;
+  height:32px;
+  border:1px solid var(--line);
+  border-radius:4px;
+  background:#fff;
+  color:var(--text);
+  padding:0 10px;
+  outline:0;
+}
+.input.invalid{border-color:var(--red);box-shadow:0 0 0 2px rgba(245,63,63,.12)}
+.input::placeholder{color:var(--soft)}
+.input:focus,.select:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(0,82,217,.12)}
+.date-range{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:8px;
+  align-items:center;
+}
+.date-range > span{color:var(--weak);font-weight:700}
+.date-point{display:grid;gap:5px;min-width:0}
+.date-point span{color:var(--muted);font-size:12px;font-weight:700}
+.kpi-grid{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:12px;
+  margin-bottom:14px;
+}
+.kpi-card{
+  min-width:0;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:14px;
+}
+.kpi-top{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--weak);font-size:12px}
+.kpi-badge{
+  width:30px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  border-radius:6px;
+  background:var(--primary-50);
+  color:var(--primary);
+  font-size:12px;
+  font-weight:900;
+}
+.kpi-badge.green{background:var(--green-50);color:var(--green)}
+.kpi-badge.orange{background:var(--orange-50);color:var(--orange)}
+.kpi-badge.cyan{background:var(--cyan-50);color:var(--cyan)}
+.kpi-badge.red{background:var(--red-50);color:var(--red)}
+.kpi-value{margin-top:8px;font-size:25px;line-height:1.1;font-weight:900;font-variant-numeric:tabular-nums}
+.kpi-value .unit{font-size:13px;color:var(--weak);font-weight:600;margin-left:2px}
+.kpi-foot{margin-top:8px;color:var(--weak);font-size:12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.trend-up{color:var(--green);font-weight:800}
+.trend-down{color:var(--red);font-weight:800}
+.layout-2{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 360px;
+  gap:14px;
+  align-items:start;
+}
+.layout-report{
+  display:grid;
+  grid-template-columns:420px minmax(0,1fr);
+  gap:14px;
+  align-items:start;
+}
+.panel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+.panel-head{
+  min-height:48px;
+  padding:0 14px;
+  border-bottom:1px solid var(--line-soft);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.panel-title{font-size:15px;font-weight:800}
+.panel-sub{margin-left:8px;color:var(--weak);font-size:12px;font-weight:500}
+.panel-body{padding:14px}
+.seg{
+  display:inline-flex;
+  border:1px solid var(--line);
+  border-radius:4px;
+  overflow:hidden;
+  background:#fff;
+}
+.seg button{
+  height:28px;
+  padding:0 10px;
+  color:var(--muted);
+  border-right:1px solid var(--line);
+  font-size:12px;
+  font-weight:700;
+}
+.seg button:last-child{border-right:0}
+.seg button.active{background:var(--primary);color:#fff}
+.table-wrap{
+  overflow:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+  scrollbar-color:var(--soft) transparent;
+}
+.table-wrap::-webkit-scrollbar{height:8px}
+.table-wrap::-webkit-scrollbar-thumb{background:#C9CDD4;border-radius:999px}
+.table-wrap::before{
+  content:"表格可左右滑动查看更多字段";
+  display:none;
+  position:sticky;
+  left:0;
+  top:0;
+  z-index:2;
+  width:max-content;
+  margin:8px 0 0 8px;
+  padding:3px 8px;
+  border:1px solid #D7E5FF;
+  border-radius:4px;
+  background:#F7FAFF;
+  color:var(--primary);
+  font-size:12px;
+  font-weight:700;
+  pointer-events:none;
+}
+.data-table{width:100%;border-collapse:collapse;min-width:980px}
+.data-table th{
+  height:40px;
+  padding:0 12px;
+  background:#FAFBFC;
+  border-bottom:1px solid var(--line-soft);
+  color:var(--muted);
+  font-size:12px;
+  text-align:left;
+  white-space:nowrap;
+}
+.data-table td{
+  padding:10px 12px;
+  border-bottom:1px solid var(--line-soft);
+  color:var(--muted);
+  vertical-align:middle;
+  white-space:nowrap;
+}
+.data-table tbody tr:hover{background:#FAFBFC}
+.data-table tbody tr.selected{background:var(--primary-50)}
+.td-account{display:flex;align-items:center;gap:10px;color:var(--text);min-width:0}
+.logo{
+  width:32px;
+  height:32px;
+  border-radius:6px;
+  display:grid;
+  place-items:center;
+  background:var(--primary-50);
+  color:var(--primary);
+  font-size:12px;
+  font-weight:900;
+  flex:0 0 auto;
+}
+.account-name{font-weight:800;color:var(--text)}
+.account-meta{margin-top:2px;color:var(--weak);font-size:12px}
+.tag{
+  height:22px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 8px;
+  border-radius:11px;
+  font-size:12px;
+  font-weight:800;
+  white-space:nowrap;
+}
+.tag.blue{background:var(--primary-50);color:var(--primary)}
+.tag.green{background:var(--green-50);color:var(--green)}
+.tag.orange{background:var(--orange-50);color:var(--orange)}
+.tag.red{background:var(--red-50);color:var(--red)}
+.tag.gray{background:#F2F3F5;color:var(--weak)}
+.num{font-variant-numeric:tabular-nums;color:var(--text);font-weight:800}
+.right{text-align:right}
+.center{text-align:center}
+.detail-card{
+  border:1px solid var(--line-soft);
+  border-radius:6px;
+  padding:12px;
+  background:#FAFBFC;
+  margin-bottom:12px;
+}
+.detail-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.detail-name{font-size:16px;font-weight:900}
+.detail-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+}
+.metric{
+  border:1px solid var(--line-soft);
+  border-radius:6px;
+  background:#fff;
+  padding:10px;
+}
+.metric span{display:block;color:var(--weak);font-size:12px}
+.metric strong{display:block;margin-top:5px;font-size:18px}
+.mini-list{display:grid;gap:8px}
+.mini-item{
+  border:1px solid var(--line-soft);
+  border-radius:6px;
+  padding:9px 10px;
+  background:#fff;
+}
+.mini-title{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini-meta{display:flex;justify-content:space-between;gap:8px;color:var(--weak);font-size:12px;margin-top:4px}
+.chart-grid{
+  display:grid;
+  grid-template-columns:1.25fr .9fr;
+  gap:14px;
+  margin-bottom:14px;
+}
+.bar-chart{
+  height:260px;
+  display:grid;
+  grid-template-columns:46px repeat(7,minmax(0,1fr));
+  grid-template-rows:1fr 30px;
+  border:1px solid var(--line-soft);
+  border-radius:6px;
+  overflow:hidden;
+  background:
+    linear-gradient(#fff,#fff),
+    repeating-linear-gradient(to top,transparent 0,transparent 51px,var(--line-soft) 52px);
+}
+.axis{
+  grid-row:1/2;
+  border-right:1px solid var(--line-soft);
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  justify-content:space-between;
+  padding:8px 8px 4px 0;
+  color:var(--soft);
+  font-size:11px;
+}
+.bar-cell{
+  grid-row:1/2;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  gap:5px;
+  padding:12px 5px 0;
+  border-right:1px solid var(--line-soft);
+}
+.bar-cell:last-of-type{border-right:0}
+.bar{
+  width:15px;
+  min-height:10px;
+  border-radius:3px 3px 0 0;
+}
+.bar.publish{background:var(--primary)}
+.bar.reach{background:var(--cyan)}
+.bar.interact{background:var(--orange)}
+.x-label{
+  grid-row:2/3;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--weak);
+  font-size:12px;
+  border-top:1px solid var(--line-soft);
+  border-right:1px solid var(--line-soft);
+}
+.x-label.first{grid-column:1/2;background:#FAFBFC}
+.legend{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:10px;color:var(--weak);font-size:12px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.legend .blue{background:var(--primary)}
+.legend .cyan{background:var(--cyan)}
+.legend .orange{background:var(--orange)}
+.rank-list{display:grid;gap:10px}
+.rank-row{
+  display:grid;
+  grid-template-columns:28px minmax(0,1fr) 70px;
+  gap:8px;
+  align-items:center;
+}
+.rank-num{
+  width:24px;
+  height:24px;
+  display:grid;
+  place-items:center;
+  border-radius:4px;
+  background:#F2F3F5;
+  color:var(--weak);
+  font-weight:900;
+}
+.rank-row:nth-child(-n+3) .rank-num{background:var(--primary-50);color:var(--primary)}
+.progress{
+  height:8px;
+  margin-top:5px;
+  border-radius:4px;
+  overflow:hidden;
+  background:#F2F3F5;
+}
+.progress i{display:block;height:100%;background:var(--primary);border-radius:4px}
+.topic-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+}
+.topic-card{
+  border:1px solid var(--line-soft);
+  border-radius:6px;
+  background:#fff;
+  padding:12px;
+}
+.topic-card strong{display:block;font-size:16px}
+.topic-card span{display:block;margin-top:4px;color:var(--weak);font-size:12px}
+.region-grid{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:8px;
+}
+.region{
+  border:1px solid var(--line-soft);
+  border-radius:6px;
+  padding:10px;
+  background:#FAFBFC;
+}
+.region strong{display:block}
+.region .barline{height:6px;border-radius:3px;background:#E5E6EB;margin-top:8px;overflow:hidden}
+.region .barline i{display:block;height:100%;background:var(--cyan)}
+.matrix-replica{
+  display:grid;
+  gap:14px;
+}
+.matrix-run-panel{
+  background:#fff;
+  border:1px solid var(--line-soft);
+  border-radius:8px;
+  padding:16px 18px 20px;
+}
+.matrix-titlebar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:10px;
+}
+.matrix-titlebar h1{
+  margin:0;
+  font-size:18px;
+  line-height:1.35;
+  font-weight:900;
+}
+.matrix-mode-tabs{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  color:var(--muted);
+  font-weight:900;
+}
+.matrix-mode-tabs button{
+  color:var(--muted);
+  font-weight:900;
+}
+.matrix-mode-tabs button.active{color:var(--primary)}
+.matrix-mode-tabs .split{width:1px;height:18px;background:var(--line)}
+.expand-corners{
+  width:26px;
+  height:26px;
+  position:relative;
+  color:var(--weak);
+}
+.expand-corners::before,
+.expand-corners::after{
+  content:"";
+  position:absolute;
+  inset:5px;
+  border:2px solid currentColor;
+  opacity:.7;
+}
+.expand-corners::before{clip-path:polygon(0 0,35% 0,35% 12%,12% 12%,12% 35%,0 35%,0 0,65% 0,100% 0,100% 35%,88% 35%,88% 12%,65% 12%)}
+.expand-corners::after{clip-path:polygon(0 65%,12% 65%,12% 88%,35% 88%,35% 100%,0 100%,0 65%,65% 88%,88% 88%,88% 65%,100% 65%,100% 100%,65% 100%)}
+.matrix-label{
+  margin:0 0 8px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:900;
+}
+.run-stat-grid{
+  display:grid;
+  grid-template-columns:1.08fr 1.08fr 1.08fr 1.08fr;
+  gap:18px;
+}
+.run-stat{
+  position:relative;
+  min-height:76px;
+  overflow:hidden;
+  border-radius:7px;
+  padding:12px 16px;
+  background:#F2F6FF;
+}
+.run-stat.pink{background:#FFF1F3}
+.run-stat.yellow{background:#FFF6E7}
+.run-stat.green{background:#E9FAF2}
+.run-stat::after{
+  content:"";
+  position:absolute;
+  right:18px;
+  bottom:-28px;
+  width:104px;
+  height:104px;
+  border:14px solid rgba(255,255,255,.52);
+  border-radius:50%;
+}
+.run-stat-title{
+  position:relative;
+  z-index:1;
+  display:flex;
+  align-items:center;
+  gap:4px;
+  color:var(--muted);
+  font-size:13px;
+  font-weight:800;
+}
+.matrix-help{
+  width:14px;
+  height:14px;
+  display:inline-grid;
+  place-items:center;
+  border-radius:50%;
+  background:rgba(29,33,41,.22);
+  color:#fff;
+  font-size:10px;
+  font-weight:900;
+}
+.run-stat-line{
+  position:relative;
+  z-index:1;
+  display:flex;
+  align-items:flex-end;
+  gap:10px;
+  margin-top:2px;
+}
+.run-stat-value{
+  color:var(--text);
+  font-size:32px;
+  line-height:1.1;
+  font-weight:900;
+  font-variant-numeric:tabular-nums;
+}
+.run-change{
+  display:grid;
+  gap:1px;
+  color:var(--weak);
+  font-size:12px;
+  line-height:1.2;
+}
+.run-change strong{color:#F53F3F;font-size:14px}
+.run-sub-values{
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns:repeat(2,max-content);
+  gap:8px 16px;
+  margin-top:2px;
+  color:var(--muted);
+  font-size:13px;
+}
+.run-sub-values b{color:var(--text);font-size:16px}
+.position-stat-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:18px;
+}
+.position-stat{
+  min-height:72px;
+  display:grid;
+  grid-template-columns:48px minmax(120px,1fr) 1px 72px;
+  align-items:center;
+  gap:12px;
+  border-radius:7px;
+  background:#F7F9FE;
+  padding:12px 18px;
+}
+.position-icon{
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  border-radius:8px;
+  color:#fff;
+  font-size:20px;
+  font-weight:900;
+}
+.position-icon.blue{background:linear-gradient(135deg,#1687F3,#55C6F4)}
+.position-icon.green{background:#38D66B}
+.position-icon.orange{background:#FFB33D}
+.position-name{
+  color:var(--muted);
+  font-size:16px;
+  font-weight:900;
+  white-space:nowrap;
+}
+.position-divider{height:32px;background:var(--line)}
+.position-value{
+  color:var(--text);
+  font-size:32px;
+  font-weight:900;
+  text-align:center;
+  font-variant-numeric:tabular-nums;
+}
+.matrix-board{
+  background:#fff;
+  border:1px solid var(--line-soft);
+  border-radius:8px;
+  overflow:hidden;
+}
+.matrix-board-head{
+  min-height:58px;
+  padding:0 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+}
+.matrix-board-tabs{
+  display:flex;
+  align-items:flex-end;
+  gap:26px;
+  align-self:stretch;
+}
+.matrix-board-tabs button{
+  position:relative;
+  color:var(--text);
+  font-size:16px;
+  font-weight:900;
+}
+.matrix-board-tabs button.active{color:var(--primary)}
+.matrix-board-tabs button.active::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:3px;
+  background:var(--primary);
+}
+.matrix-toolbar-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.matrix-filterbar{
+  padding:0 18px 12px;
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  align-items:center;
+  gap:12px 14px;
+}
+.matrix-filter{
+  display:grid;
+  grid-template-columns:max-content minmax(0,1fr);
+  align-items:center;
+  gap:6px;
+  min-width:0;
+}
+.matrix-filter label{
+  color:var(--text);
+  font-weight:800;
+  white-space:nowrap;
+}
+.matrix-filter .select{width:100%;color:var(--weak)}
+.matrix-filter .input{width:100%}
+.matrix-filter.search{
+  grid-column:span 2;
+  margin-left:0;
+}
+.matrix-table{min-width:1780px}
+.matrix-table th,.matrix-table td{height:40px}
+.matrix-table th{font-weight:900;color:var(--text)}
+.matrix-table td{font-size:13px}
+.matrix-table a{
+  color:#1687F3;
+  font-weight:800;
+}
+.status-dot{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  color:var(--green);
+  font-weight:800;
+}
+.status-dot::before{
+  content:"";
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:currentColor;
+}
+.table-action{
+  color:#1687F3;
+  font-weight:900;
+}
+.table-action::after{
+  content:"⌄";
+  margin-left:6px;
+  color:#9BBDF7;
+}
+.matrix-pagination{
+  min-height:60px;
+  padding:0 18px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  color:var(--muted);
+}
+.matrix-pagination .page-size{
+  width:112px;
+  height:32px;
+}
+.matrix-page-btn{
+  min-width:30px;
+  height:30px;
+  border-radius:4px;
+  background:#F7F8FA;
+  color:var(--muted);
+  font-weight:900;
+}
+.matrix-page-btn.active{background:var(--primary);color:#fff}
+.matrix-page-input{
+  width:58px;
+  height:32px;
+  border:1px solid var(--line);
+  border-radius:4px;
+  text-align:center;
+}
+.matrix-analysis{
+  width:min(1500px,100%);
+  margin:0 auto;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+.analysis-toolbar{
+  min-height:64px;
+  padding:14px 16px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  background:#fff;
+  border-bottom:1px solid var(--line-soft);
+}
+.analysis-toolbar-label{font-weight:800;color:var(--text);margin-right:2px}
+.range-tabs{
+  display:inline-flex;
+  border:1px solid var(--line);
+  border-radius:4px;
+  overflow:hidden;
+  background:#fff;
+}
+.range-tab{
+  height:34px;
+  min-width:66px;
+  padding:0 14px;
+  border-right:1px solid var(--line);
+  color:var(--muted);
+  font-weight:800;
+}
+.range-tab:last-child{border-right:0}
+.range-tab.active{background:var(--primary);color:#fff}
+.analysis-date-range{
+  height:34px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:0 12px;
+  border:1px solid var(--line);
+  border-radius:4px;
+  color:var(--muted);
+  background:#fff;
+  min-width:250px;
+}
+.analysis-body{padding:16px}
+.analysis-title{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:0 0 14px;
+  color:var(--text);
+  font-size:15px;
+  font-weight:900;
+}
+.analysis-title::before{
+  content:"";
+  width:4px;
+  height:18px;
+  border-radius:2px;
+  background:var(--primary);
+}
+.analysis-kpis{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:16px;
+  margin-bottom:20px;
+}
+.analysis-kpi{
+  min-height:82px;
+  display:grid;
+  place-items:center;
+  border-radius:8px;
+  background:#F7F8FC;
+  text-align:center;
+}
+.analysis-kpi span{display:block;color:var(--muted);font-weight:800}
+.analysis-kpi strong{display:block;margin-top:6px;color:var(--text);font-size:24px;line-height:1.1}
+.trend-chart{
+  height:300px;
+  border-bottom:1px solid var(--line-soft);
+  margin-bottom:14px;
+}
+.trend-chart svg{width:100%;height:100%;display:block}
+.channel-pills{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  padding:0 16px 8px;
+}
+.channel-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  min-height:30px;
+  padding:0 13px;
+  border-radius:16px;
+  color:#fff;
+  font-weight:900;
+}
+.channel-pill.purple{background:#7B35D5}
+.channel-pill.blue{background:#1687F3}
+.channel-pill.red{background:#F54848}
+.channel-pill.green{background:#25B722}
+.channel-pill.orange{background:#F59A11}
+.channel-pill.cyan{background:#1DBAC2}
+.channel-pill.light{background:#B9D9FF;color:var(--primary)}
+.analysis-section{
+  margin-top:16px;
+  padding-top:16px;
+  border-top:12px solid #F4F7FF;
+}
+.section-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
+  flex-wrap:wrap;
+}
+.analysis-tabs{
+  display:inline-flex;
+  align-items:center;
+  border:1px solid var(--line);
+  border-radius:4px;
+  overflow:hidden;
+  background:#fff;
+}
+.analysis-tabs button{
+  height:34px;
+  min-width:62px;
+  padding:0 14px;
+  border-right:1px solid var(--line);
+  color:var(--muted);
+  font-weight:800;
+}
+.analysis-tabs button:last-child{border-right:0}
+.analysis-tabs button.active{background:var(--primary);color:#fff}
+.section-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.section-actions .input{width:210px}
+.analytics-table{min-width:1120px}
+.analytics-table th{height:40px;background:#FAFBFC}
+.analytics-table .sortable::after{content:" ↕";color:var(--soft);font-weight:600}
+.inline-select{
+  height:34px;
+  min-width:154px;
+  border:1px solid var(--line);
+  border-radius:4px;
+  padding:0 10px;
+  background:#fff;
+  color:var(--muted);
+}
+.analysis-pager{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:14px 0 4px;
+}
+.analysis-pager button{
+  height:28px;
+  padding:0 12px;
+  border:1px solid var(--line);
+  border-radius:4px;
+  background:#fff;
+  color:var(--muted);
+}
+.analysis-pager button[disabled]{opacity:.55;cursor:not-allowed}
+.report-tools{
+  display:grid;
+  gap:12px;
+}
+.tool-block{
+  border:1px solid var(--line-soft);
+  border-radius:6px;
+  background:#FAFBFC;
+  padding:12px;
+}
+.tool-block h3{
+  margin:0 0 10px;
+  font-size:14px;
+}
+.check-list{display:grid;gap:8px}
+.check{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  min-height:34px;
+  padding:0 10px;
+  border:1px solid var(--line-soft);
+  border-radius:4px;
+  background:#fff;
+  color:var(--muted);
+}
+.check input{width:16px;height:16px;accent-color:var(--primary)}
+.report-status{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  margin-top:12px;
+  padding:9px 10px;
+  border:1px solid #D7E5FF;
+  border-radius:4px;
+  background:#F7FAFF;
+  color:var(--muted);
+  font-size:12px;
+}
+.report-status::before{
+  content:"";
+  flex:0 0 auto;
+  width:8px;
+  height:8px;
+  margin-top:5px;
+  border-radius:50%;
+  background:var(--primary);
+}
+.report-status.is-ok{border-color:#B8E6D2;background:var(--green-50);color:#176B4C}
+.report-status.is-ok::before{background:var(--green)}
+.report-status.is-error{border-color:#FFD3CC;background:var(--red-50);color:#A52828}
+.report-status.is-error::before{background:var(--red)}
+.report-status.is-working{border-color:#FFD9A6;background:var(--orange-50);color:#8A4B00}
+.report-status.is-working::before{background:var(--orange)}
+.report-preview{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:24px;
+}
+.report-cover{
+  border-bottom:3px solid var(--primary);
+  padding-bottom:16px;
+  margin-bottom:18px;
+}
+.report-cover h2{margin:0;font-size:26px;line-height:1.25}
+.report-period{margin-top:10px;color:var(--weak);font-size:14px}
+.report-section{margin-top:20px}
+.report-section h3{
+  margin:0 0 10px;
+  font-size:17px;
+  color:var(--text);
+}
+.report-section p{margin:0 0 10px;color:var(--muted)}
+.report-table-wrap{
+  overflow:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+  scrollbar-color:var(--soft) transparent;
+}
+.report-table-wrap::-webkit-scrollbar{height:8px}
+.report-table-wrap::-webkit-scrollbar-thumb{background:#C9CDD4;border-radius:999px}
+.report-table-wrap::before{
+  content:"报告表格可左右滑动查看";
+  display:none;
+  position:sticky;
+  left:0;
+  top:0;
+  z-index:2;
+  width:max-content;
+  margin:8px 0 0;
+  padding:3px 8px;
+  border:1px solid #D7E5FF;
+  border-radius:4px;
+  background:#F7FAFF;
+  color:var(--primary);
+  font-size:12px;
+  font-weight:700;
+  pointer-events:none;
+}
+.report-table{width:100%;min-width:640px;border-collapse:collapse;margin-top:10px}
+.report-table th{
+  background:var(--primary-50);
+  color:var(--primary);
+  font-weight:800;
+  text-align:left;
+  padding:9px 10px;
+  border:1px solid #D7E5FF;
+  white-space:nowrap;
+}
+.report-table td{
+  padding:9px 10px;
+  border:1px solid var(--line);
+  color:var(--muted);
+  vertical-align:top;
+}
+.report-note{
+  border-left:3px solid var(--orange);
+  background:var(--orange-50);
+  color:#8A4B00;
+  padding:10px 12px;
+  margin:12px 0;
+}
+.report-board{
+  width:min(1400px,100%);
+  margin:12px auto 0;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+.report-board-head{
+  min-height:66px;
+  padding:0 28px;
+  border-bottom:1px solid var(--line-soft);
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:18px;
+}
+.report-main-tabs,.report-type-tabs{display:flex;align-items:center;gap:28px}
+.report-type-tabs{align-self:center;gap:26px}
+.report-main-tab,.report-type-tab{
+  position:relative;
+  min-height:48px;
+  padding:0;
+  color:var(--muted);
+  font-weight:800;
+  background:transparent;
+}
+.report-type-tab{min-height:32px;color:#F53F3F}
+.report-main-tab.active{color:var(--primary)}
+.report-main-tab.active::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:3px;
+  border-radius:3px 3px 0 0;
+  background:var(--primary);
+}
+.report-type-tab.active::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-12px;
+  height:2px;
+  background:#F53F3F;
+}
+.report-list-tools{
+  padding:18px 28px 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.report-list-filter{display:flex;align-items:center;gap:8px;color:var(--weak)}
+.report-list-filter .input{width:132px}
+.report-list-filter .search{width:220px}
+.report-doc-grid{
+  padding:14px 28px 26px;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:22px 18px;
+}
+.report-doc-card{
+  position:relative;
+  min-height:150px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  overflow:hidden;
+  background:linear-gradient(180deg,#fff 0%,#F4F9FF 100%);
+  cursor:pointer;
+  transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease;
+}
+.report-doc-card:hover{
+  border-color:#BFD7FF;
+  box-shadow:0 8px 18px rgba(0,82,217,.08);
+  transform:translateY(-1px);
+}
+.report-doc-body{position:relative;z-index:1;padding:28px 30px}
+.report-doc-title{
+  margin:0;
+  color:var(--text);
+  font-size:24px;
+  line-height:1.25;
+  font-weight:900;
+}
+.report-doc-date{
+  margin-top:18px;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  color:var(--muted);
+  font-size:15px;
+  font-weight:800;
+}
+.report-doc-line{
+  width:96px;
+  height:1px;
+  background:var(--line);
+  margin-top:9px;
+}
+.report-doc-card::before{
+  content:"";
+  position:absolute;
+  right:18px;
+  bottom:-12px;
+  width:104px;
+  height:96px;
+  border:10px solid rgba(0,82,217,.06);
+  border-radius:10px;
+}
+.report-doc-card::after{
+  content:"";
+  position:absolute;
+  right:40px;
+  bottom:22px;
+  width:52px;
+  height:64px;
+  border:8px solid rgba(0,82,217,.06);
+  border-radius:8px;
+  box-shadow:28px 10px 0 rgba(0,82,217,.04);
+}
+.report-card-actions{
+  position:absolute;
+  top:14px;
+  right:14px;
+  z-index:3;
+  opacity:0;
+  transform:translateY(-4px);
+  transition:opacity .16s ease,transform .16s ease;
+}
+.report-doc-card:hover .report-card-actions,
+.report-doc-card:focus-within .report-card-actions{
+  opacity:1;
+  transform:translateY(0);
+}
+.report-preview-btn{
+  height:30px;
+  padding:0 12px;
+  border:1px solid #BFD7FF;
+  border-radius:4px;
+  background:#fff;
+  color:var(--primary);
+  font-size:12px;
+  font-weight:800;
+  box-shadow:0 4px 10px rgba(0,82,217,.08);
+}
+.report-preview-btn:hover{background:var(--primary);border-color:var(--primary);color:#fff}
+.report-list-empty{
+  display:none;
+  padding:44px 20px 58px;
+  text-align:center;
+  color:var(--weak);
+}
+.report-list-empty.show{display:block}
+.report-pagination{
+  min-height:56px;
+  padding:0 28px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  color:var(--muted);
+}
+.page-btn{
+  min-width:30px;
+  height:30px;
+  border:1px solid var(--line);
+  border-radius:4px;
+  background:#fff;
+  color:var(--muted);
+  font-weight:800;
+}
+.page-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.page-btn[disabled]{opacity:.45;cursor:not-allowed}
+.weekly-settings{
+  display:none;
+  width:min(1400px,100%);
+  margin:12px auto 0;
+}
+.weekly-settings.active{display:block}
+.weekly-settings-head{
+  min-height:58px;
+  padding:0 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+}
+.weekly-title-wrap{display:flex;align-items:center;gap:10px;min-width:0}
+.weekly-title-wrap h2{margin:0;font-size:18px;line-height:1.35}
+.weekly-period{color:var(--weak);font-size:13px;margin-top:2px}
+.weekly-settings-grid{
+  display:grid;
+  grid-template-columns:360px minmax(0,1fr);
+  gap:14px;
+}
+.weekly-steps{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+}
+.weekly-step{
+  border:1px solid var(--line-soft);
+  border-radius:6px;
+  padding:12px;
+  background:#FAFBFC;
+}
+.weekly-step strong{display:block;color:var(--text)}
+.weekly-step span{display:block;margin-top:4px;color:var(--weak);font-size:12px}
+.report-pick-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
+}
+.report-pick-summary{color:var(--weak);font-size:12px}
+.pick-tabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:10px;
+}
+.pick-tab{
+  min-height:30px;
+  padding:0 10px;
+  border:1px solid var(--line);
+  border-radius:4px;
+  background:#fff;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+}
+.pick-tab.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.pick-section{display:none}
+.pick-section.active{display:grid;gap:8px}
+.pick-row{
+  display:grid;
+  grid-template-columns:24px minmax(0,1fr) auto;
+  align-items:center;
+  gap:10px;
+  padding:10px;
+  border:1px solid var(--line-soft);
+  border-radius:6px;
+  background:#fff;
+}
+.pick-row.is-removed{
+  background:#FAFBFC;
+  opacity:.62;
+}
+.pick-row.is-removed .pick-title{text-decoration:line-through}
+.pick-check{width:16px;height:16px;accent-color:var(--primary)}
+.pick-title{font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pick-meta{margin-top:3px;color:var(--weak);font-size:12px;line-height:1.45}
+.pick-remove{
+  height:28px;
+  padding:0 9px;
+  border:1px solid var(--line);
+  border-radius:4px;
+  background:#fff;
+  color:var(--primary);
+  font-size:12px;
+  font-weight:800;
+}
+.pick-row.is-removed .pick-remove{color:var(--green)}
+.pick-remove:hover{border-color:var(--primary)}
+.pick-empty{
+  display:none;
+  padding:18px;
+  border:1px dashed var(--line);
+  border-radius:6px;
+  color:var(--weak);
+  text-align:center;
+}
+.pick-empty.show{display:block}
+.preview-modal-card{width:min(1040px,100%);max-height:86vh;display:flex;flex-direction:column}
+.preview-modal-body{overflow:auto}
+.preview-cover{border-bottom:3px solid var(--primary);padding-bottom:12px;margin-bottom:16px}
+.preview-cover h2{margin:0;font-size:24px}
+.preview-cover div{margin-top:8px;color:var(--weak);font-weight:700}
+.preview-summary-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin:12px 0 4px;
+}
+.preview-summary-item{
+  border:1px solid var(--line-soft);
+  border-radius:6px;
+  padding:10px;
+  background:#FAFBFC;
+}
+.preview-summary-grid[hidden]{display:none!important}
+.preview-summary-item strong{display:block;color:var(--text);font-size:18px}
+.preview-summary-item span{display:block;margin-top:3px;color:var(--weak);font-size:12px}
+.modal-body.preview-modal-body{
+  padding:18px;
+  background:#F4F5F7;
+}
+.report-manuscript{
+  width:min(820px,100%);
+  margin:0 auto;
+  padding:44px 52px 52px;
+  background:#fff;
+  border:1px solid #E5E6EB;
+  color:#000;
+  font-family:"Songti SC","STSong","SimSun",serif;
+  box-shadow:0 10px 28px rgba(29,33,41,.08);
+}
+.report-manuscript .preview-cover{
+  border-bottom:0;
+  margin:0 0 24px;
+  padding:0 0 16px;
+  text-align:center;
+}
+.report-manuscript .preview-cover h2{
+  color:#000;
+  font-family:"Songti SC","STSong","SimSun",serif;
+  font-size:30px;
+  line-height:1.35;
+}
+.report-manuscript .preview-cover div{
+  color:#333;
+  font-size:16px;
+  font-weight:400;
+}
+.report-manuscript .report-section{margin-top:34px}
+.report-manuscript .report-section:first-of-type{margin-top:0}
+.report-manuscript .report-section h3{
+  margin:0 0 16px;
+  color:#000;
+  font-family:"Songti SC","STSong","SimSun",serif;
+  font-size:28px;
+  line-height:1.35;
+  font-weight:900;
+}
+.report-manuscript .report-copy{
+  margin:0;
+  color:#000;
+  font-size:25px;
+  line-height:2;
+  text-indent:2em;
+  letter-spacing:0;
+}
+.report-manuscript .report-copy strong{font-weight:900}
+.emotion-figure{
+  margin:28px auto 8px;
+  width:min(560px,100%);
+}
+.emotion-svg{display:block;width:100%;height:auto}
+.figure-caption{
+  margin:8px 0 0;
+  color:#000;
+  text-align:center;
+  font-size:25px;
+  line-height:1.4;
+  font-weight:900;
+  font-family:"Songti SC","STSong","SimSun",serif;
+}
+.report-manuscript .report-table-wrap{margin-top:14px}
+.report-manuscript .report-table{
+  min-width:680px;
+  margin-top:12px;
+  color:#000;
+  font-family:"Songti SC","STSong","SimSun",serif;
+}
+.report-manuscript .report-table caption{
+  color:#000;
+  font-size:22px;
+  font-weight:900;
+  margin:8px 0 10px!important;
+}
+.report-manuscript .report-table th,
+.report-manuscript .report-table td{
+  border-color:#000;
+  color:#000;
+  background:#fff;
+  font-size:18px;
+  line-height:1.55;
+  text-align:center;
+}
+.report-manuscript .report-table th{font-weight:900}
+.modal{
+  position:absolute;
+  inset:0;
+  z-index:100;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:rgba(29,33,41,.38);
+}
+.modal.open{display:flex}
+.modal-card{
+  width:min(720px,100%);
+  background:#fff;
+  border-radius:8px;
+  border:1px solid var(--line);
+  overflow:hidden;
+}
+.modal-head{
+  min-height:52px;
+  padding:0 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid var(--line-soft);
+}
+.modal-title{font-size:16px;font-weight:900}
+.modal-body{padding:16px}
+.modal-foot{
+  min-height:54px;
+  padding:0 16px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+  background:#FAFBFC;
+  border-top:1px solid var(--line-soft);
+}
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.empty{
+  padding:24px;
+  text-align:center;
+  color:var(--weak);
+}
+.footnote{
+  padding:10px 14px;
+  color:var(--weak);
+  background:#FAFBFC;
+  border-top:1px solid var(--line-soft);
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+  font-size:12px;
+}
+.overview-grid,.quality-grid,.review-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  margin-bottom:14px;
+}
+.quality-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.review-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.flow-card,.quality-card{
+  min-width:0;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  background:#fff;
+  padding:14px;
+}
+.flow-step{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:24px;
+  height:24px;
+  border-radius:4px;
+  background:var(--primary-50);
+  color:var(--primary);
+  font-size:12px;
+  font-weight:900;
+}
+.review-item{
+  min-width:0;
+  padding-left:10px;
+  border-left:3px solid var(--primary);
+}
+.flow-card strong,.quality-card strong,.review-item strong{
+  display:block;
+  margin-top:8px;
+  color:var(--text);
+}
+.flow-card p,.quality-card p,.review-item p{
+  margin:6px 0 0;
+  color:var(--muted);
+  font-size:12px;
+}
+.quality-note{
+  border:1px solid #D7E5FF;
+  border-radius:6px;
+  background:#F7FAFF;
+  color:var(--muted);
+  padding:10px 12px;
+  font-size:12px;
+}
+.quality-note strong{display:block;color:var(--primary);margin-bottom:5px}
+.quality-note ul,.step-list{margin:0;padding-left:18px}
+.quality-note li,.step-list li{margin:4px 0}
+.step-list{
+  color:var(--muted);
+}
+.step-list strong{color:var(--text)}
+
+/* Embedded PRD layout */
+.app-split{display:flex;height:100vh;overflow:hidden;background:var(--bg)}
+.page-container{flex:1;min-width:0;position:relative;overflow:hidden;background:var(--bg)}
+.system-shell{height:100vh;position:relative;overflow:auto;background:var(--bg)}
+.split-drag{width:4px;cursor:col-resize;flex-shrink:0;background:var(--line-soft);transition:background .15s;position:relative;z-index:80}
+.split-drag:hover,.split-drag.dragging{background:var(--primary)}
+.split-drag::after{content:"";position:absolute;left:-3px;right:-3px;top:0;bottom:0}
+.prd-panel{width:460px;flex-shrink:0;display:flex;background:#fff;border-left:1px solid var(--line);transition:width .24s ease,opacity .24s ease;min-width:0}
+.prd-panel.collapsed{width:0;opacity:0;overflow:hidden;border-left:0}
+.prd-toc{width:174px;flex-shrink:0;border-right:1px solid var(--line-soft);background:#FAFBFC;overflow-y:auto;padding:14px 10px}
+.prd-toc-title{font-size:12px;font-weight:900;color:var(--text);margin:0 0 10px;padding:0 4px}
+.prd-toc button{display:block;width:100%;border:0;background:transparent;text-align:left;padding:7px 8px;border-radius:4px;color:var(--muted);font-size:12px;line-height:1.35;cursor:pointer}
+.prd-toc button:hover{background:var(--primary-50);color:var(--primary)}
+.prd-toc button.level-1{font-weight:800;color:var(--text)}
+.prd-toc button.level-2{padding-left:14px}
+.prd-toc button.level-3{padding-left:22px;color:var(--weak)}
+.prd-content{flex:1;min-width:0;overflow-y:auto;padding:22px 24px;color:var(--muted);font-size:14px;line-height:1.72}
+.prd-content h1{margin:0 0 12px!important;color:var(--text)!important;font-size:22px!important;line-height:1.3!important}
+.prd-content h2{margin:24px 0 10px!important;color:var(--text)!important;font-size:17px!important;border-bottom:1px solid var(--line-soft)!important;padding-bottom:7px!important}
+.prd-content h3{margin:18px 0 8px!important;color:var(--text)!important;font-size:15px!important}
+.prd-content h4{margin:14px 0 6px!important;color:var(--muted)!important;font-size:14px!important}
+.prd-content h5{margin:12px 0 6px!important;color:var(--muted)!important;font-size:13px!important}
+.prd-content p{margin:8px 0!important;color:var(--muted)!important}
+.prd-content code{background:#F2F3F5!important;color:var(--primary)!important;border-radius:4px!important;padding:1px 5px!important;font-family:ui-monospace,SFMono-Regular,Menlo,monospace!important;font-size:12px!important}
+.prd-content pre{background:#F7F8FA!important;border:1px solid var(--line-soft)!important;border-radius:6px!important;padding:12px!important;overflow:auto!important;font-size:12px!important;line-height:1.55!important}
+.prd-content pre code{background:transparent!important;color:var(--muted)!important;padding:0!important}
+.prd-content ul.prd-list{margin:8px 0 8px 20px!important;padding-left:0!important}
+.prd-content ul.prd-list>li{margin:6px 0!important;list-style:disc!important}
+.prd-content ul.prd-nested{margin:2px 0 2px 18px!important;padding-left:0!important;list-style:circle!important}
+.prd-content ul.prd-nested li{list-style:circle!important;font-size:13px!important;color:#555!important}
+.prd-content hr{border:none!important;border-top:1px solid var(--line-soft)!important;margin:16px 0!important}
+.prd-content table.prd-table{width:100%!important;border-collapse:collapse!important;margin:12px 0!important;font-size:13px!important}
+.prd-content table.prd-table th{background:#F7FAFF!important;padding:8px 10px!important;text-align:left!important;border:1px solid #D7E5FF!important;font-weight:800!important;color:var(--primary)!important;font-size:12px!important;white-space:nowrap!important}
+.prd-content table.prd-table td{padding:8px 10px!important;border:1px solid var(--line)!important;color:var(--muted)!important;font-size:13px!important;line-height:1.6!important;vertical-align:top!important}
+.top-controls{position:fixed;top:76px;right:14px;z-index:400;display:flex;align-items:center;gap:8px}
+.prd-toggle,.changelog-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;background:#fff;border:1px solid var(--line);border-radius:14px;font-size:12px;color:var(--muted);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.08);transition:all .2s;white-space:nowrap}
+.prd-toggle:hover,.changelog-btn:hover{border-color:var(--primary);color:var(--primary)}
+.prd-toggle .toggle-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
+.changelog-overlay{display:none;position:fixed;inset:0;background:rgba(29,33,41,.34);z-index:500}
+.changelog-overlay.show{display:block}
+.changelog-modal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(620px,calc(100% - 32px));max-height:72vh;background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.16);z-index:501;overflow:hidden}
+.changelog-modal.show{display:flex;flex-direction:column}
+.changelog-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line-soft)}
+.changelog-header h3{font-size:15px;font-weight:800;margin:0;color:var(--text)}
+.changelog-close{background:none;border:none;font-size:20px;color:var(--weak);cursor:pointer;padding:0 4px;line-height:1}
+.changelog-close:hover{color:var(--text)}
+.changelog-body{flex:1;overflow-y:auto;padding:16px 20px}
+.changelog-table{width:100%;border-collapse:collapse;font-size:13px}
+.changelog-table th{text-align:left;padding:8px 10px;background:#F7F8FA;color:var(--muted);font-weight:800;border-bottom:1px solid var(--line-soft)}
+.changelog-table td{padding:9px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top;color:var(--muted)}
+.changelog-table td:first-child{white-space:nowrap;color:var(--weak);font-size:12px}
+.changelog-table tr:last-child td{border-bottom:0}
+@media (max-width:1100px){.prd-panel,.split-drag{display:none}.top-controls{top:auto;right:12px;bottom:12px}.prd-toggle{display:none}}
+
+@media (max-width:1280px){
+  .kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .layout-2,.layout-report,.chart-grid{grid-template-columns:1fr}
+  .run-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .position-stat-grid{grid-template-columns:1fr}
+  .report-doc-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .weekly-settings-grid{grid-template-columns:1fr}
+  .analysis-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .filters{grid-template-columns:repeat(3,minmax(120px,1fr))}
+  .overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  .topbar{
+    height:auto;
+    min-height:var(--header);
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    align-items:center;
+    gap:8px;
+    padding:10px 12px 8px;
+  }
+  .brand,.user{min-width:0}
+  .brand{gap:8px}
+  .brand-mark{width:32px;height:32px}
+  .brand-title{font-size:16px;overflow:hidden;text-overflow:ellipsis}
+  .user{justify-content:flex-end}
+  .user span{display:none}
+  .avatar{width:30px;height:30px}
+  .nav{
+    grid-column:1/-1;
+    width:100%;
+    justify-content:flex-start;
+    padding-top:6px;
+    border-top:1px solid var(--line-soft);
+    scroll-snap-type:x proximity;
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 32px),transparent);
+    mask-image:linear-gradient(90deg,#000 calc(100% - 32px),transparent);
+  }
+  .nav button{height:44px;padding:0 12px}
+  .shell{width:min(100% - 20px,1720px);padding-top:10px}
+  .page-head{flex-direction:column}
+  .head-actions{width:100%;justify-content:stretch}
+  .head-actions .btn{min-height:40px;flex:1 1 calc(50% - 8px)}
+  .matrix-run-panel{padding:14px}
+  .matrix-titlebar{align-items:flex-start;flex-direction:column}
+  .matrix-mode-tabs{width:100%;overflow:auto}
+  .run-stat-grid,.position-stat-grid{grid-template-columns:1fr}
+  .position-stat{grid-template-columns:44px minmax(0,1fr) 1px 68px;padding:10px 12px}
+  .position-name{white-space:normal}
+  .position-name{font-size:14px}
+  .position-value{font-size:24px}
+  .matrix-board-head{align-items:flex-start;flex-direction:column;padding:12px 14px}
+  .matrix-board-tabs{gap:20px;min-height:38px}
+  .matrix-toolbar-actions{width:100%;justify-content:flex-start}
+  .matrix-filterbar{padding:0 14px 12px;align-items:stretch}
+  .matrix-filterbar{grid-template-columns:1fr}
+  .matrix-filter,.matrix-filter.search{width:100%;margin-left:0}
+  .matrix-filter .select,.matrix-filter .input{width:100%}
+  .matrix-filter label{min-width:64px}
+  .matrix-pagination{justify-content:flex-start;overflow:auto;padding:10px 14px}
+  .filters,.kpi-grid,.topic-grid,.region-grid,.form-grid{grid-template-columns:1fr}
+  .analysis-body{padding:12px}
+  .analysis-toolbar{align-items:stretch}
+  .range-tabs,.analysis-date-range,.analysis-tabs{width:100%;overflow:auto}
+  .range-tab,.analysis-tabs button{flex:1 0 auto}
+  .analysis-kpis{grid-template-columns:1fr}
+  .trend-chart{height:230px}
+  .section-toolbar{align-items:stretch}
+  .section-actions,.section-actions .input,.inline-select{width:100%}
+  .channel-pills{padding:0 0 8px}
+  .overview-grid,.quality-grid,.review-grid{grid-template-columns:1fr}
+  .date-range{grid-template-columns:1fr}
+  .date-range > span{display:none}
+  .report-range{gap:10px}
+  .report-board{margin-top:4px}
+  .report-board-head{
+    min-height:auto;
+    padding:12px 14px 0;
+    align-items:stretch;
+    flex-direction:column;
+    gap:8px;
+  }
+  .report-main-tabs,.report-type-tabs{gap:22px;overflow:auto hidden}
+  .report-type-tabs{align-self:flex-start}
+  .report-main-tab{min-height:42px}
+  .report-type-tab.active::after{bottom:-5px}
+  .report-list-tools{padding:14px;align-items:stretch}
+  .report-list-filter{width:100%;flex-wrap:wrap}
+  .report-list-filter .input{width:calc(50% - 22px)}
+  .report-list-filter .search{width:100%}
+  .report-doc-grid{grid-template-columns:1fr;padding:8px 14px 18px;gap:12px}
+  .report-doc-card{min-height:136px}
+  .report-doc-body{padding:24px 22px}
+  .report-doc-title{font-size:22px}
+  .report-card-actions{opacity:1;transform:none}
+  .report-preview-btn{height:32px}
+  .report-pagination{padding:0 14px 18px;justify-content:flex-start;overflow:auto}
+  .weekly-settings{margin-top:4px}
+  .weekly-settings-head{align-items:flex-start;flex-direction:column;padding:12px}
+  .weekly-title-wrap{align-items:flex-start}
+  .weekly-settings-grid,.weekly-steps{grid-template-columns:1fr}
+  .preview-modal-card{max-height:92vh}
+  .check{min-height:44px;padding:6px 10px}
+  .check input{width:20px;height:20px}
+  .table-wrap::before{display:inline-flex}
+  .report-table-wrap::before{display:inline-flex}
+  .report-preview{padding:16px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<div class="app-split">
+  <div class="page-container">
+<div class="app system-shell">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">PE</div>
+      <div class="brand-title">正能量态势感知平台</div>
+    </div>
+    <nav class="nav" aria-label="主导航">
+      <button type="button" class="nav-static" aria-disabled="true">驾驶舱</button>
+      <button type="button" class="nav-static" aria-disabled="true">正能量看板</button>
+      <button type="button" class="nav-static" aria-disabled="true">正能量稿件</button>
+      <button type="button" class="nav-static" aria-disabled="true">正能量热榜</button>
+      <button type="button" class="nav-link" data-view="weekly">正能量热点日报</button>
+      <button type="button" class="nav-static" aria-disabled="true">热点管理</button>
+      <button type="button" class="nav-static" aria-disabled="true">管理中心</button>
+      <button type="button" class="nav-static" aria-disabled="true">主题监测</button>
+      <button type="button" class="nav-link active" data-view="matrix">正能量矩阵</button>
+      <button type="button" class="nav-link" data-view="analysis">矩阵传播分析</button>
+    </nav>
+    <div class="user">
+      <span>舟山市网信办</span>
+      <div class="avatar">舟</div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section id="view-matrix" class="view active" data-focus-id="matrix">
+      <div class="matrix-replica">
+        <div class="matrix-run-panel">
+          <div class="matrix-titlebar">
+            <h1>账号运行情况统计</h1>
+            <div class="matrix-mode-tabs" aria-label="运营类型">
+              <button type="button">全部</button>
+              <span class="split"></span>
+              <button type="button" class="active">自主运营</button>
+              <span class="split"></span>
+              <button type="button">代运营</button>
+              <span class="expand-corners" aria-hidden="true"></span>
+            </div>
+          </div>
+          <p class="matrix-label">状态</p>
+          <div class="run-stat-grid">
+            <div class="run-stat blue">
+              <div class="run-stat-title">正常运行账号</div>
+              <div class="run-stat-line"><div class="run-stat-value">325</div></div>
+            </div>
+            <div class="run-stat pink">
+              <div class="run-stat-title">停更账号 <span class="matrix-help">?</span></div>
+              <div class="run-stat-line"><div class="run-stat-value">5</div><div class="run-change"><strong>+5</strong><span>较上月</span></div></div>
+            </div>
+            <div class="run-stat yellow">
+              <div class="run-stat-title">待注销账号</div>
+              <div class="run-stat-line"><div class="run-stat-value">0</div><div class="run-change"><span>--</span><span>较上月</span></div></div>
+            </div>
+            <div class="run-stat green">
+              <div class="run-stat-title">已注销、关停账号</div>
+              <div class="run-stat-line">
+                <div class="run-stat-value">13</div>
+                <div class="run-change"><strong>+13</strong><span>较上月</span></div>
+                <div class="run-sub-values"><span>已注销：<b>1</b></span><span>+1</span><span>已关停：<b>12</b></span><span>+12</span></div>
+              </div>
+            </div>
+          </div>
+
+          <p class="matrix-label" style="margin-top:12px">内容定位 <span class="matrix-help">?</span></p>
+          <div class="position-stat-grid">
+            <div class="position-stat">
+              <span class="position-icon blue">◎</span>
+              <span class="position-name">采编账号</span>
+              <span class="position-divider"></span>
+              <span class="position-value">330</span>
+            </div>
+            <div class="position-stat">
+              <span class="position-icon green">▰</span>
+              <span class="position-name">经营账号</span>
+              <span class="position-divider"></span>
+              <span class="position-value">0</span>
+            </div>
+            <div class="position-stat">
+              <span class="position-icon orange">↗</span>
+              <span class="position-name">内部信息发布账号</span>
+              <span class="position-divider"></span>
+              <span class="position-value">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="matrix-board">
+          <div class="matrix-board-head">
+            <div class="matrix-board-tabs" role="tablist" aria-label="矩阵管理页签">
+              <button type="button" class="active">新媒体矩阵</button>
+              <button type="button">状态变更审核</button>
+            </div>
+            <div class="matrix-toolbar-actions">
+              <button class="btn primary" id="openCreate" type="button"><span class="btn-icon add"></span>新建</button>
+              <button class="btn" type="button">删除</button>
+              <button class="btn" type="button"><span class="btn-icon export"></span>导出</button>
+            </div>
+          </div>
+          <div class="matrix-filterbar">
+            <div class="matrix-filter"><label>所属部门</label><select class="select"><option>请选择</option></select></div>
+            <div class="matrix-filter"><label>媒体类型</label><select class="select"><option>请选择</option></select></div>
+            <div class="matrix-filter"><label>运行情况</label><select class="select"><option>请选择</option></select></div>
+            <div class="matrix-filter"><label>所属圈层</label><select class="select"><option>请选择</option></select></div>
+            <div class="matrix-filter"><label>采集情况</label><select class="select"><option>请选择</option></select></div>
+            <div class="matrix-filter"><label>属性</label><select class="select"><option>请选择</option></select></div>
+            <div class="matrix-filter search"><input class="input" placeholder="请输入关键字搜索"></div>
+            <div class="matrix-filter"><label>是否认证</label><select class="select"><option>请选择</option></select></div>
+            <div class="matrix-filter"><label>内容定位</label><select class="select"><option>请选择</option></select></div>
+            <div class="matrix-filter"><label>自主情况</label><select class="select"><option>请选择</option></select></div>
+            <div class="matrix-filter"><label>变更记录</label><select class="select"><option>请选择</option></select></div>
+            <div class="matrix-filter"><label>是否已读</label><select class="select"><option>请选择</option></select></div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table matrix-table">
+              <thead>
+                <tr>
+                  <th class="center"><input type="checkbox" aria-label="全选"></th>
+                  <th>序号</th>
+                  <th>账号名称</th>
+                  <th>媒体类型</th>
+                  <th>子类型</th>
+                  <th>所属部门</th>
+                  <th>属性</th>
+                  <th>是否认证</th>
+                  <th>内容定位</th>
+                  <th>运行情况</th>
+                  <th>自主情况</th>
+                  <th>运维负责人</th>
+                  <th>联系方式</th>
+                  <th class="right sortable">粉丝数</th>
+                  <th>采集情况</th>
+                  <th class="sortable">上次发稿时间</th>
+                  <th class="sortable">最新操作时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第1行"></td><td>1</td><td><a href="#">新舟山</a></td><td>视频号</td><td>视频号</td><td>舟山市新闻传媒中心</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">市新闻传媒中心-王...</a></td><td><a href="#">0580-2281956</a></td><td class="right">35.6万</td><td>自动采集</td><td>2026-06-17 15:58:52</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第2行"></td><td>2</td><td><a href="#">舟山发布</a></td><td>微信</td><td>微信</td><td>舟山市人民政府新闻办</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>--</td><td><a href="#">市新闻办-周...</a></td><td><a href="#">0580-2282110</a></td><td class="right">48.12万</td><td>自动采集</td><td>2026-06-17 19:45:01</td><td>2025-12-03 17:00:41</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第3行"></td><td>3</td><td><a href="#">舟山广电</a></td><td>其他</td><td>百家号</td><td>舟山市广播电视总台</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山广电融媒...</a></td><td><a href="#">0580-2286508</a></td><td class="right">18.8万</td><td>自动采集</td><td>2026-06-18 11:21:00</td><td>2025-11-13 16:18:04</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第4行"></td><td>4</td><td><a href="#">定海山</a></td><td>其他</td><td>人民号</td><td>定海区融媒体中心</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">定海融媒-张...</a></td><td><a href="#">0580-2026178</a></td><td class="right">12.4万</td><td>自动采集</td><td>2026-06-08 18:40:00</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第5行"></td><td>5</td><td><a href="#">普陀新闻网</a></td><td>抖音</td><td>抖音</td><td>普陀区融媒体中心</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">普陀融媒-李...</a></td><td><a href="#">0580-3019786</a></td><td class="right">26.5万</td><td>自动采集</td><td>2026-06-15 10:26:53</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第6行"></td><td>6</td><td><a href="#">仙岛岱山</a></td><td>微博</td><td>微博</td><td>岱山县融媒体中心</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">岱山融媒-陈...</a></td><td><a href="#">0580-4480901</a></td><td class="right">9.7万</td><td>自动采集</td><td>2026-06-17 16:41:34</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第7行"></td><td>7</td><td><a href="#">最嵊泗</a></td><td>抖音</td><td>抖音</td><td>嵊泗县融媒体中心</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">嵊泗融媒-沈...</a></td><td><a href="#">0580-5081234</a></td><td class="right">8.2万</td><td>自动采集</td><td>2026-06-17 17:30:53</td><td>2026-01-29 14:27:09</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第8行"></td><td>8</td><td><a href="#">舟山文旅</a></td><td>微博</td><td>微博</td><td>舟山市文化和广电旅游体育局</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山文旅-林...</a></td><td><a href="#">0580-2281320</a></td><td class="right">22.9万</td><td>自动采集</td><td>2026-06-17 22:00:00</td><td>2026-01-29 14:27:44</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第9行"></td><td>9</td><td><a href="#">舟山交通</a></td><td>微信</td><td>微信</td><td>舟山市交通运输局</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">市交通运输局-许...</a></td><td><a href="#">0580-2280912</a></td><td class="right">6.8万</td><td>自动采集</td><td>2026-06-17 19:41:41</td><td>2026-01-26 15:48:38</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第10行"></td><td>10</td><td><a href="#">舟山公安</a></td><td>视频号</td><td>视频号</td><td>舟山市公安局</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山市公安局-方...</a></td><td><a href="#">0580-2070110</a></td><td class="right">15.1万</td><td>自动采集</td><td>2026-06-17 09:00:01</td><td>2026-01-26 15:48:55</td><td><button class="table-action" type="button">操作</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="matrix-pagination">
+            <span>共 385 条</span>
+            <select class="select page-size"><option>10条/页</option></select>
+            <button class="matrix-page-btn" disabled type="button">‹</button>
+            <button class="matrix-page-btn active" type="button">1</button>
+            <button class="matrix-page-btn" type="button">2</button>
+            <button class="matrix-page-btn" type="button">3</button>
+            <button class="matrix-page-btn" type="button">4</button>
+            <button class="matrix-page-btn" type="button">5</button>
+            <button class="matrix-page-btn" type="button">6</button>
+            <span>...</span>
+            <button class="matrix-page-btn" type="button">39</button>
+            <button class="matrix-page-btn" type="button">›</button>
+            <span>前往</span><input class="matrix-page-input" value="1" aria-label="跳转页码"><span>页</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-analysis" class="view" data-focus-id="analysis">
+      <div class="matrix-analysis">
+        <div class="analysis-toolbar">
+          <span class="analysis-toolbar-label">时间范围</span>
+          <div class="range-tabs" aria-label="时间范围">
+            <button class="range-tab" type="button">昨日</button>
+            <button class="range-tab" type="button">近7天</button>
+            <button class="range-tab" type="button">近30天</button>
+            <button class="range-tab active" type="button">全年</button>
+          </div>
+          <div class="analysis-date-range">2026-01-01 <span>~</span> 2026-06-18</div>
+        </div>
+        <div class="analysis-body">
+          <h2 class="analysis-title">传播力总览</h2>
+          <div class="analysis-kpis">
+            <div class="analysis-kpi"><span>发稿数</span><strong>1.12万</strong></div>
+            <div class="analysis-kpi"><span>总互动量</span><strong>233.29万</strong></div>
+            <div class="analysis-kpi"><span>点赞数</span><strong>124.13万</strong></div>
+            <div class="analysis-kpi"><span>评论数</span><strong>16.17万</strong></div>
+            <div class="analysis-kpi"><span>转发数</span><strong>90.65万</strong></div>
+          </div>
+
+          <h2 class="analysis-title">传播力变化趋势</h2>
+          <div class="trend-chart" aria-label="传播力变化趋势图">
+            <svg viewBox="0 0 1180 300" role="img" aria-label="多平台传播力趋势折线图">
+              <g stroke="#EEF0F5" stroke-width="1">
+                <line x1="38" y1="20" x2="1160" y2="20"/><line x1="38" y1="70" x2="1160" y2="70"/><line x1="38" y1="120" x2="1160" y2="120"/><line x1="38" y1="170" x2="1160" y2="170"/><line x1="38" y1="220" x2="1160" y2="220"/><line x1="38" y1="260" x2="1160" y2="260"/>
+              </g>
+              <g fill="#9AA1AD" font-size="12"><text x="10" y="24">600</text><text x="10" y="74">500</text><text x="10" y="124">400</text><text x="10" y="174">300</text><text x="10" y="224">100</text><text x="16" y="264">0</text></g>
+              <polyline fill="none" stroke="#7B35D5" stroke-width="3" points="38,236 66,246 94,214 122,220 150,213 178,205 206,205 234,154 262,88 290,42 318,58 346,105 374,153 402,42 430,24 458,46 486,140 514,132 542,26 570,24 598,25 626,40 654,150 682,46 710,54 738,252 766,258 794,258 822,258 850,258 878,258 906,258 934,258 962,258 990,258 1018,258 1046,258 1074,258 1102,258 1130,258 1160,256"/>
+              <polyline fill="none" stroke="#1DBAC2" stroke-width="3" points="38,248 66,256 94,246 122,246 150,246 178,230 206,226 234,215 262,196 290,188 318,198 346,230 374,234 402,164 430,146 458,166 486,190 514,190 542,150 570,146 598,148 626,146 654,228 682,156 710,228 738,258 766,258 794,258 822,258 850,258 878,258 906,258 934,258 962,258 990,258 1018,258 1046,258 1074,258 1102,258 1130,258 1160,256"/>
+              <polyline fill="none" stroke="#1687F3" stroke-width="2.5" points="38,252 66,256 94,246 122,244 150,244 178,224 206,222 234,186 262,178 290,170 318,188 346,220 374,198 402,178 430,174 458,178 486,184 514,176 542,174 570,168 598,172 626,178 654,224 682,168 710,212 738,258 1160,258"/>
+              <polyline fill="none" stroke="#F54848" stroke-width="2.5" points="38,254 66,258 94,250 122,250 150,246 178,238 206,226 234,210 262,210 290,196 318,214 346,230 374,200 402,186 430,184 458,188 486,208 514,198 542,190 570,190 598,186 626,188 654,228 682,196 710,178 738,258 1160,258"/>
+              <polyline fill="none" stroke="#25B722" stroke-width="2.5" points="38,258 66,260 94,254 122,252 150,252 178,246 206,238 234,232 262,222 290,218 318,226 346,236 374,230 402,218 430,218 458,226 486,236 514,226 542,216 570,214 598,216 626,218 654,236 682,224 710,238 738,260 1160,260"/>
+              <polyline fill="none" stroke="#F59A11" stroke-width="2.5" points="38,260 66,260 94,258 122,258 150,258 178,256 206,252 234,248 262,244 290,246 318,248 346,252 374,248 402,244 430,244 458,248 486,252 514,246 542,242 570,240 598,242 626,244 654,252 682,246 710,250 738,260 1160,260"/>
+              <g fill="#9AA1AD" font-size="12">
+                <text x="24" y="286">01/01</text><text x="126" y="286">01/07</text><text x="232" y="286">01/13</text><text x="338" y="286">01/19</text><text x="444" y="286">01/25</text><text x="550" y="286">01/31</text><text x="656" y="286">02/03</text><text x="762" y="286">02/09</text><text x="868" y="286">02/15</text><text x="974" y="286">02/21</text><text x="1080" y="286">03/11</text>
+              </g>
+            </svg>
+          </div>
+          <div class="channel-pills">
+            <span class="channel-pill purple">全部 11,219</span>
+            <span class="channel-pill blue">微信 2,970</span>
+            <span class="channel-pill red">微博 2,254</span>
+            <span class="channel-pill green">抖音 1,143</span>
+            <span class="channel-pill orange">视频号 326</span>
+            <span class="channel-pill cyan">其他 4,526</span>
+            <span class="channel-pill light">全选</span>
+          </div>
+
+          <div class="analysis-section">
+            <h2 class="analysis-title">账号传播详情</h2>
+            <div class="section-toolbar">
+              <div class="analysis-tabs" aria-label="账号平台">
+                <button class="active" type="button">微信</button><button type="button">微博</button><button type="button">抖音</button><button type="button">视频号</button><button type="button">其他</button>
+              </div>
+              <div class="section-actions">
+                <input class="input" placeholder="搜索账号名称">
+                <button class="btn"><span class="btn-icon export"></span>导出</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table analytics-table">
+                <thead><tr><th>序号</th><th>账号名称</th><th>所属平台</th><th class="right sortable">发稿数</th><th class="right sortable">点赞数</th><th class="right sortable">阅读数</th><th class="right sortable">转发数</th><th class="right sortable">在看数</th><th class="right sortable">总互动量</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td><strong>钱江晚报</strong></td><td>微信公众号</td><td class="right">1,868</td><td class="right">63,570</td><td class="right">16,426,013</td><td class="right">235,446</td><td class="right">19,832</td><td class="right num">318,848</td></tr>
+                  <tr><td>2</td><td><strong>浙江新闻</strong></td><td>微信公众号</td><td class="right">326</td><td class="right">8,433</td><td class="right">2,260,024</td><td class="right">42,307</td><td class="right">2,736</td><td class="right num">53,476</td></tr>
+                  <tr><td>3</td><td><strong>潮新闻</strong></td><td>微信公众号</td><td class="right">189</td><td class="right">2,780</td><td class="right">482,219</td><td class="right">6,082</td><td class="right">1,225</td><td class="right num">10,087</td></tr>
+                  <tr><td>4</td><td><strong>浙江在线</strong></td><td>微信公众号</td><td class="right">262</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td></tr>
+                  <tr><td>5</td><td><strong>浙江发布</strong></td><td>微信公众号</td><td class="right">179</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td></tr>
+                  <tr><td>6</td><td><strong>盐城市总工会</strong></td><td>微信公众号</td><td class="right">67</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td></tr>
+                  <tr><td>7</td><td><strong>盐城人大</strong></td><td>微信公众号</td><td class="right">56</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td></tr>
+                  <tr><td>8</td><td><strong>盐城机关党员之家</strong></td><td>微信公众号</td><td class="right">23</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="analysis-pager"><button disabled>上一页</button><button>下一页</button></div>
+          </div>
+
+          <div class="analysis-section">
+            <h2 class="analysis-title">稿件传播明细</h2>
+            <div class="section-toolbar">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                <div class="analysis-tabs" aria-label="稿件平台">
+                  <button class="active" type="button">微信</button><button type="button">微博</button><button type="button">抖音</button><button type="button">视频号</button><button type="button">其他</button>
+                </div>
+                <label style="display:flex;align-items:center;gap:8px;color:var(--muted)">账号：<select class="inline-select"><option>全部</option><option>钱江晚报</option><option>浙江新闻</option><option>潮新闻</option></select></label>
+              </div>
+              <div class="section-actions">
+                <input class="input" placeholder="搜索稿件标题">
+                <button class="btn"><span class="btn-icon export"></span>导出</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table analytics-table">
+                <thead><tr><th>稿件标题</th><th>所属账号</th><th>所属平台</th><th class="sortable">发布日期</th><th class="right sortable">点赞数</th><th class="right sortable">阅读数</th><th class="right sortable">转发数</th><th class="right sortable">在看数</th><th class="right sortable">总互动量</th></tr></thead>
+                <tbody>
+                  <tr><td>给“留守植物”浇水，一次5元！女孩一年去了100个陌生人家</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">2</td><td class="right">145</td><td class="right">5</td><td class="right">1</td><td class="right">8</td></tr>
+                  <tr><td>男子偷偷买金手镯藏在碗底给老婆惊喜，紧张的笑声差点露馅：别人...</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">1</td><td class="right">175</td><td class="right">2</td><td class="right">1</td><td class="right">4</td></tr>
+                  <tr><td>俞灏明自曝曾因脸部烧伤被剧组拒绝：不能再做“靠脸吃饭”的偶像，...</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">3</td><td class="right">169</td><td class="right">1</td><td class="right">1</td><td class="right">5</td></tr>
+                  <tr><td>先送20万现金，再取1公斤黄金！浙江阿姨深信不疑，民警急劝4小时...</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">9</td><td class="right">2,035</td><td class="right">17</td><td class="right">2</td><td class="right">28</td></tr>
+                  <tr><td>河南一男一女坠河，女子被救上岸，男子不幸溺亡，派出所工作人员...</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">1</td><td class="right">146</td><td class="right">1</td><td class="right">1</td><td class="right">3</td></tr>
+                  <tr><td>罕见现场！东部沿海阵地，导弹全时竖立，战士们的手一直在按键上...</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">1</td><td class="right">62</td><td class="right">1</td><td class="right">1</td><td class="right">3</td></tr>
+                  <tr><td>-8℃！浙江将迎大雪、暴雪</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">4</td><td class="right">5,904</td><td class="right">113</td><td class="right">3</td><td class="right num">120</td></tr>
+                  <tr><td>吴京唱《沧海一声笑》挑战rap，谢霆锋辣评：你比我还摇滚！两人切...</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">11</td><td class="right">783</td><td class="right">8</td><td class="right">3</td><td class="right">22</td></tr>
+                  <tr><td>马杜罗被美国强行控制满一月，儿子发表讲话称美国侵略将永远像一...</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">10</td><td class="right">695</td><td class="right">5</td><td class="right">4</td><td class="right">19</td></tr>
+                  <tr><td>上海七旬夫妇开着三无“老头乐”闯红灯被撞，索赔70多万，法院：正...</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">14</td><td class="right">1,577</td><td class="right">41</td><td class="right">5</td><td class="right">60</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="analysis-pager"><button disabled>上一页</button><button>下一页</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-weekly" class="view" data-focus-id="weekly">
+      <div class="report-board">
+        <div class="report-board-head">
+          <div class="report-main-tabs" role="tablist" aria-label="报告来源">
+            <button class="report-main-tab active" type="button" data-report-mode="auto">自动报告</button>
+            <button class="report-main-tab" type="button" data-report-mode="manual">人工报告</button>
+          </div>
+          <div class="report-type-tabs" role="tablist" aria-label="报告类型">
+            <button class="report-type-tab" type="button" data-report-type="daily">日报</button>
+            <button class="report-type-tab active" type="button" data-report-type="weekly">周报</button>
+          </div>
+        </div>
+
+        <div class="report-list-tools">
+          <div class="report-list-filter">
+            <span>发布时间：</span>
+            <input class="input" type="date" value="2026-06-03" aria-label="开始日期">
+            <span>至</span>
+            <input class="input" type="date" value="2026-06-18" aria-label="结束日期">
+          </div>
+          <div class="report-list-filter">
+            <input class="input search" type="search" placeholder="请输入关键词搜索" aria-label="搜索报告">
+          </div>
+        </div>
+
+        <div class="report-doc-grid" id="reportDocGrid">
+          <article class="report-doc-card" data-report-mode="auto" data-report-type="daily" tabindex="0">
+            <div class="report-card-actions"><button class="report-preview-btn" type="button">预览</button></div>
+            <div class="report-doc-body">
+              <h2 class="report-doc-title">正能量热点日报</h2>
+              <div class="report-doc-line"></div>
+              <div class="report-doc-date">2026-06-18 <span>星期四</span></div>
+            </div>
+          </article>
+          <article class="report-doc-card" data-report-mode="auto" data-report-type="daily" tabindex="0">
+            <div class="report-card-actions"><button class="report-preview-btn" type="button">预览</button></div>
+            <div class="report-doc-body">
+              <h2 class="report-doc-title">正能量热点日报</h2>
+              <div class="report-doc-line"></div>
+              <div class="report-doc-date">2026-06-17 <span>星期三</span></div>
+            </div>
+          </article>
+          <article class="report-doc-card" data-report-mode="auto" data-report-type="daily" tabindex="0">
+            <div class="report-card-actions"><button class="report-preview-btn" type="button">预览</button></div>
+            <div class="report-doc-body">
+              <h2 class="report-doc-title">正能量热点日报</h2>
+              <div class="report-doc-line"></div>
+              <div class="report-doc-date">2026-06-16 <span>星期二</span></div>
+            </div>
+          </article>
+          <article class="report-doc-card" data-report-mode="auto" data-report-type="daily" tabindex="0">
+            <div class="report-card-actions"><button class="report-preview-btn" type="button">预览</button></div>
+            <div class="report-doc-body">
+              <h2 class="report-doc-title">正能量热点日报</h2>
+              <div class="report-doc-line"></div>
+              <div class="report-doc-date">2026-06-15 <span>星期一</span></div>
+            </div>
+          </article>
+          <article class="report-doc-card" data-report-mode="auto" data-report-type="daily" tabindex="0">
+            <div class="report-card-actions"><button class="report-preview-btn" type="button">预览</button></div>
+            <div class="report-doc-body">
+              <h2 class="report-doc-title">正能量热点日报</h2>
+              <div class="report-doc-line"></div>
+              <div class="report-doc-date">2026-06-14 <span>星期日</span></div>
+            </div>
+          </article>
+          <article class="report-doc-card" data-report-mode="auto" data-report-type="daily" tabindex="0">
+            <div class="report-card-actions"><button class="report-preview-btn" type="button">预览</button></div>
+            <div class="report-doc-body">
+              <h2 class="report-doc-title">正能量热点日报</h2>
+              <div class="report-doc-line"></div>
+              <div class="report-doc-date">2026-06-13 <span>星期六</span></div>
+            </div>
+          </article>
+          <article class="report-doc-card" data-report-mode="auto" data-report-type="weekly" tabindex="0">
+            <div class="report-card-actions"><button class="report-preview-btn" type="button">预览</button></div>
+            <div class="report-doc-body">
+              <h2 class="report-doc-title">正能量周报</h2>
+              <div class="report-doc-line"></div>
+              <div class="report-doc-date">2026-06-12 至 2026-06-18</div>
+            </div>
+          </article>
+          <article class="report-doc-card" data-report-mode="auto" data-report-type="weekly" tabindex="0">
+            <div class="report-card-actions"><button class="report-preview-btn" type="button">预览</button></div>
+            <div class="report-doc-body">
+              <h2 class="report-doc-title">正能量周报</h2>
+              <div class="report-doc-line"></div>
+              <div class="report-doc-date">2026-06-05 至 2026-06-11</div>
+            </div>
+          </article>
+          <article class="report-doc-card" data-report-mode="auto" data-report-type="weekly" tabindex="0">
+            <div class="report-card-actions"><button class="report-preview-btn" type="button">预览</button></div>
+            <div class="report-doc-body">
+              <h2 class="report-doc-title">正能量周报</h2>
+              <div class="report-doc-line"></div>
+              <div class="report-doc-date">2026-05-29 至 2026-06-04</div>
+            </div>
+          </article>
+          <article class="report-doc-card" data-report-mode="manual" data-report-type="daily" tabindex="0">
+            <div class="report-card-actions"><button class="report-preview-btn" type="button">预览</button></div>
+            <div class="report-doc-body">
+              <h2 class="report-doc-title">正能量热点日报</h2>
+              <div class="report-doc-line"></div>
+              <div class="report-doc-date">2026-06-10 <span>人工修订</span></div>
+            </div>
+          </article>
+          <article class="report-doc-card" data-report-mode="manual" data-report-type="weekly" tabindex="0">
+            <div class="report-card-actions"><button class="report-preview-btn" type="button">预览</button></div>
+            <div class="report-doc-body">
+              <h2 class="report-doc-title">正能量周报</h2>
+              <div class="report-doc-line"></div>
+              <div class="report-doc-date">2026-05-22 至 2026-05-28</div>
+            </div>
+          </article>
+        </div>
+
+        <div class="report-list-empty" id="reportListEmpty">暂无符合条件的报告</div>
+
+        <div class="report-pagination">
+          <span id="reportTotal">共 3 条</span>
+          <button class="page-btn" type="button" disabled>‹</button>
+          <button class="page-btn active" type="button">1</button>
+          <button class="page-btn" type="button" disabled>›</button>
+        </div>
+      </div>
+
+      <div class="weekly-settings" id="weeklySettings" aria-hidden="true">
+        <div class="panel">
+          <div class="weekly-settings-head">
+            <div class="weekly-title-wrap">
+              <button class="btn small" type="button" id="backToReportList">返回</button>
+              <div>
+                <h2>正能量周报生成设置</h2>
+                <div class="weekly-period" id="weeklySettingPeriod">2026-06-12 至 2026-06-18</div>
+              </div>
+            </div>
+            <div class="inline-actions">
+              <button class="btn small" type="button" id="settingPreviewBtn">预览</button>
+              <button class="btn primary" type="button" id="settingDownloadBtn"><span class="btn-icon export"></span>下载</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="weekly-settings-grid">
+              <div class="report-tools">
+                <div class="tool-block">
+                  <h3>统计周期</h3>
+                  <div class="date-range report-range">
+                    <label class="date-point"><span>开始日期</span><input id="weeklyStartDate" class="input" type="date" value="2026-06-12"></label>
+                    <span>至</span>
+                    <label class="date-point"><span>结束日期</span><input id="weeklyEndDate" class="input" type="date" value="2026-06-18"></label>
+                  </div>
+                  <div class="report-status is-ok" id="weeklySettingStatus" role="status" aria-live="polite">已选择默认周报周期，可下载当前配置数据。</div>
+                </div>
+              </div>
+              <div class="panel">
+                <div class="panel-head">
+                  <div class="panel-title">报告数据挑选</div>
+                  <span class="tag green" id="pickReadyTag">已选 17 条</span>
+                </div>
+                <div class="panel-body">
+                  <div class="report-pick-head">
+                    <div class="report-pick-summary" id="pickSummary">最终报告将引用已选数据，已移除数据不进入正文和表格。</div>
+                    <button class="btn small" type="button" id="restorePickRows">恢复全部</button>
+                  </div>
+                  <div class="pick-tabs" role="tablist" aria-label="候选数据类型">
+                    <button class="pick-tab active" type="button" data-pick-tab="pool">稿池投稿 <span data-pick-count="pool">6</span></button>
+                    <button class="pick-tab" type="button" data-pick-tab="hot">热点事件 <span data-pick-count="hot">6</span></button>
+                    <button class="pick-tab" type="button" data-pick-tab="matrix">矩阵账号 <span data-pick-count="matrix">5</span></button>
+                  </div>
+                  <div class="pick-section active" data-pick-section="pool">
+                    <div class="pick-row" data-pick-row data-pick-section-name="pool" data-title="市新闻传媒中心" data-count="14" data-hot-count="2" data-meta="14 篇次 · 热点选题稿件 2 篇">
+                      <input class="pick-check" type="checkbox" checked aria-label="选择市新闻传媒中心">
+                      <div><div class="pick-title">市新闻传媒中心</div><div class="pick-meta">14 篇次 · 热点选题稿件 2 篇</div></div>
+                      <button class="pick-remove" type="button">移除</button>
+                    </div>
+                    <div class="pick-row" data-pick-row data-pick-section-name="pool" data-title="定海区融媒体中心" data-count="55" data-hot-count="4" data-meta="55 篇次 · 热点选题稿件 4 篇">
+                      <input class="pick-check" type="checkbox" checked aria-label="选择定海区融媒体中心">
+                      <div><div class="pick-title">定海区融媒体中心</div><div class="pick-meta">55 篇次 · 热点选题稿件 4 篇</div></div>
+                      <button class="pick-remove" type="button">移除</button>
+                    </div>
+                    <div class="pick-row" data-pick-row data-pick-section-name="pool" data-title="普陀区融媒体中心" data-count="41" data-hot-count="0" data-meta="41 篇次 · 热点选题稿件 0 篇">
+                      <input class="pick-check" type="checkbox" checked aria-label="选择普陀区融媒体中心">
+                      <div><div class="pick-title">普陀区融媒体中心</div><div class="pick-meta">41 篇次 · 热点选题稿件 0 篇</div></div>
+                      <button class="pick-remove" type="button">移除</button>
+                    </div>
+                    <div class="pick-row" data-pick-row data-pick-section-name="pool" data-title="岱山县融媒体中心" data-count="67" data-hot-count="0" data-meta="67 篇次 · 热点选题稿件 0 篇">
+                      <input class="pick-check" type="checkbox" checked aria-label="选择岱山县融媒体中心">
+                      <div><div class="pick-title">岱山县融媒体中心</div><div class="pick-meta">67 篇次 · 热点选题稿件 0 篇</div></div>
+                      <button class="pick-remove" type="button">移除</button>
+                    </div>
+                    <div class="pick-row" data-pick-row data-pick-section-name="pool" data-title="嵊泗县融媒体中心" data-count="47" data-hot-count="2" data-meta="47 篇次 · 热点选题稿件 2 篇">
+                      <input class="pick-check" type="checkbox" checked aria-label="选择嵊泗县融媒体中心">
+                      <div><div class="pick-title">嵊泗县融媒体中心</div><div class="pick-meta">47 篇次 · 热点选题稿件 2 篇</div></div>
+                      <button class="pick-remove" type="button">移除</button>
+                    </div>
+                    <div class="pick-row" data-pick-row data-pick-section-name="pool" data-title="嵊泗网信" data-count="0" data-hot-count="0" data-meta="0 篇次 · 热点选题稿件 0 篇">
+                      <input class="pick-check" type="checkbox" checked aria-label="选择嵊泗网信">
+                      <div><div class="pick-title">嵊泗网信</div><div class="pick-meta">0 篇次 · 热点选题稿件 0 篇</div></div>
+                      <button class="pick-remove" type="button">移除</button>
+                    </div>
+                  </div>
+                  <div class="pick-section" data-pick-section="hot">
+                    <div class="pick-row" data-pick-row data-pick-section-name="hot" data-title="舟山学子高考前夕为班主任打造专属惊喜" data-region="定海" data-reach="2377.1" data-host="新舟山" data-meta="定海 · 2377.1万传播量">
+                      <input class="pick-check" type="checkbox" checked aria-label="选择高考惊喜事件">
+                      <div><div class="pick-title">舟山学子高考前夕为班主任打造专属惊喜</div><div class="pick-meta">定海 · 2377.1万传播量 · 新舟山</div></div>
+                      <button class="pick-remove" type="button">移除</button>
+                    </div>
+                    <div class="pick-row" data-pick-row data-pick-section-name="hot" data-title="普陀民警紧急救助爬山遇险女子" data-region="普陀" data-reach="1981.5" data-host="普陀新闻网" data-meta="普陀 · 1981.5万传播量">
+                      <input class="pick-check" type="checkbox" checked aria-label="选择民警救助事件">
+                      <div><div class="pick-title">普陀民警紧急救助爬山遇险女子</div><div class="pick-meta">普陀 · 1981.5万传播量 · 普陀新闻网</div></div>
+                      <button class="pick-remove" type="button">移除</button>
+                    </div>
+                    <div class="pick-row" data-pick-row data-pick-section-name="hot" data-title="一颗螺丝钉见证舟山港口硬核实力" data-region="普陀" data-reach="1473.1" data-host="中国普陀" data-meta="普陀 · 1473.1万传播量">
+                      <input class="pick-check" type="checkbox" checked aria-label="选择螺丝钉事件">
+                      <div><div class="pick-title">一颗螺丝钉见证舟山港口硬核实力</div><div class="pick-meta">普陀 · 1473.1万传播量 · 中国普陀</div></div>
+                      <button class="pick-remove" type="button">移除</button>
+                    </div>
+                    <div class="pick-row" data-pick-row data-pick-section-name="hot" data-title="舟山为游客打卡拍照连夜修观景台" data-region="普陀" data-reach="1374.8" data-host="浙江经视" data-meta="普陀 · 1374.8万传播量">
+                      <input class="pick-check" type="checkbox" checked aria-label="选择观景台事件">
+                      <div><div class="pick-title">舟山为游客打卡拍照连夜修观景台</div><div class="pick-meta">普陀 · 1374.8万传播量 · 浙江经视</div></div>
+                      <button class="pick-remove" type="button">移除</button>
+                    </div>
+                    <div class="pick-row" data-pick-row data-pick-section-name="hot" data-title="舟山就业方舟启航送岗上海岛" data-region="定海" data-reach="1352.6" data-host="定海网络文化" data-meta="定海 · 1352.6万传播量">
+                      <input class="pick-check" type="checkbox" checked aria-label="选择就业方舟事件">
+                      <div><div class="pick-title">舟山就业方舟启航送岗上海岛</div><div class="pick-meta">定海 · 1352.6万传播量 · 定海网络文化</div></div>
+                      <button class="pick-remove" type="button">移除</button>
+                    </div>
+                    <div class="pick-row" data-pick-row data-pick-section-name="hot" data-title="舟山警民深夜接力守护迷路孩童" data-region="普陀" data-reach="1330.5" data-host="普陀区网" data-meta="普陀 · 1330.5万传播量">
+                      <input class="pick-check" type="checkbox" checked aria-label="选择守护迷路孩童事件">
+                      <div><div class="pick-title">舟山警民深夜接力守护迷路孩童</div><div class="pick-meta">普陀 · 1330.5万传播量 · 普陀区网</div></div>
+                      <button class="pick-remove" type="button">移除</button>
+                    </div>
+                  </div>
+                  <div class="pick-section" data-pick-section="matrix">
+                    <div class="pick-row" data-pick-row data-pick-section-name="matrix" data-title="新舟山" data-platform="新闻客户端" data-posts="14" data-reach="2377.1万" data-interact="31.6万" data-content="高考前夕为班主任打造专属惊喜">
+                      <input class="pick-check" type="checkbox" checked aria-label="选择新舟山">
+                      <div><div class="pick-title">新舟山</div><div class="pick-meta">新闻客户端 · 14 篇 · 2377.1万传播量 · 31.6万互动</div></div>
+                      <button class="pick-remove" type="button">移除</button>
+                    </div>
+                    <div class="pick-row" data-pick-row data-pick-section-name="matrix" data-title="普陀新闻网" data-platform="微信公众号" data-posts="41" data-reach="1981.5万" data-interact="24.8万" data-content="民警紧急救助爬山遇险女子">
+                      <input class="pick-check" type="checkbox" checked aria-label="选择普陀新闻网">
+                      <div><div class="pick-title">普陀新闻网</div><div class="pick-meta">微信公众号 · 41 篇 · 1981.5万传播量 · 24.8万互动</div></div>
+                      <button class="pick-remove" type="button">移除</button>
+                    </div>
+                    <div class="pick-row" data-pick-row data-pick-section-name="matrix" data-title="定海网络文化" data-platform="微博" data-posts="55" data-reach="1352.6万" data-interact="18.4万" data-content="就业方舟启航送岗上海岛">
+                      <input class="pick-check" type="checkbox" checked aria-label="选择定海网络文化">
+                      <div><div class="pick-title">定海网络文化</div><div class="pick-meta">微博 · 55 篇 · 1352.6万传播量 · 18.4万互动</div></div>
+                      <button class="pick-remove" type="button">移除</button>
+                    </div>
+                    <div class="pick-row" data-pick-row data-pick-section-name="matrix" data-title="最嵊泗" data-platform="视频号" data-posts="47" data-reach="1291.1万" data-interact="14.5万" data-content="数字化服务破解海岛养老难题">
+                      <input class="pick-check" type="checkbox" checked aria-label="选择最嵊泗">
+                      <div><div class="pick-title">最嵊泗</div><div class="pick-meta">视频号 · 47 篇 · 1291.1万传播量 · 14.5万互动</div></div>
+                      <button class="pick-remove" type="button">移除</button>
+                    </div>
+                    <div class="pick-row" data-pick-row data-pick-section-name="matrix" data-title="仙岛岱山" data-platform="抖音" data-posts="67" data-reach="1136.3万" data-interact="16.1万" data-content="海派直播拓宽海岛致富路">
+                      <input class="pick-check" type="checkbox" checked aria-label="选择仙岛岱山">
+                      <div><div class="pick-title">仙岛岱山</div><div class="pick-meta">抖音 · 67 篇 · 1136.3万传播量 · 16.1万互动</div></div>
+                      <button class="pick-remove" type="button">移除</button>
+                    </div>
+                  </div>
+                  <div class="pick-empty" id="pickEmpty">当前类型暂无已选数据，可恢复全部或切换其他类型。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="modal" id="createModal" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head">
+      <div class="modal-title" id="modalTitle">新增矩阵账号</div>
+      <button class="btn small close-modal" type="button">关闭</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field"><label>账号名称</label><input class="input" placeholder="请输入账号名称"></div>
+        <div class="field"><label>平台</label><select class="select"><option>微博</option><option>抖音</option><option>微信公众号</option><option>视频号</option><option>新闻客户端</option></select></div>
+        <div class="field"><label>账号主页链接</label><input class="input" placeholder="粘贴账号主页 URL"></div>
+        <div class="field"><label>所属属地</label><select class="select"><option>舟山</option><option>定海</option><option>普陀</option><option>岱山</option><option>嵊泗</option></select></div>
+        <div class="field"><label>账号类型</label><select class="select"><option>官方媒体</option><option>政务账号</option><option>自媒体账号</option><option>传播达人</option></select></div>
+        <div class="field"><label>内容定位</label><select class="select"><option>城市形象</option><option>民生服务</option><option>海岛文旅</option><option>基层治理</option><option>产业发展</option></select></div>
+        <div class="field"><label>运维负责人</label><input class="input" placeholder="姓名"></div>
+        <div class="field"><label>联系方式</label><input class="input" placeholder="手机号或办公电话"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn close-modal" type="button">取消</button>
+      <button class="btn primary close-modal" type="button">保存并接入采集</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="reportPreviewModal" aria-hidden="true">
+  <div class="modal-card preview-modal-card" role="dialog" aria-modal="true" aria-labelledby="reportPreviewTitle">
+    <div class="modal-head">
+      <div class="modal-title" id="reportPreviewTitle">正能量周报预览</div>
+      <button class="btn small close-report-preview" type="button">关闭</button>
+    </div>
+    <div class="modal-body preview-modal-body">
+      <div class="report-manuscript" aria-label="周报正文预览">
+        <div class="preview-cover">
+          <h2 id="previewReportName">涉舟网络正能量数据简报</h2>
+          <div id="previewReportPeriod">2026-06-12 至 2026-06-18</div>
+        </div>
+        <div class="preview-summary-grid" hidden>
+          <div class="preview-summary-item"><strong id="previewPoolCount">224</strong><span>稿池投稿篇次</span></div>
+          <div class="preview-summary-item"><strong id="previewHotCount">6</strong><span>热点事件</span></div>
+          <div class="preview-summary-item"><strong id="previewMatrixCount">5</strong><span>矩阵账号</span></div>
+          <div class="preview-summary-item"><strong id="previewReachCount">9889.6万</strong><span>热点传播量</span></div>
+        </div>
+        <div class="report-section">
+          <h3>一、总体情况</h3>
+          <p class="report-copy" id="previewOverviewText">6月12日16时至6月18日16时，我办监测发现主要新闻APP网站和社交平台涉舟信息共计30万余条，整体来看，正向情绪内容占比85.68%（见图1）。</p>
+          <figure class="emotion-figure" aria-label="涉舟信息情绪分布图">
+            <svg class="emotion-svg" viewBox="0 0 620 360" role="img" aria-label="涉舟信息情绪分布图">
+              <g fill="none" stroke-width="56" stroke-linecap="round" transform="rotate(-90 250 170)">
+                <circle cx="250" cy="170" r="98" stroke="#4F4DFB" pathLength="100" stroke-dasharray="75.78 24.22" stroke-dashoffset="0"/>
+                <circle cx="250" cy="170" r="98" stroke="#00AD74" pathLength="100" stroke-dasharray="5.75 94.25" stroke-dashoffset="-75.78"/>
+                <circle cx="250" cy="170" r="98" stroke="#FFB000" pathLength="100" stroke-dasharray="4.55 95.45" stroke-dashoffset="-81.53"/>
+                <circle cx="250" cy="170" r="98" stroke="#D83B47" pathLength="100" stroke-dasharray="4.26 95.74" stroke-dashoffset="-86.08"/>
+                <circle cx="250" cy="170" r="98" stroke="#9B59B6" pathLength="100" stroke-dasharray="4.08 95.92" stroke-dashoffset="-90.34"/>
+                <circle cx="250" cy="170" r="98" stroke="#52C6DF" pathLength="100" stroke-dasharray="4.08 95.92" stroke-dashoffset="-94.42"/>
+                <circle cx="250" cy="170" r="98" stroke="#FF8A1F" pathLength="100" stroke-dasharray="1.5 98.5" stroke-dashoffset="-98.5"/>
+              </g>
+              <circle cx="250" cy="170" r="62" fill="#fff"/>
+              <g stroke-width="2" fill="none">
+                <path d="M368 252 L404 288 L430 288" stroke="#4F4DFB"/>
+                <path d="M126 153 L80 153 L60 140" stroke="#00AD74"/>
+                <path d="M132 116 L96 90 L78 90" stroke="#FFB000"/>
+                <path d="M158 78 L120 48 L94 48" stroke="#D83B47"/>
+                <path d="M206 50 L190 22 L166 22" stroke="#9B59B6"/>
+                <path d="M250 46 L238 18 L212 18" stroke="#52C6DF"/>
+              </g>
+              <g font-family="Arial, sans-serif" font-size="16" fill="#8A8F99" font-weight="700">
+                <text x="431" y="284">赞扬</text><text x="431" y="304">75.78%</text>
+                <text x="24" y="138">喜悦</text><text x="24" y="158">5.75%</text>
+                <text x="36" y="82">厌恶</text><text x="36" y="102">4.55%</text>
+                <text x="54" y="40">愤怒</text><text x="54" y="60">4.26%</text>
+                <text x="130" y="16">惊奇</text><text x="130" y="36">4.08%</text>
+                <text x="210" y="12">悲伤</text><text x="210" y="32">4.08%</text>
+              </g>
+              <g font-family="Arial, sans-serif" font-size="16" fill="#7B8190">
+                <circle cx="500" cy="110" r="8" fill="#4F4DFB"/><text x="520" y="116">赞扬</text>
+                <circle cx="500" cy="146" r="8" fill="#00AD74"/><text x="520" y="152">喜悦</text>
+                <circle cx="500" cy="182" r="8" fill="#FFB000"/><text x="520" y="188">厌恶</text>
+                <circle cx="500" cy="218" r="8" fill="#D83B47"/><text x="520" y="224">愤怒</text>
+                <circle cx="500" cy="254" r="8" fill="#9B59B6"/><text x="520" y="260">惊奇</text>
+                <circle cx="500" cy="290" r="8" fill="#52C6DF"/><text x="520" y="296">悲伤</text>
+                <circle cx="500" cy="326" r="8" fill="#FF8A1F"/><text x="520" y="332">恐惧</text>
+              </g>
+            </svg>
+          </figure>
+          <div class="figure-caption">图 1：涉舟信息情绪分布图</div>
+        </div>
+        <div class="report-section">
+          <h3>二、工作情况</h3>
+          <p class="report-copy" id="previewWorkText">6月13日至6月18日，舟山 6 个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品 224 篇次（见表 1）。共产生全网涉舟山正能量热点事件 6 个（见表 2）。其中涉舟正面热点报道事件总阅读量接近 0.99 亿，从账号表现来看，本周共有 5 个重点正能量账号参与传播（见表 3）。</p>
+        <div class="report-table-wrap">
+          <table class="report-table">
+            <caption style="caption-side:top;text-align:center;font-weight:800;margin:6px 0">表 1.“新莓汇”正能量稿池投稿情况</caption>
+            <thead><tr><th>序号</th><th>投稿账号</th><th>篇次</th></tr></thead>
+            <tbody id="previewPoolBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="report-section">
+        <h3>三、涉舟正面报道热点事件</h3>
+        <div class="report-table-wrap">
+          <table class="report-table">
+            <caption style="caption-side:top;text-align:center;font-weight:800;margin:6px 0">表 2.涉舟正面报道热点事件</caption>
+            <thead><tr><th>序号</th><th>事件</th><th>属地</th><th>传播量</th><th>主持人</th></tr></thead>
+            <tbody id="previewHotBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="report-section">
+        <h3>四、矩阵账号本周内容及传播效果</h3>
+        <div class="report-table-wrap">
+          <table class="report-table">
+            <caption style="caption-side:top;text-align:center;font-weight:800;margin:6px 0">表 3.矩阵账号本周内容及传播效果</caption>
+            <thead><tr><th>账号</th><th>平台</th><th>发文数</th><th>传播量</th><th>互动量</th><th>代表内容</th></tr></thead>
+            <tbody id="previewMatrixBody"></tbody>
+          </table>
+        </div>
+      </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn close-report-preview" type="button">关闭</button>
+      <button class="btn primary" type="button">进入编辑</button>
+    </div>
+  </div>
+</div>
+
+</div>
+<div class="split-drag" id="splitDrag"></div>
+<aside class="prd-panel" id="prdPanel">
+  <nav class="prd-toc" id="prdToc" aria-label="PRD 目录"></nav>
+  <article class="prd-content" id="prdContent" aria-label="PRD 内容"></article>
+</aside>
+</div>
+
+<div class="top-controls">
+  <button class="prd-toggle" id="prdToggle" type="button" onclick="togglePrdPanel()"><span class="toggle-dot"></span><span>PRD</span></button>
+  <button class="changelog-btn" type="button" onclick="downloadPrd()"><span>↓</span><span>PRD 下载</span></button>
+  <button class="changelog-btn" type="button" onclick="toggleChangelog()"><span>◷</span><span>更新记录</span></button>
+</div>
+<div class="changelog-overlay" id="changelogOverlay" onclick="toggleChangelog()"></div>
+<div class="changelog-modal" id="changelogModal" role="dialog" aria-modal="true" aria-labelledby="changelogTitle">
+  <div class="changelog-header">
+    <h3 id="changelogTitle">更新记录</h3>
+    <button class="changelog-close" type="button" onclick="toggleChangelog()">&times;</button>
+  </div>
+  <div class="changelog-body" id="changelogBody"></div>
+</div>
+<textarea id="prdMdSource" style="display:none">
+# 正能量态势感知平台优化项目 PRD
+
+&gt; 版本：v1.1  
+&gt; 日期：2026-06-18  
+&gt; 原型文件：`index.html`  
+&gt; 需求范围：在现有正能量态势感知平台基础上，新增「正能量矩阵」「矩阵传播分析」「正能量周报」三个模块，形成账号监测管理、传播分析、周报生成与复核归档闭环。
+
+---
+
+## 0. 产品评估与优化结论
+
+从现有方案看，三个模块方向正确，但需要在评审前补齐以下关键问题，避免客户理解成“全网账号识别”或研发落地时口径漂移：
+
+| 问题/机会 | 风险 | 优化结论 |
+|---|---|---|
+| 业务闭环表达不足 | 容易被看成三个独立菜单，难以说明新增价值 | 明确闭环为「矩阵账号台账 -&gt; 周期内容采集 -&gt; 传播效果分析 -&gt; 周报草稿 -&gt; 运营复核 -&gt; 历史归档」 |
+| 模块边界需更清晰 | 矩阵、分析、周报可能重复做筛选和明细 | 矩阵负责账号资产和采集状态，分析负责周期聚合和明细，周报负责选择周期、引用数据、生成文本、复核导出 |
+| 原「正能量账号名单」口径不可实现 | 客户可能继续期待按话题热门参与情况自动列全量账号 | 正式替换为「正能量矩阵账号本周发布内容及传播效果」，仅覆盖客户确认并可定向采集的矩阵账号 |
+| 数据缺失与异常处理不足 | 跨平台传播字段差异会影响统计可信度 | 明确传播量、互动量字段映射；平台无字段时标注「数据缺失」，不估算、不以互动量替代传播量 |
+| 周报生成缺少复核机制 | 自动生成内容可能被视为最终报告，带来口径或措辞风险 | 周报只生成「草稿」，必须支持运营复核、表格行调整、异常提示确认后导出 |
+| 前后端开发节点需要可验收 | 仅有页面描述，接口、状态、权限和交付物不足 | 按三个开发节点拆分前端、后端、数据口径、验收标准；每个节点同时交付 `PRD.md` 与 `index.html` 给前后端评审 |
+
+---
+
+## 1. 需求背景
+
+现有正能量态势感知平台已具备正能量看板、稿件、热榜、热点日报等能力，但客户当前仍依赖运营人员手动整理《涉舟网络正能量数据简报》。人工报告存在三个核心问题：
+
+- **统计链路分散**：稿池投稿、热点事件、账号传播表现分别依赖人工汇总，周期复用性弱。
+- **账号名单口径不可落地**：原报告中的「正能量账号名单」来自话题热门参与情况，但平台无法稳定识别所有话题下的热门参与账号，且不同平台开放字段差异较大。
+- **周报生成缺少产品化入口**：客户周报周期通常为「上周三到本周三」，样例中还存在精确到小时的统计口径，如 `6月3日20:00 至 6月10日16:00`，需要支持可配置时间范围和历史归档。
+
+本次优化通过定向采集和管理正能量矩阵账号，分析矩阵账号在统计周期内发布的内容和传播效果，并将结果自动体现在周报草稿中，用可采集、可核验、可复用的口径替代不可实现的「话题热门参与账号名单」。
+
+---
+
+## 2. 建设目标
+
+| 目标类型 | 描述 | 衡量指标 | 目标值 |
+|---|---|---|---|
+| 账号资产沉淀 | 建立正能量账号矩阵台账，支持账号新增、导入、筛选、状态管理 | 核心字段完整率 | &gt;= 95% |
+| 定向监测闭环 | 对纳入矩阵且接入采集的账号，按周期拉取内容与传播数据 | 可采集账号监测成功率 | &gt;= 98% |
+| 传播效果分析 | 对矩阵账号在周期内的发文、传播量、互动量、代表内容进行分析 | 周期分析生成成功率 | &gt;= 98% |
+| 周报自动化 | 按自定义时间范围自动生成周报草稿，并支持复核导出 | 单期报告制作耗时 | 从人工数小时降至 30 分钟内 |
+| 口径可核验 | 用「矩阵账号本周内容及传播效果」替代不可落地账号名单 | 周报表格字段可追溯 | 100% 来自平台数据或人工复核记录 |
+
+---
+
+## 3. 总体产品方案
+
+### 3.1 业务闭环
+
+```mermaid
+flowchart LR
+  A["正能量矩阵：维护定向账号"] --&gt; B["采集服务：按账号拉取内容和传播字段"]
+  B --&gt; C["矩阵传播分析：周期聚合、排行、明细"]
+  C --&gt; D["正能量周报：引用稿池、热点、矩阵分析结果"]
+  D --&gt; E["运营复核：修正文案、确认异常、调整表格"]
+  E --&gt; F["导出归档：Word/PDF 与历史周报"]
+  F --&gt; A
+```
+
+### 3.2 三个新增模块边界
+
+| 模块 | 主要解决的问题 | 核心产物 | 不承担的范围 |
+|---|---|---|---|
+| 正能量矩阵 | 哪些账号纳入定向监测，账号是否可采集、是否纳入周报 | 账号台账、采集状态、周报纳入标记 | 不做周期传播趋势分析，不直接生成报告 |
+| 矩阵传播分析 | 指定周期内矩阵账号发了什么、传播如何、哪些账号/主题贡献更高 | 指标、趋势、排行、账号传播效果明细 | 不维护账号基础信息，不编辑报告正文 |
+| 正能量周报 | 将稿池、热点、矩阵账号分析结果形成报告草稿并导出 | 周报草稿、复核记录、Word/PDF、历史归档 | 不承诺全网话题参与账号识别 |
+
+### 3.3 核心原则
+
+- **先定向、后统计**：只有进入矩阵且具备可采集标识的账号，才进入自动分析与周报候选池。
+- **先草稿、后确认**：系统生成的是可编辑周报草稿，不直接替代运营最终审核。
+- **口径一致**：周报标题、正文、表格、导出文件和历史记录必须使用同一个统计周期和同一套数据过滤条件。
+- **缺失透明**：平台无法提供传播量字段时标注「数据缺失」，不得用互动量、估算值或人工想象补齐。
+
+---
+
+## 4. 用户角色与权限
+
+| 角色 | 核心诉求 | 权限范围 |
+|---|---|---|
+| 运营人员 | 维护账号名单，查看传播表现，生成并复核周报草稿 | 新增/编辑账号、导入账号、查看分析、生成/编辑/导出周报 |
+| 主管人员 | 快速了解本周正能量传播情况和重点账号表现 | 查看分析结果、预览/下载已完成周报 |
+| 系统管理员 | 管理采集状态、字段字典、权限配置和异常处理 | 全量账号管理、采集配置、组织权限、异常重试 |
+| 数据/后端人员 | 提供账号、内容、传播、报告生成接口 | 数据接入、聚合计算、模板渲染、导出服务 |
+
+权限要求：
+
+- 非运营/管理员角色不可新增、删除、导入账号，不可生成或覆盖周报。
+- 周报导出前必须记录最后编辑人、编辑时间、统计周期、数据来源和口径版本。
+- 账号「移出矩阵」只影响后续统计，不删除历史内容和历史报告中的引用记录。
+
+---
+
+## 5. 核心用户旅程
+
+### 5.1 首次初始化账号矩阵
+
+1. 运营人员导入或新增正能量账号。
+2. 系统按「平台 + 平台账号 ID」判重；缺少平台账号 ID 时，按「平台 + 账号主页链接」判重。
+3. 导入后的账号默认为「待核验」。
+4. 管理员或采集服务补齐平台账号 ID，并将采集情况更新为「采集中 / 未接入 / 异常」。
+5. 运营确认账号属地、账号类型、内容定位和「是否纳入周报」。
+
+### 5.2 每周传播分析
+
+1. 运营进入「矩阵传播分析」，选择统计周期，默认使用上周三到本周三。
+2. 系统仅统计「采集中」且「运行情况正常」的矩阵账号。
+3. 系统聚合周期内账号发布内容、传播量、互动量、代表内容、热点贡献。
+4. 运营查看趋势、排行、属地/主题分布和账号明细。
+5. 明细可推送至周报表 3 的候选数据。
+
+### 5.3 周报生成与复核
+
+1. 运营进入「正能量周报」，选择统计周期和数据来源。
+2. 系统进行生成前校验：时间范围、数据源、表格配置、异常账号、缺失字段。
+3. 系统生成周报草稿，自动填充总体情况、工作情况、稿池表、热点事件表、矩阵账号传播效果表。
+4. 运营复核正文措辞、表格行、异常提示和口径说明。
+5. 运营确认后导出 Word/PDF，系统保存历史周报和生成记录。
+
+---
+
+## 6. 功能范围
+
+### 6.1 导航与报告入口
+
+在现有平台顶部导航新增两个一级入口：
+
+- 正能量矩阵
+- 矩阵传播分析
+
+周报能力不作为新的顶部一级菜单展示，沿用现有「正能量热点日报」报告模块，在报告类型切换中新增「周报」tab，与原「日报」并列。
+
+导航风格沿用现有平台：白底顶部栏、蓝色激活态、内容区浅灰底和白色面板。
+
+### 6.2 正能量矩阵
+
+用于定向管理正能量账号，账号一经接入后可作为分析和周报的数据来源。
+
+#### 6.2.1 账号运行情况统计
+
+页面顶部展示账号运行情况统计，复用新媒体矩阵管理系统的统计结构：
+
+- 运营范围切换：全部、自主运营、代运营。
+- 状态统计：正常运行账号、停更账号、待注销账号、已注销/关停账号。
+- 状态变化：停更、注销、关停等字段展示较上月变化值。
+- 内容定位统计：采编账号、经营账号、内部信息发布账号。
+
+#### 6.2.2 账号列表字段
+
+| 字段 | 说明 | 是否必填 | 备注 |
+|---|---|---|---|
+| 账号名称 | 平台展示账号名 | 是 | 支持模糊搜索 |
+| 平台 | 微博、抖音、微信公众号、视频号、新闻客户端等 | 是 | 字典可配置 |
+| 账号主页链接 | 用于采集定位和人工核验 | 是 | 导入时用于辅助判重 |
+| 平台账号 ID | 后端采集使用的唯一账号标识 | 接入后必填 | 采集中账号必须有 |
+| 属地 | 舟山、定海、普陀、岱山、嵊泗等 | 是 | 支持后续拓展 |
+| 账号类型 | 官方媒体、政务账号、自媒体账号、传播达人 | 是 | 字典可配置 |
+| 内容定位 | 城市形象、民生服务、海岛文旅、基层治理、产业发展等 | 是 | 可多选时后端需扩展关系表 |
+| 运行情况 | 正常、停更、待核验、失效 | 是 | 影响是否进入统计 |
+| 采集情况 | 采集中、未接入、异常 | 是 | 来源于采集服务或管理员操作 |
+| 运维负责人 | 账号联系人或系统维护人 | 否 | 用于异常流转 |
+| 是否纳入周报 | 控制账号是否进入周报候选池 | 是 | 默认为否，运营确认后启用 |
+
+#### 6.2.3 矩阵列表与筛选
+
+列表区域采用「新媒体矩阵 / 状态变更审核」tab 结构，默认进入「新媒体矩阵」。
+
+筛选项：
+
+- 所属部门
+- 媒体类型
+- 运行情况
+- 所属圈层
+- 采集情况
+- 属性
+- 是否认证
+- 内容定位
+- 自主情况
+- 变更记录
+- 是否已读
+- 关键词搜索
+
+列表字段需覆盖账号名称、媒体类型、子类型、所属部门、属性、是否认证、内容定位、运行情况、自主情况、运维负责人、联系方式、粉丝数、采集情况、上次发稿时间、最新操作时间和操作入口。
+
+#### 6.2.4 账号操作
+
+- 新增账号：填写账号名称、平台、主页链接、属地、账号类型、内容定位、负责人。
+- 批量导入：支持 Excel 导入，导入后进入「待核验」状态，并返回成功、重复、失败明细。
+- 编辑账号：允许调整属地、类型、定位、负责人、运行情况、是否纳入周报。
+- 启用/停用采集：对接采集服务，更新采集状态。
+- 移出矩阵：仅从矩阵管理中移除，不删除历史内容数据。
+- 异常处理：采集异常账号进入异常清单，提示负责人、异常原因、最近成功采集时间。
+
+周报可用建议规则：
+
+- 「重点展示」：纳入周报、采集中、周期内有发文，且传播量或互动量进入矩阵账号前 20%。
+- 「常规展示」：纳入周报、采集中、周期内有发文，但未进入重点展示。
+- 「不展示」：未纳入周报、未接入采集、采集异常、周期内无发文，或传播关键字段缺失且未人工确认。
+
+### 6.3 矩阵传播分析
+
+用于分析定向矩阵账号在指定周期内的内容发布与传播效果。
+
+#### 6.3.1 筛选条件
+
+- 时间范围：提供「昨日、近7天、近30天、全年」快捷项，支持自定义起止日期。
+- 平台切换：微信、微博、抖音、视频号、其他。
+- 账号检索：支持按账号名称搜索账号传播详情。
+- 稿件检索：支持按稿件标题搜索稿件传播明细。
+- 账号筛选：稿件传播明细支持按账号筛选，默认「全部」。
+- 数据导出：账号传播详情和稿件传播明细均提供导出入口。
+
+#### 6.3.2 核心指标
+
+| 指标 | 说明 |
+|---|---|
+| 发稿数 | 周期内矩阵账号发布内容总数 |
+| 总互动量 | 点赞、评论、转发、在看等互动字段映射汇总 |
+| 点赞数 | 周期内矩阵账号内容点赞量汇总 |
+| 评论数 | 周期内矩阵账号内容评论量汇总 |
+| 转发数 | 周期内矩阵账号内容转发量汇总 |
+
+#### 6.3.3 分析视图
+
+- 传播力总览：以 5 个指标卡展示发稿数、总互动量、点赞数、评论数、转发数。
+- 传播力变化趋势：按日期展示全部平台及各平台传播力变化折线，支持通过平台标签识别微信、微博、抖音、视频号、其他。
+- 账号传播详情：按平台展示账号名称、所属平台、发稿数、点赞数、阅读数、转发数、在看数、总互动量。
+- 稿件传播明细：按平台和账号展示稿件标题、所属账号、所属平台、发布日期、点赞数、阅读数、转发数、在看数、总互动量。
+- 周报引用关系：账号传播详情和稿件传播明细作为周报「矩阵账号本周内容及传播效果」的数据来源之一。
+
+### 6.4 正能量热点日报 / 周报
+
+#### 6.4.1 报告入口
+
+报告模块先复刻现有线上形态，再在报告类型中增加「周报」tab。首屏以报告列表为主，不默认展示周报生成设置、正文预览或复核步骤。
+
+展示规则：
+
+- 一级 tab：自动报告、人工报告。
+- 二级类型：日报、周报。
+- 筛选区：发布时间起止日期、关键词搜索。
+- 列表区：以报告卡片展示报告名称、统计日期或统计周期。
+- 卡片操作：鼠标悬停在报告卡片时展示「预览」按钮，按钮不常驻占用列表空间。
+- 分页区：展示总数、页码和翻页控件。
+- 周报生成设置页：从周报卡片进入，展示统计周期、候选数据挑选和下载按钮。
+- 预览弹窗：用于快速查看报告内容，不替代详情页编辑能力。
+
+交互规则：
+
+- 点击「日报」展示正能量热点日报卡片。
+- 点击「周报」展示正能量周报卡片。
+- 点击「自动报告 / 人工报告」切换对应报告来源。
+- 点击周报卡片进入周报生成设置页。
+- 点击日报卡片默认打开日报预览。
+- 鼠标悬停报告卡片时展示「预览」按钮，点击后打开报告预览弹窗；该按钮需阻止卡片点击事件，不能同时进入设置页。
+- 周报生成设置页提供「返回」「预览」「下载」动作。
+- 点击弹窗关闭按钮、遮罩或按 Esc 关闭预览弹窗。
+
+数据规则：
+
+- 取数规则：日报沿用现有正能量热点日报记录；周报取已生成或已人工维护的正能量周报记录。
+- 数据筛选规则：按报告来源、报告类型、发布时间范围和关键词取交集筛选。
+- 数据排序规则：默认按报告发布时间倒序展示。
+
+#### 6.4.2 周报生成设置页
+
+展示规则：
+
+- 顶部展示返回按钮、页面标题、当前统计周期、预览按钮和下载按钮。
+- 左侧仅展示统计周期和生成状态提示，不再展示数据来源、报告表格等额外配置项。
+- 右侧展示当前统计周期下与最终报告强相关的候选数据，包括稿池投稿、正面热点事件、矩阵账号传播效果。
+- 候选数据以可挑选列表展示，每条数据支持保留、移除和恢复。
+
+交互规则：
+
+- 点击「返回」回到报告列表，并保留原报告类型 tab 状态。
+- 修改统计周期后，页面状态提示同步展示当前周期。
+- 点击候选数据类型 tab，可在稿池投稿、热点事件、矩阵账号之间切换。
+- 点击候选数据的「移除」后，该数据不再进入最终报告正文、表格和预览；点击「恢复」可重新纳入。
+- 点击「恢复全部」后，当前统计周期下所有候选数据重新纳入报告。
+- 点击「预览」打开周报预览弹窗，预览内容需以报告正文版式展示总体情况、情绪分布图、工作情况、稿池投稿表、热点事件表和矩阵账号传播表。
+- 点击「下载」后，系统只使用保留下来的候选数据下载当前配置数据；若候选数据全部被移除，禁止下载并提示至少保留 1 条数据。
+
+数据规则：
+
+- 取数规则：周报生成设置页引用当前周报卡片对应的统计周期，并取稿池投稿、正面热点事件和矩阵账号传播效果三类数据。
+- 数据筛选规则：按照统计周期以及运营保留/移除状态取交集。
+- 数据排序规则：候选数据按稿池投稿、热点事件、矩阵账号的业务顺序分组展示；组内默认按报告展示优先级、传播量、互动量或篇次降序排序。
+- 数据引用规则：最终周报正文、表格和预览只引用处于保留状态的候选数据，被移除数据保留在当前操作态中用于恢复，不写入最终报告。
+- 下载规则：下载文件必须包含当前统计周期、已保留的稿池投稿、热点事件、矩阵账号传播效果和摘要统计；被移除数据不进入下载文件。
+- 预览规则：报告预览中的摘要指标、正文描述和三张表格必须由已选候选数据实时生成；移除任一候选数据后，预览中的对应行和统计值同步减少。
+
+#### 6.4.3 时间范围
+
+客户周报周期通常为「上周三到本周三」。系统提供默认快捷项，同时允许运营手动调整具体小时。
+
+建议规则：
+
+- 默认快捷项：上周三 `00:00:00` 至本周三 `23:59:59`。
+- 可配置为客户实际运营口径：上周三 `20:00:00` 至本周三 `16:00:00`。
+- 报告标题、正文统计周期、接口查询参数、导出文件和历史周报记录必须使用同一时间范围。
+- 历史周报保存生成时的起止时间，不随默认规则变更而变化。
+
+#### 6.4.4 周报结构
+
+参考运营手动报告，自动生成如下结构：
+
+1. 标题：涉舟网络正能量数据简报
+2. 一、总体情况
+   - 涉舟信息总量
+   - 正向情绪占比
+   - 矩阵账号发布内容数
+   - 正面热点事件数
+   - 热点传播量
+3. 图 1：涉舟信息情绪分布图
+4. 二、工作情况
+   - 稿池投稿整体描述
+   - 热点事件整体描述
+   - 矩阵账号传播表现整体描述
+5. 表 1：正能量稿池投稿情况
+6. 表 2：正面报道热点事件
+7. 表 3：矩阵账号本周内容及传播效果
+
+#### 6.4.5 关键口径替换
+
+原手动报告中的表 3 为「正能量账号名单」，其隐含口径是从话题热门参与情况中识别账号。由于平台无法稳定识别所有话题参与账号，且不同平台对参与账号、互动账号、阅读来源等字段开放程度不一致，该口径不进入本次系统建设范围，也不在对外交付中承诺。
+
+**替代方案：**
+
+将表 3 调整为「正能量矩阵账号本周发布内容及传播效果」。该表只统计客户确认纳入矩阵、具备定向采集条件、且在统计周期内产生可核验内容数据的账号。
+
+**客户可接受表达建议：**
+
+&gt; 为保证周报数据可采集、可核验、可复用，系统不采用“按话题自动识别全部热门参与账号”的不稳定口径，调整为展示已纳入正能量矩阵的重点账号在本统计周期内的发布内容及传播效果。该口径能够反映客户重点管理账号的运营表现，并可与账号台账、传播分析、周报导出数据逐项追溯。
+
+建议字段：
+
+| 字段 | 说明 |
+|---|---|
+| 属地 | 账号所属属地 |
+| 账号名称 | 定向矩阵账号 |
+| 平台 | 内容发布平台 |
+| 发文数 | 周期内发布正能量内容数 |
+| 传播量 | 周期内内容传播量合计，缺失时展示「数据缺失」 |
+| 互动量 | 周期内互动量合计，缺失时展示「数据缺失」 |
+| 代表内容 | 周期内传播量或互动量最高的代表内容 |
+| 数据状态 | 数据完整、传播量缺失、互动量缺失、采集异常 |
+| 周报建议 | 重点展示、常规展示、不展示 |
+
+#### 6.4.6 生成流程
+
+```mermaid
+flowchart TD
+  A["运营进入正能量热点日报"] --&gt; B["切换到周报 tab"]
+  B --&gt; C["选择数据来源和报告表格"]
+  C --&gt; D["系统做生成前校验"]
+  D --&gt; E{"校验是否通过"}
+  E --&gt;|否| F["提示缺失字段、异常账号、时间错误"]
+  F --&gt; B
+  E --&gt;|是| G["系统拉取稿池、热点、矩阵账号数据"]
+  G --&gt; H["聚合指标并生成报告草稿"]
+  H --&gt; I{"运营复核"}
+  I --&gt;|需要修改| J["在线调整标题、正文、表格行和口径说明"]
+  J --&gt; I
+  I --&gt;|确认无误| K["导出 Word 或 PDF"]
+  K --&gt; L["保存历史周报和复核记录"]
+```
+
+#### 6.4.7 生成策略
+
+- 报告正文采用模板化生成，避免完全自由生成导致措辞失控。
+- 总体情况优先引用平台已有看板、情绪分布、热点事件和矩阵分析结果。
+- 矩阵账号表默认按「周报建议、传播量、互动量、发文数」排序。
+- 若传播量缺失但互动量完整，该账号仍可展示互动量，但传播量字段必须展示「数据缺失」。
+- 若表 3 无可用账号，报告中保留表头和空状态说明：「本周期内暂无符合采集条件的矩阵账号传播数据」。
+- 运营修改正文或删除表格行时，系统记录人工修订痕迹，历史报告保留最终导出版本。
+
+#### 6.4.8 报告状态
+
+| 状态 | 说明 | 可用操作 |
+|---|---|---|
+| 待生成 | 尚未生成草稿 | 选择周期、选择数据源、生成草稿 |
+| 生成中 | 数据拉取或正文生成中 | 取消、查看进度 |
+| 待复核 | 草稿已生成，等待运营确认 | 编辑、预览、重新生成、确认 |
+| 已完成 | 运营确认并导出 | 预览、下载、复制生成 |
+| 生成失败 | 数据、模板或导出异常 | 查看原因、重新生成 |
+
+---
+
+## 7. 数据口径
+
+### 7.1 统计周期口径
+
+- 统计周期以运营在周报生成页选择的起止时间为准。
+- 分析页和周报页应共用同一套时间参数格式：`YYYY-MM-DD HH:mm:ss`。
+- 起止时间采用闭区间或半开区间需由后端统一，建议使用 `[startTime, endTime)`，避免边界重复统计。
+- 页面展示可按自然日期聚合，但底层查询仍使用精确到秒的起止时间。
+
+### 7.2 账号纳入口径
+
+进入矩阵传播分析的账号需满足：
+
+- 未被移出矩阵。
+- 运行情况为「正常」。
+- 采集情况为「采集中」。
+- 具备平台账号 ID 或后端可识别的唯一采集标识。
+
+进入周报表 3 的账号还需满足：
+
+- 「是否纳入周报」为是。
+- 周期内至少有 1 条符合正能量内容规则的发布内容。
+- 至少具备发文数和代表内容，传播量或互动量缺失时需要展示缺失状态。
+
+### 7.3 内容纳入口径
+
+正能量矩阵账号发布内容进入统计需满足：
+
+- 发布时间落在统计周期内。
+- 内容所属账号在统计周期内为有效矩阵账号。
+- 内容命中正能量标签、正面情绪、稿池引用、热点事件关联或人工标记中的至少一种。
+- 删除、下架、采集失败且无法核验的内容不进入统计。
+
+### 7.4 传播量与互动量字段映射
+
+| 平台 | 传播量字段建议 | 互动字段建议 | 备注 |
+|---|---|---|---|
+| 微博 | 阅读量、视频播放量 | 转发、评论、点赞 | 话题阅读量只用于话题分析，不作为单账号内容传播量 |
+| 抖音 | 播放量 | 点赞、评论、分享、收藏 | 同一视频多次采集取周期内最新可用值 |
+| 微信公众号 | 阅读量、看一看、在看 | 点赞、分享、留言 | 若阅读量不可取，展示数据缺失 |
+| 视频号 | 播放量 | 点赞、评论、转发、收藏 | 以内容维度可取字段为准 |
+| 新闻客户端 | 浏览量、阅读量 | 评论、点赞、分享 | 不同客户端字段需做来源标识 |
+
+规则：
+
+- 如平台无传播量字段，应标记为「数据缺失」，不得用互动量或估算值替代。
+- 传播量、互动量默认按内容维度汇总；同一内容跨平台发布时按平台内容分别统计。
+- 对存在重复采集的内容，以平台内容 ID 去重；无内容 ID 时按「账号 ID + 标题 + 发布时间」辅助判重。
+
+---
+
+## 8. 数据模型建议
+
+### 8.1 矩阵账号
+
+```json
+{
+  "accountId": "string",
+  "accountName": "新舟山",
+  "platform": "news_app",
+  "platformAccountId": "string",
+  "homepageUrl": "https://example.com/account",
+  "region": "舟山",
+  "accountType": "official_media",
+  "contentPosition": "城市形象",
+  "runningStatus": "normal",
+  "collectionStatus": "collecting",
+  "ownerName": "王老师",
+  "ownerPhone": "string",
+  "includedInWeeklyReport": true,
+  "removedFromMatrix": false,
+  "lastCollectedAt": "2026-06-10 15:50:00",
+  "createdAt": "2026-06-18 10:00:00",
+  "updatedAt": "2026-06-18 10:00:00"
+}
+```
+
+### 8.2 账号周期统计
+
+```json
+{
+  "accountId": "string",
+  "statStartTime": "2026-06-03 20:00:00",
+  "statEndTime": "2026-06-10 16:00:00",
+  "postCount": 14,
+  "reachTotal": 23771000,
+  "interactionTotal": 316000,
+  "hotContentCount": 2,
+  "dataStatus": "complete",
+  "weeklySuggestion": "highlight",
+  "topContent": {
+    "contentId": "string",
+    "title": "舟山学子高考前夕为班主任打造专属惊喜",
+    "publishTime": "2026-06-06 09:30:00",
+    "reach": 23771000,
+    "interaction": 316000
+  }
+}
+```
+
+### 8.3 周报记录
+
+周报记录用于支撑报告列表、详情预览、导出和历史追溯。
+
+- 展示规则：列表卡片展示报告名称、报告类型、统计周期、生成方式和最近更新时间。
+- 交互规则：点击卡片进入报告详情；详情页提供预览、编辑、导出和复核动作。
+- 数据规则：
+  - 取数规则：取已生成、已人工维护或已复核归档的报告记录。
+  - 数据筛选规则：支持按自动报告/人工报告、日报/周报、发布时间范围和关键词筛选。
+  - 数据排序规则：默认按最近更新时间倒序，状态相同情况下按统计周期结束时间倒序。
+
+---
+
+## 9. 数据协作边界
+
+### 9.1 账号台账数据
+
+- 取数规则：来自客户确认纳入正能量矩阵的定向账号台账。
+- 数据筛选规则：支持属地、平台、账号类型、内容定位、运行情况、采集情况、是否纳入周报和关键词筛选，多条件取交集。
+- 数据排序规则：默认按采集情况、运行情况、最近更新时间排序，异常账号优先展示。
+
+### 9.2 矩阵传播数据
+
+- 取数规则：来自纳入矩阵且具备采集条件的账号在统计周期内发布的内容及传播字段。
+- 数据筛选规则：支持时间范围、属地、平台、账号类型、内容主题、数据状态和关键词筛选，多条件取交集。
+- 数据排序规则：指标卡按统计周期汇总；排行默认按传播量降序；明细默认按传播量、互动量、发文数降序。
+
+### 9.3 报告数据
+
+- 取数规则：日报沿用现有正能量热点日报数据；周报引用稿池投稿、正面热点事件和矩阵账号传播效果。
+- 数据筛选规则：报告列表支持自动报告/人工报告、日报/周报、发布时间范围和关键词筛选。
+- 数据排序规则：报告列表默认按发布时间倒序；周报详情内表格默认按业务口径排序。
+
+---
+
+## 10. 前后端开发节点
+
+&gt; 交付开发节点时，`PRD.md` 和 `index.html` 均作为前后端共同评审材料，不拆分只给单方。
+
+### 节点 1：矩阵账号台账
+
+- 前端：账号列表、筛选、新增/编辑弹窗、批量导入入口、账号分析卡、异常状态展示。
+- 后端：账号 CRUD、字典接口、导入校验、判重逻辑、采集状态同步字段。
+- 数据：明确平台账号 ID、主页链接、属地、账号类型、内容定位、运行情况、采集情况、是否纳入周报字段。
+- 验收：账号可新增、导入、编辑、筛选；异常账号有状态提示；移出矩阵不删除历史内容。
+- 交付物：`PRD.md` + `index.html` 对齐页面字段和交互。
+
+### 节点 2：矩阵传播分析
+
+- 前端：周期筛选、核心指标、趋势图、排行、属地/主题分布、账号效果明细、数据可用性提示。
+- 后端：按账号、内容、平台、属地、主题聚合传播量和互动量，输出缺失字段状态。
+- 数据：统一传播量、互动量、代表内容、热点贡献、异常账号口径。
+- 验收：自定义周期可查询；指标、排行、明细口径一致；字段缺失时展示缺失状态而非估算。
+- 交付物：`PRD.md` + `index.html` 对齐分析口径和数据字段。
+
+### 节点 3：报告模块周报增强
+
+- 前端：复刻现有报告列表，新增日报/周报类型切换；周报详情页承载预览、编辑、导出入口和复核动作。
+- 后端：报告数据聚合、模板渲染、草稿保存、复核记录、Word/PDF 导出。
+- 数据：统一统计周期、数据来源、表格字段、口径版本、人工修订记录。
+- 验收：生成前能提示异常；草稿可编辑；导出文件与预览口径一致；历史周报保留生成时周期和版本。
+- 交付物：`PRD.md` + `index.html` 对齐报告结构和替代表格。
+
+---
+
+## 11. 异常与边界
+
+| 场景 | 产品处理 |
+|---|---|
+| 账号采集异常 | 列表展示异常状态，分析页不纳入有效统计，周报生成前提示异常账号数量和名单入口 |
+| 平台字段缺失 | 缺失传播量或互动量时显示为「数据缺失」，不做估算 |
+| 周报生成失败 | 展示失败原因，支持重新生成；已生成草稿不被失败任务覆盖 |
+| 时间范围为空 | 禁止生成周报，提示补全起止时间 |
+| 结束时间早于开始时间 | 前端拦截，后端二次校验 |
+| 无矩阵账号数据 | 周报表 3 展示空状态和说明，不输出虚假账号 |
+| 账号重复导入 | 按平台 + 平台账号 ID 判重；缺失 ID 时按平台 + 主页链接判重 |
+| 权限不足 | 非运营/管理员角色仅可查看，不可新增账号或生成报告 |
+| 口径变更 | 新报告使用新口径版本，历史报告保留原口径版本和导出文件 |
+
+---
+
+## 12. 验收标准
+
+### 12.1 全局验收
+
+- 顶部导航可进入正能量矩阵、矩阵传播分析，以及现有正能量热点日报报告模块。
+- `#matrix`、`#analysis`、`#weekly` 路由可用，其中 `#weekly` 对应现有报告模块增强页。
+- 两个新增入口和一个报告增强页能串起账号管理、传播分析、周报生成、复核导出闭环。
+- 系统不再承诺按话题热门参与情况生成「正能量账号名单」。
+- 页面和导出报告均展示可接受的口径替代表达。
+
+### 12.2 正能量矩阵
+
+- 支持按属地、平台、账号类型、内容定位、运行情况、采集情况筛选。
+- 账号列表能展示本周发文、传播量、采集状态、是否纳入周报。
+- 新增/导入账号后能进入待核验或采集状态流转。
+- 账号分析卡能展示周期表现、代表内容和周报可用建议。
+
+### 12.3 矩阵传播分析
+
+- 支持自定义周期展示发布内容、传播量、互动量、活跃账号、热点贡献。
+- 趋势、排行、属地/主题分布和明细使用同一统计周期。
+- 账号传播效果明细可作为周报表 3 数据来源。
+- 数据缺失、采集异常账号有明确提示，不参与虚假汇总。
+
+### 12.4 正能量热点日报 / 周报
+
+- 报告模块保留现有「自动报告 / 人工报告」结构。
+- 报告模块新增「日报 / 周报」类型切换，周报不作为新的顶部一级菜单。
+- 周报列表卡片能展示报告名称、统计周期和报告来源。
+- 报告卡片 hover 时展示「预览」按钮，点击只打开预览弹窗，不触发进入设置页。
+- 点击周报卡片主体进入周报生成设置页，可返回报告列表。
+- 周报生成设置页能展示统计周期、数据来源、报告表格、候选数据挑选和已选计数。
+- 周报生成设置页能展示当前统计周期下的候选数据，支持按稿池投稿、热点事件、矩阵账号切换查看。
+- 运营可移除或恢复候选数据，预览和最终报告只引用保留下来的数据。
+- 报告预览尽量完整展示草稿内容，至少包含稿池投稿情况、涉舟正面报道热点事件、矩阵账号本周内容及传播效果三张表。
+- 支持默认「上周三到本周三」和自定义小时级起止时间。
+- 周报详情或生成页再承载时间范围、数据来源、表格配置、异常账号和缺失字段校验。
+- 周报详情预览包含总体情况、工作情况、稿池投稿表、热点事件表、矩阵账号内容及传播效果表。
+- 导出的 Word/PDF 周报中的统计周期、正文描述和表格数据口径一致。
+- 历史周报保存状态、统计周期、生成方式、导出文件和复核记录。
+
+---
+
+## 13. 原型说明
+
+- 原型路径：`positive-energy-situation-optimization/index.html`
+- 主要页面：
+  - `#matrix`：正能量矩阵
+  - `#analysis`：矩阵传播分析
+  - `#weekly`：正能量热点日报模块，内含日报 / 周报切换
+- 原型使用样例数据展示页面结构和口径，不代表最终线上数据。
+</textarea>
+
+<script>
+
+var changelogData = [
+  {
+    "time": "2026-06-18 16:00",
+    "desc": "初始创建：正能量态势感知平台优化项目，新增正能量矩阵、矩阵传播分析、正能量周报原型 + PRD；周报支持自定义上周三至本周三时间范围，并以矩阵账号内容传播效果替代不可实现的热门参与账号名单"
+  },
+  {
+    "time": "2026-06-18 16:17",
+    "desc": "使用 myccweb-deploy 构建前收口：产品专家评估并优化整体方案，PRD 升级 v1.1，原型补齐业务闭环、数据口径、周报复核和生成前校验"
+  },
+  {
+    "time": "2026-06-18 16:26",
+    "desc": "按线上平台形态收敛原型：移除非线上占位模块和方案说明卡，周报归入正能量热点日报入口，页面只保留可操作功能"
+  },
+  {
+    "time": "2026-06-18 18:41",
+    "desc": "发布收口：正能量矩阵和矩阵传播分析按参考系统复刻，周报支持报告正文预览、候选数据删减和当前配置数据下载"
+  }
+];
+function togglePrdPanel(){
+  var panel=document.getElementById('prdPanel');
+  var toggle=document.getElementById('prdToggle');
+  var dot=toggle?toggle.querySelector('.toggle-dot'):null;
+  if(!panel){return;}
+  panel.classList.toggle('collapsed');
+  if(dot){dot.style.background=panel.classList.contains('collapsed')?'#A8ABB2':'var(--green)';}
+}
+function downloadPrd(){
+  var src=document.getElementById('prdMdSource');
+  if(!src){return;}
+  var blob=new Blob([src.textContent],{type:'text/markdown;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='正能量态势感知平台优化项目PRD.md';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(a.href);
+}
+function toggleChangelog(){
+  var overlay=document.getElementById('changelogOverlay');
+  var modal=document.getElementById('changelogModal');
+  if(!overlay||!modal){return;}
+  overlay.classList.toggle('show');
+  modal.classList.toggle('show');
+}
+function prdInlineFmt(s){
+  return s
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/\`([^\`]+)\`/g,'<code>$1</code>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+}
+function renderPrdMarkdown(md){
+  var lines=md.split('\n');
+  var h='',toc='',listStack=[],liOpenStack=[],inTable=false,inCode=false,codeBuf=[];
+  var headingIndex=0;
+  function closeLists(targetDepth){
+    while(listStack.length>targetDepth){
+      if(liOpenStack.pop()) h+='</li>';
+      h+='</ul>';
+      listStack.pop();
+    }
+  }
+  function closeAllLists(){closeLists(0);}
+  function closeTable(){if(inTable){h+='</tbody></table>';inTable=false;}}
+  function closeCode(){if(inCode){h+='<pre><code>'+codeBuf.join('\n').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</code></pre>';codeBuf=[];inCode=false;}}
+  function openListItem(depth,text){
+    closeTable();
+    while(listStack.length<depth+1){
+      h+=listStack.length===0?'<ul class="prd-list">':'<ul class="prd-nested prd-level-'+listStack.length+'">';
+      listStack.push(true);
+      liOpenStack.push(false);
+    }
+    closeLists(depth+1);
+    if(liOpenStack[depth]) h+='</li>';
+    liOpenStack[depth]=true;
+    h+='<li>'+prdInlineFmt(text);
+  }
+  for(var j=0;j<lines.length;j++){
+    var ln=lines[j],tr=ln.trim();
+    if(/^```/.test(tr)){
+      closeAllLists(); closeTable();
+      if(inCode){closeCode();}else{inCode=true;codeBuf=[];}
+      continue;
+    }
+    if(inCode){codeBuf.push(ln);continue;}
+    if(!tr){closeAllLists();closeTable();continue;}
+    if(/^---+$/.test(tr)){closeAllLists();closeTable();h+='<hr>';continue;}
+    var hm=tr.match(/^(#{1,5})\s+(.+)$/);
+    if(hm){
+      closeAllLists();closeTable();
+      headingIndex++;
+      var level=hm[1].length;
+      var id='h-'+headingIndex;
+      h+='<h'+level+' id="'+id+'">'+prdInlineFmt(hm[2])+'</h'+level+'>';
+      if(level<=3){toc+='<button type="button" class="level-'+level+'" onclick="jumpToPrdHeading(\''+id+'\')">'+prdInlineFmt(hm[2])+'</button>';}
+      continue;
+    }
+    if(/^\|(.+)\|$/.test(tr)){
+      closeAllLists();
+      if(!inTable){
+        var nxt=(j+1<lines.length)?lines[j+1].trim():'';
+        var isSep=/^\|[\s\-:]+\|$/.test(nxt);
+        if(isSep){
+          h+='<table class="prd-table"><thead><tr>';
+          var hdrCells=tr.replace(/^\|/,'').replace(/\|$/,'').split('|');
+          for(var ci=0;ci<hdrCells.length;ci++) h+='<th>'+prdInlineFmt(hdrCells[ci].trim())+'</th>';
+          h+='</tr></thead><tbody>';
+          inTable=true; j++; continue;
+        }
+        h+='<table class="prd-table"><tbody>'; inTable=true;
+      }
+      if(/^\|[\s\-:]+\|$/.test(tr)) continue;
+      var cells=tr.replace(/^\|/,'').replace(/\|$/,'').split('|');
+      h+='<tr>';
+      for(var ci=0;ci<cells.length;ci++) h+='<td>'+prdInlineFmt(cells[ci].trim())+'</td>';
+      h+='</tr>'; continue;
+    }
+    closeTable();
+    var lm=ln.match(/^(\s*)- (.+)$/);
+    if(lm){openListItem(Math.floor(lm[1].replace(/\t/g,'  ').length/2),lm[2]);continue;}
+    closeAllLists();
+    h+='<p>'+prdInlineFmt(tr)+'</p>';
+  }
+  closeCode();closeAllLists();closeTable();
+  return {html:h,toc:'<p class="prd-toc-title">PRD 目录</p>'+toc};
+}
+function jumpToPrdHeading(id){
+  var content=document.getElementById('prdContent');
+  var target=document.getElementById(id);
+  if(!content||!target){return;}
+  content.scrollTo({top:target.offsetTop-12,behavior:'smooth'});
+}
+function initEmbeddedPrd(){
+  var src=document.getElementById('prdMdSource');
+  var content=document.getElementById('prdContent');
+  var toc=document.getElementById('prdToc');
+  if(src&&content&&toc){
+    var rendered=renderPrdMarkdown(src.textContent.trim());
+    content.innerHTML=rendered.html;
+    toc.innerHTML=rendered.toc;
+  }
+  var body=document.getElementById('changelogBody');
+  if(body){
+    var table='<table class="changelog-table"><thead><tr><th>时间</th><th>说明</th></tr></thead><tbody>';
+    changelogData.forEach(function(row){table+='<tr><td>'+row.time+'</td><td>'+row.desc+'</td></tr>';});
+    table+='</tbody></table>';
+    body.innerHTML=table;
+  }
+  var drag=document.getElementById('splitDrag');
+  var panel=document.getElementById('prdPanel');
+  if(drag&&panel){
+    drag.addEventListener('mousedown',function(e){
+      e.preventDefault();
+      var startX=e.clientX;
+      var startW=panel.offsetWidth;
+      drag.classList.add('dragging');
+      document.body.style.cursor='col-resize';
+      document.body.style.userSelect='none';
+      function onMove(ev){
+        var w=startW-(ev.clientX-startX);
+        if(w<280) w=280;
+        if(w>window.innerWidth*0.7) w=window.innerWidth*0.7;
+        panel.style.width=w+'px';
+      }
+      function onUp(){
+        drag.classList.remove('dragging');
+        document.body.style.cursor='';
+        document.body.style.userSelect='';
+        document.removeEventListener('mousemove',onMove);
+        document.removeEventListener('mouseup',onUp);
+      }
+      document.addEventListener('mousemove',onMove);
+      document.addEventListener('mouseup',onUp);
+    });
+  }
+}
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',initEmbeddedPrd);
+}else{
+  initEmbeddedPrd();
+}
+
+(function(){
+  var navLinks=[].slice.call(document.querySelectorAll('.nav-link'));
+  var views={
+    matrix:document.getElementById('view-matrix'),
+    analysis:document.getElementById('view-analysis'),
+    weekly:document.getElementById('view-weekly')
+  };
+  function setView(name){
+    if(!views[name]){name='matrix';}
+    navLinks.forEach(function(btn){btn.classList.toggle('active',btn.dataset.view===name);});
+    Object.keys(views).forEach(function(key){views[key].classList.toggle('active',key===name);});
+    if(location.hash.replace('#','')!==name){history.replaceState(null,'','#'+name);}
+  }
+  navLinks.forEach(function(btn){btn.addEventListener('click',function(){setView(btn.dataset.view);});});
+  var initial=location.hash.replace('#','')||'matrix';
+  setView(views[initial]?initial:'matrix');
+  window.addEventListener('hashchange',function(){
+    var name=location.hash.replace('#','')||'matrix';
+    if(views[name]){setView(name);}
+  });
+  [].slice.call(document.querySelectorAll('.range-tabs, .analysis-tabs, .matrix-mode-tabs, .matrix-board-tabs')).forEach(function(group){
+    [].slice.call(group.querySelectorAll('button')).forEach(function(btn){
+      btn.addEventListener('click',function(){
+        [].slice.call(group.querySelectorAll('button')).forEach(function(item){
+          item.classList.toggle('active',item===btn);
+        });
+      });
+    });
+  });
+
+  var rows=[].slice.call(document.querySelectorAll('#view-matrix tbody tr[data-account]'));
+  var detailName=document.getElementById('detailName');
+  var detailLogo=document.getElementById('detailLogo');
+  var detailPosts=document.getElementById('detailPosts');
+  var detailReach=document.getElementById('detailReach');
+  var detailInteract=document.getElementById('detailInteract');
+  rows.forEach(function(row){
+    row.querySelector('.select-account').addEventListener('click',function(){
+      rows.forEach(function(item){item.classList.remove('selected');});
+      row.classList.add('selected');
+      var name=row.dataset.account;
+      detailName.textContent=name;
+      detailLogo.textContent=name.slice(0,1);
+      detailPosts.textContent=row.dataset.posts;
+      detailReach.textContent=row.dataset.reach;
+      detailInteract.textContent=row.dataset.interact;
+    });
+  });
+
+  var modal=document.getElementById('createModal');
+  var openCreate=document.getElementById('openCreate');
+  function closeModal(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');}
+  if(openCreate){openCreate.addEventListener('click',function(){modal.classList.add('open');modal.setAttribute('aria-hidden','false');});}
+  [].slice.call(document.querySelectorAll('.close-modal')).forEach(function(btn){btn.addEventListener('click',closeModal);});
+  modal.addEventListener('click',function(event){if(event.target===modal){closeModal();}});
+  document.addEventListener('keydown',function(event){if(event.key==='Escape'){closeModal();}});
+
+  var reportMode='auto';
+  var reportType='weekly';
+  var reportCards=[].slice.call(document.querySelectorAll('.report-doc-card'));
+  var reportTotal=document.getElementById('reportTotal');
+  var reportEmpty=document.getElementById('reportListEmpty');
+  var reportModeTabs=[].slice.call(document.querySelectorAll('.report-main-tab'));
+  var reportTypeTabs=[].slice.call(document.querySelectorAll('.report-type-tab'));
+  var reportBoard=document.querySelector('#view-weekly .report-board');
+  var weeklySettings=document.getElementById('weeklySettings');
+  var weeklySettingPeriod=document.getElementById('weeklySettingPeriod');
+  var weeklyStartDate=document.getElementById('weeklyStartDate');
+  var weeklyEndDate=document.getElementById('weeklyEndDate');
+  var weeklySettingStatus=document.getElementById('weeklySettingStatus');
+  var backToReportList=document.getElementById('backToReportList');
+  var settingPreviewBtn=document.getElementById('settingPreviewBtn');
+  var settingDownloadBtn=document.getElementById('settingDownloadBtn');
+  var reportPreviewModal=document.getElementById('reportPreviewModal');
+  var previewReportName=document.getElementById('previewReportName');
+  var previewReportPeriod=document.getElementById('previewReportPeriod');
+  var previewPoolBody=document.getElementById('previewPoolBody');
+  var previewHotBody=document.getElementById('previewHotBody');
+  var previewMatrixBody=document.getElementById('previewMatrixBody');
+  var previewPoolCount=document.getElementById('previewPoolCount');
+  var previewHotCount=document.getElementById('previewHotCount');
+  var previewMatrixCount=document.getElementById('previewMatrixCount');
+  var previewReachCount=document.getElementById('previewReachCount');
+  var previewOverviewText=document.getElementById('previewOverviewText');
+  var previewWorkText=document.getElementById('previewWorkText');
+  var pickTabs=[].slice.call(document.querySelectorAll('.pick-tab'));
+  var pickSections=[].slice.call(document.querySelectorAll('.pick-section'));
+  var pickRows=[].slice.call(document.querySelectorAll('[data-pick-row]'));
+  var pickReadyTag=document.getElementById('pickReadyTag');
+  var pickSummary=document.getElementById('pickSummary');
+  var pickEmpty=document.getElementById('pickEmpty');
+  var restorePickRows=document.getElementById('restorePickRows');
+  function renderReportList(){
+    var visibleCount=0;
+    reportCards.forEach(function(card){
+      var visible=card.dataset.reportMode===reportMode&&card.dataset.reportType===reportType;
+      card.hidden=!visible;
+      if(visible){visibleCount+=1;}
+    });
+    reportModeTabs.forEach(function(btn){btn.classList.toggle('active',btn.dataset.reportMode===reportMode);});
+    reportTypeTabs.forEach(function(btn){btn.classList.toggle('active',btn.dataset.reportType===reportType);});
+    if(reportTotal){reportTotal.textContent='共 '+visibleCount+' 条';}
+    if(reportEmpty){reportEmpty.classList.toggle('show',visibleCount===0);}
+  }
+  function getReportInfo(card){
+    return {
+      title:(card.querySelector('.report-doc-title')||{}).textContent||'正能量周报',
+      period:(card.querySelector('.report-doc-date')||{}).textContent||'2026-06-12 至 2026-06-18',
+      type:card.dataset.reportType
+    };
+  }
+  function openReportPreview(card){
+    var info=getReportInfo(card);
+    if(previewReportName){previewReportName.textContent=info.type==='daily'?'正能量热点日报':'涉舟网络正能量数据简报';}
+    if(previewReportPeriod){previewReportPeriod.textContent=info.period.replace(/\s+/g,' ').trim();}
+    renderReportPreviewData();
+    if(reportPreviewModal){
+      reportPreviewModal.classList.add('open');
+      reportPreviewModal.setAttribute('aria-hidden','false');
+    }
+  }
+  function closeReportPreview(){
+    if(reportPreviewModal){
+      reportPreviewModal.classList.remove('open');
+      reportPreviewModal.setAttribute('aria-hidden','true');
+    }
+  }
+  function openWeeklySettings(card){
+    var info=getReportInfo(card);
+    var period=info.period.replace(/\s+/g,' ').trim();
+    if(weeklySettingPeriod){weeklySettingPeriod.textContent=period;}
+    var parts=period.split('至').map(function(item){return item.trim();});
+    if(parts.length===2){
+      if(weeklyStartDate){weeklyStartDate.value=parts[0].replace(/\//g,'-');}
+      if(weeklyEndDate){weeklyEndDate.value=parts[1].replace(/\//g,'-');}
+    }
+    if(reportBoard){reportBoard.hidden=true;}
+    if(weeklySettings){
+      weeklySettings.classList.add('active');
+      weeklySettings.setAttribute('aria-hidden','false');
+    }
+    if(weeklySettingStatus){
+      weeklySettingStatus.className='report-status is-ok';
+      weeklySettingStatus.textContent='已选择 '+period+'，可下载当前配置数据。';
+    }
+    renderPickCounts();
+  }
+  function showReportList(){
+    if(reportBoard){reportBoard.hidden=false;}
+    if(weeklySettings){
+      weeklySettings.classList.remove('active');
+      weeklySettings.setAttribute('aria-hidden','true');
+    }
+  }
+  reportModeTabs.forEach(function(btn){
+    btn.addEventListener('click',function(){
+      reportMode=btn.dataset.reportMode;
+      renderReportList();
+    });
+  });
+  reportTypeTabs.forEach(function(btn){
+    btn.addEventListener('click',function(){
+      reportType=btn.dataset.reportType;
+      renderReportList();
+    });
+  });
+  reportCards.forEach(function(card){
+    var previewBtn=card.querySelector('.report-preview-btn');
+    if(previewBtn){
+      previewBtn.addEventListener('click',function(event){
+        event.stopPropagation();
+        openReportPreview(card);
+      });
+    }
+    card.addEventListener('click',function(){
+      if(card.dataset.reportType==='weekly'){
+        openWeeklySettings(card);
+      }else{
+        openReportPreview(card);
+      }
+    });
+    card.addEventListener('keydown',function(event){
+      if(event.key==='Enter'||event.key===' '){
+        event.preventDefault();
+        if(card.dataset.reportType==='weekly'){openWeeklySettings(card);}else{openReportPreview(card);}
+      }
+    });
+  });
+  if(backToReportList){backToReportList.addEventListener('click',showReportList);}
+  if(settingPreviewBtn){
+    settingPreviewBtn.addEventListener('click',function(){
+      openReportPreview(document.querySelector('.report-doc-card[data-report-type="weekly"]:not([hidden])')||reportCards[0]);
+      if(weeklySettings&&weeklySettings.classList.contains('active')&&weeklySettingPeriod&&previewReportPeriod){
+        previewReportPeriod.textContent=weeklySettingPeriod.textContent;
+        renderReportPreviewData();
+      }
+    });
+  }
+  if(settingDownloadBtn){
+    settingDownloadBtn.addEventListener('click',function(){
+      if(!weeklySettingStatus){return;}
+      var selectedTotal=getSelectedRows('pool').length+getSelectedRows('hot').length+getSelectedRows('matrix').length;
+      if(selectedTotal===0){
+        weeklySettingStatus.className='report-status is-error';
+        weeklySettingStatus.textContent='请至少保留 1 条候选数据后再下载。';
+        return;
+      }
+      downloadWeeklyConfigData();
+      weeklySettingStatus.className='report-status is-ok';
+      weeklySettingStatus.textContent='已下载当前配置数据，共 '+selectedTotal+' 条。';
+    });
+  }
+  function getSelectedRows(sectionName){
+    return pickRows.filter(function(row){
+      var input=row.querySelector('.pick-check');
+      return row.dataset.pickSectionName===sectionName&&input&&input.checked;
+    });
+  }
+  function renderPickCounts(){
+    var total=0;
+    ['pool','hot','matrix'].forEach(function(sectionName){
+      var count=getSelectedRows(sectionName).length;
+      total+=count;
+      [].slice.call(document.querySelectorAll('[data-pick-count="'+sectionName+'"]')).forEach(function(el){
+        el.textContent=count;
+      });
+    });
+    if(pickReadyTag){pickReadyTag.textContent='已选 '+total+' 条';}
+    if(pickSummary){pickSummary.textContent='下载将包含已选 '+total+' 条数据，已移除数据不进入下载文件。';}
+    var activeTab=(document.querySelector('.pick-tab.active')||{}).dataset?document.querySelector('.pick-tab.active').dataset.pickTab:'pool';
+    if(pickEmpty){pickEmpty.classList.toggle('show',getSelectedRows(activeTab).length===0);}
+    if(weeklySettingStatus&&weeklySettings&&weeklySettings.classList.contains('active')){
+      var period=weeklySettingPeriod?weeklySettingPeriod.textContent:'当前周期';
+      weeklySettingStatus.className=total>0?'report-status is-ok':'report-status is-error';
+      weeklySettingStatus.textContent=total>0?'已选择 '+period+'，保留 '+total+' 条候选数据，可下载当前配置数据。':'请至少保留 1 条候选数据后再下载。';
+    }
+  }
+  function numValue(value){
+    var n=parseFloat(String(value||'0').replace(/[^\d.]/g,''));
+    return isNaN(n)?0:n;
+  }
+  function selectedRowsData(sectionName){
+    return getSelectedRows(sectionName).map(function(row){
+      if(sectionName==='pool'){
+        return {
+          account:row.dataset.title,
+          count:numValue(row.dataset.count),
+          hotTopicCount:numValue(row.dataset.hotCount)
+        };
+      }
+      if(sectionName==='hot'){
+        return {
+          event:row.dataset.title,
+          region:row.dataset.region,
+          reachWan:numValue(row.dataset.reach),
+          host:row.dataset.host
+        };
+      }
+      return {
+        account:row.dataset.title,
+        platform:row.dataset.platform,
+        posts:numValue(row.dataset.posts),
+        reach:row.dataset.reach,
+        interact:row.dataset.interact,
+        representativeContent:row.dataset.content
+      };
+    });
+  }
+  function safeFilePart(value){
+    return String(value||'').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,'_');
+  }
+  function downloadWeeklyConfigData(){
+    var period=weeklySettingPeriod?weeklySettingPeriod.textContent:'当前周期';
+    var pool=selectedRowsData('pool');
+    var hot=selectedRowsData('hot');
+    var matrix=selectedRowsData('matrix');
+    var payload={
+      reportName:'涉舟网络正能量数据简报',
+      period:period,
+      downloadedAt:new Date().toISOString(),
+      summary:{
+        poolCount:pool.length,
+        poolPostTotal:pool.reduce(function(sum,item){return sum+item.count;},0),
+        hotEventCount:hot.length,
+        hotReachWanTotal:hot.reduce(function(sum,item){return sum+item.reachWan;},0),
+        matrixAccountCount:matrix.length
+      },
+      data:{
+        poolSubmissions:pool,
+        hotEvents:hot,
+        matrixAccounts:matrix
+      }
+    };
+    var blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;
+    a.download='正能量周报配置数据_'+safeFilePart(period)+'.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function(){URL.revokeObjectURL(url);},0);
+  }
+  function escapeHtml(value){
+    return String(value||'').replace(/[&<>"']/g,function(ch){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];
+    });
+  }
+  function parsePeriodDates(period){
+    var matches=String(period||'').match(/\d{4}[-/]\d{2}[-/]\d{2}/g)||[];
+    if(matches.length<2){return null;}
+    return matches.slice(0,2).map(function(item){
+      var parts=item.replace(/\//g,'-').split('-').map(Number);
+      return new Date(parts[0],parts[1]-1,parts[2]);
+    });
+  }
+  function chineseDate(date){
+    return (date.getMonth()+1)+'月'+date.getDate()+'日';
+  }
+  function formatReportPeriod(period){
+    var dates=parsePeriodDates(period);
+    if(!dates){return '6月12日16时至6月18日16时';}
+    return chineseDate(dates[0])+'16时至'+chineseDate(dates[1])+'16时';
+  }
+  function formatWorkPeriod(period){
+    var dates=parsePeriodDates(period);
+    if(!dates){return '6月13日至6月18日';}
+    var start=new Date(dates[0].getTime());
+    start.setDate(start.getDate()+1);
+    return chineseDate(start)+'至'+chineseDate(dates[1]);
+  }
+  function yiText(wanValue){
+    var value=wanValue/10000;
+    if(value===0){return '0';}
+    return value.toFixed(2).replace(/\.?0+$/,'');
+  }
+  function renderReportPreviewData(){
+    var poolRows=getSelectedRows('pool');
+    var hotRows=getSelectedRows('hot');
+    var matrixRows=getSelectedRows('matrix');
+    var poolTotal=poolRows.reduce(function(sum,row){return sum+numValue(row.dataset.count);},0);
+    var hotTopicTotal=poolRows.reduce(function(sum,row){return sum+numValue(row.dataset.hotCount);},0);
+    var reachTotal=hotRows.reduce(function(sum,row){return sum+numValue(row.dataset.reach);},0);
+    if(previewPoolCount){previewPoolCount.textContent=poolTotal;}
+    if(previewHotCount){previewHotCount.textContent=hotRows.length;}
+    if(previewMatrixCount){previewMatrixCount.textContent=matrixRows.length;}
+    if(previewReachCount){previewReachCount.textContent=reachTotal.toFixed(1)+'万';}
+    if(previewOverviewText){
+      previewOverviewText.innerHTML=escapeHtml(formatReportPeriod(previewReportPeriod?previewReportPeriod.textContent:''))+'，我办监测发现主要新闻<strong>APP</strong>网站和社交平台涉舟信息共计30万余条，整体来看，正向情绪内容占比<strong>85.68%</strong>（见图1）。';
+    }
+    if(previewWorkText){
+      previewWorkText.innerHTML=escapeHtml(formatWorkPeriod(previewReportPeriod?previewReportPeriod.textContent:''))+'，舟山 '+poolRows.length+' 个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品 <strong>'+poolTotal+'</strong> 篇次（见表 1）。共产生全网涉舟山正能量热点事件 <strong>'+hotRows.length+'</strong> 个（见表 2）。其中热点事件阅读量合计接近 <strong>'+yiText(reachTotal)+'</strong> 亿，从账号表现来看，本周共有 <strong>'+matrixRows.length+'</strong> 个重点正能量账号参与传播（见表 3）。';
+    }
+    if(previewPoolBody){
+      previewPoolBody.innerHTML=poolRows.length?poolRows.map(function(row,idx){
+        return '<tr><td>'+(idx+1)+'</td><td>'+row.dataset.title+'</td><td>'+row.dataset.count+'（热点选题稿件 '+row.dataset.hotCount+' 篇）</td></tr>';
+      }).join(''):'<tr><td colspan="3">本周期内暂无已选稿池投稿数据。</td></tr>';
+    }
+    if(previewHotBody){
+      previewHotBody.innerHTML=hotRows.length?hotRows.map(function(row,idx){
+        return '<tr><td>'+(idx+1)+'</td><td>'+row.dataset.title+'</td><td>'+row.dataset.region+'</td><td>'+row.dataset.reach+'</td><td>'+row.dataset.host+'</td></tr>';
+      }).join(''):'<tr><td colspan="5">本周期内暂无已选热点事件数据。</td></tr>';
+    }
+    if(previewMatrixBody){
+      previewMatrixBody.innerHTML=matrixRows.length?matrixRows.map(function(row){
+        return '<tr><td>'+row.dataset.title+'</td><td>'+row.dataset.platform+'</td><td>'+row.dataset.posts+'</td><td>'+row.dataset.reach+'</td><td>'+row.dataset.interact+'</td><td>'+row.dataset.content+'</td></tr>';
+      }).join(''):'<tr><td colspan="6">本周期内暂无已选矩阵账号传播数据。</td></tr>';
+    }
+  }
+  pickTabs.forEach(function(tab){
+    tab.addEventListener('click',function(){
+      var name=tab.dataset.pickTab;
+      pickTabs.forEach(function(item){item.classList.toggle('active',item===tab);});
+      pickSections.forEach(function(section){section.classList.toggle('active',section.dataset.pickSection===name);});
+      renderPickCounts();
+    });
+  });
+  pickRows.forEach(function(row){
+    var input=row.querySelector('.pick-check');
+    var action=row.querySelector('.pick-remove');
+    function syncRow(){
+      var selected=input.checked;
+      row.classList.toggle('is-removed',!selected);
+      if(action){action.textContent=selected?'移除':'恢复';}
+      renderPickCounts();
+    }
+    if(input){input.addEventListener('change',syncRow);}
+    if(action){
+      action.addEventListener('click',function(){
+        input.checked=!input.checked;
+        syncRow();
+      });
+    }
+  });
+  if(restorePickRows){
+    restorePickRows.addEventListener('click',function(){
+      pickRows.forEach(function(row){
+        var input=row.querySelector('.pick-check');
+        if(input){input.checked=true;}
+        row.classList.remove('is-removed');
+        var action=row.querySelector('.pick-remove');
+        if(action){action.textContent='移除';}
+      });
+      renderPickCounts();
+    });
+  }
+  function syncWeeklyPeriodFromInputs(){
+    if(!weeklyStartDate||!weeklyEndDate||!weeklySettingPeriod){return;}
+    var start=weeklyStartDate.value||'';
+    var end=weeklyEndDate.value||'';
+    if(start&&end){
+      weeklySettingPeriod.textContent=start+' 至 '+end;
+      renderPickCounts();
+    }
+  }
+  if(weeklyStartDate){weeklyStartDate.addEventListener('change',syncWeeklyPeriodFromInputs);}
+  if(weeklyEndDate){weeklyEndDate.addEventListener('change',syncWeeklyPeriodFromInputs);}
+  [].slice.call(document.querySelectorAll('.close-report-preview')).forEach(function(btn){
+    btn.addEventListener('click',closeReportPreview);
+  });
+  if(reportPreviewModal){
+    reportPreviewModal.addEventListener('click',function(event){
+      if(event.target===reportPreviewModal){closeReportPreview();}
+    });
+  }
+  document.addEventListener('keydown',function(event){
+    if(event.key==='Escape'){closeReportPreview();}
+  });
+  renderPickCounts();
+  renderReportList();
+})();
+</script>
+</body>
+</html>
