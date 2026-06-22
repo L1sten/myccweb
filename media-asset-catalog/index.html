@@ -447,6 +447,8 @@
         .thumb-scene-b { background: linear-gradient(135deg, #e0f2fe, #dbeafe 42%, #fef3c7 43%, #bfdbfe 65%, #14532d 66%); }
         .thumb-scene-c { background: linear-gradient(150deg, #fee2e2, #fff7ed 38%, #c7d2fe 38% 72%, #1e3a8a 72%); }
         .thumb-scene-d { background: linear-gradient(135deg, #d1fae5, #ecfdf5 45%, #fde68a 46%, #f8fafc 70%, #64748b 70%); }
+        .image-album-cover { background: #dbeafe; }
+        .image-album-cover .image-photo { transform: scale(1.04); }
         .thumb-video::before {
             content: "";
             position: absolute;
@@ -687,7 +689,7 @@
         .catalog-form-grid .full-field { grid-column: 2; }
         .album-detail {
             display: grid;
-            grid-template-columns: 360px minmax(0, 1fr);
+            grid-template-columns: minmax(0, 3fr) minmax(280px, 1fr);
             gap: 14px;
         }
         .album-side, .album-main {
@@ -697,13 +699,14 @@
             overflow: hidden;
         }
         .album-cover {
-            height: 260px;
+            height: 360px;
             display: grid;
             place-items: center;
             position: relative;
             color: #fff;
             background: #1e293b;
         }
+        .album-cover.image { background: linear-gradient(135deg, #0ea5e9, #1e293b); }
         .album-cover.video { background: linear-gradient(135deg, #1d4ed8, #0f172a); }
         .album-cover.audio { background: linear-gradient(135deg, #0f766e, #172554); }
         .album-cover::after {
@@ -737,7 +740,162 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .album-player-meta { color: rgba(255, 255, 255, .78); font-size: 12px; }
+        .album-cover-switch {
+            position: absolute;
+            top: 50%;
+            z-index: 2;
+            width: 44px;
+            height: 44px;
+            border: 0;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            background: rgba(15, 23, 42, .42);
+            cursor: pointer;
+            transform: translateY(-50%);
+        }
+        .album-cover-switch.prev { left: 18px; }
+        .album-cover-switch.next { right: 18px; }
+        .album-cover-switch:hover { background: rgba(0, 82, 217, .78); }
+        .image-story {
+            background: #fff;
+        }
+        .image-gallery-stage {
+            position: relative;
+            min-height: 430px;
+            display: grid;
+            place-items: center;
+            padding: 18px 74px 8px;
+        }
+        .image-story-nav {
+            position: absolute;
+            top: 50%;
+            width: 42px;
+            height: 42px;
+            border: 0;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: #e5e7eb;
+            color: #fff;
+            cursor: pointer;
+            transform: translateY(-50%);
+        }
+        .image-story-nav.prev { left: 18px; }
+        .image-story-nav.next { right: 18px; }
+        .image-story-nav:hover { background: var(--primary); }
+        .image-photo-frame {
+            position: relative;
+            width: min(720px, 100%);
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+            background: #dbeafe;
+        }
+        .image-photo {
+            width: 100%;
+            height: 100%;
+            display: block;
+            position: relative;
+            background:
+                radial-gradient(circle at 76% 16%, rgba(255,255,255,.84) 0 42px, transparent 43px),
+                linear-gradient(180deg, #8fd4ff 0 42%, #5ca36f 42% 62%, #a7c957 62% 100%);
+        }
+        .image-photo.photo-1 { filter: saturate(.84) brightness(1.04); }
+        .image-photo.photo-2 { filter: hue-rotate(12deg) saturate(.9); }
+        .image-photo.photo-3 { filter: hue-rotate(-18deg) contrast(.96); }
+        .image-photo.photo-4 { filter: saturate(1.08) brightness(.98); }
+        .image-photo.photo-5 { filter: hue-rotate(22deg) saturate(.76) brightness(1.08); }
+        .image-photo::before {
+            content: "";
+            position: absolute;
+            left: -4%;
+            right: -4%;
+            bottom: 22%;
+            height: 34%;
+            background: linear-gradient(15deg, transparent 0 40%, rgba(255,255,255,.82) 41% 58%, transparent 59%);
+            transform: skewY(-8deg);
+        }
+        .image-photo::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(140deg, transparent 0 50%, rgba(30, 64, 175, .16) 50% 53%, transparent 54%),
+                radial-gradient(ellipse at 32% 48%, rgba(20,83,45,.34), transparent 28%);
+        }
+        .image-photo-frame .state {
+            position: absolute;
+            left: 14px;
+            top: 14px;
+            z-index: 1;
+            background: rgba(255,255,255,.92);
+        }
+        .image-gallery-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 0 12px;
+        }
+        .image-gallery-dots button {
+            width: 28px;
+            height: 3px;
+            border: 0;
+            border-radius: 999px;
+            background: #e5e7eb;
+            cursor: pointer;
+        }
+        .image-gallery-dots button.active { background: #aeb7c4; }
+        .image-caption {
+            padding: 8px 28px 18px;
+        }
+        .image-caption p {
+            margin: 0;
+            text-align: center;
+            color: var(--ink);
+            font-size: 15px;
+            line-height: 1.9;
+            font-weight: 650;
+        }
+        .image-thumb-strip {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(112px, 1fr));
+            gap: 10px;
+            padding: 8px 18px 18px;
+            overflow-x: auto;
+        }
+        .image-thumb {
+            min-width: 112px;
+            aspect-ratio: 4 / 3;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            padding: 0;
+            overflow: hidden;
+            background: #f3f6fb;
+            cursor: pointer;
+            opacity: .58;
+        }
+        .image-thumb.active {
+            border-color: var(--primary);
+            opacity: 1;
+        }
+        .image-thumb .image-photo { transform: scale(1.03); }
+        .image-thumb:nth-child(2) .image-photo { filter: saturate(.84) brightness(1.04); }
+        .image-thumb:nth-child(3) .image-photo { filter: hue-rotate(12deg) saturate(.9); }
+        .image-thumb:nth-child(4) .image-photo { filter: hue-rotate(-18deg) contrast(.96); }
+        .image-thumb:nth-child(5) .image-photo { filter: saturate(1.08) brightness(.98); }
+        .image-thumb:nth-child(6) .image-photo { filter: hue-rotate(22deg) saturate(.76) brightness(1.08); }
+        .image-story .album-article {
+            border-top: 1px solid var(--line-soft);
+            padding: 18px 28px 26px;
+        }
+        .image-story .album-article p {
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.85;
+            font-weight: 400;
+        }
+        .image-story .album-article p + p { margin-top: 10px; }
         .album-mark {
             position: relative;
             z-index: 1;
@@ -769,11 +927,6 @@
         .album-article {
             border-top: 1px solid var(--line-soft);
             padding: 14px 16px 16px;
-        }
-        .album-article-title {
-            color: var(--ink);
-            font-weight: 760;
-            margin-bottom: 8px;
         }
         .album-article p {
             margin: 0;
@@ -872,23 +1025,23 @@
         .waveform span:nth-child(6) { height: 32px; }
         .album-field-grid {
             display: grid;
-            grid-template-columns: 92px minmax(0, 1fr) 92px minmax(0, 1fr);
+            grid-template-columns: 92px minmax(0, 1fr);
             gap: 10px 12px;
             align-items: center;
         }
         .album-field-grid label { color: var(--muted); text-align: right; }
         .album-value {
-            min-height: 34px;
+            min-height: 28px;
             display: flex;
             align-items: center;
-            border: 1px solid var(--line);
-            border-radius: 6px;
-            padding: 7px 10px;
+            padding: 0;
             color: var(--text);
-            background: #fff;
             min-width: 0;
+            line-height: 1.55;
+            overflow-wrap: anywhere;
         }
-        .album-value.full { grid-column: span 3; }
+        .album-value.full { grid-column: 2; }
+        .album-value:not(.full) { white-space: nowrap; }
         .catalog-status-bar {
             display: grid;
             grid-template-columns: 120px minmax(160px, 1fr) 120px auto;
@@ -1663,14 +1816,15 @@
 
                             <div class="view-panel active" id="panel-assets">
                                 <div class="asset-grid">
-                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
-                                        <div class="asset-folder">
+                                    <article class="asset-card selected" onclick="switchPanel('imageAlbum')">
+                                        <div class="asset-thumb image-album-cover">
                                             <input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()">
-                                            <div class="folder-icon"></div>
+                                            <span class="image-photo"></span>
                                         </div>
                                         <div class="asset-body">
-                                            <div class="asset-title">美术报第四届“新芽杯”国际少儿书画大赛</div>
-                                            <div class="asset-time">2025-12-01 17:15:24</div>
+                                            <div class="asset-title">甬金衢上高速公路宁波段建设现场图集</div>
+                                            <div class="asset-meta"><span>图集 · 6 张</span><span class="state">专辑</span></div>
+                                            <div class="asset-time">2026-06-12 17:19:26</div>
                                         </div>
                                     </article>
                                     <article class="asset-card selected" onclick="switchPanel('catalog')">
@@ -1680,6 +1834,7 @@
                                         </div>
                                         <div class="asset-body">
                                             <div class="asset-title">美术报第五届“新芽杯”国际少儿书画大赛 传承经典 筑梦未来</div>
+                                            <div class="asset-meta"><span>文件夹 · 58 张</span></div>
                                             <div class="asset-time">2025-12-01 16:11:42</div>
                                         </div>
                                     </article>
@@ -1878,6 +2033,70 @@
                                 </div>
                             </div>
 
+                            <div class="view-panel" id="panel-image-album">
+                                <div class="detail-page-toolbar">
+                                    <button class="btn ghost" onclick="switchPanel('assets')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>返回列表</button>
+                                    <div class="detail-page-actions">
+                                        <button class="btn">下载</button>
+                                        <button class="btn">分享</button>
+                                        <button class="btn">以图搜图</button>
+                                        <button class="btn">阅读原文</button>
+                                    </div>
+                                    <span></span>
+                                </div>
+                                <div class="album-detail">
+                                    <section class="album-side image-story">
+                                        <div class="image-gallery-stage">
+                                            <button class="image-story-nav prev" onclick="stepAlbumMedia('image', -1)" aria-label="上一张图片"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+                                            <div class="image-photo-frame">
+                                                <span class="state" id="imageAlbumBadge">1/6</span>
+                                                <div class="image-photo" id="imageAlbumPhoto" aria-label="当前图集图片"></div>
+                                            </div>
+                                            <button class="image-story-nav next" onclick="stepAlbumMedia('image', 1)" aria-label="下一张图片"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+                                        </div>
+                                        <div class="image-gallery-dots" aria-label="图片序号">
+                                            <button class="active" data-album-kind="image" data-album-index="0" onclick="switchAlbumMedia('image', 0)" aria-label="第1张图片"></button>
+                                            <button data-album-kind="image" data-album-index="1" onclick="switchAlbumMedia('image', 1)" aria-label="第2张图片"></button>
+                                            <button data-album-kind="image" data-album-index="2" onclick="switchAlbumMedia('image', 2)" aria-label="第3张图片"></button>
+                                            <button data-album-kind="image" data-album-index="3" onclick="switchAlbumMedia('image', 3)" aria-label="第4张图片"></button>
+                                            <button data-album-kind="image" data-album-index="4" onclick="switchAlbumMedia('image', 4)" aria-label="第5张图片"></button>
+                                            <button data-album-kind="image" data-album-index="5" onclick="switchAlbumMedia('image', 5)" aria-label="第6张图片"></button>
+                                        </div>
+                                        <div class="image-caption">
+                                            <p id="imageAlbumCaption">该工程建成后，不仅能分流繁忙的机场高架车流，完善城西与宁波中心城区整体路网，还将新增余姚、慈溪往返奉化、宁海的干线通道，搭建区域间的快速通道。</p>
+                                        </div>
+                                        <div class="image-thumb-strip" aria-label="图片列表">
+                                            <button class="image-thumb active" data-album-kind="image" data-album-index="0" onclick="switchAlbumMedia('image', 0)" aria-label="查看第1张图片"><span class="image-photo"></span></button>
+                                            <button class="image-thumb" data-album-kind="image" data-album-index="1" onclick="switchAlbumMedia('image', 1)" aria-label="查看第2张图片"><span class="image-photo"></span></button>
+                                            <button class="image-thumb" data-album-kind="image" data-album-index="2" onclick="switchAlbumMedia('image', 2)" aria-label="查看第3张图片"><span class="image-photo"></span></button>
+                                            <button class="image-thumb" data-album-kind="image" data-album-index="3" onclick="switchAlbumMedia('image', 3)" aria-label="查看第4张图片"><span class="image-photo"></span></button>
+                                            <button class="image-thumb" data-album-kind="image" data-album-index="4" onclick="switchAlbumMedia('image', 4)" aria-label="查看第5张图片"><span class="image-photo"></span></button>
+                                            <button class="image-thumb" data-album-kind="image" data-album-index="5" onclick="switchAlbumMedia('image', 5)" aria-label="查看第6张图片"><span class="image-photo"></span></button>
+                                        </div>
+                                        <div class="album-article">
+                                            <p>甬金衢上高速公路宁波段是连接宁波都市区西部片区的重要交通工程。项目建设推进后，将进一步完善区域快速路网，提升跨区通行效率，并为沿线产业协同、城市通勤和公共服务联动提供支撑。</p>
+                                            <p>本组图片记录了工程建设现场、桥面施工、隧道口作业和周边路网环境等关键画面，供新闻报道、专题策划和后续素材检索复用。</p>
+                                        </div>
+                                    </section>
+                                    <section class="album-main">
+                                        <div class="detail-tabs">
+                                            <button class="detail-tab active">基本信息</button>
+                                        </div>
+                                        <div class="album-main-body">
+                                            <div class="album-field-grid">
+                                                <label>稿件标题</label><div class="album-value full">甬金衢上高速公路宁波段建设现场图集</div>
+                                                <label>格式</label><div class="album-value" id="imageAlbumBasicFormat">JPG</div>
+                                                <label>尺寸</label><div class="album-value" id="imageAlbumBasicMetric">3840*2892</div>
+                                                <label>大小</label><div class="album-value" id="imageAlbumBasicSize">1.09MB</div>
+                                                <label>来源</label><div class="album-value">甬派</div>
+                                                <label>素材数量</label><div class="album-value">6 张</div>
+                                                <label>发布时间</label><div class="album-value">2026-06-12 17:19:26</div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+
                             <div class="view-panel" id="panel-video-album">
                                 <div class="detail-page-toolbar">
                                     <button class="btn ghost" onclick="switchPanel('assets')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>返回列表</button>
@@ -1892,60 +2111,31 @@
                                 <div class="album-detail">
                                     <section class="album-side">
                                         <div class="album-cover video">
-                                            <span class="state" id="videoAlbumBadge">当前 1/4</span>
+                                            <span class="state" id="videoAlbumBadge">1/4</span>
+                                            <button class="album-cover-switch prev" onclick="stepAlbumMedia('video', -1)" aria-label="上一个视频"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
                                             <div class="album-mark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+                                            <button class="album-cover-switch next" onclick="stepAlbumMedia('video', 1)" aria-label="下一个视频"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
                                             <div class="album-player-caption">
-                                                <div class="album-player-title" id="videoAlbumPlayerTitle">《越城新闻》2026年5月19日</div>
-                                                <div class="album-player-meta" id="videoAlbumPlayerMeta">MP4 · 14:52 · 296.5MB</div>
+                                                <div class="album-player-title" id="videoAlbumPlayerTitle">正片｜越城新闻完整节目</div>
                                             </div>
-                                        </div>
-                                        <div class="album-now" id="videoAlbumNow">
-                                            <button class="album-switch prev" onclick="stepAlbumMedia('video', -1)" aria-label="上一个视频"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
-                                            <div class="album-now-info">
-                                                <div class="album-now-title" id="videoAlbumCurrentTitle">《越城新闻》2026年5月19日</div>
-                                                <div class="album-now-meta" id="videoAlbumCurrentMeta">MP4 · 14:52 · 296.5MB</div>
-                                            </div>
-                                            <button class="album-switch next" onclick="stepAlbumMedia('video', 1)" aria-label="下一个视频"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
                                         </div>
                                         <div class="album-article">
-                                            <div class="album-article-title">稿件正文</div>
                                             <p>本期《越城新闻》聚焦科技金融、河湖治理、低空经济、交通建设、医养服务等内容，汇集正片与多条新闻片段，供素材归档、检索和复用。</p>
                                         </div>
                                     </section>
                                     <section class="album-main">
                                         <div class="detail-tabs">
                                             <button class="detail-tab active">基本信息</button>
-                                            <button class="detail-tab">编目信息</button>
-                                            <button class="detail-tab">结构化信息</button>
-                                            <button class="detail-tab">共享记录</button>
-                                            <button class="detail-tab">敏感信息识别</button>
-                                            <button class="detail-tab">下载记录</button>
                                         </div>
                                         <div class="album-main-body">
-                                            <div class="catalog-section-title">稿件信息</div>
                                             <div class="album-field-grid">
-                                                <label>稿件ID</label><div class="album-value">2056717025963757568</div>
+                                                <label>稿件标题</label><div class="album-value full">《越城新闻》2026年5月19日</div>
+                                                <label>格式</label><div class="album-value" id="videoAlbumBasicFormat">MP4</div>
+                                                <label>时长</label><div class="album-value" id="videoAlbumBasicMetric">14:52</div>
+                                                <label>大小</label><div class="album-value" id="videoAlbumBasicSize">296.5MB</div>
                                                 <label>来源</label><div class="album-value">蓝云 / 媒立方</div>
-                                                <label>列表标题</label><div class="album-value full">《越城新闻》2026年5月19日</div>
-                                            </div>
-                                            <div class="catalog-section-title">共性字段</div>
-                                            <div class="album-field-grid">
-                                                <label>版权信息</label><div class="album-value">内部原创</div>
-                                                <label>标签</label><div class="album-value">待补充</div>
-                                                <label>评论设置</label><div class="album-value">先审后发</div>
-                                                <label>点赞设置</label><div class="album-value">开启</div>
-                                                <label>签发后隐藏</label><div class="album-value">否</div>
-                                                <label>相关新闻</label><div class="album-value">可关联</div>
-                                                <label>备注</label><div class="album-value full">节目专辑，适合按音视频条目切换查看和复用。</div>
-                                            </div>
-                                            <div class="catalog-section-title">视频信息</div>
-                                            <div class="album-field-grid">
-                                                <label>视频类型</label><div class="album-value">普通视频</div>
-                                                <label>拍摄地点</label><div class="album-value">待补充</div>
-                                                <label>电视台</label><div class="album-value">待补充</div>
-                                                <label>拍摄时间</label><div class="album-value">待补充</div>
-                                                <label>导演</label><div class="album-value">待补充</div>
-                                                <label>主持人</label><div class="album-value">待补充</div>
+                                                <label>素材数量</label><div class="album-value">10 条</div>
+                                                <label>发布时间</label><div class="album-value">2026-05-19 20:30:00</div>
                                             </div>
                                         </div>
                                     </section>
@@ -1966,58 +2156,31 @@
                                 <div class="album-detail">
                                     <section class="album-side">
                                         <div class="album-cover audio">
-                                            <span class="state" id="audioAlbumBadge">当前 1/3</span>
+                                            <span class="state" id="audioAlbumBadge">1/3</span>
+                                            <button class="album-cover-switch prev" onclick="stepAlbumMedia('audio', -1)" aria-label="上一个音频"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
                                             <div class="album-mark"><div class="waveform"><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
+                                            <button class="album-cover-switch next" onclick="stepAlbumMedia('audio', 1)" aria-label="下一个音频"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
                                             <div class="album-player-caption">
-                                                <div class="album-player-title" id="audioAlbumPlayerTitle">《971健康吧》【20250317周一】.wav</div>
-                                                <div class="album-player-meta" id="audioAlbumPlayerMeta">WAV · 20:47 · 256k</div>
+                                                <div class="album-player-title" id="audioAlbumPlayerTitle">正片｜971健康吧完整音频</div>
                                             </div>
-                                        </div>
-                                        <div class="album-now audio" id="audioAlbumNow">
-                                            <button class="album-switch prev" onclick="stepAlbumMedia('audio', -1)" aria-label="上一个音频"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
-                                            <div class="album-now-info">
-                                                <div class="album-now-title" id="audioAlbumCurrentTitle">《971健康吧》【20250317周一】.wav</div>
-                                                <div class="album-now-meta" id="audioAlbumCurrentMeta">WAV · 20:47 · 256k</div>
-                                            </div>
-                                            <button class="album-switch next" onclick="stepAlbumMedia('audio', 1)" aria-label="下一个音频"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
                                         </div>
                                         <div class="album-article">
-                                            <div class="album-article-title">稿件正文</div>
                                             <p>本期《971健康吧》围绕日常健康管理展开，包含节目主音频、健康知识讲解和问答片段，适合按期归档并进入音频素材检索。</p>
                                         </div>
                                     </section>
                                     <section class="album-main">
                                         <div class="detail-tabs">
                                             <button class="detail-tab active">基本信息</button>
-                                            <button class="detail-tab">编目信息</button>
-                                            <button class="detail-tab">结构化信息</button>
-                                            <button class="detail-tab">共享记录</button>
-                                            <button class="detail-tab">敏感信息识别</button>
-                                            <button class="detail-tab">下载记录</button>
                                         </div>
                                         <div class="album-main-body">
-                                            <div class="catalog-section-title">稿件信息</div>
                                             <div class="album-field-grid">
-                                                <label>稿件ID</label><div class="album-value">1901474101736198144</div>
+                                                <label>稿件标题</label><div class="album-value full">《971健康吧》【20250317周一】</div>
+                                                <label>格式</label><div class="album-value" id="audioAlbumBasicFormat">WAV</div>
+                                                <label>时长</label><div class="album-value" id="audioAlbumBasicMetric">20:47</div>
+                                                <label>码率</label><div class="album-value" id="audioAlbumBasicSize">256k</div>
                                                 <label>来源</label><div class="album-value">蓝云 / 媒立方</div>
-                                                <label>列表标题</label><div class="album-value full">《971健康吧》【20250317周一】</div>
-                                            </div>
-                                            <div class="catalog-section-title">共性字段</div>
-                                            <div class="album-field-grid">
-                                                <label>版权信息</label><div class="album-value">内部原创</div>
-                                                <label>标签</label><div class="album-value">待补充</div>
-                                                <label>评论设置</label><div class="album-value">先审后发</div>
-                                                <label>点赞设置</label><div class="album-value">开启</div>
-                                                <label>签发后隐藏</label><div class="album-value">否</div>
-                                                <label>相关新闻</label><div class="album-value">可关联</div>
-                                                <label>备注</label><div class="album-value full">广播节目专辑，可按期数进入素材库检索。</div>
-                                            </div>
-                                            <div class="catalog-section-title">音频信息</div>
-                                            <div class="album-field-grid">
-                                                <label>人员选择</label><div class="album-value">待补充</div>
-                                                <label>新闻附件</label><div class="album-value">无</div>
-                                                <label>授权人</label><div class="album-value">范婧</div>
-                                                <label>授权单位</label><div class="album-value">桐乡市传媒中心 / 电视部</div>
+                                                <label>素材数量</label><div class="album-value">1 条</div>
+                                                <label>发布时间</label><div class="album-value">2025-03-17 09:30:00</div>
                                             </div>
                                         </div>
                                     </section>
@@ -2419,7 +2582,7 @@
 - 素材中心支持上传文件和上传文件夹，文件夹上传保留嵌套目录结构。
 - 素材上传后可进入编目流程，补齐标题、标签、分类、版权、关联信息等检索字段。
 - 素材详情支持按模板填写编目信息，并保存草稿或完成编目。
-- 视频专辑、音频专辑支持在详情页顶部切换专辑内音视频条目。
+- 图集、视频专辑、音频专辑支持在详情页切换专辑内媒体条目。
 - 编目管理作为独立模块，支持管理员维护编目模板和字段配置。
 
 ### 1.2 用户角色
@@ -2440,12 +2603,14 @@
 - 类型 Tab 包含全部、视频、音频、图片、文件。
 - 操作条包含上传、新建、下载、分享、取至个人、移动、删除、批量编目。
 - 勾选素材后展示全选、已选数量和清除。
-- 卡片视图支持文件夹、图片、视频、文件、视频专辑、音频专辑混合展示。
+- 卡片视图支持文件夹、图片、视频、文件、图集、视频专辑、音频专辑混合展示。
+- 图集卡片封面取图集内第一张图片。
 - 视频卡片展示播放标识；原创素材展示原创标签；专辑卡片展示专辑类型和条目数量。
 
 ### 2.2 交互规则
 
 - 点击普通素材卡片进入素材详情编目页。
+- 点击图集卡片进入图集详情页。
 - 点击视频专辑卡片进入视频专辑详情页。
 - 点击音频专辑卡片进入音频专辑详情页。
 - 点击批量编目进入批量编目处理界面。
@@ -2538,24 +2703,150 @@
 
 ---
 
-## 5. 视频专辑详情
+## 5. 图集详情
 
 ### 5.1 页面结构
 
-- 顶部操作区包含返回列表、下载、分享、以图搜图、图搜视频。
-- 左侧展示当前视频播放器、当前视频切换和稿件正文。
-- 当前视频切换位于播放器下方、稿件正文上方。
-- 切换当前视频时，同步更新上方播放器展示。
-- 右侧采用素材详情统一标签页：基本信息、编目信息、结构化信息、共享记录、敏感信息识别、下载记录。
-- 专辑信息归属于基本信息 Tab，默认选中基本信息。
+- 顶部操作区包含返回列表、下载、分享、以图搜图、阅读原文。
+- 左侧内容区按主图预览、图片图说、图片列表、正文内容顺序展示。
+- 主图预览展示当前图片、当前序号和左右切换按钮。
+- 图片图说展示在主图预览下方、图片列表上方，随当前图片切换变化。
+- 图片列表展示图集内图片缩略图，当前图片在列表中高亮。
+- 图片列表下方展示正文内容，正文内容为图集稿的稿件正文，切换图片时不变化。
+- 切换当前图片时，同步更新主图预览、图片图说、当前序号、图片列表高亮状态，以及右侧当前图片的格式、尺寸、大小。
+- 右侧仅展示基本信息，不展示编目信息、结构化信息、共享记录、敏感信息识别、下载记录等其它字段页。
 
-### 5.2 顶部切换
+### 5.2 字段规则
+
+稿件标题：
+
+- 展示规则：在右侧基本信息中展示图集总标题，只读展示，空值展示为空。
+- 交互规则：不支持在详情页直接编辑；切换图片时不变化。
+- 数据规则：
+  - 取数规则：取当前图集稿件的标题。
+  - 数据筛选规则：不涉及筛选。
+  - 数据排序规则：不涉及排序。
+
+当前图片信息：
+
+- 展示规则：右侧基本信息展示当前图片的格式、尺寸、大小；左侧主图预览展示当前图片序号。
+- 交互规则：点击左右切换按钮或图片列表缩略图后，当前图片信息随之更新。
+- 数据规则：
+  - 取数规则：取当前图集内被选中图片的媒体属性。
+  - 数据筛选规则：不涉及筛选。
+  - 数据排序规则：按图集内图片原始顺序展示。
+
+图片图说：
+
+- 展示规则：展示在主图预览下方、图片列表上方，只读展示；空值时不展示图说内容。
+- 交互规则：切换当前图片时，图说同步更新为当前图片对应图说。
+- 数据规则：
+  - 取数规则：取当前图集内被选中图片的图说内容。
+  - 数据筛选规则：不涉及筛选。
+  - 数据排序规则：与当前图片顺序保持一致。
+
+来源：
+
+- 展示规则：在右侧基本信息中展示稿件来源，只读展示，空值展示为空。
+- 交互规则：切换图片时不变化。
+- 数据规则：
+  - 取数规则：取当前图集稿件的来源信息；来源与发布媒体默认同源，若业务来源与实际发布平台不同，来源展示素材归集来源。
+  - 数据筛选规则：不涉及筛选。
+  - 数据排序规则：不涉及排序。
+
+素材数量：
+
+- 展示规则：在右侧基本信息中展示当前图集关联的图片数量。
+- 交互规则：图片切换不改变素材数量。
+- 数据规则：
+  - 取数规则：统计当前图集内关联图片素材数量。
+  - 数据筛选规则：仅统计归属于当前图集的图片素材。
+  - 数据排序规则：不涉及排序。
+
+发布时间：
+
+- 展示规则：在右侧基本信息中展示发布时间，精确到秒，空值展示为空。
+- 交互规则：切换图片时不变化。
+- 数据规则：
+  - 取数规则：取当前图集稿件的发布时间。
+  - 数据筛选规则：不涉及筛选。
+  - 数据排序规则：不涉及排序。
+
+图片列表：
+
+- 展示规则：展示图集内图片缩略图和图片序号点，默认选中第一张图片并高亮；仅一张图片时展示单张缩略图并高亮；图片数量较多时支持在图片列表区域内横向浏览；无图片时主图预览展示空状态，当前序号不展示，右侧格式、尺寸、大小展示为空；图片加载失败时展示图片占位并保留原排序位置。
+- 交互规则：点击缩略图或图片序号点切换当前图片；多张图片时点击左右切换按钮在图片列表内切换上一张或下一张，首尾支持循环切换；横向浏览缩略图列表本身不切换主图；切换图片后当前缩略图保持可见；仅一张图片时不提供上一张、下一张切换能力。
+- 数据规则：
+  - 取数规则：取当前图集稿件关联的图片素材。
+  - 数据筛选规则：仅展示归属于当前图集的图片素材。
+  - 数据排序规则：按图集内图片原始顺序展示。
+
+正文内容：
+
+- 展示规则：展示在图片列表下方，按稿件正文内容只读展示，不额外展示字段标题；正文为空时该区域不展示内容；正文较长时按页面滚动查看，不截断；多段正文按原稿段落顺序展示。
+- 交互规则：不支持在详情页直接编辑；切换图片时正文内容不变化。
+- 数据规则：
+  - 取数规则：取当前图集稿件的正文内容，保留原稿文本段落顺序。
+  - 数据筛选规则：不涉及筛选。
+  - 数据排序规则：不涉及排序。
+
+### 5.3 操作规则
+
+阅读原文：
+
+- 默认状态：当前稿件存在原文来源时，在顶部操作区展示。
+- 点击反馈：点击后打开原文阅读入口。
+- 异常状态：原文来源缺失时不展示该按钮。
+
+顶部通用操作：
+
+- 默认状态：展示返回列表、下载、分享、以图搜图、阅读原文。
+- 启用状态：返回列表默认可点击；下载要求具备下载素材权限；分享要求具备分享素材权限；以图搜图要求具备以图搜图权限；阅读原文要求当前稿件存在原文来源；同时当前稿件状态需允许对应操作。
+- 禁用状态：当前稿件缺少可下载文件、不可分享、不支持以图搜图或缺少原文来源时，对应按钮置为不可用或不展示；不额外展示禁用原因。
+- 权限规则：无权限用户不展示对应按钮。
+- 点击反馈：返回列表回到素材中心列表；下载当前图集稿件包含的全部图片；分享进入分享流程；以图搜图以当前主图作为检索对象进入搜索结果；阅读原文打开原文阅读入口。
+- 结果变化：下载和分享完成后保留当前详情页状态；返回列表、以图搜图和阅读原文进入对应结果页面。
+
+图片切换：
+
+- 默认状态：图集包含图片时展示图片列表；图集包含多张图片时展示左右切换按钮。
+- 点击反馈：切换后更新主图、序号点、当前序号、图片列表高亮和右侧当前图片属性。
+- 异常状态：图集无图片时展示空状态；图集仅包含一张图片时，不提供上一张、下一张切换能力。
+
+### 5.4 验收标准
+
+- 图集详情左侧按主图预览、图片图说、图片列表、正文内容顺序展示。
+- 图片图说位于主图预览下方、图片列表上方。
+- 图片列表位于正文内容上方。
+- 点击缩略图可以切换主图，并同步更新当前序号、缩略图高亮和右侧当前图片属性。
+- 点击图片序号点可以切换主图，并同步更新缩略图高亮和右侧当前图片属性。
+- 点击左右切换按钮可以循环切换图片。
+- 图片切换后，图片图说同步更新为当前图片图说。
+- 正文内容在图片切换时保持不变。
+- 右侧仅展示基本信息字段。
+
+---
+
+## 6. 视频专辑详情
+
+### 6.1 页面结构
+
+- 顶部操作区包含返回列表、下载、分享、以图搜图、图搜视频。
+- 左侧展示当前视频播放器和正文内容。
+- 左右切换按钮位于当前视频播放器区域内。
+- 切换当前视频时，同步更新上方播放器展示。
+- 右侧仅展示基本信息，不展示编目信息、结构化信息、共享记录、敏感信息识别、下载记录等其它字段页。
+- 基本信息区的稿件标题为视频专辑总标题。
+- 当前素材的格式、时长、大小在右侧基本信息中展示。
+- 发布时间展示到秒。
+
+### 6.2 切换规则
 
 **展示规则**
 
-- 当前视频播放器展示当前序号、视频标题、格式、时长、大小。
-- 当前视频切换区展示视频标题、格式、时长、大小。
-- 左右按钮位于当前视频区域两侧。
+- 当前视频播放器展示当前序号和视频标题。
+- 当前视频的格式、时长和大小展示在右侧基本信息区。
+- 左右按钮位于当前视频播放器区域两侧。
 
 **交互规则**
 
@@ -2564,36 +2855,34 @@
 - 切换到首尾时循环切换。
 - 切换后更新标题、格式、时长和大小。
 
-### 5.3 字段
+### 6.3 字段
 
 | 分组 | 字段 |
 |---|---|
-| 稿件信息 | 稿件ID、来源、列表标题 |
-| 正文信息 | 稿件正文 |
-| 共性字段 | 版权信息、标签、评论设置、点赞设置、签发后隐藏、相关新闻、备注 |
-| 视频信息 | 视频类型、拍摄地点、电视台、拍摄时间、导演、主持人 |
-| 当前视频 | 标题、格式、时长、大小 |
+| 基本信息 | 稿件标题、格式、时长、大小、来源、素材数量、发布时间 |
 
 ---
 
-## 6. 音频专辑详情
+## 7. 音频专辑详情
 
-### 6.1 页面结构
+### 7.1 页面结构
 
 - 顶部操作区包含返回列表、下载、分享、以图搜图、图搜视频。
-- 左侧展示当前音频播放器、当前音频切换和稿件正文。
-- 当前音频切换位于播放器下方、稿件正文上方。
+- 左侧展示当前音频播放器和正文内容。
+- 左右切换按钮位于当前音频播放器区域内。
 - 切换当前音频时，同步更新上方播放器展示。
-- 右侧采用素材详情统一标签页：基本信息、编目信息、结构化信息、共享记录、敏感信息识别、下载记录。
-- 专辑信息归属于基本信息 Tab，默认选中基本信息。
+- 右侧仅展示基本信息，不展示编目信息、结构化信息、共享记录、敏感信息识别、下载记录等其它字段页。
+- 基本信息区的稿件标题为音频专辑总标题。
+- 当前素材的格式、时长、码率在右侧基本信息中展示。
+- 发布时间展示到秒。
 
-### 6.2 顶部切换
+### 7.2 切换规则
 
 **展示规则**
 
-- 当前音频播放器展示当前序号、音频标题、格式、时长、码率。
-- 当前音频切换区展示音频标题、格式、时长、码率。
-- 左右按钮位于当前音频区域两侧。
+- 当前音频播放器展示当前序号和音频标题。
+- 当前音频的格式、时长和码率展示在右侧基本信息区。
+- 左右按钮位于当前音频播放器区域两侧。
 
 **交互规则**
 
@@ -2602,21 +2891,17 @@
 - 切换到首尾时循环切换。
 - 切换后更新标题、格式、时长和码率。
 
-### 6.3 字段
+### 7.3 字段
 
 | 分组 | 字段 |
 |---|---|
-| 稿件信息 | 稿件ID、来源、列表标题 |
-| 正文信息 | 稿件正文 |
-| 共性字段 | 版权信息、标签、评论设置、点赞设置、签发后隐藏、相关新闻、备注 |
-| 音频信息 | 人员选择、新闻附件、授权人、授权单位 |
-| 当前音频 | 标题、格式、时长、码率 |
+| 基本信息 | 稿件标题、格式、时长、码率、来源、素材数量、发布时间 |
 
 ---
 
-## 7. 编目管理
+## 8. 编目管理
 
-### 7.1 模板列表
+### 8.1 模板列表
 
 **展示规则**
 
@@ -2627,7 +2912,7 @@
 - 默认模板展示默认标识。
 - 人物库模板仅为内置示例模板之一，管理员可按业务需要新增任意编目模板。
 
-### 7.2 新建与编辑模板
+### 8.2 新建与编辑模板
 
 **展示规则**
 
@@ -2644,7 +2929,7 @@
 - 点击删除字段移除当前字段并重排序号。
 - 保存模板校验模板名称、字段名和字段类型。
 
-### 7.3 数据规则
+### 8.3 数据规则
 
 - 模板支持按素材类型、素材库、部门或业务场景配置适用范围。
 - 模板字段保存字段 ID、字段名、类型、分组、占位文字、必填、排序。
@@ -2653,19 +2938,22 @@
 
 ---
 
-## 8. 权限与配置
+## 9. 权限与配置
 
 | 权限点 | 说明 |
 |---|---|
 | 上传文件 | 使用现有上传文件能力 |
 | 上传文件夹 | 使用系统文件夹选择并保留目录结构 |
 | 查看素材详情 | 查看当前权限范围内素材详情 |
+| 下载素材 | 下载当前权限范围内的素材 |
+| 分享素材 | 将当前权限范围内的素材发起分享 |
+| 以图搜图 | 使用图片素材进行相似图片检索 |
 | 编辑编目 | 编辑素材编目字段 |
 | 批量编目 | 对多条素材执行批量编目 |
 | 编目模板管理 | 新建、编辑、复制、删除、设置默认模板 |
 | 审核编目 | 审核带编目信息的共享申请 |
 
-### 8.1 系统参数
+### 9.1 系统参数
 
 - 单次上传最大文件数。
 - 单文件最大体积。
@@ -2679,12 +2967,16 @@
 
 ---
 
-## 9. 验收标准
+## 10. 验收标准
 
 - 上传按钮下仅展示上传文件、上传文件夹两个选项。
 - 点击上传文件夹直接弹出系统文件夹选择窗口。
 - 文件夹上传支持嵌套目录并保留相对路径。
-- 素材列表展示视频专辑和音频专辑卡片。
+- 素材列表展示图集、视频专辑和音频专辑卡片。
+- 图集详情右侧仅展示基本信息。
+- 视频专辑详情右侧仅展示基本信息。
+- 音频专辑详情右侧仅展示基本信息。
+- 图集详情支持左右切换当前图片。
 - 视频专辑详情支持顶部左右切换当前视频。
 - 音频专辑详情支持顶部左右切换当前音频。
 - 素材详情编目信息展示模板选择、保存草稿、完成编目和模板管理。
@@ -2697,6 +2989,7 @@
 
     <script>
         var changelogData = [
+            { time: '2026-06-22 17:49', desc: '发布专辑详情优化：图集图说随图片切换、正文独立展示，图集/视频专辑/音频专辑统一总稿件与单素材信息结构，并同步顶部操作和 PRD 口径' },
             { time: '2026-06-11 19:37', desc: '发布素材中心编目优化：补齐通用模板配置 PRD、音视频专辑详情播放器切换、线上素材中心列表和上传文件夹入口' },
             { time: '2026-06-11 15:42', desc: '简化上传入口：上传按钮改为上传文件/上传文件夹两个选择，文件夹选择直接调用系统文件夹窗口并支持嵌套目录' },
             { time: '2026-06-11 14:43', desc: '优化新建模板和编辑模板：模板管理列表保留上下文，改为弹窗完成新建/编辑，字段配置支持新增、删除、计数和序号更新' },
@@ -2834,6 +3127,7 @@
             var panels = {
                 assets: document.getElementById('panel-assets'),
                 catalog: document.getElementById('panel-catalog'),
+                imageAlbum: document.getElementById('panel-image-album'),
                 videoAlbum: document.getElementById('panel-video-album'),
                 audioAlbum: document.getElementById('panel-audio-album'),
                 tasks: document.getElementById('panel-tasks'),
@@ -2842,7 +3136,7 @@
             Object.keys(panels).forEach(function (key) { panels[key].classList.remove('active'); });
             panels[name].classList.add('active');
             var workbench = document.querySelector('.workbench');
-            var isDetail = name === 'catalog' || name === 'videoAlbum' || name === 'audioAlbum';
+            var isDetail = name === 'catalog' || name === 'imageAlbum' || name === 'videoAlbum' || name === 'audioAlbum';
             if (workbench) {
                 workbench.classList.toggle('module-templates', name === 'templates');
                 workbench.classList.toggle('module-detail', isDetail);
@@ -2858,29 +3152,49 @@
         }
 
         var albumMediaData = {
+            image: [
+                { title: '主线桥梁航拍全景', meta: 'JPG · 3840*2892 · 1.09MB', caption: '该工程建成后，不仅能分流繁忙的机场高架车流，完善城西与宁波中心城区整体路网，还将新增余姚、慈溪往返奉化、宁海的干线通道，搭建区域间的快速通道。' },
+                { title: '施工区村镇连接段', meta: 'JPG · 3000*2000 · 860KB', caption: '施工区与沿线村镇相邻，项目推进过程中同步梳理周边道路组织，减少施工对日常通行的影响。' },
+                { title: '架桥设备作业现场', meta: 'JPG · 3000*2000 · 912KB', caption: '大型架桥设备正在桥面区域作业，现场按工序推进梁体铺设、吊装和安全防护。' },
+                { title: '隧道口与桥面施工', meta: 'JPG · 4096*2730 · 1.36MB', caption: '隧道口与桥面衔接段进入集中施工阶段，后续将承担山区路段与平原路网的快速转换功能。' },
+                { title: '主线桥梁俯瞰', meta: 'JPG · 3840*2160 · 1.18MB', caption: '从空中俯瞰，主线桥梁穿越田野与村镇，线路走向清晰，路网骨架初步成形。' },
+                { title: '梁面铺设细节', meta: 'JPG · 4096*2730 · 1.42MB', caption: '桥面梁体铺设细节清晰可见，施工车辆和设备按作业面分区推进。' }
+            ],
             video: [
-                { title: '《越城新闻》2026年5月19日', meta: 'MP4 · 14:52 · 296.5MB' },
-                { title: '科技金融精准对接 解决企业融资难题', meta: 'MP4 · 02:22 · 49.6MB' },
-                { title: '区人大常委会举行专题讲座', meta: 'MP4 · 01:18 · 27.2MB' },
-                { title: '越城发布低空经济高质量发展“路线图”', meta: 'MP4 · 02:47 · 56.0MB' }
+                { title: '正片｜越城新闻完整节目', meta: 'MP4 · 14:52 · 296.5MB' },
+                { title: '片段｜科技金融精准对接', meta: 'MP4 · 02:22 · 49.6MB' },
+                { title: '片段｜区人大常委会专题讲座', meta: 'MP4 · 01:18 · 27.2MB' },
+                { title: '片段｜低空经济发展路线图', meta: 'MP4 · 02:47 · 56.0MB' }
             ],
             audio: [
-                { title: '《971健康吧》【20250317周一】.wav', meta: 'WAV · 20:47 · 256k' },
-                { title: '971健康吧｜脂肪肝日常管理.mp3', meta: 'MP3 · 08:32 · 192k' },
-                { title: '971健康吧｜专家问答精选.mp3', meta: 'MP3 · 06:18 · 192k' }
+                { title: '正片｜971健康吧完整音频', meta: 'WAV · 20:47 · 256k' },
+                { title: '片段｜脂肪肝日常管理', meta: 'MP3 · 08:32 · 192k' },
+                { title: '片段｜专家问答精选', meta: 'MP3 · 06:18 · 192k' }
             ]
         };
-        var albumMediaIndex = { video: 0, audio: 0 };
+        var albumMediaIndex = { image: 0, video: 0, audio: 0 };
 
         function switchAlbumMedia(kind, index) {
             var media = albumMediaData[kind][index];
-            var prefix = kind === 'video' ? 'videoAlbum' : 'audioAlbum';
+            var prefixMap = { image: 'imageAlbum', video: 'videoAlbum', audio: 'audioAlbum' };
+            var prefix = prefixMap[kind];
+            var metaParts = media.meta.split(' · ');
             albumMediaIndex[kind] = index;
-            document.getElementById(prefix + 'CurrentTitle').textContent = media.title;
-            document.getElementById(prefix + 'CurrentMeta').textContent = media.meta;
-            document.getElementById(prefix + 'PlayerTitle').textContent = media.title;
-            document.getElementById(prefix + 'PlayerMeta').textContent = media.meta;
-            document.getElementById(prefix + 'Badge').textContent = '当前 ' + (index + 1) + '/' + albumMediaData[kind].length;
+            var titleEl = document.getElementById(prefix + 'PlayerTitle');
+            if (titleEl) titleEl.textContent = media.title;
+            document.getElementById(prefix + 'BasicFormat').textContent = metaParts[0] || '';
+            document.getElementById(prefix + 'BasicMetric').textContent = metaParts[1] || '';
+            document.getElementById(prefix + 'BasicSize').textContent = metaParts[2] || '';
+            document.getElementById(prefix + 'Badge').textContent = (index + 1) + '/' + albumMediaData[kind].length;
+            if (kind === 'image') {
+                var photo = document.getElementById('imageAlbumPhoto');
+                if (photo) photo.className = 'image-photo photo-' + index;
+                var caption = document.getElementById('imageAlbumCaption');
+                if (caption) caption.textContent = media.caption || '';
+                document.querySelectorAll('[data-album-kind="image"]').forEach(function (el) {
+                    el.classList.toggle('active', Number(el.getAttribute('data-album-index')) === index);
+                });
+            }
         }
 
         function stepAlbumMedia(kind, delta) {
