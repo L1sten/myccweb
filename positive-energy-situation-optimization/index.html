@@ -765,6 +765,7 @@ a{color:inherit;text-decoration:none}
   gap:6px;
   min-width:0;
 }
+.media-type-filter{position:relative;z-index:20}
 .matrix-filter label{
   color:var(--text);
   font-weight:800;
@@ -776,7 +777,93 @@ a{color:inherit;text-decoration:none}
   grid-column:span 2;
   margin-left:0;
 }
-.matrix-table{min-width:1780px}
+.matrix-filter.actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+}
+.media-cascade{position:relative;min-width:0}
+.media-select-trigger{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  text-align:left;
+  color:var(--weak);
+  cursor:pointer;
+}
+.media-cascade.open .media-select-trigger{
+  border-color:var(--primary);
+  box-shadow:0 0 0 2px rgba(0,82,217,.12);
+}
+.media-caret{color:#9AA4B2;font-size:14px;transition:transform .16s ease}
+.media-cascade.open .media-caret{transform:rotate(180deg)}
+.media-cascade-menu{
+  position:absolute;
+  left:0;
+  top:40px;
+  width:240px;
+  min-height:250px;
+  display:none;
+  grid-template-columns:240px;
+  background:#fff;
+  border:1px solid #D8DEE8;
+  border-radius:4px;
+  box-shadow:0 8px 24px rgba(31,45,61,.14);
+  z-index:30;
+}
+.media-cascade.open .media-cascade-menu{display:grid}
+.media-cascade.show-other .media-cascade-menu{
+  width:482px;
+  min-height:274px;
+  grid-template-columns:240px 1fr;
+}
+.media-cascade-menu::before{
+  content:"";
+  position:absolute;
+  left:46px;
+  top:-7px;
+  width:12px;
+  height:12px;
+  background:#fff;
+  border-left:1px solid #D8DEE8;
+  border-top:1px solid #D8DEE8;
+  transform:rotate(45deg);
+}
+.media-option-list{
+  padding:10px 0;
+}
+.media-cascade.show-other .media-option-list:first-child{border-right:1px solid #E5EAF2}
+.media-option-list.secondary{display:none;border-right:0}
+.media-cascade.show-other .media-option-list.secondary{display:block}
+.media-option{
+  width:100%;
+  height:46px;
+  padding:0 26px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:var(--text);
+  font-size:15px;
+  font-weight:700;
+  text-align:left;
+}
+.media-option:hover,.media-option.active{background:#F5F7FA}
+.media-radio{
+  width:16px;
+  height:16px;
+  border:1px solid #D0D8E6;
+  border-radius:50%;
+  background:#fff;
+  flex:0 0 auto;
+}
+.media-option.selected .media-radio{
+  border-color:var(--primary);
+  box-shadow:inset 0 0 0 4px #fff;
+  background:var(--primary);
+}
+.media-option .media-arrow{margin-left:auto;color:#8A93A3}
+.matrix-table{min-width:1900px}
 .matrix-table th,.matrix-table td{height:40px}
 .matrix-table th{font-weight:900;color:var(--text)}
 .matrix-table td{font-size:13px}
@@ -798,6 +885,24 @@ a{color:inherit;text-decoration:none}
   border-radius:50%;
   background:currentColor;
 }
+.status-dot.warn{color:var(--orange)}
+.status-dot.muted{color:var(--weak)}
+.data-state{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  color:var(--green);
+  font-weight:800;
+}
+.data-state::before{
+  content:"";
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:currentColor;
+}
+.data-state.warn{color:var(--orange)}
+.data-state.muted{color:var(--weak)}
 .table-action{
   color:#1687F3;
   font-weight:900;
@@ -1063,6 +1168,8 @@ a{color:inherit;text-decoration:none}
 .report-status.is-error::before{background:var(--red)}
 .report-status.is-working{border-color:#FFD9A6;background:var(--orange-50);color:#8A4B00}
 .report-status.is-working::before{background:var(--orange)}
+.report-status.is-disabled{border-color:#DDE2EA;background:#F7F8FA;color:var(--weak)}
+.report-status.is-disabled::before{background:var(--weak)}
 .report-preview{
   background:#fff;
   border:1px solid var(--line);
@@ -1146,11 +1253,15 @@ a{color:inherit;text-decoration:none}
   border-bottom:1px solid var(--line-soft);
   display:flex;
   align-items:flex-end;
-  justify-content:space-between;
+  justify-content:flex-start;
   gap:18px;
 }
 .report-main-tabs,.report-type-tabs{display:flex;align-items:center;gap:28px}
-.report-type-tabs{align-self:center;gap:26px}
+.report-type-tabs{
+  padding:14px 28px 0;
+  gap:26px;
+}
+.report-type-tabs.hidden{display:none}
 .report-main-tab,.report-type-tab{
   position:relative;
   min-height:48px;
@@ -1159,8 +1270,12 @@ a{color:inherit;text-decoration:none}
   font-weight:800;
   background:transparent;
 }
-.report-type-tab{min-height:32px;color:#F53F3F}
+.report-type-tab{
+  min-height:32px;
+  color:var(--muted);
+}
 .report-main-tab.active{color:var(--primary)}
+.report-type-tab.active{color:var(--primary)}
 .report-main-tab.active::after{
   content:"";
   position:absolute;
@@ -1176,9 +1291,10 @@ a{color:inherit;text-decoration:none}
   position:absolute;
   left:0;
   right:0;
-  bottom:-12px;
+  bottom:-1px;
   height:2px;
-  background:#F53F3F;
+  border-radius:2px 2px 0 0;
+  background:var(--primary);
 }
 .report-list-tools{
   padding:18px 28px 10px;
@@ -1637,7 +1753,9 @@ a{color:inherit;text-decoration:none}
 /* Embedded PRD layout */
 .app-split{display:flex;height:100vh;overflow:hidden;background:var(--bg)}
 .page-container{flex:1;min-width:0;position:relative;overflow:hidden;background:var(--bg)}
-.system-shell{height:100vh;position:relative;overflow:auto;background:var(--bg)}
+.system-shell{height:100vh;position:relative;overflow:hidden;background:var(--bg);display:flex;flex-direction:column}
+.system-shell>.topbar{flex-shrink:0}
+.system-shell>.shell{flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch}
 .split-drag{width:4px;cursor:col-resize;flex-shrink:0;background:var(--line-soft);transition:background .15s;position:relative;z-index:80}
 .split-drag:hover,.split-drag.dragging{background:var(--primary)}
 .split-drag::after{content:"";position:absolute;left:-3px;right:-3px;top:0;bottom:0}
@@ -1771,9 +1889,9 @@ a{color:inherit;text-decoration:none}
     gap:8px;
   }
   .report-main-tabs,.report-type-tabs{gap:22px;overflow:auto hidden}
-  .report-type-tabs{align-self:flex-start}
+  .report-type-tabs{padding:12px 14px 0}
   .report-main-tab{min-height:42px}
-  .report-type-tab.active::after{bottom:-5px}
+  .report-type-tab.active::after{bottom:-1px}
   .report-list-tools{padding:14px;align-items:stretch}
   .report-list-filter{width:100%;flex-wrap:wrap}
   .report-list-filter .input{width:calc(50% - 22px)}
@@ -1815,7 +1933,7 @@ a{color:inherit;text-decoration:none}
       <button type="button" class="nav-static" aria-disabled="true">正能量看板</button>
       <button type="button" class="nav-static" aria-disabled="true">正能量稿件</button>
       <button type="button" class="nav-static" aria-disabled="true">正能量热榜</button>
-      <button type="button" class="nav-link" data-view="weekly">正能量热点日报</button>
+      <button type="button" class="nav-link" data-view="weekly">正能量热点报告</button>
       <button type="button" class="nav-static" aria-disabled="true">热点管理</button>
       <button type="button" class="nav-static" aria-disabled="true">管理中心</button>
       <button type="button" class="nav-static" aria-disabled="true">主题监测</button>
@@ -1904,7 +2022,31 @@ a{color:inherit;text-decoration:none}
           </div>
           <div class="matrix-filterbar">
             <div class="matrix-filter"><label>所属部门</label><select class="select"><option>请选择</option></select></div>
-            <div class="matrix-filter"><label>媒体类型</label><select class="select"><option>请选择</option></select></div>
+            <div class="matrix-filter media-type-filter">
+              <label>媒体类型</label>
+              <div class="media-cascade" id="mediaTypeSelect">
+                <button class="select media-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                  <span data-media-label>请选择</span><span class="media-caret">⌄</span>
+                </button>
+                <div class="media-cascade-menu" role="listbox" aria-label="媒体类型">
+                  <div class="media-option-list">
+                    <button class="media-option" type="button" data-value="微信"><span class="media-radio"></span>微信</button>
+                    <button class="media-option" type="button" data-value="微博"><span class="media-radio"></span>微博</button>
+                    <button class="media-option" type="button" data-value="抖音"><span class="media-radio"></span>抖音</button>
+                    <button class="media-option" type="button" data-value="视频号"><span class="media-radio"></span>视频号</button>
+                    <button class="media-option" type="button" data-branch="other"><span class="media-radio"></span>其他<span class="media-arrow">›</span></button>
+                  </div>
+                  <div class="media-option-list secondary">
+                    <button class="media-option" type="button" data-value="头条号"><span class="media-radio"></span>头条号</button>
+                    <button class="media-option" type="button" data-value="百家号"><span class="media-radio"></span>百家号</button>
+                    <button class="media-option" type="button" data-value="人民号"><span class="media-radio"></span>人民号</button>
+                    <button class="media-option" type="button" data-value="知乎号"><span class="media-radio"></span>知乎号</button>
+                    <button class="media-option" type="button" data-value="潮鸣号"><span class="media-radio"></span>潮鸣号</button>
+                    <button class="media-option" type="button" data-value="客户端"><span class="media-radio"></span>客户端</button>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="matrix-filter"><label>运行情况</label><select class="select"><option>请选择</option></select></div>
             <div class="matrix-filter"><label>所属圈层</label><select class="select"><option>请选择</option></select></div>
             <div class="matrix-filter"><label>采集情况</label><select class="select"><option>请选择</option></select></div>
@@ -1915,6 +2057,10 @@ a{color:inherit;text-decoration:none}
             <div class="matrix-filter"><label>自主情况</label><select class="select"><option>请选择</option></select></div>
             <div class="matrix-filter"><label>变更记录</label><select class="select"><option>请选择</option></select></div>
             <div class="matrix-filter"><label>是否已读</label><select class="select"><option>请选择</option></select></div>
+            <div class="matrix-filter actions">
+              <button class="btn primary small" type="button">查询</button>
+              <button class="btn small" type="button" id="resetMatrixFilters">重置</button>
+            </div>
           </div>
           <div class="table-wrap">
             <table class="data-table matrix-table">
@@ -1935,27 +2081,28 @@ a{color:inherit;text-decoration:none}
                   <th>联系方式</th>
                   <th class="right sortable">粉丝数</th>
                   <th>采集情况</th>
+                  <th>是否纳入周报</th>
                   <th class="sortable">上次发稿时间</th>
                   <th class="sortable">最新操作时间</th>
                   <th>操作</th>
                 </tr>
               </thead>
               <tbody>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第1行"></td><td>1</td><td><a href="#">新舟山</a></td><td>视频号</td><td>视频号</td><td>舟山市新闻传媒中心</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">市新闻传媒中心-王...</a></td><td><a href="#">0580-2281956</a></td><td class="right">35.6万</td><td>自动采集</td><td>2026-06-17 15:58:52</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第2行"></td><td>2</td><td><a href="#">舟山发布</a></td><td>微信</td><td>微信</td><td>舟山市人民政府新闻办</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>--</td><td><a href="#">市新闻办-周...</a></td><td><a href="#">0580-2282110</a></td><td class="right">48.12万</td><td>自动采集</td><td>2026-06-17 19:45:01</td><td>2025-12-03 17:00:41</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第3行"></td><td>3</td><td><a href="#">舟山广电</a></td><td>其他</td><td>百家号</td><td>舟山市广播电视总台</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山广电融媒...</a></td><td><a href="#">0580-2286508</a></td><td class="right">18.8万</td><td>自动采集</td><td>2026-06-18 11:21:00</td><td>2025-11-13 16:18:04</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第4行"></td><td>4</td><td><a href="#">定海山</a></td><td>其他</td><td>人民号</td><td>定海区融媒体中心</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">定海融媒-张...</a></td><td><a href="#">0580-2026178</a></td><td class="right">12.4万</td><td>自动采集</td><td>2026-06-08 18:40:00</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第5行"></td><td>5</td><td><a href="#">普陀新闻网</a></td><td>抖音</td><td>抖音</td><td>普陀区融媒体中心</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">普陀融媒-李...</a></td><td><a href="#">0580-3019786</a></td><td class="right">26.5万</td><td>自动采集</td><td>2026-06-15 10:26:53</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第6行"></td><td>6</td><td><a href="#">仙岛岱山</a></td><td>微博</td><td>微博</td><td>岱山县融媒体中心</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">岱山融媒-陈...</a></td><td><a href="#">0580-4480901</a></td><td class="right">9.7万</td><td>自动采集</td><td>2026-06-17 16:41:34</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第7行"></td><td>7</td><td><a href="#">最嵊泗</a></td><td>抖音</td><td>抖音</td><td>嵊泗县融媒体中心</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">嵊泗融媒-沈...</a></td><td><a href="#">0580-5081234</a></td><td class="right">8.2万</td><td>自动采集</td><td>2026-06-17 17:30:53</td><td>2026-01-29 14:27:09</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第8行"></td><td>8</td><td><a href="#">舟山文旅</a></td><td>微博</td><td>微博</td><td>舟山市文化和广电旅游体育局</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山文旅-林...</a></td><td><a href="#">0580-2281320</a></td><td class="right">22.9万</td><td>自动采集</td><td>2026-06-17 22:00:00</td><td>2026-01-29 14:27:44</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第9行"></td><td>9</td><td><a href="#">舟山交通</a></td><td>微信</td><td>微信</td><td>舟山市交通运输局</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">市交通运输局-许...</a></td><td><a href="#">0580-2280912</a></td><td class="right">6.8万</td><td>自动采集</td><td>2026-06-17 19:41:41</td><td>2026-01-26 15:48:38</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第10行"></td><td>10</td><td><a href="#">舟山公安</a></td><td>视频号</td><td>视频号</td><td>舟山市公安局</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山市公安局-方...</a></td><td><a href="#">0580-2070110</a></td><td class="right">15.1万</td><td>自动采集</td><td>2026-06-17 09:00:01</td><td>2026-01-26 15:48:55</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第1行"></td><td>1</td><td><a href="#">新舟山</a></td><td>视频号</td><td>视频号</td><td>舟山市新闻传媒中心</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">市新闻传媒中心-王...</a></td><td><a href="#">0580-2281956</a></td><td class="right">35.6万</td><td>自动采集</td><td><span class="tag green">纳入</span></td><td>2026-06-17 15:58:52</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第2行"></td><td>2</td><td><a href="#">舟山发布</a></td><td>微信</td><td>微信</td><td>舟山市人民政府新闻办</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>--</td><td><a href="#">市新闻办-周...</a></td><td><a href="#">0580-2282110</a></td><td class="right">48.12万</td><td>自动采集</td><td><span class="tag green">纳入</span></td><td>2026-06-17 19:45:01</td><td>2025-12-03 17:00:41</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第3行"></td><td>3</td><td><a href="#">舟山广电</a></td><td>其他</td><td>百家号</td><td>舟山市广播电视总台</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山广电融媒...</a></td><td><a href="#">0580-2286508</a></td><td class="right">18.8万</td><td>自动采集</td><td><span class="tag green">纳入</span></td><td>2026-06-18 11:21:00</td><td>2025-11-13 16:18:04</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第4行"></td><td>4</td><td><a href="#">定海山</a></td><td>其他</td><td>人民号</td><td>定海区融媒体中心</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">定海融媒-张...</a></td><td><a href="#">0580-2026178</a></td><td class="right">12.4万</td><td>自动采集</td><td><span class="tag green">纳入</span></td><td>2026-06-08 18:40:00</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第5行"></td><td>5</td><td><a href="#">普陀新闻网</a></td><td>抖音</td><td>抖音</td><td>普陀区融媒体中心</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">普陀融媒-李...</a></td><td><a href="#">0580-3019786</a></td><td class="right">26.5万</td><td>自动采集</td><td><span class="tag green">纳入</span></td><td>2026-06-15 10:26:53</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第6行"></td><td>6</td><td><a href="#">仙岛岱山</a></td><td>微博</td><td>微博</td><td>岱山县融媒体中心</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">岱山融媒-陈...</a></td><td><a href="#">0580-4480901</a></td><td class="right">9.7万</td><td>自动采集</td><td><span class="tag green">纳入</span></td><td>2026-06-17 16:41:34</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第7行"></td><td>7</td><td><a href="#">最嵊泗</a></td><td>抖音</td><td>抖音</td><td>嵊泗县融媒体中心</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">嵊泗融媒-沈...</a></td><td><a href="#">0580-5081234</a></td><td class="right">8.2万</td><td>自动采集</td><td><span class="tag green">纳入</span></td><td>2026-06-17 17:30:53</td><td>2026-01-29 14:27:09</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第8行"></td><td>8</td><td><a href="#">舟山文旅</a></td><td>微博</td><td>微博</td><td>舟山市文化和广电旅游体育局</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山文旅-林...</a></td><td><a href="#">0580-2281320</a></td><td class="right">22.9万</td><td>自动采集</td><td><span class="tag green">纳入</span></td><td>2026-06-17 22:00:00</td><td>2026-01-29 14:27:44</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第9行"></td><td>9</td><td><a href="#">舟山交通</a></td><td>微信</td><td>微信</td><td>舟山市交通运输局</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">市交通运输局-许...</a></td><td><a href="#">0580-2280912</a></td><td class="right">6.8万</td><td>自动采集</td><td><span class="tag orange">待确认</span></td><td>2026-06-17 19:41:41</td><td>2026-01-26 15:48:38</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第10行"></td><td>10</td><td><a href="#">舟山公安</a></td><td>视频号</td><td>视频号</td><td>舟山市公安局</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山市公安局-方...</a></td><td><a href="#">0580-2070110</a></td><td class="right">15.1万</td><td>自动采集</td><td><span class="tag green">纳入</span></td><td>2026-06-17 09:00:01</td><td>2026-01-26 15:48:55</td><td><button class="table-action" type="button">操作</button></td></tr>
               </tbody>
             </table>
           </div>
           <div class="matrix-pagination">
-            <span>共 385 条</span>
+            <span class="matrix-total">共 385 条</span>
             <select class="select page-size"><option>10条/页</option></select>
             <button class="matrix-page-btn" disabled type="button">‹</button>
             <button class="matrix-page-btn active" type="button">1</button>
@@ -2038,14 +2185,14 @@ a{color:inherit;text-decoration:none}
               <table class="data-table analytics-table">
                 <thead><tr><th>序号</th><th>账号名称</th><th>所属平台</th><th class="right sortable">发稿数</th><th class="right sortable">点赞数</th><th class="right sortable">阅读数</th><th class="right sortable">转发数</th><th class="right sortable">在看数</th><th class="right sortable">总互动量</th></tr></thead>
                 <tbody>
-                  <tr><td>1</td><td><strong>钱江晚报</strong></td><td>微信公众号</td><td class="right">1,868</td><td class="right">63,570</td><td class="right">16,426,013</td><td class="right">235,446</td><td class="right">19,832</td><td class="right num">318,848</td></tr>
-                  <tr><td>2</td><td><strong>浙江新闻</strong></td><td>微信公众号</td><td class="right">326</td><td class="right">8,433</td><td class="right">2,260,024</td><td class="right">42,307</td><td class="right">2,736</td><td class="right num">53,476</td></tr>
-                  <tr><td>3</td><td><strong>潮新闻</strong></td><td>微信公众号</td><td class="right">189</td><td class="right">2,780</td><td class="right">482,219</td><td class="right">6,082</td><td class="right">1,225</td><td class="right num">10,087</td></tr>
-                  <tr><td>4</td><td><strong>浙江在线</strong></td><td>微信公众号</td><td class="right">262</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td></tr>
-                  <tr><td>5</td><td><strong>浙江发布</strong></td><td>微信公众号</td><td class="right">179</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td></tr>
-                  <tr><td>6</td><td><strong>盐城市总工会</strong></td><td>微信公众号</td><td class="right">67</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td></tr>
-                  <tr><td>7</td><td><strong>盐城人大</strong></td><td>微信公众号</td><td class="right">56</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td></tr>
-                  <tr><td>8</td><td><strong>盐城机关党员之家</strong></td><td>微信公众号</td><td class="right">23</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">0</td></tr>
+                  <tr><td>1</td><td><strong>新舟山</strong></td><td>视频号</td><td class="right">14</td><td class="right">185,210</td><td class="right">23,771,000</td><td class="right">96,430</td><td class="right">--</td><td class="right num">316,000</td></tr>
+                  <tr><td>2</td><td><strong>普陀新闻网</strong></td><td>微信公众号</td><td class="right">41</td><td class="right">104,300</td><td class="right">19,815,000</td><td class="right">83,200</td><td class="right">18,500</td><td class="right num">248,000</td></tr>
+                  <tr><td>3</td><td><strong>定海网络文化</strong></td><td>微博</td><td class="right">55</td><td class="right">88,100</td><td class="right">13,526,000</td><td class="right">62,700</td><td class="right">--</td><td class="right num">184,000</td></tr>
+                  <tr><td>4</td><td><strong>仙岛岱山</strong></td><td>抖音</td><td class="right">67</td><td class="right">92,000</td><td class="right">11,363,000</td><td class="right">45,800</td><td class="right">--</td><td class="right num">161,000</td></tr>
+                  <tr><td>5</td><td><strong>最嵊泗</strong></td><td>视频号</td><td class="right">47</td><td class="right">79,600</td><td class="right">12,911,000</td><td class="right">44,900</td><td class="right">--</td><td class="right num">145,000</td></tr>
+                  <tr><td>6</td><td><strong>舟山发布</strong></td><td>微信公众号</td><td class="right">22</td><td class="right">51,600</td><td class="right">8,920,000</td><td class="right">36,400</td><td class="right">9,100</td><td class="right num">97,100</td></tr>
+                  <tr><td>7</td><td><strong>舟山文旅</strong></td><td>微博</td><td class="right">19</td><td class="right">44,300</td><td class="right">7,340,000</td><td class="right">31,200</td><td class="right">--</td><td class="right num">83,500</td></tr>
+                  <tr><td>8</td><td><strong>舟山公安</strong></td><td>视频号</td><td class="right">16</td><td class="right">38,900</td><td class="right">6,480,000</td><td class="right">22,100</td><td class="right">--</td><td class="right num">61,000</td></tr>
                 </tbody>
               </table>
             </div>
@@ -2059,7 +2206,7 @@ a{color:inherit;text-decoration:none}
                 <div class="analysis-tabs" aria-label="稿件平台">
                   <button class="active" type="button">微信</button><button type="button">微博</button><button type="button">抖音</button><button type="button">视频号</button><button type="button">其他</button>
                 </div>
-                <label style="display:flex;align-items:center;gap:8px;color:var(--muted)">账号：<select class="inline-select"><option>全部</option><option>钱江晚报</option><option>浙江新闻</option><option>潮新闻</option></select></label>
+                <label style="display:flex;align-items:center;gap:8px;color:var(--muted)">账号：<select class="inline-select"><option>全部</option><option>新舟山</option><option>普陀新闻网</option><option>定海网络文化</option></select></label>
               </div>
               <div class="section-actions">
                 <input class="input" placeholder="搜索稿件标题">
@@ -2070,16 +2217,14 @@ a{color:inherit;text-decoration:none}
               <table class="data-table analytics-table">
                 <thead><tr><th>稿件标题</th><th>所属账号</th><th>所属平台</th><th class="sortable">发布日期</th><th class="right sortable">点赞数</th><th class="right sortable">阅读数</th><th class="right sortable">转发数</th><th class="right sortable">在看数</th><th class="right sortable">总互动量</th></tr></thead>
                 <tbody>
-                  <tr><td>给“留守植物”浇水，一次5元！女孩一年去了100个陌生人家</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">2</td><td class="right">145</td><td class="right">5</td><td class="right">1</td><td class="right">8</td></tr>
-                  <tr><td>男子偷偷买金手镯藏在碗底给老婆惊喜，紧张的笑声差点露馅：别人...</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">1</td><td class="right">175</td><td class="right">2</td><td class="right">1</td><td class="right">4</td></tr>
-                  <tr><td>俞灏明自曝曾因脸部烧伤被剧组拒绝：不能再做“靠脸吃饭”的偶像，...</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">3</td><td class="right">169</td><td class="right">1</td><td class="right">1</td><td class="right">5</td></tr>
-                  <tr><td>先送20万现金，再取1公斤黄金！浙江阿姨深信不疑，民警急劝4小时...</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">9</td><td class="right">2,035</td><td class="right">17</td><td class="right">2</td><td class="right">28</td></tr>
-                  <tr><td>河南一男一女坠河，女子被救上岸，男子不幸溺亡，派出所工作人员...</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">1</td><td class="right">146</td><td class="right">1</td><td class="right">1</td><td class="right">3</td></tr>
-                  <tr><td>罕见现场！东部沿海阵地，导弹全时竖立，战士们的手一直在按键上...</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">1</td><td class="right">62</td><td class="right">1</td><td class="right">1</td><td class="right">3</td></tr>
-                  <tr><td>-8℃！浙江将迎大雪、暴雪</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">4</td><td class="right">5,904</td><td class="right">113</td><td class="right">3</td><td class="right num">120</td></tr>
-                  <tr><td>吴京唱《沧海一声笑》挑战rap，谢霆锋辣评：你比我还摇滚！两人切...</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">11</td><td class="right">783</td><td class="right">8</td><td class="right">3</td><td class="right">22</td></tr>
-                  <tr><td>马杜罗被美国强行控制满一月，儿子发表讲话称美国侵略将永远像一...</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">10</td><td class="right">695</td><td class="right">5</td><td class="right">4</td><td class="right">19</td></tr>
-                  <tr><td>上海七旬夫妇开着三无“老头乐”闯红灯被撞，索赔70多万，法院：正...</td><td>钱江晚报</td><td>微信公众号</td><td>2026-02-04</td><td class="right">14</td><td class="right">1,577</td><td class="right">41</td><td class="right">5</td><td class="right">60</td></tr>
+                  <tr><td>舟山学子高考前夕为班主任打造专属惊喜</td><td>新舟山</td><td>视频号</td><td>2026-06-16</td><td class="right">18,210</td><td class="right">2,377,100</td><td class="right">9,430</td><td class="right">--</td><td class="right num">31,600</td></tr>
+                  <tr><td>普陀民警紧急救助爬山遇险女子</td><td>普陀新闻网</td><td>微信公众号</td><td>2026-06-15</td><td class="right">12,400</td><td class="right">1,981,500</td><td class="right">8,700</td><td class="right">2,100</td><td class="right num">24,800</td></tr>
+                  <tr><td>一颗螺丝钉见证舟山港口硬核实力</td><td>中国普陀</td><td>微信公众号</td><td>2026-06-15</td><td class="right">10,900</td><td class="right">1,473,100</td><td class="right">6,810</td><td class="right">1,600</td><td class="right num">19,310</td></tr>
+                  <tr><td>舟山为游客打卡拍照连夜修观景台</td><td>舟山文旅</td><td>微博</td><td>2026-06-14</td><td class="right">9,800</td><td class="right">1,374,800</td><td class="right">6,200</td><td class="right">--</td><td class="right num">16,000</td></tr>
+                  <tr><td>舟山就业方舟启航送岗上海岛</td><td>定海网络文化</td><td>微博</td><td>2026-06-13</td><td class="right">8,430</td><td class="right">1,352,600</td><td class="right">5,920</td><td class="right">--</td><td class="right num">14,350</td></tr>
+                  <tr><td>数字化服务破解海岛养老难题</td><td>最嵊泗</td><td>视频号</td><td>2026-06-13</td><td class="right">7,960</td><td class="right">1,291,100</td><td class="right">4,490</td><td class="right">--</td><td class="right num">12,450</td></tr>
+                  <tr><td>海派直播拓宽海岛致富路</td><td>仙岛岱山</td><td>抖音</td><td>2026-06-12</td><td class="right">7,100</td><td class="right">1,136,300</td><td class="right">3,880</td><td class="right">--</td><td class="right num">10,980</td></tr>
+                  <tr><td>警民深夜接力守护迷路孩童</td><td>舟山公安</td><td>视频号</td><td>2026-06-12</td><td class="right">6,420</td><td class="right">980,600</td><td class="right">3,210</td><td class="right">--</td><td class="right num">9,630</td></tr>
                 </tbody>
               </table>
             </div>
@@ -2096,10 +2241,11 @@ a{color:inherit;text-decoration:none}
             <button class="report-main-tab active" type="button" data-report-mode="auto">自动报告</button>
             <button class="report-main-tab" type="button" data-report-mode="manual">人工报告</button>
           </div>
-          <div class="report-type-tabs" role="tablist" aria-label="报告类型">
-            <button class="report-type-tab" type="button" data-report-type="daily">日报</button>
-            <button class="report-type-tab active" type="button" data-report-type="weekly">周报</button>
-          </div>
+        </div>
+
+        <div class="report-type-tabs" id="reportTypeTabs" role="tablist" aria-label="自动报告类型">
+          <button class="report-type-tab" type="button" data-report-type="daily">日报</button>
+          <button class="report-type-tab active" type="button" data-report-type="weekly">周报</button>
         </div>
 
         <div class="report-list-tools">
@@ -2118,7 +2264,7 @@ a{color:inherit;text-decoration:none}
           <article class="report-doc-card" data-report-mode="auto" data-report-type="daily" tabindex="0">
             <div class="report-card-actions"><button class="report-preview-btn" type="button">预览</button></div>
             <div class="report-doc-body">
-              <h2 class="report-doc-title">正能量热点日报</h2>
+              <h2 class="report-doc-title">正能量热点报告</h2>
               <div class="report-doc-line"></div>
               <div class="report-doc-date">2026-06-18 <span>星期四</span></div>
             </div>
@@ -2126,7 +2272,7 @@ a{color:inherit;text-decoration:none}
           <article class="report-doc-card" data-report-mode="auto" data-report-type="daily" tabindex="0">
             <div class="report-card-actions"><button class="report-preview-btn" type="button">预览</button></div>
             <div class="report-doc-body">
-              <h2 class="report-doc-title">正能量热点日报</h2>
+              <h2 class="report-doc-title">正能量热点报告</h2>
               <div class="report-doc-line"></div>
               <div class="report-doc-date">2026-06-17 <span>星期三</span></div>
             </div>
@@ -2134,7 +2280,7 @@ a{color:inherit;text-decoration:none}
           <article class="report-doc-card" data-report-mode="auto" data-report-type="daily" tabindex="0">
             <div class="report-card-actions"><button class="report-preview-btn" type="button">预览</button></div>
             <div class="report-doc-body">
-              <h2 class="report-doc-title">正能量热点日报</h2>
+              <h2 class="report-doc-title">正能量热点报告</h2>
               <div class="report-doc-line"></div>
               <div class="report-doc-date">2026-06-16 <span>星期二</span></div>
             </div>
@@ -2142,7 +2288,7 @@ a{color:inherit;text-decoration:none}
           <article class="report-doc-card" data-report-mode="auto" data-report-type="daily" tabindex="0">
             <div class="report-card-actions"><button class="report-preview-btn" type="button">预览</button></div>
             <div class="report-doc-body">
-              <h2 class="report-doc-title">正能量热点日报</h2>
+              <h2 class="report-doc-title">正能量热点报告</h2>
               <div class="report-doc-line"></div>
               <div class="report-doc-date">2026-06-15 <span>星期一</span></div>
             </div>
@@ -2150,7 +2296,7 @@ a{color:inherit;text-decoration:none}
           <article class="report-doc-card" data-report-mode="auto" data-report-type="daily" tabindex="0">
             <div class="report-card-actions"><button class="report-preview-btn" type="button">预览</button></div>
             <div class="report-doc-body">
-              <h2 class="report-doc-title">正能量热点日报</h2>
+              <h2 class="report-doc-title">正能量热点报告</h2>
               <div class="report-doc-line"></div>
               <div class="report-doc-date">2026-06-14 <span>星期日</span></div>
             </div>
@@ -2158,7 +2304,7 @@ a{color:inherit;text-decoration:none}
           <article class="report-doc-card" data-report-mode="auto" data-report-type="daily" tabindex="0">
             <div class="report-card-actions"><button class="report-preview-btn" type="button">预览</button></div>
             <div class="report-doc-body">
-              <h2 class="report-doc-title">正能量热点日报</h2>
+              <h2 class="report-doc-title">正能量热点报告</h2>
               <div class="report-doc-line"></div>
               <div class="report-doc-date">2026-06-13 <span>星期六</span></div>
             </div>
@@ -2168,7 +2314,7 @@ a{color:inherit;text-decoration:none}
             <div class="report-doc-body">
               <h2 class="report-doc-title">正能量周报</h2>
               <div class="report-doc-line"></div>
-              <div class="report-doc-date">2026-06-12 至 2026-06-18</div>
+              <div class="report-doc-date">2026-06-12 16:00 至 2026-06-18 16:00</div>
             </div>
           </article>
           <article class="report-doc-card" data-report-mode="auto" data-report-type="weekly" tabindex="0">
@@ -2176,7 +2322,7 @@ a{color:inherit;text-decoration:none}
             <div class="report-doc-body">
               <h2 class="report-doc-title">正能量周报</h2>
               <div class="report-doc-line"></div>
-              <div class="report-doc-date">2026-06-05 至 2026-06-11</div>
+              <div class="report-doc-date">2026-06-05 16:00 至 2026-06-11 16:00</div>
             </div>
           </article>
           <article class="report-doc-card" data-report-mode="auto" data-report-type="weekly" tabindex="0">
@@ -2184,13 +2330,13 @@ a{color:inherit;text-decoration:none}
             <div class="report-doc-body">
               <h2 class="report-doc-title">正能量周报</h2>
               <div class="report-doc-line"></div>
-              <div class="report-doc-date">2026-05-29 至 2026-06-04</div>
+              <div class="report-doc-date">2026-05-29 16:00 至 2026-06-04 16:00</div>
             </div>
           </article>
           <article class="report-doc-card" data-report-mode="manual" data-report-type="daily" tabindex="0">
             <div class="report-card-actions"><button class="report-preview-btn" type="button">预览</button></div>
             <div class="report-doc-body">
-              <h2 class="report-doc-title">正能量热点日报</h2>
+              <h2 class="report-doc-title">正能量热点报告</h2>
               <div class="report-doc-line"></div>
               <div class="report-doc-date">2026-06-10 <span>人工修订</span></div>
             </div>
@@ -2200,7 +2346,7 @@ a{color:inherit;text-decoration:none}
             <div class="report-doc-body">
               <h2 class="report-doc-title">正能量周报</h2>
               <div class="report-doc-line"></div>
-              <div class="report-doc-date">2026-05-22 至 2026-05-28</div>
+              <div class="report-doc-date">2026-05-22 16:00 至 2026-05-28 16:00</div>
             </div>
           </article>
         </div>
@@ -2221,13 +2367,11 @@ a{color:inherit;text-decoration:none}
             <div class="weekly-title-wrap">
               <button class="btn small" type="button" id="backToReportList">返回</button>
               <div>
-                <h2>正能量周报生成设置</h2>
-                <div class="weekly-period" id="weeklySettingPeriod">2026-06-12 至 2026-06-18</div>
+                <h2>正能量周报设置</h2>
               </div>
             </div>
             <div class="inline-actions">
               <button class="btn small" type="button" id="settingPreviewBtn">预览</button>
-              <button class="btn primary" type="button" id="settingDownloadBtn"><span class="btn-icon export"></span>下载</button>
             </div>
           </div>
           <div class="panel-body">
@@ -2236,11 +2380,10 @@ a{color:inherit;text-decoration:none}
                 <div class="tool-block">
                   <h3>统计周期</h3>
                   <div class="date-range report-range">
-                    <label class="date-point"><span>开始日期</span><input id="weeklyStartDate" class="input" type="date" value="2026-06-12"></label>
+                    <label class="date-point"><span>开始时间</span><input id="weeklyStartDate" class="input" type="datetime-local" value="2026-06-12T16:00"></label>
                     <span>至</span>
-                    <label class="date-point"><span>结束日期</span><input id="weeklyEndDate" class="input" type="date" value="2026-06-18"></label>
+                    <label class="date-point"><span>结束时间</span><input id="weeklyEndDate" class="input" type="datetime-local" value="2026-06-18T16:00"></label>
                   </div>
-                  <div class="report-status is-ok" id="weeklySettingStatus" role="status" aria-live="polite">已选择默认周报周期，可下载当前配置数据。</div>
                 </div>
               </div>
               <div class="panel">
@@ -2254,11 +2397,11 @@ a{color:inherit;text-decoration:none}
                     <button class="btn small" type="button" id="restorePickRows">恢复全部</button>
                   </div>
                   <div class="pick-tabs" role="tablist" aria-label="候选数据类型">
-                    <button class="pick-tab active" type="button" data-pick-tab="pool">稿池投稿 <span data-pick-count="pool">6</span></button>
-                    <button class="pick-tab" type="button" data-pick-tab="hot">热点事件 <span data-pick-count="hot">6</span></button>
+                    <button class="pick-tab active" type="button" data-pick-tab="hot">热点事件 <span data-pick-count="hot">6</span></button>
+                    <button class="pick-tab" type="button" data-pick-tab="pool">稿池投稿 <span data-pick-count="pool">6</span></button>
                     <button class="pick-tab" type="button" data-pick-tab="matrix">矩阵账号 <span data-pick-count="matrix">5</span></button>
                   </div>
-                  <div class="pick-section active" data-pick-section="pool">
+                  <div class="pick-section" data-pick-section="pool">
                     <div class="pick-row" data-pick-row data-pick-section-name="pool" data-title="市新闻传媒中心" data-count="14" data-hot-count="2" data-meta="14 篇次 · 热点选题稿件 2 篇">
                       <input class="pick-check" type="checkbox" checked aria-label="选择市新闻传媒中心">
                       <div><div class="pick-title">市新闻传媒中心</div><div class="pick-meta">14 篇次 · 热点选题稿件 2 篇</div></div>
@@ -2290,7 +2433,7 @@ a{color:inherit;text-decoration:none}
                       <button class="pick-remove" type="button">移除</button>
                     </div>
                   </div>
-                  <div class="pick-section" data-pick-section="hot">
+                  <div class="pick-section active" data-pick-section="hot">
                     <div class="pick-row" data-pick-row data-pick-section-name="hot" data-title="舟山学子高考前夕为班主任打造专属惊喜" data-region="定海" data-reach="2377.1" data-host="新舟山" data-meta="定海 · 2377.1万传播量">
                       <input class="pick-check" type="checkbox" checked aria-label="选择高考惊喜事件">
                       <div><div class="pick-title">舟山学子高考前夕为班主任打造专属惊喜</div><div class="pick-meta">定海 · 2377.1万传播量 · 新舟山</div></div>
@@ -2323,29 +2466,29 @@ a{color:inherit;text-decoration:none}
                     </div>
                   </div>
                   <div class="pick-section" data-pick-section="matrix">
-                    <div class="pick-row" data-pick-row data-pick-section-name="matrix" data-title="新舟山" data-platform="新闻客户端" data-posts="14" data-reach="2377.1万" data-interact="31.6万" data-content="高考前夕为班主任打造专属惊喜">
+                    <div class="pick-row" data-pick-row data-pick-section-name="matrix" data-title="新舟山" data-region="舟山" data-platform="客户端" data-posts="14" data-reach="2377.1万" data-interact="31.6万" data-status="数据完整" data-suggest="重点展示" data-content="高考前夕为班主任打造专属惊喜">
                       <input class="pick-check" type="checkbox" checked aria-label="选择新舟山">
-                      <div><div class="pick-title">新舟山</div><div class="pick-meta">新闻客户端 · 14 篇 · 2377.1万传播量 · 31.6万互动</div></div>
+                      <div><div class="pick-title">新舟山</div><div class="pick-meta">舟山 · 客户端 · 14 篇 · 2377.1万传播量 · 31.6万互动 · 重点展示</div></div>
                       <button class="pick-remove" type="button">移除</button>
                     </div>
-                    <div class="pick-row" data-pick-row data-pick-section-name="matrix" data-title="普陀新闻网" data-platform="微信公众号" data-posts="41" data-reach="1981.5万" data-interact="24.8万" data-content="民警紧急救助爬山遇险女子">
+                    <div class="pick-row" data-pick-row data-pick-section-name="matrix" data-title="普陀新闻网" data-region="普陀" data-platform="微信公众号" data-posts="41" data-reach="1981.5万" data-interact="24.8万" data-status="数据完整" data-suggest="重点展示" data-content="民警紧急救助爬山遇险女子">
                       <input class="pick-check" type="checkbox" checked aria-label="选择普陀新闻网">
-                      <div><div class="pick-title">普陀新闻网</div><div class="pick-meta">微信公众号 · 41 篇 · 1981.5万传播量 · 24.8万互动</div></div>
+                      <div><div class="pick-title">普陀新闻网</div><div class="pick-meta">普陀 · 微信公众号 · 41 篇 · 1981.5万传播量 · 24.8万互动 · 重点展示</div></div>
                       <button class="pick-remove" type="button">移除</button>
                     </div>
-                    <div class="pick-row" data-pick-row data-pick-section-name="matrix" data-title="定海网络文化" data-platform="微博" data-posts="55" data-reach="1352.6万" data-interact="18.4万" data-content="就业方舟启航送岗上海岛">
+                    <div class="pick-row" data-pick-row data-pick-section-name="matrix" data-title="定海网络文化" data-region="定海" data-platform="微博" data-posts="55" data-reach="1352.6万" data-interact="18.4万" data-status="数据完整" data-suggest="重点展示" data-content="就业方舟启航送岗上海岛">
                       <input class="pick-check" type="checkbox" checked aria-label="选择定海网络文化">
-                      <div><div class="pick-title">定海网络文化</div><div class="pick-meta">微博 · 55 篇 · 1352.6万传播量 · 18.4万互动</div></div>
+                      <div><div class="pick-title">定海网络文化</div><div class="pick-meta">定海 · 微博 · 55 篇 · 1352.6万传播量 · 18.4万互动 · 重点展示</div></div>
                       <button class="pick-remove" type="button">移除</button>
                     </div>
-                    <div class="pick-row" data-pick-row data-pick-section-name="matrix" data-title="最嵊泗" data-platform="视频号" data-posts="47" data-reach="1291.1万" data-interact="14.5万" data-content="数字化服务破解海岛养老难题">
+                    <div class="pick-row" data-pick-row data-pick-section-name="matrix" data-title="最嵊泗" data-region="嵊泗" data-platform="视频号" data-posts="47" data-reach="1291.1万" data-interact="14.5万" data-status="数据完整" data-suggest="常规展示" data-content="数字化服务破解海岛养老难题">
                       <input class="pick-check" type="checkbox" checked aria-label="选择最嵊泗">
-                      <div><div class="pick-title">最嵊泗</div><div class="pick-meta">视频号 · 47 篇 · 1291.1万传播量 · 14.5万互动</div></div>
+                      <div><div class="pick-title">最嵊泗</div><div class="pick-meta">嵊泗 · 视频号 · 47 篇 · 1291.1万传播量 · 14.5万互动 · 常规展示</div></div>
                       <button class="pick-remove" type="button">移除</button>
                     </div>
-                    <div class="pick-row" data-pick-row data-pick-section-name="matrix" data-title="仙岛岱山" data-platform="抖音" data-posts="67" data-reach="1136.3万" data-interact="16.1万" data-content="海派直播拓宽海岛致富路">
+                    <div class="pick-row" data-pick-row data-pick-section-name="matrix" data-title="仙岛岱山" data-region="岱山" data-platform="抖音" data-posts="67" data-reach="1136.3万" data-interact="数据缺失" data-status="互动量缺失" data-suggest="常规展示" data-content="海派直播拓宽海岛致富路">
                       <input class="pick-check" type="checkbox" checked aria-label="选择仙岛岱山">
-                      <div><div class="pick-title">仙岛岱山</div><div class="pick-meta">抖音 · 67 篇 · 1136.3万传播量 · 16.1万互动</div></div>
+                      <div><div class="pick-title">仙岛岱山</div><div class="pick-meta">岱山 · 抖音 · 67 篇 · 1136.3万传播量 · 数据缺失 · 常规展示</div></div>
                       <button class="pick-remove" type="button">移除</button>
                     </div>
                   </div>
@@ -2369,7 +2512,7 @@ a{color:inherit;text-decoration:none}
     <div class="modal-body">
       <div class="form-grid">
         <div class="field"><label>账号名称</label><input class="input" placeholder="请输入账号名称"></div>
-        <div class="field"><label>平台</label><select class="select"><option>微博</option><option>抖音</option><option>微信公众号</option><option>视频号</option><option>新闻客户端</option></select></div>
+        <div class="field"><label>平台</label><select class="select"><option>微信</option><option>微博</option><option>抖音</option><option>视频号</option><option>头条号</option><option>百家号</option><option>人民号</option><option>知乎号</option><option>潮鸣号</option><option>客户端</option></select></div>
         <div class="field"><label>账号主页链接</label><input class="input" placeholder="粘贴账号主页 URL"></div>
         <div class="field"><label>所属属地</label><select class="select"><option>舟山</option><option>定海</option><option>普陀</option><option>岱山</option><option>嵊泗</option></select></div>
         <div class="field"><label>账号类型</label><select class="select"><option>官方媒体</option><option>政务账号</option><option>自媒体账号</option><option>传播达人</option></select></div>
@@ -2395,7 +2538,7 @@ a{color:inherit;text-decoration:none}
       <div class="report-manuscript" aria-label="周报正文预览">
         <div class="preview-cover">
           <h2 id="previewReportName">涉舟网络正能量数据简报</h2>
-          <div id="previewReportPeriod">2026-06-12 至 2026-06-18</div>
+          <div id="previewReportPeriod">2026-06-12 16:00 至 2026-06-18 16:00</div>
         </div>
         <div class="preview-summary-grid" hidden>
           <div class="preview-summary-item"><strong id="previewPoolCount">224</strong><span>稿池投稿篇次</span></div>
@@ -2405,66 +2548,62 @@ a{color:inherit;text-decoration:none}
         </div>
         <div class="report-section">
           <h3>一、总体情况</h3>
-          <p class="report-copy" id="previewOverviewText">6月12日16时至6月18日16时，我办监测发现主要新闻APP网站和社交平台涉舟信息共计30万余条，整体来看，正向情绪内容占比85.68%（见图1）。</p>
-          <figure class="emotion-figure" aria-label="涉舟信息情绪分布图">
-            <svg class="emotion-svg" viewBox="0 0 620 360" role="img" aria-label="涉舟信息情绪分布图">
+          <p class="report-copy" id="previewOverviewText">6月12日16时至6月18日16时，我办通过网讯舆情系统监测发现主要新闻APP网站和社交平台涉舟信息共计30万余条。同期正能量态势感知首页显示，正能量稿件情感分布中赞扬类占比44.8%、惊奇类占比36.8%、喜悦类占比16.8%（见图1）。</p>
+          <figure class="emotion-figure" aria-label="正能量稿件情感分布图">
+            <svg class="emotion-svg" viewBox="0 0 620 360" role="img" aria-label="正能量稿件情感分布图">
               <g fill="none" stroke-width="56" stroke-linecap="round" transform="rotate(-90 250 170)">
-                <circle cx="250" cy="170" r="98" stroke="#4F4DFB" pathLength="100" stroke-dasharray="75.78 24.22" stroke-dashoffset="0"/>
-                <circle cx="250" cy="170" r="98" stroke="#00AD74" pathLength="100" stroke-dasharray="5.75 94.25" stroke-dashoffset="-75.78"/>
-                <circle cx="250" cy="170" r="98" stroke="#FFB000" pathLength="100" stroke-dasharray="4.55 95.45" stroke-dashoffset="-81.53"/>
-                <circle cx="250" cy="170" r="98" stroke="#D83B47" pathLength="100" stroke-dasharray="4.26 95.74" stroke-dashoffset="-86.08"/>
-                <circle cx="250" cy="170" r="98" stroke="#9B59B6" pathLength="100" stroke-dasharray="4.08 95.92" stroke-dashoffset="-90.34"/>
-                <circle cx="250" cy="170" r="98" stroke="#52C6DF" pathLength="100" stroke-dasharray="4.08 95.92" stroke-dashoffset="-94.42"/>
-                <circle cx="250" cy="170" r="98" stroke="#FF8A1F" pathLength="100" stroke-dasharray="1.5 98.5" stroke-dashoffset="-98.5"/>
+                <circle cx="250" cy="170" r="98" stroke="#19C6E0" pathLength="100" stroke-dasharray="44.8 55.2" stroke-dashoffset="0"/>
+                <circle cx="250" cy="170" r="98" stroke="#FF7786" pathLength="100" stroke-dasharray="36.8 63.2" stroke-dashoffset="-44.8"/>
+                <circle cx="250" cy="170" r="98" stroke="#FFE79C" pathLength="100" stroke-dasharray="16.8 83.2" stroke-dashoffset="-81.6"/>
+                <circle cx="250" cy="170" r="98" stroke="#35D468" pathLength="100" stroke-dasharray="1.6 98.4" stroke-dashoffset="-98.4"/>
               </g>
               <circle cx="250" cy="170" r="62" fill="#fff"/>
+              <text x="250" y="181" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#2B2F36" font-weight="800">情感分布</text>
               <g stroke-width="2" fill="none">
-                <path d="M368 252 L404 288 L430 288" stroke="#4F4DFB"/>
-                <path d="M126 153 L80 153 L60 140" stroke="#00AD74"/>
-                <path d="M132 116 L96 90 L78 90" stroke="#FFB000"/>
-                <path d="M158 78 L120 48 L94 48" stroke="#D83B47"/>
-                <path d="M206 50 L190 22 L166 22" stroke="#9B59B6"/>
-                <path d="M250 46 L238 18 L212 18" stroke="#52C6DF"/>
+                <path d="M354 153 L386 153 L410 146" stroke="#19C6E0"/>
+                <path d="M150 252 L112 292 L86 292" stroke="#FF7786"/>
+                <path d="M150 88 L112 52 L86 52" stroke="#FFE79C"/>
+                <path d="M230 48 L222 24 L198 24" stroke="#35D468"/>
+                <path d="M270 48 L280 24 L306 24" stroke="#D85AEF"/>
               </g>
               <g font-family="Arial, sans-serif" font-size="16" fill="#8A8F99" font-weight="700">
-                <text x="431" y="284">赞扬</text><text x="431" y="304">75.78%</text>
-                <text x="24" y="138">喜悦</text><text x="24" y="158">5.75%</text>
-                <text x="36" y="82">厌恶</text><text x="36" y="102">4.55%</text>
-                <text x="54" y="40">愤怒</text><text x="54" y="60">4.26%</text>
-                <text x="130" y="16">惊奇</text><text x="130" y="36">4.08%</text>
-                <text x="210" y="12">悲伤</text><text x="210" y="32">4.08%</text>
+                <text x="412" y="142">赞扬 56</text><text x="490" y="142">44.8%</text>
+                <text x="26" y="288">惊奇 46</text><text x="106" y="288">36.8%</text>
+                <text x="38" y="48">喜悦 21</text><text x="118" y="48">16.8%</text>
+                <text x="150" y="18">厌恶 2</text><text x="214" y="18">1.6%</text>
+                <text x="312" y="18">愤怒 0</text><text x="376" y="18">0%</text>
               </g>
               <g font-family="Arial, sans-serif" font-size="16" fill="#7B8190">
-                <circle cx="500" cy="110" r="8" fill="#4F4DFB"/><text x="520" y="116">赞扬</text>
-                <circle cx="500" cy="146" r="8" fill="#00AD74"/><text x="520" y="152">喜悦</text>
-                <circle cx="500" cy="182" r="8" fill="#FFB000"/><text x="520" y="188">厌恶</text>
-                <circle cx="500" cy="218" r="8" fill="#D83B47"/><text x="520" y="224">愤怒</text>
-                <circle cx="500" cy="254" r="8" fill="#9B59B6"/><text x="520" y="260">惊奇</text>
-                <circle cx="500" cy="290" r="8" fill="#52C6DF"/><text x="520" y="296">悲伤</text>
-                <circle cx="500" cy="326" r="8" fill="#FF8A1F"/><text x="520" y="332">恐惧</text>
+                <rect x="500" y="82" width="32" height="16" rx="4" fill="#19C6E0"/><text x="546" y="96">赞扬</text>
+                <rect x="500" y="120" width="32" height="16" rx="4" fill="#FF7786"/><text x="546" y="134">惊奇</text>
+                <rect x="500" y="158" width="32" height="16" rx="4" fill="#FFE79C"/><text x="546" y="172">喜悦</text>
+                <rect x="500" y="196" width="32" height="16" rx="4" fill="#35D468"/><text x="546" y="210">厌恶</text>
+                <rect x="500" y="234" width="32" height="16" rx="4" fill="#D85AEF"/><text x="546" y="248">愤怒</text>
+                <rect x="500" y="272" width="32" height="16" rx="4" fill="#8D55DD"/><text x="546" y="286">恐惧</text>
+                <rect x="500" y="310" width="32" height="16" rx="4" fill="#2383ED"/><text x="546" y="324">悲伤</text>
               </g>
             </svg>
           </figure>
-          <div class="figure-caption">图 1：涉舟信息情绪分布图</div>
+          <div class="figure-caption">图 1：正能量稿件情感分布图</div>
         </div>
         <div class="report-section">
           <h3>二、工作情况</h3>
-          <p class="report-copy" id="previewWorkText">6月13日至6月18日，舟山 6 个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品 224 篇次（见表 1）。共产生全网涉舟山正能量热点事件 6 个（见表 2）。其中涉舟正面热点报道事件总阅读量接近 0.99 亿，从账号表现来看，本周共有 5 个重点正能量账号参与传播（见表 3）。</p>
+          <p class="report-copy" id="previewWorkText">6月13日至6月18日，新莓汇热点管理列表共产生涉舟正能量热点事件 6 个（见表 1）。舟山 6 个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品 224 篇次，其中市网信办已录用热点选题稿件 8 篇（见表 2）。从账号表现来看，本周共有 5 个重点正能量账号参与传播（见表 3）。</p>
         <div class="report-table-wrap">
           <table class="report-table">
-            <caption style="caption-side:top;text-align:center;font-weight:800;margin:6px 0">表 1.“新莓汇”正能量稿池投稿情况</caption>
-            <thead><tr><th>序号</th><th>投稿账号</th><th>篇次</th></tr></thead>
-            <tbody id="previewPoolBody"></tbody>
+            <caption style="caption-side:top;text-align:center;font-weight:800;margin:6px 0">表 1.涉舟正能量热点事件</caption>
+            <thead><tr><th>序号</th><th>事件</th><th>属地</th><th>传播量</th><th>来源账号</th></tr></thead>
+            <tbody id="previewHotBody"></tbody>
           </table>
         </div>
       </div>
       <div class="report-section">
-        <h3>三、涉舟正面报道热点事件</h3>
+        <h3>三、“新莓汇”正能量稿池投稿情况</h3>
         <div class="report-table-wrap">
           <table class="report-table">
-            <caption style="caption-side:top;text-align:center;font-weight:800;margin:6px 0">表 2.涉舟正面报道热点事件</caption>
-            <thead><tr><th>序号</th><th>事件</th><th>属地</th><th>传播量</th><th>主持人</th></tr></thead>
-            <tbody id="previewHotBody"></tbody>
+            <caption style="caption-side:top;text-align:center;font-weight:800;margin:6px 0">表 2.“新莓汇”正能量稿池投稿情况</caption>
+            <thead><tr><th>序号</th><th>投稿账号</th><th>篇次</th></tr></thead>
+            <tbody id="previewPoolBody"></tbody>
           </table>
         </div>
       </div>
@@ -2473,18 +2612,17 @@ a{color:inherit;text-decoration:none}
         <div class="report-table-wrap">
           <table class="report-table">
             <caption style="caption-side:top;text-align:center;font-weight:800;margin:6px 0">表 3.矩阵账号本周内容及传播效果</caption>
-            <thead><tr><th>账号</th><th>平台</th><th>发文数</th><th>传播量</th><th>互动量</th><th>代表内容</th></tr></thead>
+            <thead><tr><th>属地</th><th>账号</th><th>平台</th><th>发文数</th><th>传播量</th><th>互动量</th><th>代表内容</th></tr></thead>
             <tbody id="previewMatrixBody"></tbody>
           </table>
         </div>
       </div>
       </div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn close-report-preview" type="button">关闭</button>
-      <button class="btn primary" type="button">进入编辑</button>
-    </div>
   </div>
+  <div class="modal-foot">
+    <button class="btn close-report-preview" type="button">关闭</button>
+  </div>
+</div>
 </div>
 
 </div>
@@ -2511,199 +2649,341 @@ a{color:inherit;text-decoration:none}
 <textarea id="prdMdSource" style="display:none">
 # 正能量态势感知平台优化项目 PRD
 
-&gt; 版本：v1.1  
-&gt; 日期：2026-06-18  
-&gt; 原型文件：`index.html`  
-&gt; 需求范围：在现有正能量态势感知平台基础上，新增「正能量矩阵」「矩阵传播分析」「正能量周报」三个模块，形成账号监测管理、传播分析、周报生成与复核归档闭环。
+&gt; 版本：v1.3
+&gt; 日期：2026-06-26
+&gt; 需求范围：在现有正能量态势感知平台基础上，新增「正能量矩阵」「矩阵传播分析」「正能量周报」三个模块，形成账号监测管理、传播分析、周报配置与预览闭环。
 
 ---
 
-## 0. 产品评估与优化结论
+## 1. 产品概述
 
-从现有方案看，三个模块方向正确，但需要在评审前补齐以下关键问题，避免客户理解成“全网账号识别”或研发落地时口径漂移：
-
-| 问题/机会 | 风险 | 优化结论 |
-|---|---|---|
-| 业务闭环表达不足 | 容易被看成三个独立菜单，难以说明新增价值 | 明确闭环为「矩阵账号台账 -&gt; 周期内容采集 -&gt; 传播效果分析 -&gt; 周报草稿 -&gt; 运营复核 -&gt; 历史归档」 |
-| 模块边界需更清晰 | 矩阵、分析、周报可能重复做筛选和明细 | 矩阵负责账号资产和采集状态，分析负责周期聚合和明细，周报负责选择周期、引用数据、生成文本、复核导出 |
-| 原「正能量账号名单」口径不可实现 | 客户可能继续期待按话题热门参与情况自动列全量账号 | 正式替换为「正能量矩阵账号本周发布内容及传播效果」，仅覆盖客户确认并可定向采集的矩阵账号 |
-| 数据缺失与异常处理不足 | 跨平台传播字段差异会影响统计可信度 | 明确传播量、互动量字段映射；平台无字段时标注「数据缺失」，不估算、不以互动量替代传播量 |
-| 周报生成缺少复核机制 | 自动生成内容可能被视为最终报告，带来口径或措辞风险 | 周报只生成「草稿」，必须支持运营复核、表格行调整、异常提示确认后导出 |
-| 前后端开发节点需要可验收 | 仅有页面描述，接口、状态、权限和交付物不足 | 按三个开发节点拆分前端、后端、数据口径、验收标准；每个节点同时交付 `PRD.md` 与 `index.html` 给前后端评审 |
-
----
-
-## 1. 需求背景
+### 1.1 背景
 
 现有正能量态势感知平台已具备正能量看板、稿件、热榜、热点日报等能力，但客户当前仍依赖运营人员手动整理《涉舟网络正能量数据简报》。人工报告存在三个核心问题：
 
 - **统计链路分散**：稿池投稿、热点事件、账号传播表现分别依赖人工汇总，周期复用性弱。
 - **账号名单口径不可落地**：原报告中的「正能量账号名单」来自话题热门参与情况，但平台无法稳定识别所有话题下的热门参与账号，且不同平台开放字段差异较大。
-- **周报生成缺少产品化入口**：客户周报周期通常为「上周三到本周三」，样例中还存在精确到小时的统计口径，如 `6月3日20:00 至 6月10日16:00`，需要支持可配置时间范围和历史归档。
+- **周报缺少产品化入口**：客户周报周期通常为「上周三到本周三」，样例中还存在精确到小时的统计口径，如 `6月3日20:00 至 6月10日16:00`，需要支持可配置时间范围、候选数据挑选和报告预览。
 
-本次优化通过定向采集和管理正能量矩阵账号，分析矩阵账号在统计周期内发布的内容和传播效果，并将结果自动体现在周报草稿中，用可采集、可核验、可复用的口径替代不可实现的「话题热门参与账号名单」。
+本次优化通过定向采集和管理正能量矩阵账号，分析矩阵账号在统计周期内发布的内容和传播效果，并将结果体现在周报预览中，用可采集、可核验、可复用的口径替代不可实现的「话题热门参与账号名单」。
+
+### 1.2 目标
+
+- 建立可维护、可采集、可核验的正能量矩阵账号管理能力。
+- 支持按统计周期分析矩阵账号内容发布、传播量、互动量和重点内容表现。
+- 在正能量热点报告中补充周报配置、候选数据挑选和预览能力。
+- 使用「矩阵账号本周内容及传播效果」替代不稳定的「按话题自动识别全部热门参与账号」口径。
+
+### 1.3 用户角色
+
+- 运营人员：维护矩阵账号、管理采集状态、筛选候选数据、预览周报内容。
+- 管理人员：查看矩阵运行情况、矩阵传播分析结果和周报产出情况。
+- 审核 / 协同人员：在具备权限时查看账号状态变更、处理通知或审核相关操作。
+
+### 1.4 使用场景
+
+- 运营人员定期维护正能量矩阵账号及采集状态，确认账号是否纳入周报。
+- 运营人员按周查看矩阵账号传播表现，筛选可进入周报的数据。
+- 运营人员在周报设置页调整统计周期、移除或恢复候选数据，并预览当前周报内容。
+- 管理人员查看周报数据口径和候选数据保留情况，确认报告数据可采集、可核验、可复用。
+
+### 1.5 本期范围
+
+- 新增「正能量矩阵」入口，用于定向账号管理、采集状态管理和周报纳入控制。
+- 新增「矩阵传播分析」入口，用于查看矩阵账号在周期内的发文、互动、传播趋势和稿件明细。
+- 在现有「正能量热点报告」模块内新增「周报」tab，用于周报候选数据挑选和预览。
+
+### 1.6 非本期范围
+
+- 不承诺按话题自动识别全部热门参与账号；周报表 3 改为「矩阵账号本周内容及传播效果」。
+- 平台无法提供传播量字段时，统一展示「数据缺失」，不得用互动量或估算值替代。
+- 不新增独立的周报一级菜单。
+- 不提供周报正文独立编辑流程。
+- 不对已确认的既有报告引用进行回溯改写。
+
+### 1.7 关键约束 / 待确认问题
+
+- 平台无法提供传播量字段时，统一展示「数据缺失」，不得用互动量或估算值替代。
+- 周报默认周期按客户周报习惯配置，默认起止小时待客户确认；原型以 `16:00` 作为示例。
+- 粉丝数、阅读数、传播量、互动量等关键指标缺失时统一展示「数据缺失」，不展示为 `0`，除非业务口径明确该指标真实值为 0。
+- 周报候选数据存在关键字段缺失时允许预览，但预览中必须展示数据缺失说明；候选数据全部移除或统计周期无效时禁止预览。
+- 正能量矩阵账号列表默认按最新操作时间倒序展示；无最新操作时间时按账号创建时间倒序展示。
 
 ---
 
-## 2. 建设目标
+## 2. 全局交互规则
 
-| 目标类型 | 描述 | 衡量指标 | 目标值 |
-|---|---|---|---|
-| 账号资产沉淀 | 建立正能量账号矩阵台账，支持账号新增、导入、筛选、状态管理 | 核心字段完整率 | &gt;= 95% |
-| 定向监测闭环 | 对纳入矩阵且接入采集的账号，按周期拉取内容与传播数据 | 可采集账号监测成功率 | &gt;= 98% |
-| 传播效果分析 | 对矩阵账号在周期内的发文、传播量、互动量、代表内容进行分析 | 周期分析生成成功率 | &gt;= 98% |
-| 周报自动化 | 按自定义时间范围自动生成周报草稿，并支持复核导出 | 单期报告制作耗时 | 从人工数小时降至 30 分钟内 |
-| 口径可核验 | 用「矩阵账号本周内容及传播效果」替代不可落地账号名单 | 周报表格字段可追溯 | 100% 来自平台数据或人工复核记录 |
+### 2.1 页面入口与导航
 
----
+- 正能量矩阵、矩阵传播分析、正能量热点报告入口按用户权限展示。
+- 无权限用户不可见对应入口；仅具备查看权限时，仅可查看页面内容，不可执行新增、修改、删除、导出、下载等操作。
+- 正能量周报作为「正能量热点报告」模块下的报告类型展示，不新增顶部一级菜单。
 
-## 3. 总体产品方案
+### 2.2 筛选与查询
 
-### 3.1 业务闭环
+- 多个筛选条件同时存在时默认取交集。
+- 关键词搜索采用模糊匹配；下拉、状态、平台等枚举条件采用精确匹配。
+- 点击重置后清空筛选条件、关键词和排序状态，并回到第一页。
+- 筛选无结果时展示空状态，不保留上一次查询结果冒充当前结果。
 
-```mermaid
-flowchart LR
-  A["正能量矩阵：维护定向账号"] --&gt; B["采集服务：按账号拉取内容和传播字段"]
-  B --&gt; C["矩阵传播分析：周期聚合、排行、明细"]
-  C --&gt; D["正能量周报：引用稿池、热点、矩阵分析结果"]
-  D --&gt; E["运营复核：修正文案、确认异常、调整表格"]
-  E --&gt; F["导出归档：Word/PDF 与历史周报"]
-  F --&gt; A
-```
+### 2.3 分页与排序
 
-### 3.2 三个新增模块边界
+- 分页、每页条数和排序切换不清空当前筛选条件。
+- 用户手动排序后，分页、导出和下载使用当前排序结果。
+- 各模块需明确默认排序规则；存在多级排序时需说明主排序和次级排序。
 
-| 模块 | 主要解决的问题 | 核心产物 | 不承担的范围 |
-|---|---|---|---|
-| 正能量矩阵 | 哪些账号纳入定向监测，账号是否可采集、是否纳入周报 | 账号台账、采集状态、周报纳入标记 | 不做周期传播趋势分析，不直接生成报告 |
-| 矩阵传播分析 | 指定周期内矩阵账号发了什么、传播如何、哪些账号/主题贡献更高 | 指标、趋势、排行、账号传播效果明细 | 不维护账号基础信息，不编辑报告正文 |
-| 正能量周报 | 将稿池、热点、矩阵账号分析结果形成报告草稿并导出 | 周报草稿、复核记录、Word/PDF、历史归档 | 不承诺全网话题参与账号识别 |
+### 2.4 按钮与操作反馈
 
-### 3.3 核心原则
+- 新增、编辑、删除、移出、导出、下载等操作需定义默认状态、可点击条件、不可点击原因、点击反馈和操作结果。
+- 危险操作需二次确认。
+- 操作成功后刷新受影响的数据范围；操作失败时展示失败原因，并允许用户重新操作或调整条件。
+- 下载、导出类操作需使用当前筛选条件、当前统计周期和当前保留状态，不使用历史缓存条件。
 
-- **先定向、后统计**：只有进入矩阵且具备可采集标识的账号，才进入自动分析与周报候选池。
-- **先草稿、后确认**：系统生成的是可编辑周报草稿，不直接替代运营最终审核。
-- **口径一致**：周报标题、正文、表格、导出文件和历史记录必须使用同一个统计周期和同一套数据过滤条件。
-- **缺失透明**：平台无法提供传播量字段时标注「数据缺失」，不得用互动量、估算值或人工想象补齐。
+### 2.5 空状态与异常状态
 
----
+- 无数据时展示空状态说明，不隐藏关键区域。
+- 数据缺失、采集异常、权限不足、时间范围错误、候选数据全部移除等情况需给出明确提示。
+- 缺失数据不得使用估算值替代；涉及统计时需说明是否纳入汇总。
+- 周报预览失败时保留当前配置状态，不清空已选择的候选数据。
 
-## 4. 用户角色与权限
+### 2.6 权限与可见性
 
-| 角色 | 核心诉求 | 权限范围 |
+权限配置参考现有后台的树状勾选方式，以「权限点 - 操作点」控制页面入口、按钮和数据操作能力。
+
+| 权限点 | 操作点 | 控制范围 |
 |---|---|---|
-| 运营人员 | 维护账号名单，查看传播表现，生成并复核周报草稿 | 新增/编辑账号、导入账号、查看分析、生成/编辑/导出周报 |
-| 主管人员 | 快速了解本周正能量传播情况和重点账号表现 | 查看分析结果、预览/下载已完成周报 |
-| 系统管理员 | 管理采集状态、字段字典、权限配置和异常处理 | 全量账号管理、采集配置、组织权限、异常重试 |
-| 数据/后端人员 | 提供账号、内容、传播、报告生成接口 | 数据接入、聚合计算、模板渲染、导出服务 |
+| 矩阵管理 | 列表查询 | 进入正能量矩阵页面，查看账号统计、筛选区和账号列表 |
+| 矩阵管理 | 矩阵管理导出 | 导出当前筛选条件下的账号列表 |
+| 矩阵管理 | 通知 | 对矩阵账号相关责任人发起通知 |
+| 矩阵管理 | 新增 | 使用「新建」入口新增矩阵账号 |
+| 矩阵管理 | 详情 | 查看矩阵账号基础信息、采集情况和运行状态 |
+| 矩阵管理 | 修改 | 编辑账号基础信息、内容定位、运行情况、是否纳入周报 |
+| 矩阵管理 | 删除 | 将账号移出矩阵，不删除既有内容和既有报告引用 |
+| 矩阵管理 | 审核撤回 | 撤回已提交但尚未完成处理的矩阵账号状态变更审核 |
+| 矩阵传播分析 | 查看 | 进入矩阵传播分析页面，查看指标卡、趋势图、账号传播详情和稿件明细 |
+| 矩阵传播分析 | 查询筛选 | 使用时间范围、平台、账号、稿件标题等筛选条件刷新分析结果 |
+| 矩阵传播分析 | 导出账号明细 | 导出当前筛选条件下的账号传播详情 |
+| 矩阵传播分析 | 导出稿件明细 | 导出当前筛选条件下的稿件传播明细 |
+| 正能量热点报告 | 查看 | 进入正能量热点报告模块，查看自动报告、人工报告、日报和周报列表 |
+| 正能量热点报告 | 日报预览 | 预览正能量热点报告日报内容 |
+| 正能量热点报告 | 周报设置 | 进入周报设置页，查看统计周期和候选数据 |
+| 正能量热点报告 | 周报预览 | 打开周报预览弹窗，查看总体情况、工作情况和三张表 |
 
-权限要求：
+权限规则：
 
-- 非运营/管理员角色不可新增、删除、导入账号，不可生成或覆盖周报。
-- 周报导出前必须记录最后编辑人、编辑时间、统计周期、数据来源和口径版本。
-- 账号「移出矩阵」只影响后续统计，不删除历史内容和历史报告中的引用记录。
-
----
-
-## 5. 核心用户旅程
-
-### 5.1 首次初始化账号矩阵
-
-1. 运营人员导入或新增正能量账号。
-2. 系统按「平台 + 平台账号 ID」判重；缺少平台账号 ID 时，按「平台 + 账号主页链接」判重。
-3. 导入后的账号默认为「待核验」。
-4. 管理员或采集服务补齐平台账号 ID，并将采集情况更新为「采集中 / 未接入 / 异常」。
-5. 运营确认账号属地、账号类型、内容定位和「是否纳入周报」。
-
-### 5.2 每周传播分析
-
-1. 运营进入「矩阵传播分析」，选择统计周期，默认使用上周三到本周三。
-2. 系统仅统计「采集中」且「运行情况正常」的矩阵账号。
-3. 系统聚合周期内账号发布内容、传播量、互动量、代表内容、热点贡献。
-4. 运营查看趋势、排行、属地/主题分布和账号明细。
-5. 明细可推送至周报表 3 的候选数据。
-
-### 5.3 周报生成与复核
-
-1. 运营进入「正能量周报」，选择统计周期和数据来源。
-2. 系统进行生成前校验：时间范围、数据源、表格配置、异常账号、缺失字段。
-3. 系统生成周报草稿，自动填充总体情况、工作情况、稿池表、热点事件表、矩阵账号传播效果表。
-4. 运营复核正文措辞、表格行、异常提示和口径说明。
-5. 运营确认后导出 Word/PDF，系统保存历史周报和生成记录。
+- 权限采用树状继承逻辑：未勾选上级权限点时，下级操作点不可用。
+- 仅具备查看权限时，页面可见但新增、修改、删除、导出、下载等按钮隐藏或置灰。
+- 权限变更只影响后续访问控制，不改写既有报告引用和既有操作记录。
 
 ---
 
-## 6. 功能范围
+## 3. 模块一：正能量矩阵
 
-### 6.1 导航与报告入口
+### 3.1 模块目标与边界
 
-在现有平台顶部导航新增两个一级入口：
+正能量矩阵用于定向管理可采集、可分析、可进入周报候选池的账号资产。该模块解决「哪些账号纳入正能量矩阵」「账号是否可采集」「账号是否进入周报」三个问题。
 
-- 正能量矩阵
-- 矩阵传播分析
+模块边界：
 
-周报能力不作为新的顶部一级菜单展示，沿用现有「正能量热点日报」报告模块，在报告类型切换中新增「周报」tab，与原「日报」并列。
+- 本模块负责账号台账、运行情况、采集情况、周报纳入状态和账号操作。
+- 本模块不做周期传播趋势分析，传播趋势由「矩阵传播分析」模块承载。
+- 本模块不生成报告，报告列表和预览由「正能量热点报告 / 周报」模块承载。
 
-导航风格沿用现有平台：白底顶部栏、蓝色激活态、内容区浅灰底和白色面板。
+### 3.2 页面结构
 
-### 6.2 正能量矩阵
+展示规则：
 
-用于定向管理正能量账号，账号一经接入后可作为分析和周报的数据来源。
+- 页面顶部按现有矩阵管理统计维度展示账号运行情况统计。
+- 顶部导航点击「正能量矩阵」进入本模块，并展示当前导航激活态。
+- 账号列表区域展示「新媒体矩阵 / 状态变更审核」tab，默认进入「新媒体矩阵」。
+- 列表上方展示筛选区、关键词搜索、新建、删除、导出等操作入口。
+- 列表底部展示总数、每页条数、页码、上一页、下一页和跳页控件。
 
-#### 6.2.1 账号运行情况统计
+交互规则：
 
-页面顶部展示账号运行情况统计，复用新媒体矩阵管理系统的统计结构：
+- 点击「全部 / 自主运营 / 代运营」后，统计卡和账号列表同步刷新。
+- 点击「新媒体矩阵 / 状态变更审核」tab 后，保留已选筛选条件并刷新列表。
+- 点击分页、每页条数或可排序字段时，不清空当前筛选条件。
+- 仅具备对应权限的用户可新增、编辑、移出矩阵或调整采集状态。
 
-- 运营范围切换：全部、自主运营、代运营。
-- 状态统计：正常运行账号、停更账号、待注销账号、已注销/关停账号。
-- 状态变化：停更、注销、关停等字段展示较上月变化值。
-- 内容定位统计：采编账号、经营账号、内部信息发布账号。
+数据规则：
 
-#### 6.2.2 账号列表字段
+- 取数规则：取客户确认纳入正能量矩阵且未被移出矩阵的账号台账及采集状态。
+- 数据筛选规则：运营范围、tab、下拉筛选、关键词搜索多条件取交集。
+- 数据排序规则：默认按最新操作时间倒序展示；无最新操作时间时按账号创建时间倒序展示；用户手动切换排序后以用户选择为准。
 
-| 字段 | 说明 | 是否必填 | 备注 |
-|---|---|---|---|
-| 账号名称 | 平台展示账号名 | 是 | 支持模糊搜索 |
-| 平台 | 微博、抖音、微信公众号、视频号、新闻客户端等 | 是 | 字典可配置 |
-| 账号主页链接 | 用于采集定位和人工核验 | 是 | 导入时用于辅助判重 |
-| 平台账号 ID | 后端采集使用的唯一账号标识 | 接入后必填 | 采集中账号必须有 |
-| 属地 | 舟山、定海、普陀、岱山、嵊泗等 | 是 | 支持后续拓展 |
-| 账号类型 | 官方媒体、政务账号、自媒体账号、传播达人 | 是 | 字典可配置 |
-| 内容定位 | 城市形象、民生服务、海岛文旅、基层治理、产业发展等 | 是 | 可多选时后端需扩展关系表 |
-| 运行情况 | 正常、停更、待核验、失效 | 是 | 影响是否进入统计 |
-| 采集情况 | 采集中、未接入、异常 | 是 | 来源于采集服务或管理员操作 |
-| 运维负责人 | 账号联系人或系统维护人 | 否 | 用于异常流转 |
-| 是否纳入周报 | 控制账号是否进入周报候选池 | 是 | 默认为否，运营确认后启用 |
+### 3.3 账号运行情况统计
 
-#### 6.2.3 矩阵列表与筛选
+展示规则：
 
-列表区域采用「新媒体矩阵 / 状态变更审核」tab 结构，默认进入「新媒体矩阵」。
+- 状态卡展示正常运行账号、停更账号、待注销账号、已注销/关停账号。
+- 状态卡展示总数，并在有变化时展示较上月变化值。
+- 内容定位卡展示采编账号、经营账号、内部信息发布账号。
+- 无数据时展示 `0`，不隐藏卡片。
 
-筛选项：
+交互规则：
 
-- 所属部门
-- 媒体类型
-- 运行情况
-- 所属圈层
-- 采集情况
-- 属性
-- 是否认证
-- 内容定位
-- 自主情况
-- 变更记录
-- 是否已读
-- 关键词搜索
+- 点击运营范围后，状态统计和内容定位统计同步刷新。
+- 点击状态卡可作为快捷筛选条件，下方账号列表按对应运行状态过滤。
+- 状态变化值只作为趋势提示，不作为跳转入口。
 
-列表字段需覆盖账号名称、媒体类型、子类型、所属部门、属性、是否认证、内容定位、运行情况、自主情况、运维负责人、联系方式、粉丝数、采集情况、上次发稿时间、最新操作时间和操作入口。
+数据规则：
 
-#### 6.2.4 账号操作
+- 取数规则：统计当前筛选范围内的矩阵账号。
+- 数据筛选规则：按运营范围、运行情况、内容定位取交集；「全部」不附加运营范围条件。
+- 数据排序规则：状态卡按正常运行、停更、待注销、已注销/关停固定顺序展示；内容定位按采编、经营、内部信息发布固定顺序展示。
+- 统计口径：较上月变化值以本月账号状态快照与上月账号状态快照对比，不回溯改写既有状态快照。
 
-- 新增账号：填写账号名称、平台、主页链接、属地、账号类型、内容定位、负责人。
-- 批量导入：支持 Excel 导入，导入后进入「待核验」状态，并返回成功、重复、失败明细。
-- 编辑账号：允许调整属地、类型、定位、负责人、运行情况、是否纳入周报。
-- 启用/停用采集：对接采集服务，更新采集状态。
-- 移出矩阵：仅从矩阵管理中移除，不删除历史内容数据。
-- 异常处理：采集异常账号进入异常清单，提示负责人、异常原因、最近成功采集时间。
+### 3.4 筛选条件与列表字段
+
+筛选条件：
+
+- 展示规则：筛选区展示所属部门、媒体类型、运行情况、所属圈层、采集情况、属性、是否认证、内容定位、自主情况、变更记录、是否已读和关键词搜索。
+- 交互规则：下拉筛选项选择后即时生效；关键词搜索支持输入后回车或点击搜索触发；点击重置后清空筛选、关键词和排序状态，并回到第一页。
+- 数据规则：下拉项采用精确匹配，关键词对账号名称、运维负责人、联系方式做模糊匹配，多条件取交集。
+
+账号名称：
+
+- 展示规则：列表中展示平台账号名称，超长时单行省略；名称使用可点击样式。
+- 交互规则：点击账号名称查看账号基础信息、采集情况和运行状态；无查看权限时账号名称不可点击。
+- 数据规则：取客户确认的矩阵账号名称；支持模糊搜索；默认不单独按名称排序。
+
+媒体类型 / 子类型：
+
+- 展示规则：媒体类型筛选项以现有矩阵管理系统字典为准，一级选项为微信、微博、抖音、视频号、其他；选择其他时展示头条号、百家号、人民号、知乎号、潮鸣号、客户端。
+- 交互规则：选择微信、微博、抖音、视频号时直接按对应媒体类型筛选；选择其他下的子类型时，按具体子类型筛选。
+- 数据规则：取平台字典和账号台账；支持精确筛选；默认不作为首要排序字段。
+
+所属部门 / 所属圈层：
+
+- 展示规则：展示账号归属部门和管理圈层，缺失时展示 `--`。
+- 交互规则：筛选项选择后刷新列表，多条件筛选取交集。
+- 数据规则：取账号台账中的组织归属；支持精确筛选；默认不参与排序。
+
+属性 / 是否认证：
+
+- 展示规则：属性展示单位、个人或其他；是否认证展示是/否。
+- 交互规则：选择筛选项后列表实时刷新；清空筛选后恢复全部。
+- 数据规则：取账号台账和平台认证信息；缺失认证信息时展示 `--`。
+
+内容定位：
+
+- 展示规则：展示采编、经营、内部信息发布等定位；多个定位以逗号或标签形式展示。
+- 交互规则：筛选内容定位后，只展示命中任一选中定位的账号。
+- 数据规则：取账号台账维护结果；支持多选筛选；默认不参与排序。
+
+运行情况：
+
+- 展示规则：展示正常、停更、待注销、失效等运行状态，并用状态标识区分正常与异常。
+- 交互规则：点击统计卡或筛选项后，列表按运行情况过滤。
+- 数据规则：取账号当前运行状态；支持精确筛选；不单独改变账号列表默认排序。
+
+自主情况：
+
+- 展示规则：展示自主运营、代运营或 `--`。
+- 交互规则：顶部运营范围切换和筛选项均可影响该字段范围，二者同时存在时取交集。
+- 数据规则：取账号运营归属；支持精确筛选；默认不参与排序。
+
+运维负责人 / 联系方式：
+
+- 展示规则：展示负责人名称和联系方式，缺失时展示 `--`。
+- 交互规则：点击联系方式可复制；复制成功后给出轻提示。
+- 数据规则：取账号台账维护信息；支持按负责人关键词模糊搜索；默认不参与排序。
+
+粉丝数：
+
+- 展示规则：展示最近一次可用粉丝数，支持万级缩写；缺失时展示「数据缺失」。
+- 交互规则：表头可按粉丝数升序或降序排序。
+- 数据规则：取账号最近一次采集或人工维护的粉丝数；采集失败不估算。
+
+采集情况：
+
+- 展示规则：展示自动采集、无法采集、未接入、采集异常等状态。
+- 交互规则：筛选采集情况后列表刷新；采集异常账号在列表中展示异常提示。
+- 数据规则：取采集状态结果或管理员维护状态；支持精确筛选；不单独改变账号列表默认排序。
+
+是否纳入周报：
+
+- 展示规则：展示纳入、未纳入、待确认等状态；缺失时展示「待确认」。
+- 交互规则：具备修改权限的用户可在账号编辑中调整该状态；调整后只影响后续周报候选池。
+- 数据规则：取账号台账中的周报纳入状态；支持筛选；默认不参与排序。
+
+上次发稿时间 / 最新操作时间：
+
+- 展示规则：按年月日时分秒展示，缺失时展示 `--`。
+- 交互规则：表头支持排序；排序状态在切换页码时保持。
+- 数据规则：上次发稿时间取账号最近一条内容发布时间；最新操作时间取账号台账最近一次维护时间；默认按最新操作时间倒序展示，无最新操作时间时按账号创建时间倒序展示。
+
+操作入口：
+
+- 展示规则：列表右侧固定展示「操作」入口，以下拉菜单承载编辑、采集、移出矩阵等动作。
+- 交互规则：仅具备权限的角色展示可用操作；无权限时操作入口置灰或隐藏。
+- 数据规则：操作可用性由账号状态、采集状态、周报纳入状态和当前用户权限共同决定。
+
+### 3.5 账号操作
+
+新增账号：
+
+- 展示规则：表单展示账号名称、媒体类型、账号主页链接、属地、账号类型、内容定位、运维负责人和联系方式。
+- 交互规则：必填项缺失时禁止保存并在字段下方提示；保存成功后关闭弹窗并刷新列表。
+- 数据规则：保存前按平台账号标识或账号主页链接判重；新账号默认进入待核验状态，未确认前不进入周报候选池。
+
+编辑账号：
+
+- 展示规则：表单展示账号基础信息、组织归属、内容定位、运行情况、采集情况和是否纳入周报。
+- 交互规则：修改后保存产生操作记录；关闭前有未保存修改时提示确认。
+- 数据规则：编辑只影响后续统计和后续周报，既有报告引用的数据不被回溯改写。
+
+启用 / 停用采集：
+
+- 展示规则：操作菜单中展示采集相关动作及当前采集状态。
+- 交互规则：启用后账号进入采集准备或采集中状态；停用后不再进入自动传播分析。
+- 数据规则：仅具备可识别采集标识的账号允许启用采集；采集异常时保留异常原因和最近成功采集时间。
+
+移出矩阵：
+
+- 展示规则：危险操作需二次确认。
+- 交互规则：确认后账号从矩阵列表移出，页面刷新统计数据。
+- 数据规则：移出矩阵只影响后续统计，不删除既有内容、既有传播数据和既有报告引用记录。
+
+批量删除 / 批量移出：
+
+- 展示规则：列表支持勾选账号后执行批量操作；未选择账号时批量按钮置灰。
+- 交互规则：点击后展示二次确认，说明本次影响账号数量；确认后刷新账号列表、统计卡和分页总数。
+- 数据规则：仅影响被选中的矩阵账号；既有报告引用的数据不回溯改写；无权限账号不可被批量操作。
+
+导出账号列表：
+
+- 展示规则：列表上方展示导出入口。
+- 交互规则：点击后导出当前筛选条件、关键词和排序状态下的账号列表；无结果时按钮置灰或提示暂无可导出数据。
+- 数据规则：导出范围与页面当前筛选结果一致；导出内容需包含导出时的筛选条件摘要。
+
+通知：
+
+- 展示规则：具备通知权限时展示通知入口；未配置责任人或联系方式的账号不可发起通知。
+- 交互规则：点击后选择通知对象并确认发送；发送成功后记录通知状态，失败时展示原因并允许重试。
+- 数据规则：通知对象取账号台账中的运维负责人和联系方式；通知不改变账号采集状态、运行状态和周报纳入状态。
+
+状态变更审核：
+
+- 展示规则：「状态变更审核」tab 展示待处理、处理中、已通过、已驳回、已撤回等审核记录。
+- 交互规则：点击审核记录可查看账号、申请状态、申请原因和处理结果；具备审核撤回权限的用户可撤回未完成处理的申请。
+- 数据规则：审核记录取账号状态变更申请；撤回只影响未完成处理的审核记录，不改写已生效的账号状态。
+
+### 3.6 本模块数据口径与异常
+
+账号纳入口径：
+
+- 未被移出矩阵。
+- 账号运行情况属于有效状态，或处于需要展示的异常状态。
+- 账号具备账号名称、媒体类型、账号主页链接等基础字段。
+- 采集中账号必须具备平台账号标识或可识别的唯一采集标识。
+
+判重规则：
+
+- 优先按「平台 + 平台账号标识」判重。
+- 缺失平台账号标识时，按「平台 + 账号主页链接」辅助判重。
+- 重复账号不自动覆盖原数据，需运营确认后更新。
 
 周报可用建议规则：
 
@@ -2711,448 +2991,395 @@ flowchart LR
 - 「常规展示」：纳入周报、采集中、周期内有发文，但未进入重点展示。
 - 「不展示」：未纳入周报、未接入采集、采集异常、周期内无发文，或传播关键字段缺失且未人工确认。
 
-### 6.3 矩阵传播分析
+异常规则：
 
-用于分析定向矩阵账号在指定周期内的内容发布与传播效果。
+- 账号采集异常时，列表展示异常状态，并提供异常原因、负责人和最近成功采集时间。
+- 采集异常账号不进入有效传播统计；如已在既有报告中引用，既有报告保留原状态。
+- 权限不足时，仅允许查看，不允许新增、编辑、移出矩阵或调整采集状态。
 
-#### 6.3.1 筛选条件
+### 3.7 本模块交付验收
 
-- 时间范围：提供「昨日、近7天、近30天、全年」快捷项，支持自定义起止日期。
-- 平台切换：微信、微博、抖音、视频号、其他。
-- 账号检索：支持按账号名称搜索账号传播详情。
-- 稿件检索：支持按稿件标题搜索稿件传播明细。
-- 账号筛选：稿件传播明细支持按账号筛选，默认「全部」。
-- 数据导出：账号传播详情和稿件传播明细均提供导出入口。
+- 账号运行情况统计、内容定位统计和账号列表使用同一筛选范围。
+- 支持按所属部门、媒体类型、运行情况、所属圈层、采集情况、属性、是否认证、内容定位、自主情况、关键词等条件筛选。
+- 账号列表能展示采集状态、是否纳入周报、上次发稿时间和最新操作时间。
+- 新增、编辑、移出矩阵、启用或停用采集均有明确状态反馈。
+- 异常账号有状态提示，移出矩阵不删除既有内容和既有报告引用记录。
 
-#### 6.3.2 核心指标
+---
 
-| 指标 | 说明 |
-|---|---|
-| 发稿数 | 周期内矩阵账号发布内容总数 |
-| 总互动量 | 点赞、评论、转发、在看等互动字段映射汇总 |
-| 点赞数 | 周期内矩阵账号内容点赞量汇总 |
-| 评论数 | 周期内矩阵账号内容评论量汇总 |
-| 转发数 | 周期内矩阵账号内容转发量汇总 |
+## 4. 模块二：矩阵传播分析
 
-#### 6.3.3 分析视图
+### 4.1 模块目标与边界
 
-- 传播力总览：以 5 个指标卡展示发稿数、总互动量、点赞数、评论数、转发数。
-- 传播力变化趋势：按日期展示全部平台及各平台传播力变化折线，支持通过平台标签识别微信、微博、抖音、视频号、其他。
-- 账号传播详情：按平台展示账号名称、所属平台、发稿数、点赞数、阅读数、转发数、在看数、总互动量。
-- 稿件传播明细：按平台和账号展示稿件标题、所属账号、所属平台、发布日期、点赞数、阅读数、转发数、在看数、总互动量。
-- 周报引用关系：账号传播详情和稿件传播明细作为周报「矩阵账号本周内容及传播效果」的数据来源之一。
+矩阵传播分析用于分析定向矩阵账号在指定周期内的内容发布与传播效果。该模块解决「矩阵账号发了什么」「传播效果如何」「哪些账号和稿件可进入周报候选」三个问题。
 
-### 6.4 正能量热点日报 / 周报
+模块边界：
 
-#### 6.4.1 报告入口
+- 本模块负责周期筛选、传播指标、趋势图、账号传播详情和稿件传播明细。
+- 本模块不维护账号基础信息，账号基础信息由「正能量矩阵」模块维护。
+- 本模块不编辑报告正文，报告预览由「正能量热点报告 / 周报」模块承载。
 
-报告模块先复刻现有线上形态，再在报告类型中增加「周报」tab。首屏以报告列表为主，不默认展示周报生成设置、正文预览或复核步骤。
+### 4.2 筛选条件
+
+入口规则：
+
+- 展示规则：顶部导航点击「矩阵传播分析」进入本模块，并展示当前导航激活态。
+- 数据规则：本模块入口仅在本期范围内展示，不新增其他未上线分析入口。
+
+时间范围：
+
+- 展示规则：提供「昨日、近7天、近30天、全年」快捷项，并展示自定义起止日期。
+- 交互规则：点击快捷项后自动填充日期范围；修改自定义日期后取消快捷项激活态。
+- 数据规则：取所选时间范围内矩阵账号发布内容和传播数据；自定义范围与平台、账号筛选取交集；日期按自然日聚合展示。
+
+平台切换：
+
+- 展示规则：以标签或分段控件展示全部、微信、微博、抖音、视频号、其他，并展示各平台内容数量。
+- 交互规则：点击平台后，指标、趋势、账号传播详情和稿件传播明细同步刷新。
+- 数据规则：平台取账号所属平台和内容发布平台；多平台内容按平台内容分别统计；默认展示全部平台。
+
+账号检索：
+
+- 展示规则：账号传播详情右侧展示账号名称搜索框。
+- 交互规则：输入关键词后按账号名称模糊搜索，清空后恢复全部账号。
+- 数据规则：检索范围为当前时间范围和平台筛选下的矩阵账号；默认按总互动量降序展示。
+
+稿件检索：
+
+- 展示规则：稿件传播明细右侧展示稿件标题搜索框，并提供账号下拉筛选。
+- 交互规则：标题搜索和账号筛选可叠加；切换平台时保留标题关键词，账号筛选回到「全部」。
+- 数据规则：标题采用模糊匹配，账号采用精确匹配，多条件取交集；默认按发布日期倒序展示。
+
+数据导出：
+
+- 展示规则：账号传播详情和稿件传播明细均展示导出入口。
+- 交互规则：点击导出后下载当前筛选条件下的数据。
+- 数据规则：导出范围与页面当前筛选结果一致；导出文件必须包含统计周期和筛选条件摘要。
+
+### 4.3 核心指标
+
+发稿数：
+
+- 展示规则：指标卡展示周期内矩阵账号发布内容总数。
+- 交互规则：随时间范围、平台和账号筛选变化实时刷新。
+- 数据规则：统计当前筛选范围内符合正能量内容规则的内容数量；重复采集内容按内容去重。
+
+总互动量：
+
+- 展示规则：指标卡展示点赞、评论、转发、在看等互动量汇总。
+- 交互规则：鼠标悬停可展示口径说明。
+- 数据规则：取当前筛选范围内各平台可用互动字段合计；缺失字段不估算，并在明细中展示缺失状态。
+
+点赞数 / 评论数 / 转发数：
+
+- 展示规则：分别以指标卡展示当前周期内点赞、评论、转发汇总值。
+- 交互规则：随筛选条件变化刷新；不可用字段展示「数据缺失」或 `0`，需与平台口径保持一致。
+- 数据规则：取当前筛选范围内内容维度的对应互动字段；同一内容重复采集时取周期内最新可用值。
+
+### 4.4 分析视图
+
+传播力变化趋势：
+
+- 展示规则：按日期展示全部平台及各平台的传播量趋势和互动量趋势，不合成为未定义的单一传播力分值；平台标签区分微信、微博、抖音、视频号、其他。
+- 交互规则：点击平台标签可显示或隐藏对应平台趋势；鼠标悬停展示当日传播量、互动量和发稿数。
+- 数据规则：按发布时间所在日期聚合；筛选条件与页面当前条件一致；日期按时间正序展示；传播量缺失的平台不绘制传播量趋势，但仍可展示互动量趋势和缺失说明。
+
+账号传播详情：
+
+- 展示规则：以表格展示账号名称、所属平台、发稿数、点赞数、阅读数、转发数、在看数、总互动量。
+- 交互规则：平台 tab、账号搜索和表头排序均可影响表格结果；点击导出下载当前结果。
+- 数据规则：取当前筛选范围内账号维度聚合结果；默认按总互动量降序展示；总互动量相同按发稿数降序展示。
+
+稿件传播明细：
+
+- 展示规则：以表格展示稿件标题、所属账号、所属平台、发布日期、点赞数、阅读数、转发数、在看数、总互动量。
+- 交互规则：支持平台 tab、账号下拉、标题搜索、表头排序和导出。
+- 数据规则：取当前筛选范围内内容维度明细；默认按发布日期倒序展示；用户点击指标表头后按对应指标排序。
+
+### 4.5 本模块数据口径与异常
+
+账号纳入口径：
+
+- 账号未被移出矩阵。
+- 运行情况为「正常」。
+- 采集情况为「采集中」。
+- 具备平台账号标识或可识别的唯一采集标识。
+
+内容纳入口径：
+
+- 发布时间落在当前统计周期内。
+- 内容所属账号在统计周期内为有效矩阵账号。
+- 内容命中正能量标签、正面情绪、稿池引用、热点事件关联或人工标记中的至少一种。
+- 删除、下架、采集失败且无法核验的内容不进入统计。
+
+传播量与互动量口径：
+
+- 微博传播量取阅读量或视频播放量，互动量取转发、评论、点赞。
+- 抖音传播量取播放量，互动量取点赞、评论、分享、收藏。
+- 微信传播量取阅读量、看一看或在看，互动量取点赞、分享、留言。
+- 视频号传播量取播放量，互动量取点赞、评论、转发、收藏。
+- 客户端传播量取浏览量或阅读量，互动量取评论、点赞、分享。
+- 如平台无传播量字段，应标记为「数据缺失」，不得用互动量或估算值替代。
+
+去重规则：
+
+- 同一内容跨平台发布时，按平台内容分别统计。
+- 存在重复采集的内容，以平台内容标识去重。
+- 缺失平台内容标识时，按「账号 + 标题 + 发布时间」辅助判重。
+
+异常规则：
+
+- 采集异常账号不纳入有效统计，并在明细或提示中说明原因。
+- 传播量或互动量缺失时展示「数据缺失」，不做估算。
+- 时间范围为空或结束时间早于开始时间时，禁止查询并提示用户修正。
+- 当前筛选条件无数据时，指标卡展示 `0` 或「数据缺失」的真实状态，趋势图和明细表展示空状态说明。
+- 当前筛选范围内所有传播量字段均缺失时，不展示传播量汇总值，仅展示缺失说明；互动量仍按可用字段统计。
+- 无导出权限时导出按钮隐藏或置灰；筛选无结果时导出按钮置灰或提示暂无可导出数据。
+
+### 4.6 本模块交付验收
+
+- 支持自定义周期展示发布内容、传播量、互动量、账号表现和稿件明细。
+- 指标卡、趋势图、账号传播详情和稿件传播明细使用同一统计周期和筛选条件。
+- 账号传播详情和稿件传播明细可作为周报表 3 候选数据来源。
+- 数据缺失、采集异常账号有明确提示，不参与虚假汇总。
+- 导出数据与当前页面筛选结果一致。
+
+---
+
+## 5. 模块三：正能量热点报告 / 周报
+
+### 5.1 模块目标与边界
+
+正能量热点报告模块保留现有自动报告、人工报告的业务结构，并在自动报告类型中增加「周报」tab。周报能力不作为新的顶部一级菜单展示，而是作为现有报告模块的增强能力。
+
+模块边界：
+
+- 本模块负责日报列表、周报列表、周报设置页、候选数据挑选和预览。
+- 本模块引用网讯舆情系统、新莓汇热点管理列表、新莓汇接收稿件列表和矩阵账号传播效果，不负责维护外部系统数据。
+- 本模块不承诺按话题热门参与情况生成「正能量账号名单」。
+
+### 5.2 报告列表入口
 
 展示规则：
 
-- 一级 tab：自动报告、人工报告。
-- 二级类型：日报、周报。
-- 筛选区：发布时间起止日期、关键词搜索。
-- 列表区：以报告卡片展示报告名称、统计日期或统计周期。
-- 卡片操作：鼠标悬停在报告卡片时展示「预览」按钮，按钮不常驻占用列表空间。
-- 分页区：展示总数、页码和翻页控件。
-- 周报生成设置页：从周报卡片进入，展示统计周期、候选数据挑选和下载按钮。
-- 预览弹窗：用于快速查看报告内容，不替代详情页编辑能力。
+- 顶部导航点击「正能量热点报告」进入本模块，默认进入自动报告页。
+- 一级 tab 展示自动报告、人工报告。
+- 自动报告页内容区展示日报、周报类型切换；人工报告页不展示该类型切换。
+- 筛选区展示发布时间起止日期和关键词搜索。
+- 列表区以报告卡片展示报告名称、统计日期或统计周期。
+- 鼠标悬停报告卡片时展示「预览」按钮，按钮不常驻占用列表空间。
+- 分页区展示总数、页码和翻页控件。
 
 交互规则：
 
-- 点击「日报」展示正能量热点日报卡片。
-- 点击「周报」展示正能量周报卡片。
 - 点击「自动报告 / 人工报告」切换对应报告来源。
-- 点击周报卡片进入周报生成设置页。
+- 在自动报告页点击「日报」展示正能量热点报告卡片。
+- 在自动报告页点击「周报」展示正能量周报卡片。
 - 点击日报卡片默认打开日报预览。
-- 鼠标悬停报告卡片时展示「预览」按钮，点击后打开报告预览弹窗；该按钮需阻止卡片点击事件，不能同时进入设置页。
-- 周报生成设置页提供「返回」「预览」「下载」动作。
+- 点击周报卡片主体进入周报设置页。
+- 点击卡片上的「预览」按钮仅打开报告预览弹窗，不触发进入设置页。
 - 点击弹窗关闭按钮、遮罩或按 Esc 关闭预览弹窗。
 
 数据规则：
 
-- 取数规则：日报沿用现有正能量热点日报记录；周报取已生成或已人工维护的正能量周报记录。
+- 取数规则：日报沿用现有正能量热点报告记录；周报取可配置周期记录或已有周报卡片数据。
 - 数据筛选规则：按报告来源、报告类型、发布时间范围和关键词取交集筛选。
 - 数据排序规则：默认按报告发布时间倒序展示。
 
-#### 6.4.2 周报生成设置页
+### 5.3 周报设置页
 
 展示规则：
 
-- 顶部展示返回按钮、页面标题、当前统计周期、预览按钮和下载按钮。
-- 左侧仅展示统计周期和生成状态提示，不再展示数据来源、报告表格等额外配置项。
-- 右侧展示当前统计周期下与最终报告强相关的候选数据，包括稿池投稿、正面热点事件、矩阵账号传播效果。
+- 顶部展示返回按钮、页面标题和预览按钮。
+- 设置区展示统计周期的开始时间和结束时间，不在标题下重复展示周期文本。
+- 候选数据区展示当前统计周期下与最终报告强相关的候选数据，按「热点事件、稿池投稿、矩阵账号」顺序组织。
 - 候选数据以可挑选列表展示，每条数据支持保留、移除和恢复。
 
 交互规则：
 
 - 点击「返回」回到报告列表，并保留原报告类型 tab 状态。
 - 修改统计周期后，页面状态提示同步展示当前周期。
-- 点击候选数据类型 tab，可在稿池投稿、热点事件、矩阵账号之间切换。
+- 点击候选数据类型 tab，可在热点事件、稿池投稿、矩阵账号之间切换。
 - 点击候选数据的「移除」后，该数据不再进入最终报告正文、表格和预览；点击「恢复」可重新纳入。
 - 点击「恢复全部」后，当前统计周期下所有候选数据重新纳入报告。
-- 点击「预览」打开周报预览弹窗，预览内容需以报告正文版式展示总体情况、情绪分布图、工作情况、稿池投稿表、热点事件表和矩阵账号传播表。
-- 点击「下载」后，系统只使用保留下来的候选数据下载当前配置数据；若候选数据全部被移除，禁止下载并提示至少保留 1 条数据。
+- 点击「预览」打开周报预览弹窗，预览内容需以报告正文版式展示总体情况、正能量稿件情感分布图、工作情况、热点事件表、稿池投稿表和矩阵账号传播表。
 
 数据规则：
 
-- 取数规则：周报生成设置页引用当前周报卡片对应的统计周期，并取稿池投稿、正面热点事件和矩阵账号传播效果三类数据。
+- 取数规则：取当前周报卡片对应统计周期下的热点事件、稿池投稿和矩阵账号传播效果三类候选数据。
 - 数据筛选规则：按照统计周期以及运营保留/移除状态取交集。
-- 数据排序规则：候选数据按稿池投稿、热点事件、矩阵账号的业务顺序分组展示；组内默认按报告展示优先级、传播量、互动量或篇次降序排序。
-- 数据引用规则：最终周报正文、表格和预览只引用处于保留状态的候选数据，被移除数据保留在当前操作态中用于恢复，不写入最终报告。
-- 下载规则：下载文件必须包含当前统计周期、已保留的稿池投稿、热点事件、矩阵账号传播效果和摘要统计；被移除数据不进入下载文件。
-- 预览规则：报告预览中的摘要指标、正文描述和三张表格必须由已选候选数据实时生成；移除任一候选数据后，预览中的对应行和统计值同步减少。
+- 数据排序规则：候选数据按热点事件、稿池投稿、矩阵账号的业务顺序分组展示；组内默认按传播量、篇次、互动量降序排序。
+- 数据引用规则：预览和表格只引用处于保留状态的候选数据，被移除数据保留在当前操作态中用于恢复。
 
-#### 6.4.3 时间范围
+### 5.4 周报预览结构
 
-客户周报周期通常为「上周三到本周三」。系统提供默认快捷项，同时允许运营手动调整具体小时。
+展示规则：
 
-建议规则：
+- 标题展示「涉舟网络正能量数据简报」。
+- 第一部分展示「一、总体情况」，包含网讯舆情系统统计的涉舟信息总量，并引用正能量态势感知首页的正能量稿件情感分布结果。
+- 图 1 展示「正能量稿件情感分布图」。
+- 第二部分展示「二、工作情况」，包含热点事件、稿池投稿和矩阵账号传播表现的整体描述。
+- 表 1 展示涉舟正能量热点事件。
+- 表 2 展示「新莓汇」正能量稿池投稿情况。
+- 表 3 展示矩阵账号本周内容及传播效果。
 
-- 默认快捷项：上周三 `00:00:00` 至本周三 `23:59:59`。
-- 可配置为客户实际运营口径：上周三 `20:00:00` 至本周三 `16:00:00`。
-- 报告标题、正文统计周期、接口查询参数、导出文件和历史周报记录必须使用同一时间范围。
-- 历史周报保存生成时的起止时间，不随默认规则变更而变化。
+交互规则：
 
-#### 6.4.4 周报结构
+- 候选数据被移除或恢复后，预览中的正文摘要、表格行和统计值同步更新。
+- 预览弹窗只用于快速查看报告内容，不承诺新增独立编辑流程。
+- 若表格无可用数据，保留表头并展示空状态说明。
 
-参考运营手动报告，自动生成如下结构：
+数据规则：
 
-1. 标题：涉舟网络正能量数据简报
-2. 一、总体情况
-   - 涉舟信息总量
-   - 正向情绪占比
-   - 矩阵账号发布内容数
-   - 正面热点事件数
-   - 热点传播量
-3. 图 1：涉舟信息情绪分布图
-4. 二、工作情况
-   - 稿池投稿整体描述
-   - 热点事件整体描述
-   - 矩阵账号传播表现整体描述
-5. 表 1：正能量稿池投稿情况
-6. 表 2：正面报道热点事件
-7. 表 3：矩阵账号本周内容及传播效果
+- 取数规则：预览只引用当前统计周期内处于保留状态的候选数据；总体涉舟信息和情感分布按同一统计周期取数。
+- 数据筛选规则：候选数据类型、统计周期和保留状态共同决定预览范围。
+- 数据排序规则：表 1 按传播量降序排序；表 2 按篇次或报告展示优先级排序；表 3 按传播量、互动量、发文数排序。
 
-#### 6.4.5 关键口径替换
+### 5.5 周报时间范围
 
-原手动报告中的表 3 为「正能量账号名单」，其隐含口径是从话题热门参与情况中识别账号。由于平台无法稳定识别所有话题参与账号，且不同平台对参与账号、互动账号、阅读来源等字段开放程度不一致，该口径不进入本次系统建设范围，也不在对外交付中承诺。
+展示规则：
 
-**替代方案：**
+- 周报设置页展示起止时间，默认使用客户周报周期。
+- 支持默认「上周三到本周三」以及手动调整具体小时和分钟。
+- 起止时间在候选数据筛选和预览正文中保持一致。
 
-将表 3 调整为「正能量矩阵账号本周发布内容及传播效果」。该表只统计客户确认纳入矩阵、具备定向采集条件、且在统计周期内产生可核验内容数据的账号。
+交互规则：
 
-**客户可接受表达建议：**
+- 修改时间范围后，候选数据和预览同步刷新。
+- 起止时间为空或结束时间早于开始时间时，禁止预览，并提示用户修正。
 
-&gt; 为保证周报数据可采集、可核验、可复用，系统不采用“按话题自动识别全部热门参与账号”的不稳定口径，调整为展示已纳入正能量矩阵的重点账号在本统计周期内的发布内容及传播效果。该口径能够反映客户重点管理账号的运营表现，并可与账号台账、传播分析、周报导出数据逐项追溯。
+数据规则：
 
-建议字段：
+- 取数规则：统计周期以运营在周报设置页选择的起止时间为准。
+- 数据筛选规则：涉舟信息、正能量稿件情感分布、热点事件、稿池投稿和矩阵账号传播效果均按同一时间范围过滤。
+- 数据排序规则：正文统计周期和系统查询条件必须使用同一时间范围。
 
-| 字段 | 说明 |
-|---|---|
-| 属地 | 账号所属属地 |
-| 账号名称 | 定向矩阵账号 |
-| 平台 | 内容发布平台 |
-| 发文数 | 周期内发布正能量内容数 |
-| 传播量 | 周期内内容传播量合计，缺失时展示「数据缺失」 |
-| 互动量 | 周期内互动量合计，缺失时展示「数据缺失」 |
-| 代表内容 | 周期内传播量或互动量最高的代表内容 |
-| 数据状态 | 数据完整、传播量缺失、互动量缺失、采集异常 |
-| 周报建议 | 重点展示、常规展示、不展示 |
+### 5.6 周报统计口径
 
-#### 6.4.6 生成流程
+总体情况：
 
-```mermaid
-flowchart TD
-  A["运营进入正能量热点日报"] --&gt; B["切换到周报 tab"]
-  B --&gt; C["选择数据来源和报告表格"]
-  C --&gt; D["系统做生成前校验"]
-  D --&gt; E{"校验是否通过"}
-  E --&gt;|否| F["提示缺失字段、异常账号、时间错误"]
-  F --&gt; B
-  E --&gt;|是| G["系统拉取稿池、热点、矩阵账号数据"]
-  G --&gt; H["聚合指标并生成报告草稿"]
-  H --&gt; I{"运营复核"}
-  I --&gt;|需要修改| J["在线调整标题、正文、表格行和口径说明"]
-  J --&gt; I
-  I --&gt;|确认无误| K["导出 Word 或 PDF"]
-  K --&gt; L["保存历史周报和复核记录"]
-```
+- 展示规则：展示当前周期内涉舟信息总量和总体描述。
+- 交互规则：修改统计周期后同步更新；不可用指标展示「数据缺失」。
+- 数据规则：
+  - 取数规则：涉舟信息总量来自网讯舆情系统，监测方案为舟山，统计对象为主要新闻 APP、网站和社交平台中的涉舟信息。
+  - 数据筛选规则：按周报设置页起止时间过滤；时间口径必须支持小时级，不能按自然日零点到零点替代。
+  - 数据排序规则：总体情况为汇总指标，不涉及排序。
 
-#### 6.4.7 生成策略
+正能量稿件情感分布图：
 
-- 报告正文采用模板化生成，避免完全自由生成导致措辞失控。
-- 总体情况优先引用平台已有看板、情绪分布、热点事件和矩阵分析结果。
-- 矩阵账号表默认按「周报建议、传播量、互动量、发文数」排序。
-- 若传播量缺失但互动量完整，该账号仍可展示互动量，但传播量字段必须展示「数据缺失」。
-- 若表 3 无可用账号，报告中保留表头和空状态说明：「本周期内暂无符合采集条件的矩阵账号传播数据」。
-- 运营修改正文或删除表格行时，系统记录人工修订痕迹，历史报告保留最终导出版本。
+- 展示规则：展示正能量态势感知首页「正能量稿件情感分布」图，包含赞扬、惊奇、喜悦、厌恶、愤怒、恐惧、悲伤等情感分类的数量和占比。
+- 交互规则：预览弹窗中作为只读图表展示，不提供独立编辑；修改统计周期后随周报整体刷新。
+- 数据规则：
+  - 取数规则：来自正能量态势感知首页的正能量稿件情感分布统计，只统计当前周报周期内纳入正能量稿件范围的数据。
+  - 数据筛选规则：按周报设置页起止时间过滤；无法识别或缺失情感结果的数据不强制归入任一情感分类。
+  - 数据排序规则：按首页情感分布图既有分类顺序展示。
 
-#### 6.4.8 报告状态
+表 1 涉舟正能量热点事件：
 
-| 状态 | 说明 | 可用操作 |
-|---|---|---|
-| 待生成 | 尚未生成草稿 | 选择周期、选择数据源、生成草稿 |
-| 生成中 | 数据拉取或正文生成中 | 取消、查看进度 |
-| 待复核 | 草稿已生成，等待运营确认 | 编辑、预览、重新生成、确认 |
-| 已完成 | 运营确认并导出 | 预览、下载、复制生成 |
-| 生成失败 | 数据、模板或导出异常 | 查看原因、重新生成 |
+- 展示规则：展示事件名称、属地、传播量、来源账号；传播量缺失时展示「数据缺失」。
+- 交互规则：运营移除某一热点事件后，该事件不进入预览；恢复后重新纳入。
+- 数据规则：
+  - 取数规则：来源为新莓汇热点管理列表中的「全网涉浙 24 小时正能量热点」；统计对象为属地或检索条件命中舟山的正能量热点事件。
+  - 数据筛选规则：先按舟山和日期范围筛选，再按周报设置页起止时间做小时级过滤；多条件取交集。
+  - 数据排序规则：默认按阅读总量或传播量降序排序，传播量缺失的事件排在可用传播量事件之后。
 
----
+表 2「新莓汇」正能量稿池投稿情况：
 
-## 7. 数据口径
+- 展示规则：展示投稿账号、篇次、热点选题稿件数量；无数据时保留表头并展示空状态说明。
+- 交互规则：运营移除某一投稿主体后，该主体不进入预览；恢复后重新纳入。
+- 数据规则：
+  - 取数规则：来源为新莓汇工作台的接收稿件列表；统计对象为市新闻传媒中心、定海区融媒体中心、普陀区融媒体中心、岱山县融媒体中心、嵊泗县融媒体中心、嵊泗网信 6 个固定媒体单位的投稿。
+  - 数据筛选规则：按推送时间过滤周报设置页起止时间；同一稿件重复出现时按稿件维度去重；热点选题稿件取处理状态为「市网信办已录用」的稿件。
+  - 数据排序规则：默认按篇次降序排序，篇次相同时按固定媒体单位顺序展示。
 
-### 7.1 统计周期口径
+表 3 矩阵账号本周内容及传播效果：
 
-- 统计周期以运营在周报生成页选择的起止时间为准。
-- 分析页和周报页应共用同一套时间参数格式：`YYYY-MM-DD HH:mm:ss`。
-- 起止时间采用闭区间或半开区间需由后端统一，建议使用 `[startTime, endTime)`，避免边界重复统计。
-- 页面展示可按自然日期聚合，但底层查询仍使用精确到秒的起止时间。
+- 展示规则：展示属地、账号名称、平台、发文数、传播量、互动量和代表内容。
+- 交互规则：运营移除某一矩阵账号后，该账号不进入预览；恢复后重新纳入。
+- 数据规则：
+  - 取数规则：来源为正能量矩阵账号及矩阵传播分析结果，只统计已纳入周报、可定向采集、且在统计周期内产生可核验内容数据的账号。
+  - 数据筛选规则：按统计周期、是否纳入周报、运行情况、采集情况和运营保留状态取交集。
+  - 数据排序规则：默认按传播量、互动量、发文数排序。
 
-### 7.2 账号纳入口径
+### 5.7 关键口径替换
 
-进入矩阵传播分析的账号需满足：
+原手动报告中的「正能量账号名单」隐含口径是从话题热门参与情况中识别账号。由于平台无法稳定识别所有话题参与账号，且不同平台对参与账号、互动账号、阅读来源等字段开放程度不一致，该口径不进入本次系统建设范围，也不在对外交付中承诺。
 
-- 未被移出矩阵。
-- 运行情况为「正常」。
-- 采集情况为「采集中」。
-- 具备平台账号 ID 或后端可识别的唯一采集标识。
+口径说明文案：
 
-进入周报表 3 的账号还需满足：
+- 将账号名单调整为「正能量矩阵账号本周发布内容及传播效果」。
+- 该表只统计客户确认纳入矩阵、具备定向采集条件、且在统计周期内产生可核验内容数据的账号。
+- 对外展示口径：为保证周报数据可采集、可核验、可复用，系统不采用“按话题自动识别全部热门参与账号”的不稳定口径，调整为展示已纳入正能量矩阵的重点账号在本统计周期内的发布内容及传播效果。
+
+### 5.8 本模块数据口径与异常
+
+候选数据取数规则：
+
+- 涉舟信息总量取网讯舆情系统中舟山监测方案的统计结果。
+- 正能量稿件情感分布取正能量态势感知首页的「正能量稿件情感分布」统计结果。
+- 热点事件取新莓汇热点管理列表中命中舟山并落在统计周期内的正能量热点事件。
+- 稿池投稿取新莓汇工作台接收稿件列表中 6 个固定媒体单位的投稿统计，热点选题稿件取处理状态为「市网信办已录用」的数据。
+- 矩阵账号传播效果取当前统计周期内符合表 3 口径的矩阵账号周期统计。
+
+矩阵账号进入表 3 的条件：
 
 - 「是否纳入周报」为是。
+- 运行情况为正常，采集情况为采集中。
 - 周期内至少有 1 条符合正能量内容规则的发布内容。
-- 至少具备发文数和代表内容，传播量或互动量缺失时需要展示缺失状态。
+- 至少具备发文数和代表内容；传播量或互动量缺失时需要展示缺失状态。
 
-### 7.3 内容纳入口径
+异常规则：
 
-正能量矩阵账号发布内容进入统计需满足：
+- 候选数据全部被移除时，禁止预览并提示至少保留 1 条数据。
+- 时间范围为空或结束时间早于开始时间时，禁止预览。
+- 无矩阵账号数据时，表 3 展示空状态说明，不输出虚假账号。
+- 存在关键字段缺失时，预览保留该数据并标记「数据缺失」，不使用估算值补齐。
+- 网讯舆情系统或正能量稿件情感分布数据不可用时，总体情况和图表展示「数据缺失」，不使用候选数据反推。
+- 周报预览失败时，展示失败原因，支持重新预览；失败任务不清空当前候选数据选择状态。
 
-- 发布时间落在统计周期内。
-- 内容所属账号在统计周期内为有效矩阵账号。
-- 内容命中正能量标签、正面情绪、稿池引用、热点事件关联或人工标记中的至少一种。
-- 删除、下架、采集失败且无法核验的内容不进入统计。
-
-### 7.4 传播量与互动量字段映射
-
-| 平台 | 传播量字段建议 | 互动字段建议 | 备注 |
-|---|---|---|---|
-| 微博 | 阅读量、视频播放量 | 转发、评论、点赞 | 话题阅读量只用于话题分析，不作为单账号内容传播量 |
-| 抖音 | 播放量 | 点赞、评论、分享、收藏 | 同一视频多次采集取周期内最新可用值 |
-| 微信公众号 | 阅读量、看一看、在看 | 点赞、分享、留言 | 若阅读量不可取，展示数据缺失 |
-| 视频号 | 播放量 | 点赞、评论、转发、收藏 | 以内容维度可取字段为准 |
-| 新闻客户端 | 浏览量、阅读量 | 评论、点赞、分享 | 不同客户端字段需做来源标识 |
-
-规则：
-
-- 如平台无传播量字段，应标记为「数据缺失」，不得用互动量或估算值替代。
-- 传播量、互动量默认按内容维度汇总；同一内容跨平台发布时按平台内容分别统计。
-- 对存在重复采集的内容，以平台内容 ID 去重；无内容 ID 时按「账号 ID + 标题 + 发布时间」辅助判重。
-
----
-
-## 8. 数据模型建议
-
-### 8.1 矩阵账号
-
-```json
-{
-  "accountId": "string",
-  "accountName": "新舟山",
-  "platform": "news_app",
-  "platformAccountId": "string",
-  "homepageUrl": "https://example.com/account",
-  "region": "舟山",
-  "accountType": "official_media",
-  "contentPosition": "城市形象",
-  "runningStatus": "normal",
-  "collectionStatus": "collecting",
-  "ownerName": "王老师",
-  "ownerPhone": "string",
-  "includedInWeeklyReport": true,
-  "removedFromMatrix": false,
-  "lastCollectedAt": "2026-06-10 15:50:00",
-  "createdAt": "2026-06-18 10:00:00",
-  "updatedAt": "2026-06-18 10:00:00"
-}
-```
-
-### 8.2 账号周期统计
-
-```json
-{
-  "accountId": "string",
-  "statStartTime": "2026-06-03 20:00:00",
-  "statEndTime": "2026-06-10 16:00:00",
-  "postCount": 14,
-  "reachTotal": 23771000,
-  "interactionTotal": 316000,
-  "hotContentCount": 2,
-  "dataStatus": "complete",
-  "weeklySuggestion": "highlight",
-  "topContent": {
-    "contentId": "string",
-    "title": "舟山学子高考前夕为班主任打造专属惊喜",
-    "publishTime": "2026-06-06 09:30:00",
-    "reach": 23771000,
-    "interaction": 316000
-  }
-}
-```
-
-### 8.3 周报记录
-
-周报记录用于支撑报告列表、详情预览、导出和历史追溯。
-
-- 展示规则：列表卡片展示报告名称、报告类型、统计周期、生成方式和最近更新时间。
-- 交互规则：点击卡片进入报告详情；详情页提供预览、编辑、导出和复核动作。
-- 数据规则：
-  - 取数规则：取已生成、已人工维护或已复核归档的报告记录。
-  - 数据筛选规则：支持按自动报告/人工报告、日报/周报、发布时间范围和关键词筛选。
-  - 数据排序规则：默认按最近更新时间倒序，状态相同情况下按统计周期结束时间倒序。
-
----
-
-## 9. 数据协作边界
-
-### 9.1 账号台账数据
-
-- 取数规则：来自客户确认纳入正能量矩阵的定向账号台账。
-- 数据筛选规则：支持属地、平台、账号类型、内容定位、运行情况、采集情况、是否纳入周报和关键词筛选，多条件取交集。
-- 数据排序规则：默认按采集情况、运行情况、最近更新时间排序，异常账号优先展示。
-
-### 9.2 矩阵传播数据
-
-- 取数规则：来自纳入矩阵且具备采集条件的账号在统计周期内发布的内容及传播字段。
-- 数据筛选规则：支持时间范围、属地、平台、账号类型、内容主题、数据状态和关键词筛选，多条件取交集。
-- 数据排序规则：指标卡按统计周期汇总；排行默认按传播量降序；明细默认按传播量、互动量、发文数降序。
-
-### 9.3 报告数据
-
-- 取数规则：日报沿用现有正能量热点日报数据；周报引用稿池投稿、正面热点事件和矩阵账号传播效果。
-- 数据筛选规则：报告列表支持自动报告/人工报告、日报/周报、发布时间范围和关键词筛选。
-- 数据排序规则：报告列表默认按发布时间倒序；周报详情内表格默认按业务口径排序。
-
----
-
-## 10. 前后端开发节点
-
-&gt; 交付开发节点时，`PRD.md` 和 `index.html` 均作为前后端共同评审材料，不拆分只给单方。
-
-### 节点 1：矩阵账号台账
-
-- 前端：账号列表、筛选、新增/编辑弹窗、批量导入入口、账号分析卡、异常状态展示。
-- 后端：账号 CRUD、字典接口、导入校验、判重逻辑、采集状态同步字段。
-- 数据：明确平台账号 ID、主页链接、属地、账号类型、内容定位、运行情况、采集情况、是否纳入周报字段。
-- 验收：账号可新增、导入、编辑、筛选；异常账号有状态提示；移出矩阵不删除历史内容。
-- 交付物：`PRD.md` + `index.html` 对齐页面字段和交互。
-
-### 节点 2：矩阵传播分析
-
-- 前端：周期筛选、核心指标、趋势图、排行、属地/主题分布、账号效果明细、数据可用性提示。
-- 后端：按账号、内容、平台、属地、主题聚合传播量和互动量，输出缺失字段状态。
-- 数据：统一传播量、互动量、代表内容、热点贡献、异常账号口径。
-- 验收：自定义周期可查询；指标、排行、明细口径一致；字段缺失时展示缺失状态而非估算。
-- 交付物：`PRD.md` + `index.html` 对齐分析口径和数据字段。
-
-### 节点 3：报告模块周报增强
-
-- 前端：复刻现有报告列表，新增日报/周报类型切换；周报详情页承载预览、编辑、导出入口和复核动作。
-- 后端：报告数据聚合、模板渲染、草稿保存、复核记录、Word/PDF 导出。
-- 数据：统一统计周期、数据来源、表格字段、口径版本、人工修订记录。
-- 验收：生成前能提示异常；草稿可编辑；导出文件与预览口径一致；历史周报保留生成时周期和版本。
-- 交付物：`PRD.md` + `index.html` 对齐报告结构和替代表格。
-
----
-
-## 11. 异常与边界
-
-| 场景 | 产品处理 |
-|---|---|
-| 账号采集异常 | 列表展示异常状态，分析页不纳入有效统计，周报生成前提示异常账号数量和名单入口 |
-| 平台字段缺失 | 缺失传播量或互动量时显示为「数据缺失」，不做估算 |
-| 周报生成失败 | 展示失败原因，支持重新生成；已生成草稿不被失败任务覆盖 |
-| 时间范围为空 | 禁止生成周报，提示补全起止时间 |
-| 结束时间早于开始时间 | 前端拦截，后端二次校验 |
-| 无矩阵账号数据 | 周报表 3 展示空状态和说明，不输出虚假账号 |
-| 账号重复导入 | 按平台 + 平台账号 ID 判重；缺失 ID 时按平台 + 主页链接判重 |
-| 权限不足 | 非运营/管理员角色仅可查看，不可新增账号或生成报告 |
-| 口径变更 | 新报告使用新口径版本，历史报告保留原口径版本和导出文件 |
-
----
-
-## 12. 验收标准
-
-### 12.1 全局验收
-
-- 顶部导航可进入正能量矩阵、矩阵传播分析，以及现有正能量热点日报报告模块。
-- `#matrix`、`#analysis`、`#weekly` 路由可用，其中 `#weekly` 对应现有报告模块增强页。
-- 两个新增入口和一个报告增强页能串起账号管理、传播分析、周报生成、复核导出闭环。
-- 系统不再承诺按话题热门参与情况生成「正能量账号名单」。
-- 页面和导出报告均展示可接受的口径替代表达。
-
-### 12.2 正能量矩阵
-
-- 支持按属地、平台、账号类型、内容定位、运行情况、采集情况筛选。
-- 账号列表能展示本周发文、传播量、采集状态、是否纳入周报。
-- 新增/导入账号后能进入待核验或采集状态流转。
-- 账号分析卡能展示周期表现、代表内容和周报可用建议。
-
-### 12.3 矩阵传播分析
-
-- 支持自定义周期展示发布内容、传播量、互动量、活跃账号、热点贡献。
-- 趋势、排行、属地/主题分布和明细使用同一统计周期。
-- 账号传播效果明细可作为周报表 3 数据来源。
-- 数据缺失、采集异常账号有明确提示，不参与虚假汇总。
-
-### 12.4 正能量热点日报 / 周报
+### 5.9 本模块交付验收
 
 - 报告模块保留现有「自动报告 / 人工报告」结构。
-- 报告模块新增「日报 / 周报」类型切换，周报不作为新的顶部一级菜单。
-- 周报列表卡片能展示报告名称、统计周期和报告来源。
+- 自动报告页内容区新增「日报 / 周报」类型切换，周报不作为新的顶部一级菜单，也不与「自动报告 / 人工报告」平级。
 - 报告卡片 hover 时展示「预览」按钮，点击只打开预览弹窗，不触发进入设置页。
-- 点击周报卡片主体进入周报生成设置页，可返回报告列表。
-- 周报生成设置页能展示统计周期、数据来源、报告表格、候选数据挑选和已选计数。
-- 周报生成设置页能展示当前统计周期下的候选数据，支持按稿池投稿、热点事件、矩阵账号切换查看。
-- 运营可移除或恢复候选数据，预览和最终报告只引用保留下来的数据。
-- 报告预览尽量完整展示草稿内容，至少包含稿池投稿情况、涉舟正面报道热点事件、矩阵账号本周内容及传播效果三张表。
-- 支持默认「上周三到本周三」和自定义小时级起止时间。
-- 周报详情或生成页再承载时间范围、数据来源、表格配置、异常账号和缺失字段校验。
-- 周报详情预览包含总体情况、工作情况、稿池投稿表、热点事件表、矩阵账号内容及传播效果表。
-- 导出的 Word/PDF 周报中的统计周期、正文描述和表格数据口径一致。
-- 历史周报保存状态、统计周期、生成方式、导出文件和复核记录。
+- 点击周报卡片主体进入周报设置页，可返回报告列表。
+- 周报设置页能展示统计周期、候选数据挑选和已选计数。
+- 周报统计周期支持小时级起止时间，预览和候选数据筛选使用同一时间范围。
+- 运营可移除或恢复候选数据，预览只引用保留下来的数据。
+- 报告预览至少包含涉舟正能量热点事件、「新莓汇」正能量稿池投稿情况、矩阵账号本周内容及传播效果三张表。
+- 图 1 必须明确为正能量态势感知首页「正能量稿件情感分布」口径，不得与网讯舆情系统涉舟信息总量混写。
+- 表 1 至少展示事件、属地、传播量和来源账号。
+- 表 2 至少展示投稿账号、篇次和热点选题稿件数量。
+- 表 3 至少展示属地、账号名称、平台、发文数、传播量、互动量和代表内容。
 
----
-
-## 13. 原型说明
-
-- 原型路径：`positive-energy-situation-optimization/index.html`
-- 主要页面：
-  - `#matrix`：正能量矩阵
-  - `#analysis`：矩阵传播分析
-  - `#weekly`：正能量热点日报模块，内含日报 / 周报切换
-- 原型使用样例数据展示页面结构和口径，不代表最终线上数据。
 </textarea>
 
 <script>
 
 var changelogData = [
   {
-    "time": "2026-06-18 16:00",
-    "desc": "初始创建：正能量态势感知平台优化项目，新增正能量矩阵、矩阵传播分析、正能量周报原型 + PRD；周报支持自定义上周三至本周三时间范围，并以矩阵账号内容传播效果替代不可实现的热门参与账号名单"
+    "time": "2026-06-26 18:43",
+    "desc": "周报设置页去除周报下载入口、标题下周期文本和状态提示；周报预览表 3 收敛为核心传播字段，PRD 同步改为配置与预览闭环"
+  },
+  {
+    "time": "2026-06-23 15:40",
+    "desc": "文档与原型同步优化：PRD 升级 v1.3，补齐产品概述、全局交互规则、小时级周报周期和矩阵周报纳入字段"
+  },
+  {
+    "time": "2026-06-18 18:41",
+    "desc": "发布收口：正能量矩阵和矩阵传播分析按参考系统复刻，周报支持报告正文预览和候选数据删减"
+  },
+  {
+    "time": "2026-06-18 16:26",
+    "desc": "按线上平台形态收敛原型：移除非线上占位模块和方案说明卡，周报归入正能量热点报告入口，页面只保留可操作功能"
   },
   {
     "time": "2026-06-18 16:17",
     "desc": "使用 myccweb-deploy 构建前收口：产品专家评估并优化整体方案，PRD 升级 v1.1，原型补齐业务闭环、数据口径、周报复核和生成前校验"
   },
   {
-    "time": "2026-06-18 16:26",
-    "desc": "按线上平台形态收敛原型：移除非线上占位模块和方案说明卡，周报归入正能量热点日报入口，页面只保留可操作功能"
-  },
-  {
-    "time": "2026-06-18 18:41",
-    "desc": "发布收口：正能量矩阵和矩阵传播分析按参考系统复刻，周报支持报告正文预览、候选数据删减和当前配置数据下载"
+    "time": "2026-06-18 16:00",
+    "desc": "初始创建：正能量态势感知平台优化项目，新增正能量矩阵、矩阵传播分析、正能量周报原型 + PRD；周报支持自定义上周三至本周三时间范围，并以矩阵账号内容传播效果替代不可实现的热门参与账号名单"
   }
 ];
 function togglePrdPanel(){
@@ -3194,6 +3421,7 @@ function renderPrdMarkdown(md){
   var lines=md.split('\n');
   var h='',toc='',listStack=[],liOpenStack=[],inTable=false,inCode=false,codeBuf=[];
   var headingIndex=0;
+  function isTableSeparator(row){return /^\|(?:\s*:?-+:?\s*\|)+$/.test(row);}
   function closeLists(targetDepth){
     while(listStack.length>targetDepth){
       if(liOpenStack.pop()) h+='</li>';
@@ -3240,7 +3468,7 @@ function renderPrdMarkdown(md){
       closeAllLists();
       if(!inTable){
         var nxt=(j+1<lines.length)?lines[j+1].trim():'';
-        var isSep=/^\|[\s\-:]+\|$/.test(nxt);
+        var isSep=isTableSeparator(nxt);
         if(isSep){
           h+='<table class="prd-table"><thead><tr>';
           var hdrCells=tr.replace(/^\|/,'').replace(/\|$/,'').split('|');
@@ -3250,7 +3478,7 @@ function renderPrdMarkdown(md){
         }
         h+='<table class="prd-table"><tbody>'; inTable=true;
       }
-      if(/^\|[\s\-:]+\|$/.test(tr)) continue;
+      if(isTableSeparator(tr)) continue;
       var cells=tr.replace(/^\|/,'').replace(/\|$/,'').split('|');
       h+='<tr>';
       for(var ci=0;ci<cells.length;ci++) h+='<td>'+prdInlineFmt(cells[ci].trim())+'</td>';
@@ -3351,6 +3579,84 @@ if(document.readyState==='loading'){
     });
   });
 
+  var mediaTypeSelect=document.getElementById('mediaTypeSelect');
+  function applyMatrixMediaFilter(value){
+    var matrixRows=[].slice.call(document.querySelectorAll('.matrix-table tbody tr'));
+    var directTypes=['微信','微博','抖音','视频号'];
+    var visibleIndex=0;
+    matrixRows.forEach(function(row){
+      var cells=row.children;
+      var media=cells[3]?cells[3].textContent.trim():'';
+      var subtype=cells[4]?cells[4].textContent.trim():'';
+      var matched=!value || (directTypes.indexOf(value)>-1 || value==='其他' ? media===value : subtype===value);
+      row.style.display=matched?'':'none';
+      if(matched){
+        visibleIndex++;
+        if(cells[1]){cells[1].textContent=String(visibleIndex);}
+      }
+    });
+    var totalText=document.querySelector('.matrix-pagination .matrix-total');
+    if(totalText){totalText.textContent='共 '+visibleIndex+' 条';}
+  }
+  if(mediaTypeSelect){
+    var mediaTrigger=mediaTypeSelect.querySelector('.media-select-trigger');
+    var mediaLabel=mediaTypeSelect.querySelector('[data-media-label]');
+    var mediaOptions=[].slice.call(mediaTypeSelect.querySelectorAll('.media-option[data-value]'));
+    var otherBranch=mediaTypeSelect.querySelector('[data-branch="other"]');
+    mediaTrigger.addEventListener('click',function(e){
+      e.stopPropagation();
+      var isOpen=mediaTypeSelect.classList.toggle('open');
+      mediaTrigger.setAttribute('aria-expanded',isOpen?'true':'false');
+    });
+    if(otherBranch){
+      otherBranch.addEventListener('click',function(e){
+        e.stopPropagation();
+        mediaOptions.forEach(function(item){item.classList.remove('selected');});
+        mediaTypeSelect.classList.add('show-other');
+        otherBranch.classList.add('active','selected');
+        mediaLabel.textContent='其他';
+        applyMatrixMediaFilter('其他');
+      });
+    }
+    mediaOptions.forEach(function(option){
+      option.addEventListener('click',function(e){
+        e.stopPropagation();
+        mediaOptions.forEach(function(item){item.classList.remove('selected');});
+        if(otherBranch){otherBranch.classList.remove('active','selected');}
+        mediaTypeSelect.classList.remove('show-other');
+        option.classList.add('selected');
+        mediaLabel.textContent=option.dataset.value;
+        applyMatrixMediaFilter(option.dataset.value);
+        mediaTypeSelect.classList.remove('open');
+        mediaTrigger.setAttribute('aria-expanded','false');
+      });
+    });
+    document.addEventListener('click',function(){
+      mediaTypeSelect.classList.remove('open');
+      mediaTypeSelect.classList.remove('show-other');
+      if(otherBranch){otherBranch.classList.remove('active');}
+      mediaTrigger.setAttribute('aria-expanded','false');
+    });
+  }
+  var resetMatrixFilters=document.getElementById('resetMatrixFilters');
+  if(resetMatrixFilters){
+    resetMatrixFilters.addEventListener('click',function(){
+      [].slice.call(document.querySelectorAll('.matrix-filterbar select')).forEach(function(select){select.selectedIndex=0;});
+      [].slice.call(document.querySelectorAll('.matrix-filterbar input')).forEach(function(input){input.value='';});
+      if(mediaTypeSelect){
+        var mediaLabel=mediaTypeSelect.querySelector('[data-media-label]');
+        var mediaTrigger=mediaTypeSelect.querySelector('.media-select-trigger');
+        if(mediaLabel){mediaLabel.textContent='请选择';}
+        if(mediaTrigger){mediaTrigger.setAttribute('aria-expanded','false');}
+        mediaTypeSelect.classList.remove('open','show-other');
+        [].slice.call(mediaTypeSelect.querySelectorAll('.media-option')).forEach(function(option){
+          option.classList.remove('active','selected');
+        });
+      }
+      applyMatrixMediaFilter('');
+    });
+  }
+
   var rows=[].slice.call(document.querySelectorAll('#view-matrix tbody tr[data-account]'));
   var detailName=document.getElementById('detailName');
   var detailLogo=document.getElementById('detailLogo');
@@ -3385,15 +3691,13 @@ if(document.readyState==='loading'){
   var reportEmpty=document.getElementById('reportListEmpty');
   var reportModeTabs=[].slice.call(document.querySelectorAll('.report-main-tab'));
   var reportTypeTabs=[].slice.call(document.querySelectorAll('.report-type-tab'));
+  var reportTypeBar=document.getElementById('reportTypeTabs');
   var reportBoard=document.querySelector('#view-weekly .report-board');
   var weeklySettings=document.getElementById('weeklySettings');
-  var weeklySettingPeriod=document.getElementById('weeklySettingPeriod');
   var weeklyStartDate=document.getElementById('weeklyStartDate');
   var weeklyEndDate=document.getElementById('weeklyEndDate');
-  var weeklySettingStatus=document.getElementById('weeklySettingStatus');
   var backToReportList=document.getElementById('backToReportList');
   var settingPreviewBtn=document.getElementById('settingPreviewBtn');
-  var settingDownloadBtn=document.getElementById('settingDownloadBtn');
   var reportPreviewModal=document.getElementById('reportPreviewModal');
   var previewReportName=document.getElementById('previewReportName');
   var previewReportPeriod=document.getElementById('previewReportPeriod');
@@ -3416,25 +3720,48 @@ if(document.readyState==='loading'){
   function renderReportList(){
     var visibleCount=0;
     reportCards.forEach(function(card){
-      var visible=card.dataset.reportMode===reportMode&&card.dataset.reportType===reportType;
+      var visible=card.dataset.reportMode===reportMode&&(reportMode!=='auto'||card.dataset.reportType===reportType);
       card.hidden=!visible;
       if(visible){visibleCount+=1;}
     });
     reportModeTabs.forEach(function(btn){btn.classList.toggle('active',btn.dataset.reportMode===reportMode);});
     reportTypeTabs.forEach(function(btn){btn.classList.toggle('active',btn.dataset.reportType===reportType);});
+    if(reportTypeBar){reportTypeBar.classList.toggle('hidden',reportMode!=='auto');}
     if(reportTotal){reportTotal.textContent='共 '+visibleCount+' 条';}
     if(reportEmpty){reportEmpty.classList.toggle('show',visibleCount===0);}
   }
   function getReportInfo(card){
     return {
       title:(card.querySelector('.report-doc-title')||{}).textContent||'正能量周报',
-      period:(card.querySelector('.report-doc-date')||{}).textContent||'2026-06-12 至 2026-06-18',
+      period:(card.querySelector('.report-doc-date')||{}).textContent||'2026-06-12 16:00 至 2026-06-18 16:00',
       type:card.dataset.reportType
     };
   }
+  function normalizeDateTimeInput(value,fallbackTime){
+    var text=String(value||'').trim();
+    var match=text.match(/(\d{4})[-/](\d{2})[-/](\d{2})(?:[ T](\d{2}):(\d{2}))?/);
+    if(!match){return '';}
+    var time=fallbackTime||'16:00';
+    var hour=match[4]||time.split(':')[0]||'16';
+    var minute=match[5]||time.split(':')[1]||'00';
+    return match[1]+'-'+match[2]+'-'+match[3]+'T'+hour+':'+minute;
+  }
+  function displayDateTimeValue(value){
+    return String(value||'').replace('T',' ');
+  }
+  function currentWeeklyPeriod(){
+    if(weeklyStartDate&&weeklyEndDate&&weeklyStartDate.value&&weeklyEndDate.value){
+      return displayDateTimeValue(weeklyStartDate.value)+' 至 '+displayDateTimeValue(weeklyEndDate.value);
+    }
+    return '2026-06-12 16:00 至 2026-06-18 16:00';
+  }
+  function hasValidWeeklyPeriod(){
+    if(!weeklyStartDate||!weeklyEndDate||!weeklyStartDate.value||!weeklyEndDate.value){return false;}
+    return new Date(weeklyStartDate.value).getTime()<=new Date(weeklyEndDate.value).getTime();
+  }
   function openReportPreview(card){
     var info=getReportInfo(card);
-    if(previewReportName){previewReportName.textContent=info.type==='daily'?'正能量热点日报':'涉舟网络正能量数据简报';}
+    if(previewReportName){previewReportName.textContent=info.type==='daily'?'正能量热点报告':'涉舟网络正能量数据简报';}
     if(previewReportPeriod){previewReportPeriod.textContent=info.period.replace(/\s+/g,' ').trim();}
     renderReportPreviewData();
     if(reportPreviewModal){
@@ -3451,20 +3778,15 @@ if(document.readyState==='loading'){
   function openWeeklySettings(card){
     var info=getReportInfo(card);
     var period=info.period.replace(/\s+/g,' ').trim();
-    if(weeklySettingPeriod){weeklySettingPeriod.textContent=period;}
     var parts=period.split('至').map(function(item){return item.trim();});
     if(parts.length===2){
-      if(weeklyStartDate){weeklyStartDate.value=parts[0].replace(/\//g,'-');}
-      if(weeklyEndDate){weeklyEndDate.value=parts[1].replace(/\//g,'-');}
+      if(weeklyStartDate){weeklyStartDate.value=normalizeDateTimeInput(parts[0],'16:00');}
+      if(weeklyEndDate){weeklyEndDate.value=normalizeDateTimeInput(parts[1],'16:00');}
     }
     if(reportBoard){reportBoard.hidden=true;}
     if(weeklySettings){
       weeklySettings.classList.add('active');
       weeklySettings.setAttribute('aria-hidden','false');
-    }
-    if(weeklySettingStatus){
-      weeklySettingStatus.className='report-status is-ok';
-      weeklySettingStatus.textContent='已选择 '+period+'，可下载当前配置数据。';
     }
     renderPickCounts();
   }
@@ -3512,25 +3834,14 @@ if(document.readyState==='loading'){
   if(backToReportList){backToReportList.addEventListener('click',showReportList);}
   if(settingPreviewBtn){
     settingPreviewBtn.addEventListener('click',function(){
+      if(!hasValidWeeklyPeriod()){return;}
+      var selectedTotal=getSelectedRows('pool').length+getSelectedRows('hot').length+getSelectedRows('matrix').length;
+      if(selectedTotal===0){return;}
       openReportPreview(document.querySelector('.report-doc-card[data-report-type="weekly"]:not([hidden])')||reportCards[0]);
-      if(weeklySettings&&weeklySettings.classList.contains('active')&&weeklySettingPeriod&&previewReportPeriod){
-        previewReportPeriod.textContent=weeklySettingPeriod.textContent;
+      if(weeklySettings&&weeklySettings.classList.contains('active')&&previewReportPeriod){
+        previewReportPeriod.textContent=currentWeeklyPeriod();
         renderReportPreviewData();
       }
-    });
-  }
-  if(settingDownloadBtn){
-    settingDownloadBtn.addEventListener('click',function(){
-      if(!weeklySettingStatus){return;}
-      var selectedTotal=getSelectedRows('pool').length+getSelectedRows('hot').length+getSelectedRows('matrix').length;
-      if(selectedTotal===0){
-        weeklySettingStatus.className='report-status is-error';
-        weeklySettingStatus.textContent='请至少保留 1 条候选数据后再下载。';
-        return;
-      }
-      downloadWeeklyConfigData();
-      weeklySettingStatus.className='report-status is-ok';
-      weeklySettingStatus.textContent='已下载当前配置数据，共 '+selectedTotal+' 条。';
     });
   }
   function getSelectedRows(sectionName){
@@ -3541,7 +3852,7 @@ if(document.readyState==='loading'){
   }
   function renderPickCounts(){
     var total=0;
-    ['pool','hot','matrix'].forEach(function(sectionName){
+    ['hot','pool','matrix'].forEach(function(sectionName){
       var count=getSelectedRows(sectionName).length;
       total+=count;
       [].slice.call(document.querySelectorAll('[data-pick-count="'+sectionName+'"]')).forEach(function(el){
@@ -3549,14 +3860,19 @@ if(document.readyState==='loading'){
       });
     });
     if(pickReadyTag){pickReadyTag.textContent='已选 '+total+' 条';}
-    if(pickSummary){pickSummary.textContent='下载将包含已选 '+total+' 条数据，已移除数据不进入下载文件。';}
-    var activeTab=(document.querySelector('.pick-tab.active')||{}).dataset?document.querySelector('.pick-tab.active').dataset.pickTab:'pool';
-    if(pickEmpty){pickEmpty.classList.toggle('show',getSelectedRows(activeTab).length===0);}
-    if(weeklySettingStatus&&weeklySettings&&weeklySettings.classList.contains('active')){
-      var period=weeklySettingPeriod?weeklySettingPeriod.textContent:'当前周期';
-      weeklySettingStatus.className=total>0?'report-status is-ok':'report-status is-error';
-      weeklySettingStatus.textContent=total>0?'已选择 '+period+'，保留 '+total+' 条候选数据，可下载当前配置数据。':'请至少保留 1 条候选数据后再下载。';
+    var validPeriod=hasValidWeeklyPeriod();
+    if(pickSummary){
+      if(!validPeriod){
+        pickSummary.textContent='请设置有效统计周期后预览。';
+      }else if(total===0){
+        pickSummary.textContent='请至少保留 1 条候选数据后预览。';
+      }else{
+        pickSummary.textContent='当前保留 '+total+' 条候选数据，已移除数据不进入预览正文和表格。';
+      }
     }
+    var activeTab=(document.querySelector('.pick-tab.active')||{}).dataset?document.querySelector('.pick-tab.active').dataset.pickTab:'hot';
+    if(pickEmpty){pickEmpty.classList.toggle('show',getSelectedRows(activeTab).length===0);}
+    if(settingPreviewBtn){settingPreviewBtn.disabled=!validPeriod||total===0;}
   }
   function numValue(value){
     var n=parseFloat(String(value||'0').replace(/[^\d.]/g,''));
@@ -3581,6 +3897,7 @@ if(document.readyState==='loading'){
       }
       return {
         account:row.dataset.title,
+        region:row.dataset.region,
         platform:row.dataset.platform,
         posts:numValue(row.dataset.posts),
         reach:row.dataset.reach,
@@ -3589,61 +3906,49 @@ if(document.readyState==='loading'){
       };
     });
   }
-  function safeFilePart(value){
-    return String(value||'').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,'_');
-  }
-  function downloadWeeklyConfigData(){
-    var period=weeklySettingPeriod?weeklySettingPeriod.textContent:'当前周期';
-    var pool=selectedRowsData('pool');
-    var hot=selectedRowsData('hot');
-    var matrix=selectedRowsData('matrix');
-    var payload={
-      reportName:'涉舟网络正能量数据简报',
-      period:period,
-      downloadedAt:new Date().toISOString(),
-      summary:{
-        poolCount:pool.length,
-        poolPostTotal:pool.reduce(function(sum,item){return sum+item.count;},0),
-        hotEventCount:hot.length,
-        hotReachWanTotal:hot.reduce(function(sum,item){return sum+item.reachWan;},0),
-        matrixAccountCount:matrix.length
-      },
-      data:{
-        poolSubmissions:pool,
-        hotEvents:hot,
-        matrixAccounts:matrix
-      }
-    };
-    var blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
-    var url=URL.createObjectURL(blob);
-    var a=document.createElement('a');
-    a.href=url;
-    a.download='正能量周报配置数据_'+safeFilePart(period)+'.json';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(function(){URL.revokeObjectURL(url);},0);
-  }
+  var weeklyPublicOpinionSummary={
+    source:'网讯舆情系统',
+    monitorPlan:'舟山',
+    scope:'主要新闻APP、网站和社交平台涉舟信息',
+    totalText:'30万余条'
+  };
+  var weeklyEmotionDistribution=[
+    {label:'赞扬',count:56,percent:44.8},
+    {label:'惊奇',count:46,percent:36.8},
+    {label:'喜悦',count:21,percent:16.8},
+    {label:'厌恶',count:2,percent:1.6},
+    {label:'愤怒',count:0,percent:0},
+    {label:'恐惧',count:0,percent:0},
+    {label:'悲伤',count:0,percent:0}
+  ];
   function escapeHtml(value){
     return String(value||'').replace(/[&<>"']/g,function(ch){
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];
     });
   }
   function parsePeriodDates(period){
-    var matches=String(period||'').match(/\d{4}[-/]\d{2}[-/]\d{2}/g)||[];
+    var matches=String(period||'').match(/\d{4}[-/]\d{2}[-/]\d{2}(?:[ T]\d{2}:\d{2})?/g)||[];
     if(matches.length<2){return null;}
     return matches.slice(0,2).map(function(item){
-      var parts=item.replace(/\//g,'-').split('-').map(Number);
-      return new Date(parts[0],parts[1]-1,parts[2]);
+      var normalized=normalizeDateTimeInput(item,'16:00');
+      var parts=normalized.split('T');
+      var dateParts=parts[0].split('-').map(Number);
+      var timeParts=(parts[1]||'16:00').split(':').map(Number);
+      return new Date(dateParts[0],dateParts[1]-1,dateParts[2],timeParts[0]||0,timeParts[1]||0);
     });
   }
   function chineseDate(date){
     return (date.getMonth()+1)+'月'+date.getDate()+'日';
   }
+  function chineseDateTime(date){
+    var h=String(date.getHours()).padStart(2,'0');
+    var m=String(date.getMinutes()).padStart(2,'0');
+    return chineseDate(date)+h+'时'+(m==='00'?'':m+'分');
+  }
   function formatReportPeriod(period){
     var dates=parsePeriodDates(period);
     if(!dates){return '6月12日16时至6月18日16时';}
-    return chineseDate(dates[0])+'16时至'+chineseDate(dates[1])+'16时';
+    return chineseDateTime(dates[0])+'至'+chineseDateTime(dates[1]);
   }
   function formatWorkPeriod(period){
     var dates=parsePeriodDates(period);
@@ -3669,25 +3974,25 @@ if(document.readyState==='loading'){
     if(previewMatrixCount){previewMatrixCount.textContent=matrixRows.length;}
     if(previewReachCount){previewReachCount.textContent=reachTotal.toFixed(1)+'万';}
     if(previewOverviewText){
-      previewOverviewText.innerHTML=escapeHtml(formatReportPeriod(previewReportPeriod?previewReportPeriod.textContent:''))+'，我办监测发现主要新闻<strong>APP</strong>网站和社交平台涉舟信息共计30万余条，整体来看，正向情绪内容占比<strong>85.68%</strong>（见图1）。';
+      previewOverviewText.innerHTML=escapeHtml(formatReportPeriod(previewReportPeriod?previewReportPeriod.textContent:''))+'，我办通过网讯舆情系统监测发现主要新闻<strong>APP</strong>网站和社交平台涉舟信息共计<strong>'+escapeHtml(weeklyPublicOpinionSummary.totalText)+'</strong>。同期正能量态势感知首页显示，正能量稿件情感分布中赞扬类占比<strong>44.8%</strong>、惊奇类占比<strong>36.8%</strong>、喜悦类占比<strong>16.8%</strong>（见图1）。';
     }
     if(previewWorkText){
-      previewWorkText.innerHTML=escapeHtml(formatWorkPeriod(previewReportPeriod?previewReportPeriod.textContent:''))+'，舟山 '+poolRows.length+' 个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品 <strong>'+poolTotal+'</strong> 篇次（见表 1）。共产生全网涉舟山正能量热点事件 <strong>'+hotRows.length+'</strong> 个（见表 2）。其中热点事件阅读量合计接近 <strong>'+yiText(reachTotal)+'</strong> 亿，从账号表现来看，本周共有 <strong>'+matrixRows.length+'</strong> 个重点正能量账号参与传播（见表 3）。';
+      previewWorkText.innerHTML=escapeHtml(formatWorkPeriod(previewReportPeriod?previewReportPeriod.textContent:''))+'，新莓汇热点管理列表共产生涉舟正能量热点事件 <strong>'+hotRows.length+'</strong> 个（见表 1），热点事件阅读量合计接近 <strong>'+yiText(reachTotal)+'</strong> 亿。舟山 <strong>'+poolRows.length+'</strong> 个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品 <strong>'+poolTotal+'</strong> 篇次，其中市网信办已录用热点选题稿件 <strong>'+hotTopicTotal+'</strong> 篇（见表 2）。从账号表现来看，本周共有 <strong>'+matrixRows.length+'</strong> 个重点正能量账号参与传播（见表 3）。';
     }
     if(previewPoolBody){
       previewPoolBody.innerHTML=poolRows.length?poolRows.map(function(row,idx){
-        return '<tr><td>'+(idx+1)+'</td><td>'+row.dataset.title+'</td><td>'+row.dataset.count+'（热点选题稿件 '+row.dataset.hotCount+' 篇）</td></tr>';
+        return '<tr><td>'+(idx+1)+'</td><td>'+escapeHtml(row.dataset.title)+'</td><td>'+escapeHtml(row.dataset.count)+'（热点选题稿件 '+escapeHtml(row.dataset.hotCount)+' 篇）</td></tr>';
       }).join(''):'<tr><td colspan="3">本周期内暂无已选稿池投稿数据。</td></tr>';
     }
     if(previewHotBody){
       previewHotBody.innerHTML=hotRows.length?hotRows.map(function(row,idx){
-        return '<tr><td>'+(idx+1)+'</td><td>'+row.dataset.title+'</td><td>'+row.dataset.region+'</td><td>'+row.dataset.reach+'</td><td>'+row.dataset.host+'</td></tr>';
+        return '<tr><td>'+(idx+1)+'</td><td>'+escapeHtml(row.dataset.title)+'</td><td>'+escapeHtml(row.dataset.region)+'</td><td>'+escapeHtml(row.dataset.reach)+'</td><td>'+escapeHtml(row.dataset.host)+'</td></tr>';
       }).join(''):'<tr><td colspan="5">本周期内暂无已选热点事件数据。</td></tr>';
     }
     if(previewMatrixBody){
       previewMatrixBody.innerHTML=matrixRows.length?matrixRows.map(function(row){
-        return '<tr><td>'+row.dataset.title+'</td><td>'+row.dataset.platform+'</td><td>'+row.dataset.posts+'</td><td>'+row.dataset.reach+'</td><td>'+row.dataset.interact+'</td><td>'+row.dataset.content+'</td></tr>';
-      }).join(''):'<tr><td colspan="6">本周期内暂无已选矩阵账号传播数据。</td></tr>';
+        return '<tr><td>'+escapeHtml(row.dataset.region||'--')+'</td><td>'+escapeHtml(row.dataset.title)+'</td><td>'+escapeHtml(row.dataset.platform)+'</td><td>'+escapeHtml(row.dataset.posts)+'</td><td>'+escapeHtml(row.dataset.reach)+'</td><td>'+escapeHtml(row.dataset.interact)+'</td><td>'+escapeHtml(row.dataset.content)+'</td></tr>';
+      }).join(''):'<tr><td colspan="7">本周期内暂无已选矩阵账号传播数据。</td></tr>';
     }
   }
   pickTabs.forEach(function(tab){
@@ -3728,13 +4033,7 @@ if(document.readyState==='loading'){
     });
   }
   function syncWeeklyPeriodFromInputs(){
-    if(!weeklyStartDate||!weeklyEndDate||!weeklySettingPeriod){return;}
-    var start=weeklyStartDate.value||'';
-    var end=weeklyEndDate.value||'';
-    if(start&&end){
-      weeklySettingPeriod.textContent=start+' 至 '+end;
-      renderPickCounts();
-    }
+    renderPickCounts();
   }
   if(weeklyStartDate){weeklyStartDate.addEventListener('change',syncWeeklyPeriodFromInputs);}
   if(weeklyEndDate){weeklyEndDate.addEventListener('change',syncWeeklyPeriodFromInputs);}
