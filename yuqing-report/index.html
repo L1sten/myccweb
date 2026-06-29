@@ -711,7 +711,7 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 - 数据筛选规则：
   - 默认值："全部单位"（不限）
   - 取数规则：级联选项取数来源为部门树中当前用户可见的部门范围，不限层级深度
-  - 展示规则：选中后控件显示部门路径，清空后恢复"全部单位"
+  - 展示规则：未选择时控件显示"全部单位"，选中后控件显示部门路径
   - 匹配规则：选中父级部门时匹配该部门及全部下级部门；选中末级部门时仅匹配该末级部门
 
 #### 4.3.5 录用状态筛选
@@ -2081,7 +2081,6 @@ function renderSummaryPage(){
 }
 function buildUnitCascadeItems(nodes,depth){
   let html='';
-  if(depth===0)html+='<div class="unit-cascade-item '+(!selectedFilterDeptId?'active':'')+'" onclick="selectFilterUnit(\'\')"><i class="ri-building-2-line"></i><span>全部单位</span></div>';
   (nodes||[]).forEach(node=>{
     const active=selectedFilterDeptId===node.id?' active':'';
     const icon=node.children&&node.children.length?'ri-folder-3-line':'ri-building-line';
@@ -2872,7 +2871,7 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 - 数据筛选规则：
   - 默认值："全部单位"（不限）
   - 取数规则：级联选项取数来源为部门树中当前用户可见的部门范围，不限层级深度
-  - 展示规则：选中后控件显示部门路径，清空后恢复"全部单位"
+  - 展示规则：未选择时控件显示"全部单位"，选中后控件显示部门路径
   - 匹配规则：选中父级部门时匹配该部门及全部下级部门；选中末级部门时仅匹配该末级部门
 
 #### 4.3.5 录用状态筛选
