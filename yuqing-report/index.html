@@ -92,6 +92,30 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'PingFang SC','Microso
 .topbar-title{font-size:17px;font-weight:600}
 .topbar-tag{background:var(--primary-bg);color:var(--primary);font-size:11px;font-weight:500;padding:3px 8px;border-radius:999px}
 .topbar-right{display:flex;align-items:center;gap:8px}
+.notice-wrap{position:relative}
+.notice-btn{width:32px;height:32px;border:1px solid var(--border-light);border-radius:50%;background:#fff;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--transition);position:relative}
+.notice-btn:hover,.notice-btn.active{border-color:var(--primary);color:var(--primary);background:var(--primary-bg)}
+.notice-btn i{font-size:17px}
+.notice-badge{position:absolute;right:-2px;top:-3px;min-width:16px;height:16px;border-radius:999px;background:var(--red);color:#fff;font-size:10px;line-height:16px;text-align:center;padding:0 4px;border:2px solid #fff;font-weight:600}
+.notice-panel{display:none;position:absolute;right:0;top:40px;width:360px;background:#fff;border:1px solid var(--border-light);border-radius:var(--radius-lg);box-shadow:0 12px 32px rgba(0,0,0,.12);z-index:120;overflow:hidden}
+.notice-panel.show{display:block}
+.notice-panel-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border-light)}
+.notice-panel-title{font-size:14px;font-weight:600}
+.notice-list{max-height:360px;overflow-y:auto}
+.notice-load-status{display:none;padding:10px 12px;border-top:1px solid var(--border-light);background:var(--bg-page);text-align:center;font-size:12px;color:var(--text-tertiary)}
+.notice-load-status.show{display:block}
+.notice-item{display:flex;gap:10px;padding:13px 16px;border-bottom:1px solid var(--border-light);cursor:pointer;transition:var(--transition);background:#fff}
+.notice-item:hover{background:var(--bg-page)}
+.notice-item:last-child{border-bottom:none}
+.notice-item.unread .notice-item-title::after{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);margin-left:6px;vertical-align:middle}
+.notice-item-icon{width:34px;height:34px;border-radius:10px;background:var(--primary-bg);color:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.notice-item-main{min-width:0;flex:1}
+.notice-item-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
+.notice-item-title{font-size:13px;font-weight:600;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.notice-item-time{font-size:11px;color:var(--text-quaternary);white-space:nowrap}
+.notice-item-meta{font-size:12px;color:var(--text-tertiary);line-height:1.6}
+.notice-empty{padding:34px 20px;text-align:center;color:var(--text-tertiary);font-size:13px}
+.notice-empty i{display:block;font-size:28px;color:var(--text-quaternary);margin-bottom:8px}
 .topbar-avatar{width:28px;height:28px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:#fff}
 .topbar-username{font-size:13px;font-weight:500}
 .topbar-role{font-size:11px;color:var(--text-tertiary);background:var(--border-light);padding:2px 8px;border-radius:999px}
@@ -307,6 +331,18 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 .perm-node-row:hover{background:var(--bg-page)}
 .perm-node-row.parent{font-weight:500}
 .perm-node-row.leaf{color:var(--text-secondary)}
+.perm-node-row.notify-perm{align-items:flex-start;border:1px solid var(--primary-bg);background:linear-gradient(90deg,rgba(0,82,217,.06),rgba(0,168,112,.05));padding:10px 12px;margin:4px 0 6px}
+.perm-node-row.notify-perm:hover{border-color:rgba(0,82,217,.22);background:linear-gradient(90deg,rgba(0,82,217,.1),rgba(0,168,112,.08))}
+.perm-node-row.notify-perm .perm-cb{margin-top:3px}
+.perm-notice-icon{width:28px;height:28px;border-radius:8px;background:#fff;color:var(--primary);display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,82,217,.12);flex-shrink:0}
+.perm-notice-main{min-width:0;flex:1}
+.perm-notice-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text-primary);line-height:20px}
+.perm-notice-desc{font-size:12px;color:var(--text-tertiary);line-height:1.6;margin-top:2px}
+.perm-notice-badge{font-size:11px;font-weight:500;color:var(--green);background:var(--green-bg);border-radius:999px;padding:2px 8px;white-space:nowrap}
+.perm-preview{margin:14px 0 0 24px;border:1px dashed rgba(0,82,217,.24);background:var(--bg-page);border-radius:var(--radius-md);padding:12px 14px;display:flex;align-items:flex-start;gap:10px}
+.perm-preview-icon{width:34px;height:34px;border-radius:10px;background:var(--primary-bg);color:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.perm-preview-title{font-size:13px;font-weight:600;margin-bottom:4px}
+.perm-preview-text{font-size:12px;color:var(--text-tertiary);line-height:1.6}
 .perm-cb{width:16px;height:16px;border:2px solid var(--border);border-radius:3px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
 .perm-cb.checked{background:var(--primary);border-color:var(--primary)}
 .perm-cb.checked::after{content:'\2713';color:#fff;font-size:10px;font-weight:700}
@@ -418,6 +454,17 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
         <span class="topbar-title" id="topbarTitle">舆情汇总</span>
       </div>
       <div class="topbar-right">
+        <div class="notice-wrap">
+          <button class="notice-btn" id="noticeBtn" onclick="toggleNoticeCenter(event)" title="通知中心"><i class="ri-notification-3-line"></i><span class="notice-badge" id="noticeBadge" style="display:none">0</span></button>
+          <div class="notice-panel" id="noticePanel">
+            <div class="notice-panel-header">
+              <div><div class="notice-panel-title">通知中心</div></div>
+              <button class="btn btn-outline btn-sm" onclick="markAllNotificationsRead(event)">全部已读</button>
+            </div>
+            <div class="notice-list" id="noticeList" onscroll="handleNoticeScroll(this)"></div>
+            <div class="notice-load-status" id="noticeLoadStatus"></div>
+          </div>
+        </div>
         <div class="topbar-avatar" id="topAvatar">张</div>
         <span class="topbar-username" id="topName">张伟</span>
         <i class="ri-logout-box-r-line topbar-logout" onclick="doLogout()" title="退出登录"></i>
@@ -449,8 +496,8 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 <div class="toast-container" id="toastContainer"></div>
 <textarea id="prdMdSource" style="display:none"># 舆情报送与管理系统 产品需求文档
 
-> 版本：v1.2.5 | 日期：2026-06-29
-> 上一版本：v1.2.4
+> 版本：v1.2.8 | 日期：2026-06-29
+> 上一版本：v1.2.7
 > 原型文件：index.html
 
 ---
@@ -569,9 +616,29 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
   - 当前页面标题，随页面切换动态更新
 
 - **右侧**
+  - 通知中心铃铛按钮
   - 用户头像（姓名首字）
   - 用户姓名
   - 退出登录图标按钮
+
+#### 3.2.1 通知中心
+
+- **展示规则**：顶部导航栏右侧展示铃铛图标按钮；存在未读通知时显示红色角标，角标展示未读数量
+- **交互规则**：
+  - 点击铃铛按钮展开通知中心浮层，再次点击或点击浮层外区域关闭
+  - 通知列表按接收时间倒序排列，最新通知展示在最上方
+  - 通知列表支持下滑加载更多，初始展示一批通知，滚动到底部后自动追加下一批
+  - 底部在仍有更多通知时展示"继续下滑加载更多"提示，全部加载后自动隐藏
+  - 点击单条通知后标记为已读，并跳转至对应舆情详情
+  - 点击"全部已读"后清空未读角标
+- **权限规则**：
+  - 拥有"接收新上报通知"权限的用户可查看近期通知信息
+  - 未拥有该权限的用户点击后展示未开通权限提示，不展示通知列表
+- **数据规则**：
+  - 通知来源为新舆情上报成功后生成的通知记录
+  - 通知字段包含标题、报送单位、接收时间、关联舆情
+  - 通知排序按接收时间倒序
+  - 加载更多默认每批展示 5 条通知
 
 ---
 
@@ -1322,8 +1389,9 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 ### 9.3 消息通知
 
 - 舆情汇总权限树新增"接收新上报通知"权限
-- 舆情上报成功并写入舆情数据集后，当前登录用户拥有该权限时展示新上报弹窗
+- 舆情上报成功并写入舆情数据集后，当前登录用户拥有该权限时展示新上报弹窗，并同步写入通知中心
 - 新上报弹窗展示标题、报送单位、上报时间，并提供查看详情入口
+- 通知中心在页面右上角以铃铛按钮进入，展示近期通知信息并按时间倒序排列
 - 舆情处人员和系统管理员预置拥有该权限，地市人员默认无该权限
 - 报告发布提醒暂不纳入本期范围
 
@@ -1365,6 +1433,9 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.3：单位类型筛选改为按一级部门动态展示，匹配子部门上报单位 | 2026-05-06 |
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.4：舆情分类更新为五大领域（社会民生、经济金融、涉政涉稳、文化科技、生态环保），舆情分类打标改名为舆情研判 | 2026-05-08 |
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.5：登录改为密码/验证码双 Tab，密码登录增加短信二次验证，按部门控制舆情可见范围，新增新上报通知权限与弹窗提醒 | 2026-06-29 |
+| 313308ec-6699-40ed-b428-968958be84ed | v1.2.6：页面右上角新增通知中心铃铛入口，支持查看近期新上报通知、未读角标、全部已读和按时间倒序排列 | 2026-06-29 |
+| 313308ec-6699-40ed-b428-968958be84ed | v1.2.7：通知中心新增分页能力，每页展示 5 条通知，支持上一页/下一页切换并显示页码和总数 | 2026-06-29 |
+| 313308ec-6699-40ed-b428-968958be84ed | v1.2.8：通知中心由点击分页改为下滑加载更多，初始展示 5 条，滚动到底自动追加下一批，保留继续下滑加载更多提示 | 2026-06-29 |
 </textarea>
 <script>
 /* ===== Auth & Roles ===== */
@@ -1436,7 +1507,7 @@ function completeLogin(user){
   pendingLoginUser=null;
   document.getElementById('loginPage').style.display='none';
   document.getElementById('appContainer').style.display='flex';
-  buildSidebar();updateUserUI();navigate('summary');
+  buildSidebar();updateUserUI();renderNoticeCenter();navigate('summary');
 }
 function showSecondFactorModal(user){
   pendingLoginUser=user;
@@ -1482,6 +1553,7 @@ function doLogin(){
 }
 function doLogout(){
   selectedIds.clear();editingReport=null;pendingLoginUser=null;
+  closeNoticeCenter();
   document.getElementById('appContainer').style.display='none';
   document.getElementById('loginPage').style.display='flex';
   refreshCaptcha();
@@ -1490,6 +1562,86 @@ function updateUserUI(){
   document.getElementById('topAvatar').textContent=(loginUser.name||'用').charAt(0);
   document.getElementById('topName').textContent=loginUser.name||'用户';
 }
+
+function getSortedNotifications(){
+  if(!hasPermission('p1-4'))return [];
+  return notificationData.slice().sort((a,b)=>new Date(b.time.replace(' ','T'))-new Date(a.time.replace(' ','T')));
+}
+function renderNoticeCenter(){
+  const list=document.getElementById('noticeList');
+  const badge=document.getElementById('noticeBadge');
+  const loadStatus=document.getElementById('noticeLoadStatus');
+  if(!list||!badge)return;
+  if(!hasPermission('p1-4')){
+    list.innerHTML='<div class="notice-empty"><i class="ri-notification-off-line"></i>当前角色未开通新上报通知权限</div>';
+    badge.style.display='none';
+    if(loadStatus)loadStatus.classList.remove('show');
+    return;
+  }
+  const rows=getSortedNotifications();
+  const unread=rows.filter(n=>!n.read).length;
+  badge.textContent=unread>99?'99+':unread;
+  badge.style.display=unread?'block':'none';
+  if(!rows.length){
+    list.innerHTML='<div class="notice-empty"><i class="ri-notification-3-line"></i>暂无近期通知</div>';
+    if(loadStatus)loadStatus.classList.remove('show');
+    return;
+  }
+  if(noticeVisibleCount<noticeLoadSize)noticeVisibleCount=noticeLoadSize;
+  if(noticeVisibleCount>rows.length)noticeVisibleCount=rows.length;
+  const visibleRows=rows.slice(0,noticeVisibleCount);
+  list.innerHTML=visibleRows.map(n=>'<div class="notice-item '+(n.read?'':'unread')+'" onclick="openNotification(\''+n.id+'\')"><div class="notice-item-icon"><i class="ri-notification-3-line"></i></div><div class="notice-item-main"><div class="notice-item-top"><div class="notice-item-title">'+n.title+'</div><div class="notice-item-time">'+n.time.slice(5)+'</div></div><div class="notice-item-meta">报送单位：'+n.reporter+'</div></div></div>').join('');
+  if(loadStatus){
+    loadStatus.classList.toggle('show',noticeVisibleCount<rows.length);
+    loadStatus.textContent='继续下滑加载更多';
+  }
+}
+function toggleNoticeCenter(e){
+  if(e)e.stopPropagation();
+  const panel=document.getElementById('noticePanel');
+  const btn=document.getElementById('noticeBtn');
+  if(!panel||!btn)return;
+  const willOpen=!panel.classList.contains('show');
+  panel.classList.toggle('show',willOpen);
+  btn.classList.toggle('active',willOpen);
+  if(willOpen){noticeVisibleCount=noticeLoadSize;renderNoticeCenter()}
+}
+function closeNoticeCenter(){
+  const panel=document.getElementById('noticePanel');
+  const btn=document.getElementById('noticeBtn');
+  if(panel)panel.classList.remove('show');
+  if(btn)btn.classList.remove('active');
+}
+function markAllNotificationsRead(e){
+  if(e)e.stopPropagation();
+  notificationData.forEach(n=>n.read=true);
+  renderNoticeCenter();
+}
+function handleNoticeScroll(el){
+  const rows=getSortedNotifications();
+  if(!rows.length||noticeVisibleCount>=rows.length)return;
+  if(el.scrollTop+el.clientHeight>=el.scrollHeight-12){
+    noticeVisibleCount=Math.min(rows.length,noticeVisibleCount+noticeLoadSize);
+    renderNoticeCenter();
+  }
+}
+function openNotification(id){
+  const n=notificationData.find(item=>item.id===id);
+  if(!n)return;
+  n.read=true;
+  renderNoticeCenter();
+  closeNoticeCenter();
+  if(n.yqId)navigate('detail',n.yqId);
+}
+function addNewYuqingNotification(item,count){
+  notificationData.unshift({id:'NT-'+Date.now(),type:'new-yuqing',title:item.title,reporter:item.reporter,time:item.time,yqId:item.id,read:false,count:count||1});
+  noticeVisibleCount=noticeLoadSize;
+  renderNoticeCenter();
+}
+document.addEventListener('click',function(e){
+  const wrap=document.querySelector('.notice-wrap');
+  if(wrap&&!wrap.contains(e.target))closeNoticeCenter();
+});
 
 /* ===== Sidebar ===== */
 function buildSidebar(){
@@ -1565,6 +1717,17 @@ let reportData=[
   {id:'BG-20260410-001',title:'2026年4月10日舆情信息专报',status:'draft',time:'2026-04-10 09:00',items:[...yuqingData.slice(0,5)]},
   {id:'BG-20260409-001',title:'2026年4月9日舆情信息专报',status:'published',time:'2026-04-09 17:00',items:[...yuqingData.slice(2,7)]}
 ];
+let notificationData=[
+  {id:'NT-20260326-003',type:'new-yuqing',title:'喜临门温州工厂用工待遇问题引关注',reporter:'温州市宣传部',time:'2026-03-26 10:30',yqId:'YQ-20260326-005',read:false},
+  {id:'NT-20260326-002',type:'new-yuqing',title:'某网络平台涉嫌虚假宣传问题曝光',reporter:'宁波市宣传部',time:'2026-03-26 10:00',yqId:'YQ-20260326-004',read:false},
+  {id:'NT-20260326-001',type:'new-yuqing',title:'某知名品牌杭州门店服务纠纷网络发酵',reporter:'杭州市宣传部',time:'2026-03-26 09:40',yqId:'YQ-20260326-003',read:true},
+  {id:'NT-20260326-000',type:'new-yuqing',title:'绍兴文理学院课程调整引发学生讨论',reporter:'绍兴市宣传部',time:'2026-03-26 09:15',yqId:'YQ-20260326-002',read:true},
+  {id:'NT-20260326-004',type:'new-yuqing',title:'台州市某化工企业安全事故引发周边群众关注',reporter:'台州市宣传部',time:'2026-03-26 08:30',yqId:'YQ-20260326-001',read:true},
+  {id:'NT-20260325-002',type:'new-yuqing',title:'江苏某地拆迁补偿标准争议引发集中讨论',reporter:'省网信办',time:'2026-03-25 17:45',yqId:'YQ-20260326-007',read:true},
+  {id:'NT-20260325-001',type:'new-yuqing',title:'山西某高校教师评优争议登上微博热搜榜',reporter:'省网信办',time:'2026-03-25 16:20',yqId:'YQ-20260326-006',read:true}
+];
+let noticeVisibleCount=5;
+const noticeLoadSize=5;
 const adminUsers=[
   {id:1,name:'张伟',phone:'13800000001',password:'123456',orgs:['省委宣传部','省委宣传部舆情处'],roles:['舆情处人员'],status:'正常'},
   {id:2,name:'李明',phone:'13800000002',password:'123456',orgs:['杭州市宣传部'],roles:['地市人员'],status:'正常'},
@@ -1959,12 +2122,13 @@ function submitAllReportItems(){
   created.reverse().forEach(item=>yuqingData.unshift(item));
   showToast('success','成功上报 '+created.length+' 条舆情');
   const first=created[0];
-  setTimeout(()=>{navigate('summary');if(first&&hasPermission('p1-4'))showNewYuqingNotice(first,created.length)},500);
+  setTimeout(()=>{navigate('summary');if(first&&hasPermission('p1-4')){addNewYuqingNotification(first,created.length);showNewYuqingNotice(first,created.length)}},500);
 }
 function showNewYuqingNotice(item,count){
   showModal('收到新的舆情上报',
-    '<div style="display:flex;align-items:flex-start;gap:12px"><div style="width:38px;height:38px;border-radius:10px;background:var(--primary-bg);color:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ri-notification-3-line" style="font-size:20px"></i></div>'
-    +'<div style="min-width:0"><div style="font-size:14px;font-weight:600;margin-bottom:6px">'+item.title+'</div>'
+    '<div style="border:1px solid var(--primary-bg);background:linear-gradient(90deg,rgba(0,82,217,.06),rgba(0,168,112,.05));border-radius:var(--radius-lg);padding:14px;display:flex;align-items:flex-start;gap:12px">'
+    +'<div style="width:40px;height:40px;border-radius:12px;background:#fff;color:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 1px 5px rgba(0,82,217,.14)"><i class="ri-notification-3-line" style="font-size:21px"></i></div>'
+    +'<div style="min-width:0;flex:1"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><span style="font-size:14px;font-weight:600">'+item.title+'</span><span style="font-size:11px;font-weight:500;color:var(--green);background:var(--green-bg);border-radius:999px;padding:2px 8px;white-space:nowrap">新上报</span></div>'
     +'<div style="font-size:12px;color:var(--text-tertiary);line-height:1.8">报送单位：'+item.reporter+'<br>上报时间：'+item.time+(count>1?'<br>本次共新增 '+count+' 条舆情':'')+'</div></div></div>',
     '<button class="btn btn-outline" onclick="closeModal()">稍后查看</button><button class="btn btn-primary" onclick="closeModal();navigate(\'detail\',\''+item.id+'\')">查看详情</button>');
 }
@@ -2285,11 +2449,16 @@ function switchRoleTab(idx,tabEl){
       html+='<li class="perm-node"><div class="perm-node-row parent" onclick="togglePermParent(\''+node.id+'\')"><div class="perm-cb '+parentCls+'"></div><span>'+node.label+'</span></div><ul>';
       node.children.forEach(child=>{
         const cChecked=checked.includes(child.id);
-        html+='<li class="perm-node"><div class="perm-node-row leaf" onclick="togglePermChild(\''+child.id+'\')"><div class="perm-cb '+(cChecked?'checked':'')+'"></div><span>'+child.label+'</span></div></li>';
+        if(child.id==='p1-4'){
+          html+='<li class="perm-node"><div class="perm-node-row leaf notify-perm" onclick="togglePermChild(\''+child.id+'\')"><div class="perm-cb '+(cChecked?'checked':'')+'"></div><div class="perm-notice-icon"><i class="ri-notification-3-line"></i></div><div class="perm-notice-main"><div class="perm-notice-title"><span>'+child.label+'</span><span class="perm-notice-badge">弹窗提醒</span></div><div class="perm-notice-desc">有新舆情提交成功时，向拥有该权限的用户展示提醒卡片并可直达详情。</div></div></div></li>';
+        }else{
+          html+='<li class="perm-node"><div class="perm-node-row leaf" onclick="togglePermChild(\''+child.id+'\')"><div class="perm-cb '+(cChecked?'checked':'')+'"></div><span>'+child.label+'</span></div></li>';
+        }
       });
       html+='</ul></li>';
     });
-    html+='</ul><div class="perm-save-bar"><button class="btn btn-primary" onclick="showToast(\'success\',\'权限已保存\')"><i class="ri-save-line"></i>保存</button></div>';
+    html+='</ul><div class="perm-preview"><div class="perm-preview-icon"><i class="ri-notification-3-line"></i></div><div><div class="perm-preview-title">通知样式预览</div><div class="perm-preview-text">收到新的舆情上报后，弹窗展示标题、报送单位、上报时间，并提供“查看详情”入口。</div></div></div>';
+    html+='<div class="perm-save-bar"><button class="btn btn-primary" onclick="showToast(\'success\',\'权限已保存\')"><i class="ri-save-line"></i>保存</button></div>';
     body.innerHTML=html;
   }else if(idx===2){
     const users=adminUsers.filter(u=>u.roles&&u.roles.includes(role.name));
@@ -2370,8 +2539,8 @@ function buildToc(){const c=document.getElementById('prdContent');const t=docume
 
 window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与管理系统 产品需求文档
 
-> 版本：v1.2.5 | 日期：2026-06-29
-> 上一版本：v1.2.4
+> 版本：v1.2.8 | 日期：2026-06-29
+> 上一版本：v1.2.7
 > 原型文件：index.html
 
 ---
@@ -2490,9 +2659,29 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
   - 当前页面标题，随页面切换动态更新
 
 - **右侧**
+  - 通知中心铃铛按钮
   - 用户头像（姓名首字）
   - 用户姓名
   - 退出登录图标按钮
+
+#### 3.2.1 通知中心
+
+- **展示规则**：顶部导航栏右侧展示铃铛图标按钮；存在未读通知时显示红色角标，角标展示未读数量
+- **交互规则**：
+  - 点击铃铛按钮展开通知中心浮层，再次点击或点击浮层外区域关闭
+  - 通知列表按接收时间倒序排列，最新通知展示在最上方
+  - 通知列表支持下滑加载更多，初始展示一批通知，滚动到底部后自动追加下一批
+  - 底部在仍有更多通知时展示"继续下滑加载更多"提示，全部加载后自动隐藏
+  - 点击单条通知后标记为已读，并跳转至对应舆情详情
+  - 点击"全部已读"后清空未读角标
+- **权限规则**：
+  - 拥有"接收新上报通知"权限的用户可查看近期通知信息
+  - 未拥有该权限的用户点击后展示未开通权限提示，不展示通知列表
+- **数据规则**：
+  - 通知来源为新舆情上报成功后生成的通知记录
+  - 通知字段包含标题、报送单位、接收时间、关联舆情
+  - 通知排序按接收时间倒序
+  - 加载更多默认每批展示 5 条通知
 
 ---
 
@@ -3243,8 +3432,9 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 ### 9.3 消息通知
 
 - 舆情汇总权限树新增"接收新上报通知"权限
-- 舆情上报成功并写入舆情数据集后，当前登录用户拥有该权限时展示新上报弹窗
+- 舆情上报成功并写入舆情数据集后，当前登录用户拥有该权限时展示新上报弹窗，并同步写入通知中心
 - 新上报弹窗展示标题、报送单位、上报时间，并提供查看详情入口
+- 通知中心在页面右上角以铃铛按钮进入，展示近期通知信息并按时间倒序排列
 - 舆情处人员和系统管理员预置拥有该权限，地市人员默认无该权限
 - 报告发布提醒暂不纳入本期范围
 
