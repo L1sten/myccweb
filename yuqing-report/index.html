@@ -150,6 +150,16 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'PingFang SC','Microso
 .search-input{width:100%;border:1px solid var(--border);border-radius:var(--radius-md);padding:9px 16px 9px 40px;font-size:13px;outline:none;font-family:inherit;color:var(--text-primary)}
 .search-input::placeholder{color:rgba(29,33,41,.5)}.search-input:focus{border-color:var(--primary)}
 .filter-select{border:1px solid var(--border);border-radius:var(--radius-md);padding:9px 12px;font-size:13px;outline:none;background:#fff;font-family:inherit;min-width:110px;cursor:pointer;color:var(--text-secondary)}
+.unit-cascade{position:relative;min-width:140px}
+.unit-cascade-btn{width:100%;height:37px;border:1px solid var(--border);border-radius:var(--radius-md);padding:0 10px 0 12px;background:#fff;font-family:inherit;font-size:13px;color:var(--text-secondary);display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;white-space:nowrap}
+.unit-cascade-btn:hover,.unit-cascade.open .unit-cascade-btn{border-color:var(--primary)}
+.unit-cascade-btn span{overflow:hidden;text-overflow:ellipsis}
+.unit-cascade-panel{display:none;position:absolute;left:0;top:42px;width:260px;max-height:300px;overflow:auto;background:#fff;border:1px solid var(--border-light);border-radius:var(--radius-md);box-shadow:var(--shadow-lg);z-index:1200;padding:6px}
+.unit-cascade.open .unit-cascade-panel{display:block}
+.unit-cascade-item{height:32px;display:flex;align-items:center;gap:8px;border-radius:var(--radius-sm);padding:0 8px;font-size:12px;color:var(--text-secondary);cursor:pointer;white-space:nowrap}
+.unit-cascade-item:hover{background:var(--bg-hover);color:var(--primary)}
+.unit-cascade-item.active{background:var(--primary-bg);color:var(--primary);font-weight:500}
+.unit-cascade-item i{font-size:14px;flex-shrink:0}
 .filter-date{border:1px solid var(--border);border-radius:var(--radius-md);padding:8px 10px;font-size:12px;outline:none;background:#fff;font-family:inherit;color:var(--text-secondary);width:130px}
 .filter-date:focus{border-color:var(--primary)}
 .filter-sep{font-size:12px;color:var(--text-quaternary);padding:0 2px}
@@ -488,8 +498,8 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 <div class="toast-container" id="toastContainer"></div>
 <textarea id="prdMdSource" style="display:none"># 舆情报送与管理系统 产品需求文档
 
-> 版本：v1.2.14 | 日期：2026-06-29
-> 上一版本：v1.2.13
+> 版本：v1.2.16 | 日期：2026-06-29
+> 上一版本：v1.2.15
 > 原型文件：index.html
 
 ---
@@ -516,21 +526,21 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 - **地市人员**
   - 所属组织：各地市宣传部（如杭州市宣传部、温州市宣传部等）
   - 核心权限：上报本地舆情信息
-  - 数据可见范围：仅可查看本单位上报的舆情记录
-  - 可用功能模块：舆情汇总（限本单位数据）、舆情上报
+  - 数据可见范围：默认仅可查看本部门及下级部门上报的舆情记录
+  - 可用功能模块：舆情汇总（限权限范围内数据）、舆情上报
   - 不可用功能：报告管理、录用至报告、系统管理
 
 - **舆情处人员**
   - 所属组织：省委宣传部舆情处
   - 核心权限：舆情汇总管理、报告编写与新上报通知接收
-  - 数据可见范围：全部地市上报舆情 + 外省镜鉴舆情
-  - 可用功能模块：舆情汇总（全部数据）、报告管理（含录用、编辑、预览、发布）、新上报通知
+  - 数据可见范围：按所属部门在组织树中的上下级关系控制
+  - 可用功能模块：舆情汇总、报告管理（含录用、编辑、预览、发布）、新上报通知
   - 不可用功能：系统管理
 
 - **系统管理员**
   - 所属组织：省委宣传部
   - 核心权限：系统运维与权限配置
-  - 数据可见范围：全部
+  - 数据可见范围：按所属部门在组织树中的上下级关系控制
   - 可用功能模块：全部功能 + 系统管理（用户管理、角色管理、部门管理）
 
 ---
@@ -593,7 +603,7 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
   - 系统名称"舆情报送与管理系统"，配蓝色圆角图标
 
 - **功能菜单**
-  - 舆情汇总：原型默认可见；权限规则上，地市人员仅可查看本部门上报数据，舆情处人员（专班）和管理员可查看全部数据并使用录用、研判、通知能力
+  - 舆情汇总：原型默认可见；数据范围按组织树控制，当前部门用户仅可查看本部门及下级部门数据
   - 报告管理：原型默认可见；权限规则上，地市人员默认无此入口，拥有报告管理权限的角色可使用
 
 - **系统管理**（原型默认可见；权限规则上，拥有对应系统管理权限的角色可使用）
@@ -639,14 +649,15 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 ### 4.1 功能说明
 
-查看系统中已上报的舆情信息列表。根据用户角色不同，数据范围和操作权限有显著差异：
+查看系统中已上报的舆情信息列表。根据用户权限不同，数据范围和操作能力有显著差异：
 
-- 地市人员：仅展示本人所属部门匹配的舆情记录，无录用、研判和新上报通知能力
-- 舆情处人员（专班）/管理员：展示全部上报舆情，支持多选后批量录用至报告，并可接收新上报通知
+- 数据范围：仅展示本人所属部门及全部下级部门匹配的舆情记录
+- 用户属于多个部门时，多个部门范围取并集
+- 操作能力：录用、研判、通知、报告管理等能力按功能权限分别控制
 
 ### 4.2 统计概览
 
-页面标题下方展示 4 张统计卡片，实时反映当前筛选结果。
+页面标题下方展示统计卡片，实时反映当前筛选结果。
 
 - **取数规则**：统计基于当前筛选条件过滤后的舆情列表
 - **更新规则**：筛选条件变化时实时重新计算
@@ -659,6 +670,7 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 2. **已录用**
    - 展示规则：橙色图标，显示数字 + "已录用"标签
+   - 权限规则：仅拥有报告管理权限的用户可见；无报告管理权限时隐藏该统计卡
    - 数据规则：当前筛选结果中已被录用至任意报告的舆情条数（即录用状态为"已录用"）
 
 3. **本省**
@@ -694,16 +706,18 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 #### 4.3.4 单位类型筛选
 
-- 展示规则：下拉选择框
+- 展示规则：保留"全部单位"控件名称，点击后展开多级部门级联面板
 - 交互规则：选择后立即过滤列表
 - 数据筛选规则：
   - 默认值："全部单位"（不限）
-  - 取数规则：下拉选项取数来源为部门树中所有第一级节点名称（如"浙江省""杭州市""宁波市"等）
-  - 匹配规则：选中某第一级部门后，取其所有二级子部门名称列表，舆情的上报单位必须在该子部门列表中才显示
+  - 取数规则：级联选项取数来源为部门树中当前用户可见的部门范围，不限层级深度
+  - 展示规则：选中后控件显示部门路径，清空后恢复"全部单位"
+  - 匹配规则：选中父级部门时匹配该部门及全部下级部门；选中末级部门时仅匹配该末级部门
 
 #### 4.3.5 录用状态筛选
 
 - 展示规则：下拉选择框
+- 权限规则：仅拥有报告管理权限的用户可见；无报告管理权限时隐藏该筛选框，且不参与筛选
 - 交互规则：选择后立即过滤列表
 - 数据筛选规则：
   - 默认值："录用状态"（不限）
@@ -731,12 +745,12 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 #### 4.3.8 筛选组合规则
 
-- 搜索关键词、时间范围、来源类型、单位类型、录用状态、地域、舆情分类七个筛选条件可同时生效，取交集
+- 搜索关键词、时间范围、来源类型、单位类型、地域、舆情分类可同时生效，取交集；拥有报告管理权限时追加录用状态筛选
 - 所有筛选条件变化后实时更新列表和统计数据
 
 ### 4.4 操作栏
 
-- **全选按钮**（仅舆情处/管理员可见）
+- **全选按钮**（仅拥有录用至报告权限的用户可见）
   - 展示规则：按钮文字"全选"/"取消全选"
   - 交互规则：点击后勾选/取消当前筛选结果中的所有舆情，仅对当前可见列表生效
   - 数据规则：不包含被筛选条件隐藏的条目
@@ -747,7 +761,7 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 ### 4.5 舆情列表
 
-- **取数规则**：从舆情数据集中读取。地市人员仅读取上报单位或来源与本人任一所属部门匹配的记录，舆情处人员（专班）和管理员读取全部记录
+- **取数规则**：从舆情数据集中读取。读取上报单位或来源与本人任一所属部门及其下级部门匹配的记录；用户属于多个部门时取多个部门范围并集
 - **数据筛选规则**：在角色数据范围基础上，叠加 4.3 中所有筛选条件，取交集
 - **数据排序规则**：默认按上报时间倒序排列（最新在上）
 
@@ -755,7 +769,7 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 
 每条舆情以卡片形式展示，从左到右包含：
 
-1. **勾选框**（仅舆情处/管理员可见）
+1. **勾选框**（仅拥有录用至报告权限的用户可见）
    - 展示规则：圆形复选框
    - 交互规则：点击切换选中/取消，选中后卡片左侧出现蓝色边框，背景变为浅蓝色
 
@@ -764,7 +778,7 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
    - **来源类型标签**：展示规则：本省为蓝色浅底标签，外省镜鉴为橙色浅底标签。数据规则：取舆情的来源类型字段
    - **地域**：展示规则：地市名称，配地理位置图标。数据规则：取舆情的地域字段（省+市拼接）
    - **分类标签**（已打标时显示）：展示规则：绿色浅底标签。数据规则：取舆情的分类字段，未打标不显示
-   - **录用状态标签**：展示规则：已录用显示绿色浅底标签，未录用显示灰色浅底标签。数据规则：判断该舆情是否被任意报告收录
+   - **录用状态标签**：展示规则：已录用显示绿色浅底标签，未录用显示灰色浅底标签。权限规则：仅拥有报告管理权限的用户可见。数据规则：判断该舆情是否被任意报告收录
 
 3. **舆情标题**
    - 展示规则：单行显示，超出部分省略号
@@ -1388,6 +1402,13 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 - 舆情处人员和系统管理员预置拥有"通知中心"权限，地市人员默认无
 - 报告发布提醒暂不纳入本期范围
 
+### 9.4 权限口径
+
+- **数据隔离**：不设置独立的查看全部舆情数据权限点，舆情可见范围由用户所属部门在组织树中的上下级关系确定
+- **部门范围**：当前部门用户仅可查看本部门及下级部门数据；多部门用户取多个部门范围并集
+- **报告管理权限**：拥有任一报告管理子权限（新建报告、编辑报告、删除报告、预览报告、发布报告）即视为拥有报告管理权限
+- **录用状态信息**：已录用统计、录用状态筛选、列表中的已录用/未录用标签均仅对拥有报告管理权限的用户展示
+
 ---
 
 ## 10. 全局交互规则
@@ -1435,6 +1456,8 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.12：手机验证码登录在未输入 11 位手机号时禁用获取验证码按钮，输入完整手机号后启用 | 2026-06-29 |
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.13：移除“接收新上报通知”独立权限点，接收新上报通知逻辑合并至“通知中心”权限 | 2026-06-29 |
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.14：消息通知改为写入通知中心，并通过铃铛未读角标提示 | 2026-06-29 |
+| 313308ec-6699-40ed-b428-968958be84ed | v1.2.15：数据隔离升级为本部门及下级部门可见，全部单位筛选改为多级部门级联，录用状态信息按报告管理权限显隐 | 2026-06-29 |
+| 313308ec-6699-40ed-b428-968958be84ed | v1.2.16：移除查看全部舆情数据权限点，舆情数据范围统一由部门上下级关系确定 | 2026-06-29 |
 </textarea>
 <script>
 /* ===== Auth & Roles ===== */
@@ -1521,6 +1544,7 @@ function sendLoginSms(scene){
 function completeLogin(user){
   if(user.status==='停用'){showToast('error','账号已停用，请联系管理员');return}
   loginUser={name:user.name,org:user.orgs[0],orgs:user.orgs,roles:user.roles};
+  selectedFilterDeptId='';
   pendingLoginUser=null;
   document.getElementById('loginPage').style.display='none';
   document.getElementById('appContainer').style.display='flex';
@@ -1573,6 +1597,7 @@ function doLogin(){
 }
 function doLogout(){
   selectedIds.clear();editingReport=null;pendingLoginUser=null;
+  selectedFilterDeptId='';
   closeNoticeCenter();
   document.getElementById('appContainer').style.display='none';
   document.getElementById('loginPage').style.display='flex';
@@ -1661,6 +1686,8 @@ function addNewYuqingNotification(item,count){
 document.addEventListener('click',function(e){
   const wrap=document.querySelector('.notice-wrap');
   if(wrap&&!wrap.contains(e.target))closeNoticeCenter();
+  const unitWrap=document.getElementById('unitCascade');
+  if(unitWrap&&!unitWrap.contains(e.target))closeUnitCascade();
 });
 
 /* ===== Sidebar ===== */
@@ -1900,6 +1927,7 @@ let selectedIds=new Set();
 let currentPage='summary';
 let reportItemCount=0;
 let editingReport=null;
+let selectedFilterDeptId='';
 
 const pagePerms={report:'p1-1',manage:'p2-4',preview:'p2-4',edit:'p2-2',departments:'p3-3',users:'p3-1',roles:'p3-2'};
 function getUserPerms(){
@@ -1910,15 +1938,46 @@ function getUserPerms(){
 }
 function hasPermission(perm){return !perm||getUserPerms().has(perm)}
 function hasRole(role){return (loginUser.roles||[]).includes(role)}
-function canViewAllYuqing(){return hasRole('舆情处人员')||hasRole('系统管理员')}
-function getReadableYuqing(){
-  if(canViewAllYuqing())return yuqingData;
-  const orgs=loginUser.orgs&&loginUser.orgs.length?loginUser.orgs:[loginUser.org];
-  return yuqingData.filter(item=>orgs.includes(item.reporter)||orgs.includes(item.source));
+function hasReportManagePermission(){return Array.from(getUserPerms()).some(p=>p.indexOf('p2-')===0)}
+function findDeptByName(nodes,name){for(const n of nodes||[]){if(n.name===name)return n;if(n.children){const r=findDeptByName(n.children,name);if(r)return r}}return null}
+function findDeptContextByName(nodes,name,parent){
+  for(const n of nodes||[]){
+    if(n.name===name)return{node:n,parent:parent||null};
+    if(n.children){const r=findDeptContextByName(n.children,name,n);if(r)return r}
+  }
+  return null;
 }
-function getTopDeptChildNames(name){
-  const dept=departmentData.find(d=>d.name===name);
-  return dept?getDeptLeaves([dept]).map(d=>d.name):[];
+function getScopeDeptNodeForOrg(org){
+  const ctx=findDeptContextByName(departmentData,org);
+  if(!ctx)return null;
+  if(ctx.parent&&(!ctx.node.children||!ctx.node.children.length)&&ctx.node.name===ctx.parent.name+'宣传部')return ctx.parent;
+  if(ctx.parent&&ctx.parent.name==='浙江省'&&ctx.node.name.indexOf('省委宣传部')===0)return ctx.parent;
+  return ctx.node;
+}
+function collectDeptNames(node){const names=[];if(!node)return names;names.push(node.name);(node.children||[]).forEach(c=>names.push(...collectDeptNames(c)));return names}
+function getDeptNamesById(id){const node=findDeptById(departmentData,id);return node?collectDeptNames(node):[]}
+function getReadableDeptNames(){
+  const names=new Set();
+  const orgs=loginUser.orgs&&loginUser.orgs.length?loginUser.orgs:[loginUser.org];
+  orgs.forEach(org=>{
+    const node=getScopeDeptNodeForOrg(org);
+    if(node)collectDeptNames(node).forEach(n=>names.add(n));
+    else if(org)names.add(org);
+  });
+  return names;
+}
+function getReadableYuqing(){
+  const names=getReadableDeptNames();
+  return yuqingData.filter(item=>names.has(item.reporter)||names.has(item.source));
+}
+function getVisibleDeptNodes(){
+  const orgs=loginUser.orgs&&loginUser.orgs.length?loginUser.orgs:[loginUser.org];
+  const seen=new Set(),nodes=[];
+  orgs.forEach(org=>{
+    const node=getScopeDeptNodeForOrg(org);
+    if(node&&!seen.has(node.id)){seen.add(node.id);nodes.push(node)}
+  });
+  return nodes;
 }
 function getFilterValues(){
   const val=id=>((document.getElementById(id)||{}).value||'').trim();
@@ -1927,8 +1986,8 @@ function getFilterValues(){
     dateStart:val('filterDateStart'),
     dateEnd:val('filterDateEnd'),
     type:val('filterSource'),
-    unit:val('filterUnit'),
-    used:val('filterUsed'),
+    unit:selectedFilterDeptId,
+    used:hasReportManagePermission()?val('filterUsed'):'',
     province:val('filterProv'),
     city:val('filterCity'),
     category:val('filterCategory')
@@ -1938,7 +1997,7 @@ function matchesYuqingFilters(item,filters,usedIds){
   if(filters.type&&item.type!==filters.type)return false;
   if(filters.province){if(filters.city){if(item.region!==filters.province+'/'+filters.city)return false}else if(!item.region.startsWith(filters.province+'/'))return false}
   if(filters.category&&item.category!==filters.category)return false;
-  if(filters.unit){const childNames=getTopDeptChildNames(filters.unit);if(childNames.length&&!childNames.includes(item.reporter))return false}
+  if(filters.unit){const names=getDeptNamesById(filters.unit);if(names.length&&!names.includes(item.reporter)&&!names.includes(item.source))return false}
   if(filters.dateStart&&item.time.slice(0,10)<filters.dateStart)return false;
   if(filters.dateEnd&&item.time.slice(0,10)>filters.dateEnd)return false;
   if(filters.used==='yes'&&!usedIds.has(item.id))return false;
@@ -1998,6 +2057,7 @@ function renderSummaryPage(){
   const pc=document.getElementById('pageContainer');
   const canReport=hasPermission('p1-1');
   const canUse=hasPermission('p1-2');
+  const canSeeUsed=hasReportManagePermission();
   const actions=(canReport?'<button class="btn btn-primary" onclick="navigate(\'report\')"><i class="ri-send-plane-line"></i>舆情上报</button>':'')
     +(canUse?'<button class="btn-use" id="btnUse" onclick="handleUseToReport()"><i class="ri-file-add-line"></i>录用至报告</button>':'');
   pc.innerHTML=
@@ -2009,13 +2069,53 @@ function renderSummaryPage(){
     +'<span class="filter-sep">至</span>'
     +'<input type="date" class="filter-date" id="filterDateEnd" onchange="filterList()">'
     +'<select class="filter-select" id="filterSource" onchange="filterList()"><option value="">全部来源</option><option value="本省">本省</option><option value="外省镜鉴">外省镜鉴</option></select>'
-    +'<select class="filter-select" id="filterUnit" onchange="filterList()"><option value="">全部单位</option>'+departmentData.map(d=>'<option value="'+d.name+'">'+d.name+'</option>').join('')+'</select>'
-    +'<select class="filter-select" id="filterUsed" onchange="filterList()"><option value="">录用状态</option><option value="yes">已录用</option><option value="no">未录用</option></select>'
+    +'<div class="unit-cascade" id="unitCascade"><button class="unit-cascade-btn" type="button" onclick="toggleUnitCascade(event)"><span id="filterUnitLabel">全部单位</span><i class="ri-arrow-down-s-line"></i></button><div class="unit-cascade-panel" id="unitCascadePanel"></div></div>'
+    +(canSeeUsed?'<select class="filter-select" id="filterUsed" onchange="filterList()"><option value="">录用状态</option><option value="yes">已录用</option><option value="no">未录用</option></select>':'')
     +'<select class="filter-select" id="filterProv" onchange="onFilterProvChange()"><option value="">全部省份</option>'+provinceCityData.map(p=>'<option value="'+p.name+'">'+p.name+'</option>').join('')+'</select>'
     +'<select class="filter-select" id="filterCity" onchange="filterList()" style="display:none"><option value="">全部城市</option></select>'
 	    +'<select class="filter-select" id="filterCategory" onchange="filterList()"><option value="">全部分类</option>'+yqCategories.map(c=>'<option>'+c+'</option>').join('')+'</select></div>'
     +'<div class="action-bar">'+(canUse?'<button class="select-all-btn" onclick="toggleSelectAll()"><i class="ri-checkbox-blank-circle-line" id="selectAllIcon"></i>全选</button>':'')+'<span class="list-count" id="listCount"></span></div>'
     +'<div class="yuqing-list" id="yuqingList"></div></div>';
+  renderUnitCascade();
+  filterList();
+}
+function buildUnitCascadeItems(nodes,depth){
+  let html='';
+  if(depth===0)html+='<div class="unit-cascade-item '+(!selectedFilterDeptId?'active':'')+'" onclick="selectFilterUnit(\'\')"><i class="ri-building-2-line"></i><span>全部单位</span></div>';
+  (nodes||[]).forEach(node=>{
+    const active=selectedFilterDeptId===node.id?' active':'';
+    const icon=node.children&&node.children.length?'ri-folder-3-line':'ri-building-line';
+    html+='<div class="unit-cascade-item'+active+'" style="padding-left:'+(8+depth*18)+'px" onclick="selectFilterUnit(\''+node.id+'\')"><i class="'+icon+'"></i><span>'+node.name+'</span></div>';
+    if(node.children&&node.children.length)html+=buildUnitCascadeItems(node.children,depth+1);
+  });
+  return html;
+}
+function renderUnitCascade(){
+  const panel=document.getElementById('unitCascadePanel');
+  if(!panel)return;
+  panel.innerHTML=buildUnitCascadeItems(getVisibleDeptNodes(),0);
+  updateUnitCascadeLabel();
+}
+function updateUnitCascadeLabel(){
+  const label=document.getElementById('filterUnitLabel');
+  if(!label)return;
+  if(!selectedFilterDeptId){label.textContent='全部单位';return}
+  const path=getDeptPath(departmentData,selectedFilterDeptId);
+  label.textContent=path?path.join(' / '):'全部单位';
+}
+function toggleUnitCascade(e){
+  if(e)e.stopPropagation();
+  const wrap=document.getElementById('unitCascade');
+  if(wrap)wrap.classList.toggle('open');
+}
+function closeUnitCascade(){
+  const wrap=document.getElementById('unitCascade');
+  if(wrap)wrap.classList.remove('open');
+}
+function selectFilterUnit(id){
+  selectedFilterDeptId=id;
+  updateUnitCascadeLabel();
+  closeUnitCascade();
   filterList();
 }
 
@@ -2035,10 +2135,11 @@ function updateStats(data){
   const external=data.filter(i=>i.type==='外省镜鉴').length;
   const usedIds=getUsedIds();
   const used=data.filter(i=>usedIds.has(i.id)).length;
+  const usedStat=hasReportManagePermission()?'<div class="stat-card"><div class="stat-icon orange"><i class="ri-check-double-line"></i></div><div class="stat-info"><div class="stat-num">'+used+'</div><div class="stat-label">已录用</div></div></div>':'';
   const el=document.getElementById('summaryStats');if(!el)return;
   el.innerHTML=
     '<div class="stat-card"><div class="stat-icon blue"><i class="ri-file-list-3-line"></i></div><div class="stat-info"><div class="stat-num">'+total+'</div><div class="stat-label">上报总数</div></div></div>'
-    +'<div class="stat-card"><div class="stat-icon orange"><i class="ri-check-double-line"></i></div><div class="stat-info"><div class="stat-num">'+used+'</div><div class="stat-label">已录用</div></div></div>'
+    +usedStat
     +'<div class="stat-card"><div class="stat-icon blue"><i class="ri-map-pin-line"></i></div><div class="stat-info"><div class="stat-num">'+local+'</div><div class="stat-label">本省</div></div></div>'
     +'<div class="stat-card"><div class="stat-icon green"><i class="ri-compass-3-line"></i></div><div class="stat-info"><div class="stat-num">'+external+'</div><div class="stat-label">外省镜鉴</div></div></div>';
 }
@@ -2049,6 +2150,7 @@ function renderList(data,usedIds){
   const uid=usedIds||getUsedIds();
   const canUse=hasPermission('p1-2');
   const canJudge=hasPermission('p1-3');
+  const canSeeUsed=hasReportManagePermission();
   list.innerHTML=data.map(item=>{
     const checked=selectedIds.has(item.id);
     const tagCls=item.type==='本省'?'yq-tag-local':'yq-tag-external';
@@ -2057,7 +2159,7 @@ function renderList(data,usedIds){
     return '<div class="yuqing-card '+(canUse&&checked?'selected':'')+'">'
       +(canUse?'<div class="yq-check '+(checked?'checked':'')+'" onclick="event.stopPropagation();toggleCheck(\''+item.id+'\')"></div>':'')
       +'<div class="yq-body" onclick="navigate(\'detail\',\''+item.id+'\')">'
-        +'<div class="yq-meta"><span class="yq-id">'+item.id+'</span><span class="yq-tag '+tagCls+'">'+item.type+'</span>'+catTag+'<span class="yq-location"><i class="ri-map-pin-2-line"></i>'+item.region+'</span><span class="yq-used '+(used?'yq-used-yes':'yq-used-no')+'">'+(used?'已录用':'未录用')+'</span></div>'
+        +'<div class="yq-meta"><span class="yq-id">'+item.id+'</span><span class="yq-tag '+tagCls+'">'+item.type+'</span>'+catTag+'<span class="yq-location"><i class="ri-map-pin-2-line"></i>'+item.region+'</span>'+(canSeeUsed?'<span class="yq-used '+(used?'yq-used-yes':'yq-used-no')+'">'+(used?'已录用':'未录用')+'</span>':'')+'</div>'
         +'<div class="yq-title">'+item.title+'</div>'
         +'<div class="yq-footer"><span class="yq-source"><i class="ri-building-line"></i>'+item.source+'</span><span class="yq-time"><i class="ri-time-line"></i>'+item.time+'</span></div></div>'
       +(canJudge?'<div class="yq-tag-btn" onclick="event.stopPropagation();showTagModal(\''+item.id+'\')" title="打标"><i class="ri-price-tag-3-line"></i></div>':'')+'</div>';
@@ -2557,8 +2659,8 @@ function buildToc(){const c=document.getElementById('prdContent');const t=docume
 
 window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与管理系统 产品需求文档
 
-> 版本：v1.2.14 | 日期：2026-06-29
-> 上一版本：v1.2.13
+> 版本：v1.2.16 | 日期：2026-06-29
+> 上一版本：v1.2.15
 > 原型文件：index.html
 
 ---
@@ -2585,21 +2687,21 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 - **地市人员**
   - 所属组织：各地市宣传部（如杭州市宣传部、温州市宣传部等）
   - 核心权限：上报本地舆情信息
-  - 数据可见范围：仅可查看本单位上报的舆情记录
-  - 可用功能模块：舆情汇总（限本单位数据）、舆情上报
+  - 数据可见范围：默认仅可查看本部门及下级部门上报的舆情记录
+  - 可用功能模块：舆情汇总（限权限范围内数据）、舆情上报
   - 不可用功能：报告管理、录用至报告、系统管理
 
 - **舆情处人员**
   - 所属组织：省委宣传部舆情处
   - 核心权限：舆情汇总管理、报告编写与新上报通知接收
-  - 数据可见范围：全部地市上报舆情 + 外省镜鉴舆情
-  - 可用功能模块：舆情汇总（全部数据）、报告管理（含录用、编辑、预览、发布）、新上报通知
+  - 数据可见范围：按所属部门在组织树中的上下级关系控制
+  - 可用功能模块：舆情汇总、报告管理（含录用、编辑、预览、发布）、新上报通知
   - 不可用功能：系统管理
 
 - **系统管理员**
   - 所属组织：省委宣传部
   - 核心权限：系统运维与权限配置
-  - 数据可见范围：全部
+  - 数据可见范围：按所属部门在组织树中的上下级关系控制
   - 可用功能模块：全部功能 + 系统管理（用户管理、角色管理、部门管理）
 
 ---
@@ -2662,7 +2764,7 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
   - 系统名称"舆情报送与管理系统"，配蓝色圆角图标
 
 - **功能菜单**
-  - 舆情汇总：原型默认可见；权限规则上，地市人员仅可查看本部门上报数据，舆情处人员（专班）和管理员可查看全部数据并使用录用、研判、通知能力
+  - 舆情汇总：原型默认可见；数据范围按组织树控制，当前部门用户仅可查看本部门及下级部门数据
   - 报告管理：原型默认可见；权限规则上，地市人员默认无此入口，拥有报告管理权限的角色可使用
 
 - **系统管理**（原型默认可见；权限规则上，拥有对应系统管理权限的角色可使用）
@@ -2708,14 +2810,15 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 ### 4.1 功能说明
 
-查看系统中已上报的舆情信息列表。根据用户角色不同，数据范围和操作权限有显著差异：
+查看系统中已上报的舆情信息列表。根据用户权限不同，数据范围和操作能力有显著差异：
 
-- 地市人员：仅展示本人所属部门匹配的舆情记录，无录用、研判和新上报通知能力
-- 舆情处人员（专班）/管理员：展示全部上报舆情，支持多选后批量录用至报告，并可接收新上报通知
+- 数据范围：仅展示本人所属部门及全部下级部门匹配的舆情记录
+- 用户属于多个部门时，多个部门范围取并集
+- 操作能力：录用、研判、通知、报告管理等能力按功能权限分别控制
 
 ### 4.2 统计概览
 
-页面标题下方展示 4 张统计卡片，实时反映当前筛选结果。
+页面标题下方展示统计卡片，实时反映当前筛选结果。
 
 - **取数规则**：统计基于当前筛选条件过滤后的舆情列表
 - **更新规则**：筛选条件变化时实时重新计算
@@ -2728,6 +2831,7 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 2. **已录用**
    - 展示规则：橙色图标，显示数字 + "已录用"标签
+   - 权限规则：仅拥有报告管理权限的用户可见；无报告管理权限时隐藏该统计卡
    - 数据规则：当前筛选结果中已被录用至任意报告的舆情条数（即录用状态为"已录用"）
 
 3. **本省**
@@ -2763,16 +2867,18 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 #### 4.3.4 单位类型筛选
 
-- 展示规则：下拉选择框
+- 展示规则：保留"全部单位"控件名称，点击后展开多级部门级联面板
 - 交互规则：选择后立即过滤列表
 - 数据筛选规则：
   - 默认值："全部单位"（不限）
-  - 取数规则：下拉选项取数来源为部门树中所有第一级节点名称（如"浙江省""杭州市""宁波市"等）
-  - 匹配规则：选中某第一级部门后，取其所有二级子部门名称列表，舆情的上报单位必须在该子部门列表中才显示
+  - 取数规则：级联选项取数来源为部门树中当前用户可见的部门范围，不限层级深度
+  - 展示规则：选中后控件显示部门路径，清空后恢复"全部单位"
+  - 匹配规则：选中父级部门时匹配该部门及全部下级部门；选中末级部门时仅匹配该末级部门
 
 #### 4.3.5 录用状态筛选
 
 - 展示规则：下拉选择框
+- 权限规则：仅拥有报告管理权限的用户可见；无报告管理权限时隐藏该筛选框，且不参与筛选
 - 交互规则：选择后立即过滤列表
 - 数据筛选规则：
   - 默认值："录用状态"（不限）
@@ -2800,12 +2906,12 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 #### 4.3.8 筛选组合规则
 
-- 搜索关键词、时间范围、来源类型、单位类型、录用状态、地域、舆情分类七个筛选条件可同时生效，取交集
+- 搜索关键词、时间范围、来源类型、单位类型、地域、舆情分类可同时生效，取交集；拥有报告管理权限时追加录用状态筛选
 - 所有筛选条件变化后实时更新列表和统计数据
 
 ### 4.4 操作栏
 
-- **全选按钮**（仅舆情处/管理员可见）
+- **全选按钮**（仅拥有录用至报告权限的用户可见）
   - 展示规则：按钮文字"全选"/"取消全选"
   - 交互规则：点击后勾选/取消当前筛选结果中的所有舆情，仅对当前可见列表生效
   - 数据规则：不包含被筛选条件隐藏的条目
@@ -2816,7 +2922,7 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 ### 4.5 舆情列表
 
-- **取数规则**：从舆情数据集中读取。地市人员仅读取上报单位或来源与本人任一所属部门匹配的记录，舆情处人员（专班）和管理员读取全部记录
+- **取数规则**：从舆情数据集中读取。读取上报单位或来源与本人任一所属部门及其下级部门匹配的记录；用户属于多个部门时取多个部门范围并集
 - **数据筛选规则**：在角色数据范围基础上，叠加 4.3 中所有筛选条件，取交集
 - **数据排序规则**：默认按上报时间倒序排列（最新在上）
 
@@ -2824,7 +2930,7 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 
 每条舆情以卡片形式展示，从左到右包含：
 
-1. **勾选框**（仅舆情处/管理员可见）
+1. **勾选框**（仅拥有录用至报告权限的用户可见）
    - 展示规则：圆形复选框
    - 交互规则：点击切换选中/取消，选中后卡片左侧出现蓝色边框，背景变为浅蓝色
 
@@ -2833,7 +2939,7 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
    - **来源类型标签**：展示规则：本省为蓝色浅底标签，外省镜鉴为橙色浅底标签。数据规则：取舆情的来源类型字段
    - **地域**：展示规则：地市名称，配地理位置图标。数据规则：取舆情的地域字段（省+市拼接）
    - **分类标签**（已打标时显示）：展示规则：绿色浅底标签。数据规则：取舆情的分类字段，未打标不显示
-   - **录用状态标签**：展示规则：已录用显示绿色浅底标签，未录用显示灰色浅底标签。数据规则：判断该舆情是否被任意报告收录
+   - **录用状态标签**：展示规则：已录用显示绿色浅底标签，未录用显示灰色浅底标签。权限规则：仅拥有报告管理权限的用户可见。数据规则：判断该舆情是否被任意报告收录
 
 3. **舆情标题**
    - 展示规则：单行显示，超出部分省略号
@@ -3456,6 +3562,13 @@ window.__PRD__=document.getElementById('prdMdSource')?.value||`# 舆情报送与
 - 通知中心在页面右上角以铃铛按钮进入，拥有"通知中心"权限的用户可查看近期通知信息并按时间倒序排列
 - 舆情处人员和系统管理员预置拥有"通知中心"权限，地市人员默认无
 - 报告发布提醒暂不纳入本期范围
+
+### 9.4 权限口径
+
+- **数据隔离**：不设置独立的查看全部舆情数据权限点，舆情可见范围由用户所属部门在组织树中的上下级关系确定
+- **部门范围**：当前部门用户仅可查看本部门及下级部门数据；多部门用户取多个部门范围并集
+- **报告管理权限**：拥有任一报告管理子权限（新建报告、编辑报告、删除报告、预览报告、发布报告）即视为拥有报告管理权限
+- **录用状态信息**：已录用统计、录用状态筛选、列表中的已录用/未录用标签均仅对拥有报告管理权限的用户展示
 
 ---
 
