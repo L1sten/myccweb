@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>智能媒资系统运营优化</title>
+  <script src="../auth.js"></script>
   <style>
     :root {
       --brand: #2f66f4;
@@ -98,10 +99,12 @@
     .prd-content table.prd-table td{padding:8px 12px !important;border:1px solid var(--line) !important;color:#444 !important;font-size:13px !important;line-height:1.6 !important}
     .top-controls {
       position: fixed;
-      top: 76px;
+      top: auto;
+      bottom: 18px;
       right: 14px;
       z-index: 400;
       display: flex;
+      flex-direction: column;
       align-items: center;
       gap: 8px;
     }
@@ -948,7 +951,7 @@
   </div>
 
   <div class="top-controls">
-    <button class="prd-toggle" id="prdToggle" type="button" onclick="togglePrdPanel()"><span class="toggle-dot"></span> PRD</button>
+    <button class="prd-toggle" id="prdToggle" type="button" onclick="togglePrdPanel()"><span class="toggle-dot"></span><span id="prdToggleText">PRD 收起</span></button>
     <button class="changelog-btn" type="button" onclick="downloadPrd()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
       <span>PRD 下载</span>
@@ -1910,8 +1913,10 @@ Excel 导出：
     function togglePrdPanel() {
       const panel = document.getElementById('prdPanel');
       const toggle = document.getElementById('prdToggle');
+      const toggleText = document.getElementById('prdToggleText');
       panel.classList.toggle('collapsed');
       toggle.classList.toggle('off', panel.classList.contains('collapsed'));
+      toggleText.textContent = panel.classList.contains('collapsed') ? 'PRD 展开' : 'PRD 收起';
     }
 
     function downloadPrd() {
@@ -1934,7 +1939,7 @@ Excel 导出：
     }
 
     function renderChangelog() {
-      document.getElementById('changelogBody').innerHTML = '<table class="changelog-table"><thead><tr><th>时间</th><th>说明</th></tr></thead><tbody><tr><td>2026-06-29</td><td>发布智能媒资系统运营优化合并项目，覆盖下载通知中心、批量追加备注、素材快速预览、用户有效期管理、前后台入口切换和内嵌 PRD 面板。</td></tr></tbody></table>';
+      document.getElementById('changelogBody').innerHTML = '<table class="changelog-table"><thead><tr><th>时间</th><th>说明</th></tr></thead><tbody><tr><td>2026-06-30 10:48</td><td>优化 PRD 浮动控制条：调整至右下角竖向排列，PRD 按钮支持“收起 / 展开”状态文案。</td></tr><tr><td>2026-06-29</td><td>优化前后台入口与交付形态：素材中心复刻前台横向导航，头像菜单进入系统管理/返回前台，页面新增右侧 PRD 面板、PRD 下载和更新记录。</td></tr><tr><td>2026-06-29</td><td>初始创建：智能媒资系统运营优化合并项目，包含下载通知中心、批量追加备注、素材快速预览和用户有效期管理 PRD 与原型。</td></tr></tbody></table>';
     }
 
     renderAssets();

@@ -33,6 +33,8 @@
       "d2a0c556a51b27e5a165ffc9b57638ca8ea1e256a4f2a47114a20ebf87c7cdb8",
     "media-asset-catalog":
       "8a25aa76f0f82ad107132629ce7a51f58d5f65916c5b82582b8075e6f312ba4c",
+    "media-asset-ops-optimization":
+      "5a3f7a59d4b9c0c7f04f8b1015e45ccc597c058b5b2150a3cff62c078b244b8b",
     "positive-energy-situation-optimization":
       "99a71ba25cb60402863f541504360aead30e8e86515e8fb80c605ebf395a99ba",
   };
