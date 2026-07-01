@@ -731,7 +731,7 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 
 - **功能菜单**
   - 舆情汇总：拥有舆情查看或上报相关权限的用户可见；数据范围按组织树控制，当前部门用户仅可查看本部门及下级部门数据
-  - 数据统计：拥有统计查看权限的用户可见，用于查看专班监测、地市舆情、地市宣传部报送量和部门报送数量
+  - 数据统计：拥有“查看数据统计”权限的用户可见，用于查看专班监测、地市舆情、地市宣传部报送量和部门报送数量
   - 报告管理：拥有报告管理权限的角色可使用
 
 - **系统管理**（拥有对应系统管理权限的角色可使用）
@@ -858,7 +858,7 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 - 展示规则：二级级联控件（省→市），第一级省份下拉，第二级城市下拉（选择省份后显示）
 - 交互规则：选择后立即过滤，支持仅选省份或选省份+城市
 - 数据筛选规则：
-  - 第一级含"全部省份"选项，选具体省份后按舆情地域的省份字段精确匹配
+  - 第一级含"全部省份"选项；地域字典首项为"全国"，位于"北京"之前；选具体省份或"全国"后按舆情地域的省份字段精确匹配
   - 第二级含"全部城市"选项，选具体城市后按舆情地域的城市字段精确匹配
   - 两级均选时取交集
 
@@ -911,7 +911,7 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
    - 交互规则：点击切换选中/取消，选中后卡片左侧出现蓝色边框，背景变为浅蓝色
 
 2. **舆情元信息行**
-   - **舆情编号**：展示规则：蓝色文字。数据规则：系统自动生成，格式 YQ-YYYYMMDD-NNN（NNN 为当日序号，从 001 递增）
+   - **舆情编号**：展示规则：蓝色文字。数据规则：系统自动生成，格式 YQ-YYYYMMDD-NNN，YYYYMMDD 取上报日期，NNN 为同日全局序号，至少 3 位，不足补 0
    - **来源类型标签**：展示规则：本省为蓝色浅底标签，外省镜鉴为橙色浅底标签。数据规则：取舆情的来源类型字段
    - **地域**：展示规则：地市名称，配地理位置图标。数据规则：取舆情的地域字段（省+市拼接）
    - **分类标签**（已打标时显示）：展示规则：绿色浅底标签。数据规则：取舆情的分类字段，未打标不显示
@@ -992,6 +992,7 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 
 2. **舆情地域**
    - 展示规则：二级级联控件（省→市），第一级省份下拉，第二级城市下拉（选择省份后启用）
+   - 选项规则：地域字典首项为"全国"，位于"北京"之前；选择"全国"后第二级城市展示"全国"
    - 交互规则：必填，选择后自动触发"报送单位"字段的填充
    - 数据规则：写入舆情记录的地域字段（省+市）
 
@@ -1029,7 +1030,7 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
      - 未填写的必填字段边框变红，弹出错误提示指明需完善第几条表单
      - 校验通过后弹出成功提示，显示实际上报条数，延迟后自动跳转回舆情汇总页
    - 数据规则：
-     - 舆情编号生成规则：格式 YQ-YYYYMMDD-NNN，YYYYMMDD 取上报日期，NNN 为当日序号（从 001 递增）
+     - 舆情编号生成规则：格式 YQ-YYYYMMDD-NNN，YYYYMMDD 取上报日期，NNN 为同日全局序号，从 001 递增，至少 3 位，不足补 0
      - 来源类型：根据上报用户所属单位自动判定（地市人员上报的为"本省"）
      - 录用状态：默认"未录用"
      - 分类字段：默认为空（待后续打标）
@@ -1105,7 +1106,7 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 
 1. **报告编号**
    - 展示规则：蓝色文字
-   - 数据规则：系统自动生成，格式 BG-YYYYMMDD-NNN（NNN 为当日序号，从 001 递增）
+   - 数据规则：系统自动生成，格式 BG-YYYYMMDD-NNN，YYYYMMDD 取报告创建日期，NNN 为同日全局序号，至少 3 位，不足补 0
 
 2. **报告状态标签**
    - 展示规则：草稿为灰色标签，已发布为绿色标签
@@ -1135,7 +1136,7 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 
 - 交互规则：点击"新建报告"按钮，创建后立即进入报告编辑页
 - 数据规则：
-  - 报告编号：系统自动生成，格式 BG-YYYYMMDD-NNN
+  - 报告编号：系统自动生成，格式 BG-YYYYMMDD-NNN，YYYYMMDD 取报告创建日期，NNN 为同日全局序号
   - 报告标题：默认为空，由用户在编辑页手动输入
   - 状态：默认"草稿"
   - 舆情列表：默认为空
@@ -1401,6 +1402,7 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
      - 舆情汇总：舆情上报、录用至报告、舆情研判
      - 报告管理：新建报告、编辑报告、删除报告、预览报告、发布报告
      - 系统管理：用户管理、角色管理、部门管理
+     - 数据统计：查看数据统计
      - 通知中心：通知中心
 
 3. **用户管理**标签页
@@ -1438,7 +1440,7 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 
 2. **舆情处人员**
    - 描述：省委宣传部舆情处工作人员
-   - 权限：舆情上报、录用至报告、舆情研判、通知中心、新建报告、编辑报告、预览报告、发布报告
+   - 权限：舆情上报、录用至报告、舆情研判、通知中心、新建报告、编辑报告、预览报告、发布报告、查看数据统计
 
 3. **系统管理员**
    - 描述：系统运维管理员
@@ -1598,12 +1600,22 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 
 ### <span style="color:#0052d9">10.7 数据统计</span>
 
-- <span style="color:#0052d9">入口规则：左侧导航展示“数据统计”菜单，与舆情汇总、报告管理平级。</span>
+- <span style="color:#0052d9">入口规则：左侧导航展示“数据统计”菜单，与舆情汇总、报告管理平级；拥有“查看数据统计”权限的用户可见。</span>
 - <span style="color:#0052d9">筛选规则：页面顶部提供开始日期、结束日期筛选；为空时统计全部舆情数据，设置日期后按舆情上报时间过滤。各统计排行表提供独立筛选；各地市舆情数量支持地区筛选，地市宣传部报送量和各部门报送数量支持部门筛选。</span>
 - <span style="color:#0052d9">统计范围：统计基于当前舆情数据集。</span>
 - <span style="color:#0052d9">指标规则：专班监测数量统计统计部门为“舆情专班”的数据；各地市舆情数量按地市维度聚合；地市宣传部报送量强绑定系统部门树中的各地市本级宣传部；各部门报送数量展示除各地市本级宣传部之外的部门报送数据。</span>
 - <span style="color:#0052d9">展示规则：页面展示统计卡片和排行表，包含专班监测数量、各地市舆情数量、地市宣传部报送量、各部门报送数量。</span>
 - <span style="color:#0052d9">空状态：筛选范围内无数据时，统计数量显示 0，排行表展示暂无统计数据。</span>
+
+### <span style="color:#0052d9">10.8 编号生成策略</span>
+
+- <span style="color:#0052d9">舆情编号：格式为 YQ-YYYYMMDD-NNN，YYYYMMDD 取舆情上报日期，NNN 为同一日期内的舆情全局序号，从 001 递增，至少 3 位，不足补 0。</span>
+- <span style="color:#0052d9">报告编号：格式为 BG-YYYYMMDD-NNN，YYYYMMDD 取报告创建日期，NNN 为同一日期内的报告全局序号，从 001 递增，至少 3 位，不足补 0。</span>
+- <span style="color:#0052d9">批量规则：同一批次提交多条舆情时，同日期内按表单顺序连续编号；不同日期分别按各自日期独立递增。</span>
+- <span style="color:#0052d9">递增规则：序号按对象类型分别计数，舆情编号与报告编号互不影响；不按部门、用户、来源、状态分段。</span>
+- <span style="color:#0052d9">稳定规则：编号生成后固定不变，编辑、发布、删除、录用状态变化不触发重排，已生成编号不因后续操作重新分配。</span>
+- <span style="color:#0052d9">异常规则：超过 999 条时继续递增为 1000、1001 等，不截断、不重置。</span>
+
 ---
 
 ## 11. 全局交互规则
@@ -1657,6 +1669,7 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.18：系统名称更新为“五个一”机制报送与管理系统，补充移动端舆情汇总、上报和报告只读预览适配，研判风险等级必选，数据统计页面和上报内容 2000 字上限 | 2026-07-01 |
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.19：优化移动端底部 Tab 选中样式，补充报告管理只读预览、舆情风险筛选和研判分类展示规则 | 2026-07-01 |
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.20：PRD 本期新增需求集中蓝色标识，数据统计顶部新增各部门报送数量统计卡 | 2026-07-01 |
+| 313308ec-6699-40ed-b428-968958be84ed | v1.2.21：确定舆情编号和报告编号按日期加同日序号生成，报告编号改为同日最大序号递增，并补充编号稳定规则 | 2026-07-01 |
 </textarea>
 <script>
 /* ===== Auth & Roles ===== */
@@ -1913,9 +1926,9 @@ function buildSidebar(){
     {id:'manage',icon:'ri-file-text-line',title:'报告管理'}
   ]:[
     {id:'summary',icon:'ri-list-check-2',title:'舆情汇总'},
-    {id:'stats',icon:'ri-bar-chart-box-line',title:'数据统计'},
     {id:'manage',icon:'ri-file-text-line',title:'报告管理'}
   ];
+  if(!isMobileMode()&&hasPermission('p5-1'))items.splice(1,0,{id:'stats',icon:'ri-bar-chart-box-line',title:'数据统计'});
   const sys=[
     {id:'departments',icon:'ri-building-2-line',title:'部门管理'},
     {id:'users',icon:'ri-user-settings-line',title:'用户管理'},
@@ -1960,6 +1973,7 @@ function riskTagHTML(level){
   return '<span class="risk-tag '+getRiskClass(level)+'">风险：'+level+'</span>';
 }
 const provinceCityData=[
+  {name:'全国',cities:['全国']},
   {name:'北京',cities:['北京']},{name:'天津',cities:['天津']},{name:'河北',cities:['石家庄','唐山','秦皇岛','邯郸','邢台','保定','张家口','承德','沧州','廊坊','衡水']},
   {name:'山西',cities:['太原','大同','阳泉','长治','晋城','朔州','晋中','运城','忻州','临汾','吕梁']},
   {name:'内蒙古',cities:['呼和浩特','包头','乌海','赤峰','通辽','鄂尔多斯','呼伦贝尔','巴彦淖尔','乌兰察布']},
@@ -2031,12 +2045,15 @@ const permTree=[
     {id:'p3-2',label:'角色管理'},
     {id:'p3-3',label:'部门管理'}
   ]},
+  {id:'p5',label:'数据统计',children:[
+    {id:'p5-1',label:'查看数据统计'}
+  ]},
   {id:'p4',label:'通知中心',perm:'p1-5'}
 ];
 const adminRoles=[
   {id:'r1',name:'地市人员',desc:'各地市宣传部工作人员',perms:['p1-1']},
-  {id:'r2',name:'舆情处人员',desc:'省委宣传部舆情处工作人员',perms:['p1-1','p1-2','p1-3','p1-5','p2-1','p2-2','p2-4','p2-5']},
-  {id:'r3',name:'系统管理员',desc:'系统运维管理员',perms:['p1-1','p1-2','p1-3','p1-5','p2-1','p2-2','p2-3','p2-4','p2-5','p3-1','p3-2','p3-3']}
+  {id:'r2',name:'舆情处人员',desc:'省委宣传部舆情处工作人员',perms:['p1-1','p1-2','p1-3','p1-5','p2-1','p2-2','p2-4','p2-5','p5-1']},
+  {id:'r3',name:'系统管理员',desc:'系统运维管理员',perms:['p1-1','p1-2','p1-3','p1-5','p2-1','p2-2','p2-3','p2-4','p2-5','p3-1','p3-2','p3-3','p5-1']}
 ];
 let activeRoleId='r1';
 
@@ -2159,7 +2176,7 @@ let reportItemCount=0;
 let editingReport=null;
 let selectedFilterDeptId='';
 
-const pagePerms={report:'p1-1',manage:'p2-4',preview:'p2-4',edit:'p2-2',departments:'p3-3',users:'p3-1',roles:'p3-2'};
+const pagePerms={stats:'p5-1',report:'p1-1',manage:'p2-4',preview:'p2-4',edit:'p2-2',departments:'p3-3',users:'p3-1',roles:'p3-2'};
 function getUserPerms(){
   const perms=new Set();
   const roles=loginUser.roles||[];
@@ -2251,18 +2268,34 @@ function refreshSelectionControls(data){
   const selectBtn=document.querySelector('.select-all-btn');
   if(selectBtn)selectBtn.innerHTML='<i class="'+(allVisible?'ri-checkbox-circle-line':'ri-checkbox-blank-circle-line')+'" id="selectAllIcon"></i>'+(allVisible?'取消全选':'全选');
 }
+function getIdDateKey(dateText){
+  return (dateText||new Date().toISOString().slice(0,10)).slice(0,10).replace(/-/g,'');
+}
+function getMaxSequenceByPrefix(records,prefix){
+  return records.reduce((m,item)=>{
+    if(!item.id||!item.id.startsWith(prefix))return m;
+    const seq=Number(item.id.slice(prefix.length));
+    return Number.isFinite(seq)?Math.max(m,seq):m;
+  },0);
+}
 function generateYqId(dateText){
-  const key=(dateText||new Date().toISOString().slice(0,10)).replace(/-/g,'');
+  const key=getIdDateKey(dateText);
   const prefix='YQ-'+key+'-';
-  const max=yuqingData.reduce((m,item)=>item.id&&item.id.startsWith(prefix)?Math.max(m,Number(item.id.slice(prefix.length))||0):m,0);
+  const max=getMaxSequenceByPrefix(yuqingData,prefix);
   return prefix+String(max+1).padStart(3,'0');
 }
 function generateYqIdForBatch(dateText,pending){
-  const key=(dateText||new Date().toISOString().slice(0,10)).replace(/-/g,'');
+  const key=getIdDateKey(dateText);
   const prefix='YQ-'+key+'-';
-  const existingMax=yuqingData.reduce((m,item)=>item.id&&item.id.startsWith(prefix)?Math.max(m,Number(item.id.slice(prefix.length))||0):m,0);
-  const pendingMax=(pending||[]).reduce((m,item)=>item.id&&item.id.startsWith(prefix)?Math.max(m,Number(item.id.slice(prefix.length))||0):m,0);
+  const existingMax=getMaxSequenceByPrefix(yuqingData,prefix);
+  const pendingMax=getMaxSequenceByPrefix(pending||[],prefix);
   return prefix+String(Math.max(existingMax,pendingMax)+1).padStart(3,'0');
+}
+function generateReportId(dateText){
+  const key=getIdDateKey(dateText);
+  const prefix='BG-'+key+'-';
+  const max=getMaxSequenceByPrefix(reportData,prefix);
+  return prefix+String(max+1).padStart(3,'0');
 }
 function canAccessPage(page){return true}
 
@@ -2272,6 +2305,7 @@ function navigate(page,param){
     page='summary';
     param=null;
   }
+  if(!isMobileMode()&&!hasPermission(pagePerms[page])){showToast('error','当前角色无权访问该页面');page='summary';param=null}
   if(page==='detail'&&!getReadableYuqing().some(item=>item.id===param)){showToast('error','当前角色无权查看该舆情');page='summary';param=null}
   currentPage=page;
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -2583,14 +2617,14 @@ function submitAllReportItems(){
 
 /* ===== Use to Report ===== */
 function handleUseToReport(){if(selectedIds.size===0)return;const drafts=reportData.filter(r=>r.status==='draft');if(!drafts.length){showModal('选择目标报告','<div style="text-align:center;padding:20px 0"><i class="ri-file-add-line" style="font-size:36px;color:var(--text-quaternary);display:block;margin-bottom:12px"></i><p style="font-size:14px;color:var(--text-secondary);margin-bottom:4px">暂无草稿报告</p><p style="font-size:12px;color:var(--text-tertiary)">将自动创建新报告并录用选中舆情</p></div>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="useToNewReport()"><i class="ri-add-line"></i>新建报告并录用</button>');return}const opts=drafts.map(r=>'<label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--border-light);border-radius:var(--radius-md);cursor:pointer;margin-bottom:8px"><input type="radio" name="rptChoice" value="'+r.id+'" style="accent-color:var(--primary)"><div><div style="font-size:13px;font-weight:500">'+r.title+'</div><div style="font-size:11px;color:var(--text-tertiary)">'+r.id+'</div></div></label>').join('');showModal('选择目标报告',opts,'<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmUseToReport()">确认录用</button>')}
-function useToNewReport(){const id='BG-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(reportData.length+1).padStart(3,'0');const d=new Date();const r={id,title:d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日舆情信息专报',status:'draft',time:d.toISOString().slice(0,16).replace('T',' '),items:[]};yuqingData.filter(item=>selectedIds.has(item.id)).forEach(item=>{if(!r.items.find(i=>i.id===item.id))r.items.push(item)});reportData.unshift(r);closeModal();showToast('success','已录用 '+selectedIds.size+' 条至新报告');selectedIds.clear();const btn=document.getElementById('btnUse');if(btn)btn.classList.remove('enabled');setTimeout(()=>navigate('edit',id),500)}
+function useToNewReport(){const d=new Date();const id=generateReportId(d.toISOString().slice(0,10));const r={id,title:d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日舆情信息专报',status:'draft',time:d.toISOString().slice(0,16).replace('T',' '),items:[]};yuqingData.filter(item=>selectedIds.has(item.id)).forEach(item=>{if(!r.items.find(i=>i.id===item.id))r.items.push(item)});reportData.unshift(r);closeModal();showToast('success','已录用 '+selectedIds.size+' 条至新报告');selectedIds.clear();const btn=document.getElementById('btnUse');if(btn)btn.classList.remove('enabled');setTimeout(()=>navigate('edit',id),500)}
 function handleUseSingle(id){selectedIds.clear();selectedIds.add(id);handleUseToReport()}
 function confirmUseToReport(){const ch=document.querySelector('input[name="rptChoice"]:checked');if(!ch){showToast('error','请选择报告');return}const r=reportData.find(x=>x.id===ch.value);if(r){yuqingData.filter(d=>selectedIds.has(d.id)).forEach(item=>{if(!r.items.find(i=>i.id===item.id))r.items.push(item)})}closeModal();showToast('success','已录用 '+selectedIds.size+' 条');const rid=ch.value;selectedIds.clear();document.getElementById('btnUse').classList.remove('enabled');setTimeout(()=>navigate('edit',rid),500)}
 
 /* ===== Manage ===== */
 function renderManagePage(){const pc=document.getElementById('pageContainer');pc.innerHTML='<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">报告管理</div></div>'+(!isMobileMode()&&hasPermission('p2-1')?'<button class="btn btn-primary" onclick="createNewReport()"><i class="ri-add-line"></i>新建报告</button>':'')+'</div><div class="report-list" id="reportList"></div></div>';renderManageList()}
 function renderManageList(){const list=document.getElementById('reportList');if(!list)return;list.innerHTML=reportData.map(r=>{const sm={draft:['草稿','status-draft'],published:['已发布','status-published']};const[l,c]=sm[r.status]||['',''];const draftActions=!isMobileMode()&&r.status==='draft'?(hasPermission('p2-2')?'<button class="btn btn-primary btn-sm" onclick="navigate(\'edit\',\''+r.id+'\')"><i class="ri-edit-line"></i>编辑</button>':'')+(hasPermission('p2-3')?'<button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="deleteReport(\''+r.id+'\')"><i class="ri-delete-bin-line"></i></button>':''):'';return'<div class="report-card" onclick="navigate(\'preview\',\''+r.id+'\')"><div class="report-body"><div class="report-meta"><span class="report-id">'+r.id+'</span><span class="status-tag '+c+'">'+l+'</span></div><div class="report-title">'+r.title+'</div><div class="report-info"><span><i class="ri-time-line"></i> '+r.time+'</span><span><i class="ri-file-list-3-line"></i> '+r.items.length+' 条</span></div></div><div class="report-actions" onclick="event.stopPropagation()">'+draftActions+'<button class="btn btn-outline btn-sm" onclick="navigate(\'preview\',\''+r.id+'\')"><i class="ri-eye-line"></i>预览</button></div></div>'}).join('')}
-function createNewReport(){const id='BG-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(reportData.length+1).padStart(3,'0');const d=new Date();const r={id,title:'',status:'draft',time:d.toISOString().slice(0,16).replace('T',' '),items:[]};reportData.unshift(r);renderManageList();navigate('edit',id);setTimeout(()=>openSelectFromSummary(),100)}
+function createNewReport(){const d=new Date();const id=generateReportId(d.toISOString().slice(0,10));const r={id,title:'',status:'draft',time:d.toISOString().slice(0,16).replace('T',' '),items:[]};reportData.unshift(r);renderManageList();navigate('edit',id);setTimeout(()=>openSelectFromSummary(),100)}
 function deleteReport(id){showModal('确认删除','<p style="font-size:14px;color:var(--text-secondary)">确定删除该报告？</p>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" style="background:var(--red)" onclick="reportData.splice(reportData.findIndex(r=>r.id===\''+id+'\'),1);closeModal();showToast(\'success\',\'已删除\');renderManageList()">确认</button>')}
 
 /* ===== Preview ===== */
