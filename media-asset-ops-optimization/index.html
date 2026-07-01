@@ -456,6 +456,8 @@
     .file-thumb { font-size: 48px; font-weight: 900; color: #2f66f4; }
     .asset-body { padding: 12px 12px 10px; }
     .asset-title { font-weight: 800; line-height: 1.35; height: 38px; overflow: hidden; }
+    button.asset-title { width: 100%; border: 0; background: transparent; padding: 0; text-align: left; color: var(--ink); cursor: pointer; }
+    button.asset-title:hover { color: var(--brand); }
     .asset-desc { margin-top: 8px; color: var(--muted); font-size: 12px; height: 34px; line-height: 1.45; overflow: hidden; }
     .asset-meta { margin-top: 10px; display: flex; align-items: center; justify-content: space-between; color: #8a94a6; font-weight: 700; font-size: 12px; }
     .tag { padding: 2px 7px; font-size: 12px; background: #fff2e2; color: #c26c0a; }
@@ -484,7 +486,6 @@
     .status { font-weight: 800; }
     .status.ok { color: var(--green); }
     .status.off { color: var(--orange); }
-    .expired-note { margin-left: 6px; color: var(--red); font-size: 12px; font-weight: 800; }
     .link { color: var(--brand); font-weight: 800; border: 0; background: transparent; padding: 0; }
 
     .drawer {
@@ -503,6 +504,9 @@
     .drawer.open { display: flex; }
     .drawer-head { padding: 18px 18px 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); }
     .drawer-title { font-size: 18px; font-weight: 900; }
+    .notice-tabs { display: flex; border-bottom: 1px solid var(--line); padding: 0 18px; }
+    .notice-tab { height: 44px; padding: 0 18px; border: 0; border-bottom: 3px solid transparent; background: transparent; color: #536075; font-weight: 900; }
+    .notice-tab.active { color: var(--brand); border-bottom-color: var(--brand); }
     .drawer-tools { padding: 12px 18px; display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px solid var(--line); }
     .log-list { overflow: auto; padding: 8px 18px 18px; }
     .log-item {
@@ -585,12 +589,101 @@
     .info-row span:first-child { color: var(--muted); font-weight: 700; }
     .info-row span:last-child { font-weight: 700; }
 
+    .asset-detail-view { background: #eef2f7; min-height: calc(100vh - 76px); padding: 12px 0 0; }
+    .detail-toolbar {
+      height: 64px;
+      background: #fff;
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+    .detail-shell {
+      display: grid;
+      grid-template-columns: minmax(640px, 1fr) 430px;
+      gap: 14px;
+      min-height: calc(100vh - 164px);
+    }
+    .detail-canvas, .detail-side {
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+    .detail-canvas { padding: 18px; }
+    .detail-image-tools {
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 18px;
+      color: #8c96a8;
+      font-weight: 800;
+    }
+    .detail-stage {
+      height: 520px;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      overflow: hidden;
+    }
+    .detail-stage img { max-width: 82%; max-height: 100%; object-fit: contain; }
+    .detail-file {
+      color: #2f66f4;
+      font-size: 88px;
+      font-weight: 900;
+      background: #eef4ff;
+      padding: 72px 110px;
+    }
+    .detail-file-wrap { display: grid; place-items: center; height: 100%; }
+    .detail-metrics {
+      height: 58px;
+      margin-top: 12px;
+      background: #f6f7f9;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      align-items: center;
+      padding: 0 28px;
+      color: #1f2937;
+      font-weight: 800;
+    }
+    .detail-metrics span { color: #4b5563; margin-left: 12px; font-weight: 700; }
+    .detail-tabs {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      border-bottom: 1px solid var(--line);
+      background: #f8fafc;
+    }
+    .detail-tab {
+      min-height: 48px;
+      border: 0;
+      border-right: 1px solid var(--line);
+      background: transparent;
+      color: #172033;
+      font-weight: 900;
+    }
+    .detail-tab.active { color: var(--brand); background: #fff; }
+    .detail-panel { padding: 22px 20px; }
+    .detail-edit { display: flex; justify-content: flex-end; margin-bottom: 8px; }
+    .detail-field {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 12px;
+      padding: 12px 0;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .detail-field strong { color: #1f2937; font-weight: 900; }
+    .detail-field span { color: #2d3748; font-weight: 700; }
+
     .form-grid { display: grid; gap: 16px; }
     .form-row { display: grid; grid-template-columns: 110px 1fr; gap: 12px; align-items: center; }
     .form-row label { font-weight: 800; text-align: right; }
     .required::before { content: "* "; color: var(--red); }
     .helper { color: var(--muted); font-size: 12px; margin-top: 6px; }
     .radio-group { display: flex; align-items: center; gap: 18px; }
+    .radio-inline { display: inline-flex; align-items: center; gap: 8px; }
+    .radio-inline .input { width: 150px; height: 34px; }
     .user-tabs { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--line); margin-bottom: 22px; }
     .user-tab { height: 46px; border: 0; background: transparent; font-weight: 900; color: #99a1b2; border-bottom: 3px solid transparent; }
     .user-tab.active { color: var(--brand); border-color: var(--brand); }
@@ -749,7 +842,7 @@
                 批量备注
               </button>
               <button class="btn" type="button" onclick="downloadSelected()">下载</button>
-              <button class="btn" type="button" onclick="showToast('已发起共享申请')">共享</button>
+              <button class="btn" type="button" onclick="shareSelected()">共享</button>
             </div>
           </div>
           <div class="asset-grid" id="assetGrid"></div>
@@ -763,6 +856,41 @@
           </div>
         </section>
 
+        <section class="view asset-detail-view" id="assetDetailView">
+          <div class="detail-toolbar">
+            <button class="btn" type="button" onclick="switchView('assets')">返回列表</button>
+            <button class="btn" type="button" id="prevDetailBtn" onclick="moveAssetDetail(-1)">上一条</button>
+            <button class="btn" type="button" id="nextDetailBtn" onclick="moveAssetDetail(1)">下一条</button>
+            <button class="btn" type="button" onclick="downloadCurrentDetail()">下载</button>
+            <button class="btn" type="button" onclick="shareCurrentDetail()">共享</button>
+            <button class="btn" type="button" onclick="showToast('已进入以图搜图')">以图搜图</button>
+            <button class="btn" type="button" onclick="showToast('已进入图搜视频')">图搜视频</button>
+          </div>
+          <div class="detail-shell">
+            <div class="detail-canvas">
+              <div class="detail-image-tools">
+                <span>图片编辑</span>
+                <span>□</span>
+              </div>
+              <div class="detail-stage" id="detailVisual"></div>
+              <div class="detail-metrics" id="detailMetrics"></div>
+            </div>
+            <aside class="detail-side">
+              <div class="detail-tabs">
+                <button class="detail-tab active" type="button">基本信息</button>
+                <button class="detail-tab" type="button">结构化信息</button>
+                <button class="detail-tab" type="button">共享记录</button>
+                <button class="detail-tab" type="button">敏感信息识别</button>
+                <button class="detail-tab" type="button">下载记录</button>
+              </div>
+              <div class="detail-panel">
+                <div class="detail-edit"><button class="btn primary" type="button" onclick="showToast('进入素材信息编辑')">编辑</button></div>
+                <div id="detailInfo"></div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
         <section class="view" id="usersView">
           <div class="page-head">
             <div class="page-title">用户管理</div>
@@ -771,6 +899,7 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                 新建用户
               </button>
+              <button class="btn warning" type="button" onclick="openBatchValidityModal()">设置有效期</button>
               <button class="btn ghost" type="button" onclick="stopSelectedUsers()">停用用户</button>
               <button class="btn ghost" type="button" onclick="enableSelectedUsers()">启用用户</button>
             </div>
@@ -821,9 +950,12 @@
     <div class="drawer-head">
       <div>
         <div class="drawer-title">通知中心</div>
-        <div class="log-meta">下载日志按时间倒序记录，可筛选和导出</div>
       </div>
       <button class="close" type="button" onclick="toggleNoticeDrawer(false)">×</button>
+    </div>
+    <div class="notice-tabs" aria-label="通知记录类型">
+      <button class="notice-tab active" id="downloadTab" type="button" onclick="switchNoticeTab('download')">下载记录</button>
+      <button class="notice-tab" id="shareTab" type="button" onclick="switchNoticeTab('share')">共享记录</button>
     </div>
     <div class="drawer-tools">
       <select class="select" id="logRange" onchange="renderLogs()">
@@ -840,29 +972,6 @@
     <div class="log-list" id="logList"></div>
   </aside>
 
-  <div class="modal-backdrop" id="previewModal">
-    <div class="modal">
-      <div class="modal-head">
-        <div class="modal-title">快速预览</div>
-        <button class="close" type="button" onclick="closeModal('previewModal')">×</button>
-      </div>
-      <div class="modal-body">
-        <div class="preview-layout">
-          <div class="preview-stage" id="previewStage">
-            <button class="nav-arrow left" id="prevAssetBtn" onclick="movePreview(-1)">‹</button>
-            <div id="previewVisual"></div>
-            <button class="nav-arrow right" id="nextAssetBtn" onclick="movePreview(1)">›</button>
-          </div>
-          <div class="preview-info" id="previewInfo"></div>
-        </div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn" type="button" onclick="downloadCurrentPreview()">下载</button>
-        <button class="btn primary" type="button" onclick="openDetailFromPreview()">查看明细</button>
-      </div>
-    </div>
-  </div>
-
   <div class="modal-backdrop" id="remarkModal">
     <div class="modal small">
       <div class="modal-head">
@@ -870,8 +979,6 @@
         <button class="close" type="button" onclick="closeModal('remarkModal')">×</button>
       </div>
       <div class="modal-body">
-        <div class="helper" id="remarkSummary"></div>
-        <div class="pill-list" id="remarkAssetList" style="margin:12px 0 16px"></div>
         <textarea class="textarea" id="remarkText" maxlength="300" placeholder="请输入要追加到素材描述后的备注内容"></textarea>
         <div class="helper"><span id="remarkCount">0</span>/300，保存后将追加到现有素材描述后，不覆盖原描述。</div>
       </div>
@@ -941,6 +1048,34 @@
     </div>
   </div>
 
+  <div class="modal-backdrop" id="batchValidityModal">
+    <div class="modal small">
+      <div class="modal-head">
+        <div class="modal-title">批量设置用户有效期</div>
+        <button class="close" type="button" onclick="closeModal('batchValidityModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label class="required">用户有效期</label>
+          <div>
+            <div class="radio-group">
+              <label><input type="radio" name="batchValidityMode" value="forever" checked onchange="toggleBatchValidityDate()"> 长期有效</label>
+              <label class="radio-inline">
+                <input type="radio" name="batchValidityMode" value="date" onchange="toggleBatchValidityDate()">
+                <span>指定截止日期</span>
+                <input class="input" id="batchValidityDateInput" type="date" value="2026-12-31">
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn" type="button" onclick="closeModal('batchValidityModal')">取消</button>
+        <button class="btn primary" type="button" onclick="saveBatchValidity()">保存有效期</button>
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
     </div>
     <div class="split-drag" id="splitDrag" title="拖拽调整 PRD 面板"></div>
@@ -968,7 +1103,8 @@
     <div class="changelog-body" id="changelogBody"></div>
   </div>
 
-  <textarea id="prdMdSource" style="display:none"># 智能媒资系统运营优化 PRD
+  <textarea id="prdMdSource" style="display:none">
+# 智能媒资系统运营优化 PRD
 
 **版本**：v1.0
 
@@ -982,13 +1118,13 @@
 
 ### 1.1 背景
 
-智能媒资系统已具备素材上传、检索、下载、详情查看、用户管理和权限管理能力。当前素材下载行为缺少集中追溯入口，批量补充素材描述效率较低，素材查看需要逐条进入详情页，试用或临时账号也缺少到期停用机制。本期面向素材运营和系统管理场景补充通知中心、批量备注、快速预览和用户有效期能力。
+智能媒资系统已具备素材上传、检索、下载、详情查看、用户管理和权限管理能力。当前素材下载行为缺少集中追溯入口，批量补充素材描述效率较低，素材详情查看需要反复返回列表再逐条进入，试用或临时账号也缺少到期停用机制。本期面向素材运营和系统管理场景补充通知中心、批量备注、详情页连续切换和用户有效期能力。
 
 ### 1.2 目标
 
-- 下载过的素材统一写入通知中心，便于管理员和运营人员追溯下载行为。
+- 下载和共享过的素材统一写入通知中心，便于管理员和运营人员追溯素材流转行为。
 - 素材支持批量追加备注，减少逐条编辑素材描述的操作成本。
-- 素材列表支持快速预览，用户可在弹窗内连续浏览素材。
+- 素材详情页支持上一条、下一条切换，用户可在当前列表上下文连续查看素材。
 - 用户管理支持有效期配置，到期后自动停用账号，便于管理试用或临时账号。
 
 ### 1.3 用户角色
@@ -1000,18 +1136,18 @@
 
 ### 1.4 使用场景
 
-- 用户下载素材后，管理员在通知中心查看下载时间、素材名称、路径位置和下载人。
+- 用户下载或共享素材后，管理员在通知中心按记录类型查看素材名称、路径位置、操作时间和操作人。
 - 运营人员筛选近 1 年下载日志，并导出 Excel 用于归档。
 - 素材管理员选中多条素材后统一追加活动说明或素材描述。
-- 采编人员在素材列表点击快速预览，使用左右箭头连续查看素材。
+- 采编人员进入素材详情页后，使用上一条、下一条连续查看当前列表中的素材。
 - 系统管理员创建试用账号时设置用户有效期，到期后账号自动停用。
 
 ### 1.5 本期范围
 
-- 新增下载通知中心入口、红点提醒、日志查询和 Excel 导出。
+- 新增通知中心入口、红点提醒、下载记录、共享记录、日志查询和 Excel 导出。
 - 素材中心新增批量追加备注入口和弹窗。
-- 素材卡片新增快速预览入口和连续切换弹窗。
-- 用户管理新增用户有效期字段、列表展示、新建/编辑配置和到期停用规则。
+- 素材详情页新增上一条、下一条连续切换操作。
+- 用户管理新增用户有效期字段、列表展示、新建/编辑配置、批量设置和到期停用规则。
 
 ### 1.6 非本期范围
 
@@ -1042,7 +1178,7 @@
 ### 2.2 筛选与查询
 
 - 素材中心支持按素材类型、修改时间、关键词筛选。
-- 通知中心支持按下载时间筛选，预设近 7 天、近 30 天、近 1 年和自定义时间。
+- 通知中心支持按记录时间筛选，预设近 7 天、近 30 天、近 1 年和自定义时间。
 - 用户管理支持按用户状态筛选和关键词搜索，用户状态包含全部、已开通、已停用。
 - 多个筛选条件同时使用时取交集。
 
@@ -1064,7 +1200,7 @@
 ### 2.5 空状态与异常状态
 
 - 通知中心无日志时展示空状态。
-- 快速预览素材加载失败时展示占位，不影响切换下一条素材。
+- 素材详情页预览内容加载失败时展示占位，不影响切换下一条素材。
 - 批量备注存在部分无权限素材时展示失败明细。
 - 用户有效期已过但仍尝试启用时提示需先延长有效期。
 
@@ -1073,22 +1209,23 @@
 - 通知中心入口面向具备日志查看权限的用户展示。
 - Excel 导出入口面向具备日志导出权限的用户展示。
 - 批量备注入口面向具备素材编辑权限的用户展示。
-- 用户有效期配置入口面向具备用户管理权限的管理员展示。
+- 用户有效期配置和批量设置入口面向具备用户管理权限的管理员展示。
 
 ---
 
-## 3. 下载通知中心
+## 3. 通知中心
 
 ### 3.1 模块目标与边界
 
-- 记录所有下载过的素材，形成可查询、可导出的下载日志。
-- 本模块只记录下载行为，不改变下载权限和下载流程。
+- 记录所有下载和共享过的素材，形成可查询、可导出的操作记录。
+- 本模块只记录下载和共享行为，不改变下载、共享权限和原操作流程。
 
 ### 3.2 页面结构
 
 - 顶部通知入口显示铃铛和红点。
-- 通知中心弹层或页面包含时间筛选、导出按钮、全部已读按钮和日志列表。
-- 日志列表展示下载时间、素材名称、路径位置、下载人、素材类型、来源素材库和阅读状态。
+- 通知中心弹层或页面包含下载记录、共享记录两个页签，以及时间筛选、导出按钮、全部已读按钮和记录列表。
+- 下载记录列表展示素材名称、下载时间、下载人、路径位置和阅读状态。
+- 共享记录列表展示素材名称、共享时间、共享人、来源素材库、目标素材库和阅读状态。
 
 ### 3.3 字段规则
 
@@ -1098,10 +1235,16 @@
 - 交互规则：支持作为时间筛选条件。
 - 数据规则：取用户触发下载成功的时间；按下载时间倒序；按筛选时间范围过滤。
 
+共享时间：
+
+- 展示规则：按年月日时分秒展示。
+- 交互规则：支持作为共享记录页签的时间筛选条件。
+- 数据规则：取用户触发共享成功的时间；按共享时间倒序；按筛选时间范围过滤。
+
 素材名称：
 
 - 展示规则：显示素材标题或文件名，超长时省略。
-- 交互规则：点击可进入素材详情或快速预览。
+- 交互规则：点击素材标题或更多操作可进入素材详情。
 - 数据规则：取下载时素材记录中的名称；不涉及排序。
 
 路径位置：
@@ -1116,6 +1259,18 @@
 - 交互规则：不支持在日志列表中编辑。
 - 数据规则：取下载行为触发人；不涉及排序。
 
+共享人：
+
+- 展示规则：展示共享用户真实姓名。
+- 交互规则：不支持在记录列表中编辑。
+- 数据规则：取共享行为触发人；不涉及排序。
+
+目标素材库：
+
+- 展示规则：展示共享目标素材库名称。
+- 交互规则：不支持在记录列表中编辑。
+- 数据规则：取共享行为对应的目标素材库；不涉及排序。
+
 阅读状态：
 
 - 展示规则：未读日志在通知入口形成红点提示。
@@ -1127,7 +1282,7 @@
 - 时间筛选默认近 30 天。
 - 近 7 天、近 30 天、近 1 年为快捷筛选。
 - 自定义时间需同时选择开始日期和结束日期，结束日期不可早于开始日期。
-- 筛选后日志列表即时刷新，导出范围同步更新。
+- 筛选后当前页签记录列表即时刷新，导出范围同步更新。
 
 ### 3.5 操作规则
 
@@ -1137,11 +1292,17 @@
 - 结果变化：新增日志记录，通知入口显示红点。
 - 失败处理：下载失败不写入成功下载日志。
 
+共享记录写入：
+
+- 默认状态：用户点击素材共享并共享成功后写入记录。
+- 结果变化：新增共享记录，通知入口显示红点。
+- 失败处理：共享失败不写入成功共享记录。
+
 全部已读：
 
 - 默认状态：存在未读日志时可点击。
-- 点击反馈：标记当前筛选范围内未读日志为已读。
-- 结果变化：若无剩余未读日志，红点消失。
+- 点击反馈：标记当前页签、当前筛选范围内未读记录为已读。
+- 结果变化：若下载记录和共享记录均无剩余未读记录，红点消失。
 
 Excel 导出：
 
@@ -1151,18 +1312,19 @@ Excel 导出：
 
 ### 3.6 数据规则
 
-- 取数规则：取用户权限范围内可查看的下载日志；原型按全员日志展示。
-- 数据筛选规则：按下载时间范围过滤。
-- 数据排序规则：默认按下载时间倒序。
-- 去重规则：同一素材多次下载分别记录，不合并。
+- 取数规则：取用户权限范围内可查看的下载记录和共享记录；原型按全员记录展示。
+- 数据筛选规则：下载记录按下载时间范围过滤，共享记录按共享时间范围过滤。
+- 数据排序规则：下载记录默认按下载时间倒序，共享记录默认按共享时间倒序。
+- 去重规则：同一素材多次下载或多次共享分别记录，不合并。
 
 ### 3.7 验收标准
 
-- 下载素材后通知中心新增一条下载日志。
-- 未读下载日志存在时通知入口显示红点。
-- 点击日志或全部已读后阅读状态更新。
-- 近 1 年筛选仅展示近 1 年内日志。
-- Excel 导出内容与当前筛选结果一致。
+- 下载素材后通知中心下载记录页签新增一条记录。
+- 共享素材后通知中心共享记录页签新增一条记录。
+- 未读下载记录或共享记录存在时通知入口显示红点。
+- 点击记录或全部已读后阅读状态更新。
+- 近 1 年筛选仅展示当前页签近 1 年内记录。
+- Excel 导出内容与当前页签、当前筛选结果一致。
 
 ---
 
@@ -1176,7 +1338,7 @@ Excel 导出：
 ### 4.2 页面结构
 
 - 素材列表批量操作区新增批量备注按钮。
-- 批量备注弹窗包含已选素材数量、素材清单摘要、备注输入框、取消和保存按钮。
+- 批量备注弹窗仅包含备注输入框、取消和保存按钮。
 
 ### 4.3 字段规则
 
@@ -1188,7 +1350,7 @@ Excel 导出：
 
 已选素材：
 
-- 展示规则：展示已选数量和前若干条素材名称。
+- 展示规则：列表批量操作区展示已选数量；批量备注弹窗不展示已选数量和素材名称清单。
 - 交互规则：无选中素材时批量备注按钮禁用或点击提示。
 - 数据规则：取当前列表中用户已勾选的素材；不涉及排序。
 
@@ -1215,57 +1377,52 @@ Excel 导出：
 
 ---
 
-## 5. 素材快速预览
+## 5. 素材详情连续切换
 
 ### 5.1 模块目标与边界
 
-- 用户无需进入详情页即可快速查看素材内容，并可在当前列表上下文连续切换。
-- 本模块不替代详情页，详情页仍承载完整信息和完整操作。
+- 用户进入素材详情页后，可在当前列表上下文中使用上一条、下一条连续查看素材。
+- 本模块不在素材列表新增预览按钮，不改变列表筛选、排序、分页和选中状态。
 
 ### 5.2 页面结构
 
-- 素材卡片新增快速预览入口。
-- 快速预览弹窗包含素材预览区、素材信息区、左右切换按钮、下载按钮和查看明细按钮。
+- 素材列表保持原有进入详情方式，可通过素材标题或更多操作进入素材详情。
+- 素材详情采用页面式布局，不使用弹窗；页面顶部展示返回列表、上一条、下一条、下载、共享、以图搜图、图搜视频操作。
+- 页面主体左侧展示素材预览区和基础文件属性，右侧展示信息页签区。
+- 右侧信息页签包含基本信息、结构化信息、共享记录、敏感信息识别和下载记录；本期原型默认展示基本信息。
 
 ### 5.3 字段规则
 
-素材预览：
+素材详情预览：
 
 - 展示规则：图片显示大图，视频显示封面和播放态，音频显示播放器，文件显示文件图标和基础信息。
 - 交互规则：加载失败展示占位，可继续切换。
 - 数据规则：取当前素材可预览内容；不涉及筛选或排序。
 
-左右切换：
+上一条 / 下一条：
 
-- 展示规则：首条素材的上一条置灰，末条素材的下一条置灰。
+- 展示规则：详情页展示上一条和下一条操作；首条素材的上一条置灰，末条素材的下一条置灰。
 - 交互规则：点击后在当前列表上下文中切换素材，不循环。
-- 数据规则：按进入预览时的列表筛选、排序和文件夹上下文取上一条或下一条。
-
-查看明细：
-
-- 展示规则：弹窗底部展示查看明细按钮。
-- 交互规则：点击进入原素材详情页。
-- 数据规则：详情页上下切换规则复用当前列表上下文，不跨库、不跨文件夹。
+- 数据规则：按进入详情页时的列表筛选、排序和文件夹上下文取上一条或下一条，不跨库、不跨文件夹。
 
 ### 5.4 操作规则
 
-- 点击快速预览打开弹窗，不改变列表选中状态。
+- 点击素材标题或更多操作进入素材详情，不改变列表选中状态。
 - 点击下载后触发下载动作，并写入通知中心下载日志。
-- 点击关闭回到原列表位置。
+- 点击关闭或返回后回到原列表位置。
 
 ### 5.5 数据规则
 
 - 取数规则：取当前用户在列表中可见且有权限查看的素材。
-- 数据筛选规则：预览范围与当前列表筛选结果一致。
-- 数据排序规则：预览切换顺序与当前列表排序一致。
+- 数据筛选规则：详情页切换范围与当前列表筛选结果一致。
+- 数据排序规则：详情页切换顺序与当前列表排序一致。
 
 ### 5.6 验收标准
 
-- 点击快速预览打开弹窗，不跳转详情页。
-- 左右箭头按当前列表顺序切换素材。
-- 首尾箭头置灰且不循环。
-- 弹窗内下载素材后通知中心新增日志和红点。
-- 点击查看明细进入详情页。
+- 素材列表不展示新增的预览按钮。
+- 进入素材详情页后可通过上一条、下一条按当前列表顺序切换素材。
+- 首尾切换按钮置灰且不循环。
+- 详情页内下载素材后通知中心新增日志和红点。
 
 ---
 
@@ -1279,20 +1436,22 @@ Excel 导出：
 ### 6.2 页面结构
 
 - 用户列表新增用户有效期列，位于当前状态和所属部门之间。
+- 用户管理顶部操作区新增批量设置有效期按钮。
 - 新建用户弹窗的用户信息页签新增用户有效期字段。
 - 编辑用户弹窗支持查看和修改用户有效期。
+- 批量设置用户有效期弹窗展示已选用户数量、用户清单摘要、有效期设置项、取消和保存按钮。
 
 ### 6.3 字段规则
 
 用户有效期：
 
-- 展示规则：列表展示长期有效或具体截止日期；编辑弹窗展示长期有效和指定截止日期选择。
+- 展示规则：列表展示长期有效或具体截止日期；新建、编辑和批量设置弹窗展示长期有效和指定截止日期选择。
 - 交互规则：选择指定截止日期时展示日期选择；截止日期不可早于当前日期。
 - 数据规则：用于判断用户是否可登录和是否到期停用；不影响用户部门和角色权限。
 
 当前状态：
 
-- 展示规则：已开通展示正常可用状态，已停用展示停用状态；到期停用可附加已到期原因。
+- 展示规则：已开通展示正常可用状态，已停用展示停用状态；到期停用不在列表状态旁新增独立状态标签。
 - 交互规则：启用已到期用户时，如有效期仍早于当前日期，提示需先延长有效期。
 - 数据规则：人工停用和到期停用均归入已停用筛选；已到期不新增独立筛选项。
 
@@ -1309,6 +1468,15 @@ Excel 导出：
 - 默认状态：回填用户当前有效期。
 - 保存反馈：修改有效期后刷新列表。
 - 结果变化：仅修改有效期不自动启用用户。
+
+批量设置有效期：
+
+- 默认状态：未选择用户时不可执行，提示需先选择用户。
+- 启用状态：选择一个或多个用户后可打开批量设置有效期弹窗。
+- 弹窗展示：展示已选用户数量和用户清单摘要，支持设置为长期有效或指定截止日期。
+- 校验规则：指定截止日期不可早于当前日期。
+- 保存反馈：保存成功后刷新用户列表，并提示本次已设置的用户数量。
+- 结果变化：仅批量更新已选用户的有效期，不修改用户部门、角色、密码、注册时间和最近登录时间；已停用或已到期用户不会因批量延长有效期自动启用。
 
 启用用户：
 
@@ -1328,25 +1496,28 @@ Excel 导出：
 - 数据筛选规则：状态筛选中，人工停用和到期停用均归入已停用。
 - 数据排序规则：默认按注册时间倒序。
 - 时间口径：有效期按自然日计算，截止日当天仍可使用。
+- 批量更新规则：批量设置有效期只作用于当前勾选用户，不影响未勾选用户；批量保存后保留当前筛选、排序和勾选上下文。
 
 ### 6.6 验收标准
 
 - 新建用户可设置长期有效或指定截止日期。
+- 勾选多个用户后可批量设置为长期有效或同一指定截止日期。
 - 用户列表展示用户有效期。
 - 到期次日零点后用户自动变为已停用。
 - 到期用户登录被拦截并展示到期提示。
 - 已到期用户需先延长期限，再点击启用恢复。
+- 批量延长已到期用户有效期后，用户仍保持已停用状态，需再点击启用后恢复已开通。
 - 人工停用用户即使有效期未过，也不可登录。
 
 ---
 
 ## 7. 总体验收场景
 
-- 素材下载行为能在通知中心形成日志，并触发红点。
-- 通知中心支持近 1 年筛选和 Excel 导出。
+- 素材下载和共享行为能在通知中心形成记录，并触发红点。
+- 通知中心支持下载记录、共享记录、近 1 年筛选和 Excel 导出。
 - 多条素材可批量追加备注，且不覆盖原描述。
-- 素材卡片可快速预览并通过左右箭头连续浏览。
-- 快速预览内下载素材同样写入下载日志。
+- 素材详情页可通过上一条、下一条连续浏览当前列表上下文中的素材。
+- 素材详情页内下载素材同样写入下载日志。
 - 用户管理列表展示有效期，新建和编辑弹窗可配置有效期。
 - 到期账号自动停用，且不能直接登录。
 </textarea>
@@ -1354,8 +1525,9 @@ Excel 导出：
   <script>
     const today = new Date('2026-06-29T12:00:00');
     let currentView = 'assets';
-    let previewIndex = 0;
+    let detailIndex = 0;
     let editingUserId = null;
+    let noticeTab = 'download';
 
     const assets = [
       { id: 1, type: 'image', title: '52小龙趣跑 龙湾cityrun.jpg', path: '个人素材库/活动报道/龙湾cityrun', person: '李春松', library: '个人库', time: '2026-06-26 13:42:35', source: '原创', desc: '绿色跑道、起跑拱门和群众活动现场，可用于体育活动报道。', img: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=900&q=80' },
@@ -1371,6 +1543,12 @@ Excel 导出：
       { id: 2, unread: true, time: '2026-06-28 09:12:33', title: '温州湾新区 党政代表团赴文成县考察学习活动', path: '公共素材库/政务活动/考察学习', person: '毛琪森', type: '视频', library: '公共库' },
       { id: 3, unread: false, time: '2026-06-12 14:05:49', title: '龙湾历史文化街区资料汇编.pdf', path: '部门素材库/文档资料/历史文化', person: '项和平', type: '文件', library: '部门库' },
       { id: 4, unread: false, time: '2025-11-04 10:02:19', title: '城市夜景航拍素材-滨海片区.jpg', path: '公共素材库/城市形象/航拍', person: '叶雨琦', type: '图片', library: '公共库' }
+    ];
+
+    const shareLogs = [
+      { id: 1, unread: true, time: '2026-06-29 16:42:20', title: '52小龙趣跑 龙湾cityrun.jpg', path: '个人素材库/活动报道/龙湾cityrun', person: '李春松', target: '区融媒体中心' },
+      { id: 2, unread: false, time: '2026-06-24 11:30:08', title: '温州湾新区 党政代表团赴文成县考察学习活动', path: '公共素材库/政务活动/考察学习', person: '叶雨琦', target: '管理员组' },
+      { id: 3, unread: false, time: '2026-05-18 15:18:36', title: '城市夜景航拍素材-滨海片区.jpg', path: '公共素材库/城市形象/航拍', person: '夏静', target: '宣传协作组' }
     ];
 
     const users = [
@@ -1403,16 +1581,12 @@ Excel 导出：
           : `<div class="file-thumb">${asset.type === 'audio' ? 'AUDIO' : 'PDF'}</div>`;
         return `<article class="asset-card ${asset.checked ? 'selected' : ''}">
           <input class="checkbox asset-select" type="checkbox" ${asset.checked ? 'checked' : ''} onchange="toggleAsset(${asset.id}, this.checked)">
-          <button class="asset-more" type="button" onclick="openPreview(${index})">•••</button>
+          <button class="asset-more" type="button" onclick="openAssetDetail(${index})">•••</button>
           <div class="thumb">${visual}</div>
           <div class="asset-body">
-            <div class="asset-title">${asset.title}</div>
+            <button class="asset-title" type="button" onclick="openAssetDetail(${index})">${asset.title}</button>
             <div class="asset-desc">${asset.desc}</div>
             <div class="asset-meta"><span>${asset.time}</span><span class="tag">${asset.source}</span></div>
-          </div>
-          <div class="card-actions">
-            <button class="btn" type="button" onclick="openPreview(${index})">${iconSvg('eye')}快速预览</button>
-            <button class="btn" type="button" onclick="downloadAsset(${asset.id})">${iconSvg('down')}下载</button>
           </div>
         </article>`;
       }).join('');
@@ -1450,8 +1624,6 @@ Excel 导出：
         showToast('请先选择要追加备注的素材');
         return;
       }
-      document.getElementById('remarkSummary').textContent = `已选择 ${selected.length} 条素材，备注将追加到现有素材描述后。`;
-      document.getElementById('remarkAssetList').innerHTML = selected.map(asset => `<span class="pill">${asset.title}</span>`).join('');
       document.getElementById('remarkText').value = '';
       document.getElementById('remarkCount').textContent = '0';
       openModal('remarkModal');
@@ -1477,44 +1649,43 @@ Excel 导出：
       showToast('批量备注已追加，原描述已保留');
     }
 
-    function openPreview(index) {
-      previewIndex = index;
-      renderPreview();
-      openModal('previewModal');
+    function openAssetDetail(index) {
+      detailIndex = index;
+      renderAssetDetail();
+      switchView('assetDetail');
     }
 
-    function renderPreview() {
-      const asset = assets[previewIndex];
-      const visual = document.getElementById('previewVisual');
+    function renderAssetDetail() {
+      const asset = assets[detailIndex];
+      const visual = document.getElementById('detailVisual');
       if (asset.type === 'image' || asset.type === 'video') {
         visual.innerHTML = `<img src="${asset.img}" alt="${asset.title}">${asset.type === 'video' ? '<span class="play">▶</span>' : ''}`;
       } else {
-        visual.innerHTML = `<div class="preview-file">${asset.type === 'audio' ? 'AUDIO' : 'PDF'}</div>`;
+        visual.innerHTML = `<div class="detail-file-wrap"><div class="detail-file">${asset.type === 'audio' ? 'AUDIO' : 'PDF'}</div></div>`;
       }
-      document.getElementById('previewInfo').innerHTML = `
-        <div class="info-title">${asset.title}</div>
-        <div class="info-row"><span>素材类型</span><span>${assetTypeName(asset.type)}</span></div>
-        <div class="info-row"><span>路径位置</span><span>${asset.path}</span></div>
-        <div class="info-row"><span>来源素材库</span><span>${asset.library}</span></div>
-        <div class="info-row"><span>创建人</span><span>${asset.person}</span></div>
-        <div class="info-row"><span>修改时间</span><span>${asset.time}</span></div>
-        <div class="info-row"><span>描述摘要</span><span>${asset.desc}</span></div>
+      document.getElementById('detailInfo').innerHTML = `
+        <div class="detail-field"><strong>标题</strong><span>${asset.title} <span class="tag">${asset.source}</span></span></div>
+        <div class="detail-field"><strong>描述</strong><span>${asset.desc || '--'}</span></div>
+        <div class="detail-field"><strong>上传时间</strong><span>${asset.time}</span></div>
+        <div class="detail-field"><strong>修改时间</strong><span>${asset.time}</span></div>
+        <div class="detail-field"><strong>上传人</strong><span>${asset.person}</span></div>
+        <div class="detail-field"><strong>素材作者</strong><span>${asset.person}</span></div>
+        <div class="detail-field"><strong>路径位置</strong><span>${asset.path}</span></div>
       `;
-      document.getElementById('prevAssetBtn').disabled = previewIndex === 0;
-      document.getElementById('nextAssetBtn').disabled = previewIndex === assets.length - 1;
+      document.getElementById('detailMetrics').innerHTML = `
+        <div>大小 <span>${asset.type === 'video' ? '86.4 MB' : asset.type === 'audio' ? '12.6 MB' : asset.type === 'file' ? '4.8 MB' : '1.09 MB'}</span></div>
+        <div>格式 <span>${asset.type === 'image' ? 'jpg' : asset.type === 'video' ? 'mp4' : asset.type === 'audio' ? 'wav' : 'pdf'}</span></div>
+        <div>尺寸 <span>${asset.type === 'image' ? '3840*2892' : '--'}</span></div>
+      `;
+      document.getElementById('prevDetailBtn').disabled = detailIndex === 0;
+      document.getElementById('nextDetailBtn').disabled = detailIndex === assets.length - 1;
     }
 
-    function movePreview(step) {
-      const next = previewIndex + step;
+    function moveAssetDetail(step) {
+      const next = detailIndex + step;
       if (next < 0 || next >= assets.length) return;
-      previewIndex = next;
-      renderPreview();
-    }
-
-    function openDetailFromPreview() {
-      const asset = assets[previewIndex];
-      showToast(`进入素材详情：${asset.title}`);
-      closeModal('previewModal');
+      detailIndex = next;
+      renderAssetDetail();
     }
 
     function addDownloadLog(asset) {
@@ -1535,6 +1706,23 @@ Excel 导出：
       renderLogs();
     }
 
+    function addShareLog(asset) {
+      const now = new Date(today.getTime() + shareLogs.length * 60000);
+      const pad = value => String(value).padStart(2, '0');
+      const time = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+      shareLogs.unshift({
+        id: Date.now() + asset.id,
+        unread: true,
+        time,
+        title: asset.title,
+        path: asset.path,
+        person: '李春松',
+        target: '协作成员'
+      });
+      updateNoticeDot();
+      renderLogs();
+    }
+
     function downloadAsset(id) {
       const asset = assets.find(item => item.id === id);
       if (!asset) return;
@@ -1542,8 +1730,13 @@ Excel 导出：
       showToast('下载已开始，通知中心已记录日志');
     }
 
-    function downloadCurrentPreview() {
-      downloadAsset(assets[previewIndex].id);
+    function downloadCurrentDetail() {
+      downloadAsset(assets[detailIndex].id);
+    }
+
+    function shareCurrentDetail() {
+      addShareLog(assets[detailIndex]);
+      showToast('已记录 1 条共享记录');
     }
 
     function downloadSelected() {
@@ -1556,6 +1749,16 @@ Excel 导出：
       showToast(`已记录 ${selected.length} 条下载日志`);
     }
 
+    function shareSelected() {
+      const selected = assets.filter(asset => asset.checked);
+      if (!selected.length) {
+        showToast('请先选择要共享的素材');
+        return;
+      }
+      selected.forEach(addShareLog);
+      showToast(`已记录 ${selected.length} 条共享记录`);
+    }
+
     function toggleNoticeDrawer(force) {
       const drawer = document.getElementById('noticeDrawer');
       const next = typeof force === 'boolean' ? force : !drawer.classList.contains('open');
@@ -1563,36 +1766,56 @@ Excel 导出：
       if (next) renderLogs();
     }
 
+    function switchNoticeTab(tab) {
+      noticeTab = tab;
+      document.getElementById('downloadTab').classList.toggle('active', tab === 'download');
+      document.getElementById('shareTab').classList.toggle('active', tab === 'share');
+      renderLogs();
+    }
+
+    function currentNoticeLogs() {
+      return noticeTab === 'download' ? downloadLogs : shareLogs;
+    }
+
     function renderLogs() {
       const range = document.getElementById('logRange').value;
       const list = document.getElementById('logList');
       const filtered = filterLogsByRange(range);
       if (!filtered.length) {
-        list.innerHTML = '<div class="empty">当前时间范围内暂无下载日志</div>';
+        list.innerHTML = `<div class="empty">当前时间范围内暂无${noticeTab === 'download' ? '下载' : '共享'}记录</div>`;
         return;
       }
-      list.innerHTML = filtered.map(log => `<div class="log-item" onclick="readLog(${log.id})">
-        <span class="${log.unread ? 'unread-dot' : ''}"></span>
-        <div>
-          <div class="log-title">${log.title}</div>
-          <div class="log-meta">下载时间：${log.time}　下载人：${log.person}　类型：${log.type}</div>
-          <div class="log-meta">路径位置：${log.path}　来源素材库：${log.library}</div>
-        </div>
-        <button class="btn text" type="button">查看</button>
-      </div>`).join('');
+      list.innerHTML = filtered.map(log => {
+        const actionLine = noticeTab === 'download'
+          ? `下载时间：${log.time}　下载人：${log.person}`
+          : `共享时间：${log.time}　共享人：${log.person}　目标素材库：${log.target}`;
+        const sourceLine = noticeTab === 'download'
+          ? `路径位置：${log.path}`
+          : `来源素材库：${log.path}`;
+        return `<div class="log-item" onclick="readLog(${log.id})">
+          <span class="${log.unread ? 'unread-dot' : ''}"></span>
+          <div>
+            <div class="log-title">${log.title}</div>
+            <div class="log-meta">${actionLine}</div>
+            <div class="log-meta">${sourceLine}</div>
+          </div>
+          <button class="btn text" type="button">查看</button>
+        </div>`;
+      }).join('');
       updateNoticeDot();
     }
 
     function filterLogsByRange(range) {
-      if (range === 'all') return downloadLogs;
+      const logs = currentNoticeLogs();
+      if (range === 'all') return logs;
       const days = Number(range);
       const threshold = new Date(today);
       threshold.setDate(threshold.getDate() - days);
-      return downloadLogs.filter(log => new Date(log.time.replace(' ', 'T')) >= threshold);
+      return logs.filter(log => new Date(log.time.replace(' ', 'T')) >= threshold);
     }
 
     function readLog(id) {
-      const log = downloadLogs.find(item => item.id === id);
+      const log = currentNoticeLogs().find(item => item.id === id);
       if (log) log.unread = false;
       renderLogs();
     }
@@ -1605,20 +1828,27 @@ Excel 导出：
 
     function exportLogs() {
       const filtered = filterLogsByRange(document.getElementById('logRange').value);
-      const header = '下载时间,素材名称,路径位置,下载人,素材类型,来源素材库\n';
-      const body = filtered.map(log => [log.time, log.title, log.path, log.person, log.type, log.library].map(value => `"${String(value).replace(/"/g, '""')}"`).join(',')).join('\n');
+      const header = noticeTab === 'download'
+        ? '下载时间,素材名称,路径位置,下载人\n'
+        : '共享时间,素材名称,来源素材库,共享人,目标素材库\n';
+      const body = filtered.map(log => {
+        const row = noticeTab === 'download'
+          ? [log.time, log.title, log.path, log.person]
+          : [log.time, log.title, log.path, log.person, log.target];
+        return row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(',');
+      }).join('\n');
       const blob = new Blob([header + body], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = '智能媒资下载日志.csv';
+      a.download = noticeTab === 'download' ? '智能媒资下载记录.csv' : '智能媒资共享记录.csv';
       a.click();
       URL.revokeObjectURL(url);
-      showToast('已按当前筛选结果导出日志');
+      showToast('已按当前筛选结果导出记录');
     }
 
     function updateNoticeDot() {
-      const hasUnread = downloadLogs.some(log => log.unread);
+      const hasUnread = downloadLogs.some(log => log.unread) || shareLogs.some(log => log.unread);
       document.getElementById('noticeDot').style.display = hasUnread ? 'block' : 'none';
     }
 
@@ -1647,8 +1877,9 @@ Excel 导出：
     function switchView(view) {
       currentView = view;
       document.getElementById('assetsView').classList.toggle('active', view === 'assets');
+      document.getElementById('assetDetailView').classList.toggle('active', view === 'assetDetail');
       document.getElementById('usersView').classList.toggle('active', view === 'users');
-      document.getElementById('navAssets').classList.toggle('active', view === 'assets');
+      document.getElementById('navAssets').classList.toggle('active', view === 'assets' || view === 'assetDetail');
       document.getElementById('navUsers').classList.toggle('active', view === 'users');
       document.getElementById('sectionLabel').textContent = document.body.classList.contains('system-mode') ? '系统管理' : '个人素材库';
     }
@@ -1682,7 +1913,7 @@ Excel 导出：
           <td><button class="link" type="button" onclick="openUserModal('edit', ${user.id})">${user.name}</button></td>
           <td>${user.phone}</td>
           <td>${user.email}</td>
-          <td><span class="status ${active ? 'ok' : 'off'}">${active ? '已开通' : '已停用'}</span>${expired ? '<span class="expired-note">已到期</span>' : ''}</td>
+          <td><span class="status ${active ? 'ok' : 'off'}">${active ? '已开通' : '已停用'}</span></td>
           <td>${user.validity === 'forever' ? '长期有效' : user.validity}</td>
           <td>${user.dept}</td>
           <td>${user.role}</td>
@@ -1730,6 +1961,43 @@ Excel 导出：
       selected.forEach(user => user.active = true);
       renderUsers();
       showToast(`已启用 ${selected.length} 个用户`);
+    }
+
+    function openBatchValidityModal() {
+      const selected = users.filter(user => user.checked);
+      if (!selected.length) {
+        showToast('请先选择要设置有效期的用户');
+        return;
+      }
+      document.querySelector('input[name="batchValidityMode"][value="forever"]').checked = true;
+      document.getElementById('batchValidityDateInput').value = '2026-12-31';
+      toggleBatchValidityDate();
+      openModal('batchValidityModal');
+    }
+
+    function toggleBatchValidityDate() {
+      const mode = document.querySelector('input[name="batchValidityMode"]:checked').value;
+      document.getElementById('batchValidityDateInput').style.display = mode === 'date' ? 'inline-block' : 'none';
+    }
+
+    function saveBatchValidity() {
+      const selected = users.filter(user => user.checked);
+      const mode = document.querySelector('input[name="batchValidityMode"]:checked').value;
+      const date = document.getElementById('batchValidityDateInput').value;
+      if (!selected.length) {
+        showToast('请先选择要设置有效期的用户');
+        return;
+      }
+      if (mode === 'date' && (!date || new Date(date + 'T23:59:59') < today)) {
+        showToast('用户有效期不可早于当前日期');
+        return;
+      }
+      selected.forEach(user => {
+        user.validity = mode === 'forever' ? 'forever' : date;
+      });
+      closeModal('batchValidityModal');
+      renderUsers();
+      showToast(`已为 ${selected.length} 个用户设置有效期，仅修改有效期不会自动启用`);
     }
 
     function openUserModal(mode, id) {
@@ -1939,7 +2207,7 @@ Excel 导出：
     }
 
     function renderChangelog() {
-      document.getElementById('changelogBody').innerHTML = '<table class="changelog-table"><thead><tr><th>时间</th><th>说明</th></tr></thead><tbody><tr><td>2026-06-30 10:48</td><td>优化 PRD 浮动控制条：调整至右下角竖向排列，PRD 按钮支持“收起 / 展开”状态文案。</td></tr><tr><td>2026-06-29</td><td>优化前后台入口与交付形态：素材中心复刻前台横向导航，头像菜单进入系统管理/返回前台，页面新增右侧 PRD 面板、PRD 下载和更新记录。</td></tr><tr><td>2026-06-29</td><td>初始创建：智能媒资系统运营优化合并项目，包含下载通知中心、批量追加备注、素材快速预览和用户有效期管理 PRD 与原型。</td></tr></tbody></table>';
+      document.getElementById('changelogBody').innerHTML = '<table class="changelog-table"><thead><tr><th>时间</th><th>说明</th></tr></thead><tbody><tr><td>2026-07-01 15:01</td><td>优化通知中心、批量备注、用户有效期和素材详情：通知中心新增下载/共享记录页签，批量弹窗精简，用户支持批量设置有效期，素材详情改为页面式并支持上一条/下一条，列表卡片去除单卡下载入口。</td></tr><tr><td>2026-06-30 10:48</td><td>优化 PRD 浮动控制条：调整至右下角竖向排列，PRD 按钮支持“收起 / 展开”状态文案。</td></tr><tr><td>2026-06-29</td><td>优化前后台入口与交付形态：素材中心复刻前台横向导航，头像菜单进入系统管理/返回前台，页面新增右侧 PRD 面板、PRD 下载和更新记录。</td></tr><tr><td>2026-06-29</td><td>初始创建：智能媒资系统运营优化合并项目，包含下载通知中心、批量追加备注、素材详情页连续切换和用户有效期管理 PRD 与原型。</td></tr></tbody></table>';
     }
 
     renderAssets();
