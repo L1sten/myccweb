@@ -407,7 +407,10 @@ textarea.form-control{min-height:80px;resize:vertical;line-height:1.6}
 .risk-watch{background:#eef3f8;color:#4e5969}
 .stats-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:12px}
 .stats-panel{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px}
-.stats-panel-title{font-size:14px;font-weight:600;margin-bottom:12px}
+.stats-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.stats-panel-title{font-size:14px;font-weight:600}
+.stats-panel-filter{min-width:160px;border:1px solid var(--border);border-radius:var(--radius-md);padding:8px 12px;font-size:12px;outline:none;background:#fff;font-family:inherit;color:var(--text-secondary);cursor:pointer}
+.stats-panel-filter:focus{border-color:var(--primary)}
 .stats-filter{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:14px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 .stats-table{width:100%;border-collapse:collapse}
 .stats-table th,.stats-table td{padding:10px 8px;border-bottom:1px solid var(--border-light);font-size:12px;text-align:left;color:var(--text-secondary)}
@@ -427,21 +430,29 @@ body.demo-mobile .sidebar{width:100%;height:48px;max-height:48px;border-right:0;
 body.demo-mobile .sidebar-header{height:48px;padding:0 96px 0 54px;justify-content:center;position:relative}
 body.demo-mobile .sidebar-title{font-size:13px;white-space:normal;line-height:1.25;text-align:center;position:absolute;left:50%;transform:translateX(-50%);width:220px}
 body.demo-mobile .sidebar-logo{width:30px;height:30px;border-radius:8px;position:absolute;left:14px;top:9px}
-body.demo-mobile .sidebar-nav{display:none}
+body.demo-mobile .sidebar-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;position:absolute;left:0;right:0;bottom:0;height:60px;padding:6px 12px;background:#fff;border-top:1px solid var(--border);box-shadow:0 -8px 18px rgba(15,23,42,.06);z-index:16}
 body.demo-mobile .nav-section{display:flex;gap:6px;padding-top:0;border-top:0;margin:0}
 body.demo-mobile .nav-label{display:none}
-body.demo-mobile .nav-item{flex:0 0 auto;min-width:92px;height:42px;padding:0 10px;margin:0}
+body.demo-mobile .nav-item{height:48px;padding:4px 8px;margin:0;justify-content:center;gap:4px;border-radius:10px;flex-direction:column;position:relative;background:transparent}
+body.demo-mobile .nav-item:hover{background:var(--primary-bg)}
+body.demo-mobile .nav-item.active{background:var(--primary-bg)}
+body.demo-mobile .nav-icon{font-size:18px}
+body.demo-mobile .nav-item .nav-icon i{color:var(--text-secondary)}
+body.demo-mobile .nav-item.active .nav-icon i{color:var(--primary)}
 body.demo-mobile .nav-item .nav-text{padding:0}
 body.demo-mobile .nav-item .nav-title{font-size:12px;white-space:nowrap}
+body.demo-mobile .nav-item.active .nav-title{color:var(--primary);font-weight:600}
 body.demo-mobile .main{height:calc(100% - 48px);min-height:0}
 body.demo-mobile .topbar{height:0;padding:0;border-bottom:0;display:block}
 body.demo-mobile .topbar-left{display:none}
 body.demo-mobile .topbar-title{font-size:15px}
 body.demo-mobile .topbar-right{position:absolute;right:10px;top:8px;z-index:20}
+body.demo-mobile .notice-wrap{display:none!important}
 body.demo-mobile #topAvatar,body.demo-mobile .topbar-logout{display:none!important}
+body.demo-mobile .notice-badge{display:none!important}
 body.demo-mobile .topbar-username{display:none}
 body.demo-mobile .notice-panel{position:fixed;right:calc((100vw - min(430px, calc(100vw - 24px))) / 2 + 10px);top:78px;width:min(360px, calc(100vw - 44px));max-height:560px}
-body.demo-mobile .page-container{padding:14px 12px 24px}
+body.demo-mobile .page-container{padding:14px 12px 86px}
 body.demo-mobile .page-header{align-items:center;gap:10px;flex-direction:row;margin-bottom:12px}
 body.demo-mobile .page-header-left{display:flex;align-items:center;min-width:0}
 body.demo-mobile .page-header-left .page-heading{font-size:16px;margin-bottom:0}
@@ -462,6 +473,16 @@ body.demo-mobile .yq-title{white-space:normal;line-height:1.45;margin:8px 0}
 body.demo-mobile .yq-footer{flex-direction:column;align-items:flex-start;gap:4px}
 body.demo-mobile .report-item-card{max-width:none;padding:16px;margin-bottom:10px}
 body.demo-mobile .report-item-card .item-header{align-items:center}
+body.demo-mobile .report-list{gap:10px}
+body.demo-mobile .report-card{padding:14px;align-items:flex-start;gap:10px}
+body.demo-mobile .report-card .report-body{min-width:0}
+body.demo-mobile .report-meta{flex-wrap:wrap}
+body.demo-mobile .report-title{white-space:normal;line-height:1.45}
+body.demo-mobile .report-info{flex-direction:column;gap:4px}
+body.demo-mobile .report-actions{margin-left:auto;flex-shrink:0}
+body.demo-mobile .doc-preview{padding:20px 16px}
+body.demo-mobile .doc-title{font-size:18px;line-height:1.45}
+body.demo-mobile .doc-section-title,body.demo-mobile .body-section-title{line-height:1.45}
 body.demo-mobile .form-row{flex-direction:column;gap:10px;margin-bottom:10px}
 body.demo-mobile .form-actions{display:grid!important;grid-template-columns:1fr;gap:8px;max-width:none!important}
 body.demo-mobile .form-actions .btn,body.demo-mobile #reportFormList+.btn{width:100%}
@@ -582,9 +603,8 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 <div class="toast-container" id="toastContainer"></div>
 <textarea id="prdMdSource" style="display:none"># “五个一”机制报送与管理系统 产品需求文档
 
-> <span style="color:#0052d9">版本：v1.2.18 | 日期：2026-07-01</span>
-> <span style="color:#0052d9">上一版本：v1.2.17</span>
-> 原型文件：index.html
+> <span style="color:#0052d9">版本：v1.2.19 | 日期：2026-07-01</span>
+> <span style="color:#0052d9">上一版本：v1.2.18</span>
 
 ---
 
@@ -611,8 +631,8 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
   - 所属组织：各地市宣传部（如杭州市宣传部、温州市宣传部等）
   - 核心权限：上报本地舆情信息
   - 数据可见范围：默认仅可查看本部门及下级部门上报的舆情记录
-  - 可用功能模块：舆情汇总（限权限范围内数据）、舆情上报
-  - 不可用功能：报告管理、录用至报告、系统管理
+  - 可用功能模块：舆情汇总（限权限范围内数据）、舆情上报；移动端可按权限查看报告列表和报告预览
+  - 不可用功能：录用至报告、报告新建/编辑/删除、系统管理
 
 - **舆情处人员**
   - 所属组织：省委宣传部舆情处
@@ -648,7 +668,6 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
   - 用户输入短信验证码后完成身份认证，无需填写密码
 - 系统认证通过后，自动获取用户姓名、所属部门、角色等信息
 - 根据用户在系统中的角色配置，自动进入对应权限的主界面
-- 若当前 Tab 下所有登录字段均不填写，直接点击登录可进入系统（原型演示模式）
 - 停用账号不可通过任一登录方式进入系统
 
 ### 2.2 登录页信息展示
@@ -663,7 +682,6 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
   - **短信验证码**：6 位数字验证码
   - **获取验证码按钮**：手机号未输入或不足 11 位时禁用；手机号满足 11 位后启用
   - **登录按钮**：短信验证码未填写时不可提交；输入短信验证码后按钮进入可点击状态，点击后提交校验
-- 底部显示体验提示信息
 
 ### 2.3 短信验证码策略
 
@@ -692,7 +710,7 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 ### 2.4 登录后初始化
 
 - 自动填充用户信息至顶部导航栏（头像取姓名首字）
-- 原型默认展示完整侧边栏导航菜单，实际权限差异以 PRD 权限规则为准
+- 根据当前用户角色与权限展示可访问菜单和操作入口
 - 默认进入"舆情汇总"页面
 
 ### 2.5 退出登录
@@ -706,21 +724,22 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 
 ### 3.1 侧边栏结构
 
-侧边栏采用统一的导航结构。原型默认展示全部功能模块，便于完整体验；实际系统的菜单可见性与操作权限按角色权限配置控制：
+侧边栏采用统一的导航结构，菜单可见性与操作权限按角色权限配置控制：
 
 - **顶部 Logo 区**
   - 系统名称"“五个一”机制报送与管理系统"，配蓝色圆角图标
 
 - **功能菜单**
-  - 舆情汇总：原型默认可见；数据范围按组织树控制，当前部门用户仅可查看本部门及下级部门数据
-  - 报告管理：原型默认可见；权限规则上，地市人员默认无此入口，拥有报告管理权限的角色可使用
+  - 舆情汇总：拥有舆情查看或上报相关权限的用户可见；数据范围按组织树控制，当前部门用户仅可查看本部门及下级部门数据
+  - 数据统计：拥有统计查看权限的用户可见，用于查看专班监测、地市舆情、地市宣传部报送量和部门报送数量
+  - 报告管理：拥有报告管理权限的角色可使用
 
-- **系统管理**（原型默认可见；权限规则上，拥有对应系统管理权限的角色可使用）
+- **系统管理**（拥有对应系统管理权限的角色可使用）
   - 部门管理
   - 用户管理
   - 角色管理
 
-> 舆情上报功能通过舆情汇总页右上角按钮进入，不在侧边栏中单独展示。原型层面默认露出完整菜单，具体权限控制与数据范围在权限章节和各功能规则中说明。
+> 舆情上报功能通过舆情汇总页右上角按钮进入，不在侧边栏中单独展示。
 
 ### 3.2 顶部导航栏
 
@@ -852,9 +871,18 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
   - 选项："社会民生领域"、"经济金融领域"、"涉政涉稳领域"、"文化科技领域"、"生态环保领域"
   - 选中后按舆情的分类字段精确匹配，未打标分类的舆情不显示
 
-#### 4.3.8 筛选组合规则
+#### 4.3.8 风险等级筛选
 
-- 搜索关键词、时间范围、来源类型、单位类型、地域、舆情分类可同时生效，取交集；拥有报告管理权限时追加录用状态筛选
+- 展示规则：下拉选择框
+- 交互规则：选择后立即过滤列表
+- 数据筛选规则：
+  - 默认值："全部风险"（不限）
+  - 选项："红"、"黄"、"蓝"、"持续观察"
+  - 选中后按舆情风险等级字段精确匹配，未研判风险等级的舆情不显示
+
+#### 4.3.9 筛选组合规则
+
+- 搜索关键词、时间范围、来源类型、单位类型、地域、舆情分类、风险等级可同时生效，取交集；拥有报告管理权限时追加录用状态筛选
 - 所有筛选条件变化后实时更新列表和统计数据
 
 ### 4.4 操作栏
@@ -1499,7 +1527,6 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 - 单个短信验证码错误提交达到 5 次后失效，用户需重新获取验证码
 - 手机验证码登录中，手机号校验通过后置灰不可编辑；短信验证码输入后登录按钮进入可点击状态
 - 两种登录方式均需校验用户状态，已停用用户不可登录
-- 任一登录 Tab 表单为空时，保留原型演示登录能力，默认进入舆情处人员账号
 - 登录后用户信息自动填充至系统各处（侧边栏、顶部导航栏）
 
 ### 9.2 信息自动填充
@@ -1523,52 +1550,60 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 
 ---
 
-## 10. <span style="color:#0052d9">v1.2.18 本期新增需求</span>
+## 10. 移动端与补充业务规则
 
-### 10.1 <span style="color:#0052d9">系统名称调整</span>
+### 10.1 系统名称
 
-<span style="color:#0052d9">- 展示规则：系统在登录页、侧边栏、浏览器标题和 PRD 标题中统一展示为““五个一”机制报送与管理系统”。</span>
-<span style="color:#0052d9">- 交互规则：仅调整系统名称展示，不改变舆情汇总、舆情上报、报告管理、系统管理等业务模块名称和入口。</span>
-<span style="color:#0052d9">- 数据规则：不涉及业务数据变更。</span>
+- 展示规则：系统在登录页、侧边栏、页面标题和产品文档标题中统一展示为““五个一”机制报送与管理系统”。
+- 交互规则：系统名称仅用于品牌与页面识别，不改变舆情汇总、舆情上报、报告管理、系统管理等业务模块名称。
+- 数据规则：不涉及业务数据变更。
 
-### 10.2 <span style="color:#0052d9">Web端 / 手机端演示入口</span>
+### 10.2 移动端适配范围
 
-<span style="color:#0052d9">- 展示规则：原型提供“Web端 / 手机端”切换入口，默认选中 Web端；登录页和系统内页面均可看到该入口。</span>
-<span style="color:#0052d9">- 交互规则：点击“手机端”后切换为手机端演示模式；点击“Web端”后恢复桌面端展示。切换仅影响展示模式，不清空登录态和当前业务数据。</span>
-<span style="color:#0052d9">- 范围规则：手机端仅适配舆情汇总和舆情上报页面；数据统计、报告管理、部门管理、用户管理、角色管理等其他模块入口在手机端隐藏。</span>
-<span style="color:#0052d9">- 验收标准：手机端模式下默认进入舆情汇总，舆情汇总和舆情上报页面不出现横向溢出，主要按钮可点击，表单控件可正常输入和选择。</span>
+- 范围规则：移动端覆盖舆情汇总、舆情上报和报告管理预览能力。
+- 菜单规则：移动端底部展示“舆情汇总”“报告管理”两个主入口；舆情上报从舆情汇总页按钮进入。
+- 隐藏规则：移动端不展示数据统计、部门管理、用户管理、角色管理等后台管理入口。
+- 权限规则：移动端隐藏录用至报告、报告新建、报告编辑、报告删除等操作；报告管理仅支持查看列表和报告预览。
+- 验收标准：移动端舆情汇总、舆情上报、报告管理列表和报告预览页面内容不横向溢出，主要按钮可点击，表单控件可正常输入和选择。
 
-### 10.3 <span style="color:#0052d9">手机端舆情汇总</span>
+### 10.3 移动端舆情汇总
 
-<span style="color:#0052d9">- 展示规则：舆情汇总在手机端采用纵向布局，统计卡片、筛选条件和舆情列表按窄屏顺序展示。</span>
-<span style="color:#0052d9">- 顶部规则：手机端顶部展示居中的系统名称和通知入口，隐藏用户头像和退出登录按钮；内容页页头左侧展示“舆情汇总”，右侧展示小尺寸“舆情上报”按钮。</span>
-<span style="color:#0052d9">- 筛选规则：关键词、时间、来源、全部单位、地域、分类、录用状态等筛选控件在手机端保持原有筛选能力；时间筛选合并为一个日期范围控件，其他筛选项按两列布局排列。</span>
-<span style="color:#0052d9">- 列表规则：舆情卡片在手机端分行展示编号、来源类型、分类、风险等级、地域、标题、报送单位和时间，避免文本重叠。</span>
-<span style="color:#0052d9">- 操作规则：手机端保留舆情上报、筛选、研判和进入详情等操作；录用至报告等进入报告管理流程的操作在手机端隐藏。</span>
+- 展示规则：舆情汇总在移动端采用纵向布局，统计卡片、筛选条件和舆情列表按移动端阅读顺序展示。
+- 顶部规则：移动端顶部展示居中的系统名称，隐藏通知中心入口、用户头像和退出登录按钮；内容页页头左侧展示“舆情汇总”，右侧展示小尺寸“舆情上报”按钮。
+- 筛选规则：关键词、时间、来源、全部单位、地域、分类、风险等级、录用状态等筛选控件在移动端保持原有筛选能力；时间筛选合并为日期范围控件，其他筛选项按两列排列。
+- 列表规则：舆情卡片在移动端分行展示编号、来源类型、分类、风险等级、地域、标题、报送单位和时间，避免文本重叠。
+- 操作规则：移动端保留舆情上报、筛选、研判、进入详情和切换至报告管理等操作。
 
-### 10.4 <span style="color:#0052d9">手机端舆情上报</span>
+### 10.4 移动端舆情上报
 
-<span style="color:#0052d9">- 展示规则：舆情上报页面在手机端使用单列表单布局，每条舆情表单独立成卡片，上报时间、舆情地域、省市选择、报送单位、标题、内容纵向排列。</span>
-<span style="color:#0052d9">- 入口规则：手机端舆情上报从舆情汇总页“舆情上报”按钮进入，不在手机端导航中单独展示。</span>
-<span style="color:#0052d9">- 交互规则：“添加一条舆情”“移除舆情”“重置”“提交上报”在手机端均可操作；多条舆情按上下顺序展示。</span>
-<span style="color:#0052d9">- 校验规则：沿用桌面端必填校验；“内容”字段必填，最多 2000 字，超出时提示“内容最多输入2000字”；提交失败时保留原错误提示，提交成功后返回舆情汇总。</span>
-<span style="color:#0052d9">- 数据规则：提交成功后按原规则写入舆情列表，并同步触发通知中心数据更新。</span>
+- 展示规则：舆情上报页面在移动端使用单列表单布局，每条舆情表单独立成卡片，上报时间、舆情地域、省市选择、报送单位、标题、内容纵向排列。
+- 入口规则：移动端舆情上报从舆情汇总页“舆情上报”按钮进入，不在移动端导航中单独展示。
+- 交互规则：“添加一条舆情”“移除舆情”“重置”“提交上报”在移动端均可操作；多条舆情按上下顺序展示。
+- 校验规则：“内容”字段必填，最多 2000 字，超出时提示“内容最多输入2000字”；提交失败时保留错误提示，提交成功后返回舆情汇总。
+- 数据规则：提交成功后按舆情上报规则写入舆情列表，并按通知权限规则生成通知记录。
 
-### 10.5 <span style="color:#0052d9">舆情研判风险等级</span>
+### 10.5 移动端报告管理
 
-<span style="color:#0052d9">- 展示规则：舆情研判弹窗在“舆情分类”下方新增“风险等级”单选区，选项为红、黄、蓝、持续观察。</span>
-<span style="color:#0052d9">- 交互规则：风险等级默认不选；点击确认时，舆情分类和风险等级均为必选。未选择风险等级时提示“请选择风险等级”，弹窗不关闭。</span>
-<span style="color:#0052d9">- 数据规则：确认后保存所选风险等级；再次打开研判弹窗时回显当前分类和风险等级。</span>
-<span style="color:#0052d9">- 展示范围：舆情列表和舆情详情展示风险等级标签。</span>
+- 展示规则：移动端报告管理展示报告列表，列表项包含报告编号、状态、标题、时间和收录舆情数量。
+- 交互规则：点击报告列表项进入报告预览页；报告预览仅用于查看报告正文内容。
+- 操作限制：移动端不支持新建报告、编辑报告、删除报告和导出报告；上述能力仅在桌面端按权限开放。
+- 返回规则：报告预览页提供返回报告列表入口。
 
-### 10.6 <span style="color:#0052d9">数据统计页面</span>
+### 10.6 舆情研判风险等级
 
-<span style="color:#0052d9">- 入口规则：左侧导航新增“数据统计”菜单，与舆情汇总、报告管理平级。</span>
-<span style="color:#0052d9">- 筛选规则：页面顶部提供开始日期、结束日期筛选；为空时统计全部舆情数据，设置日期后按舆情上报时间过滤。</span>
-<span style="color:#0052d9">- 统计范围：统计基于当前舆情数据集。</span>
-<span style="color:#0052d9">- 指标规则：专班监测数量统计统计部门为“舆情专班”的数据；各地市报送数量按地市维度聚合；各部门报送数据按报送单位聚合。</span>
-<span style="color:#0052d9">- 展示规则：页面展示统计卡片和排行表，包含专班监测数量、各地市报送数量、各部门报送数据。</span>
-<span style="color:#0052d9">- 空状态：筛选范围内无数据时，统计数量显示 0，排行表展示暂无统计数据。</span>
+- 展示规则：舆情研判弹窗在“舆情分类”下方展示“风险等级”单选区，选项为红、黄、蓝、持续观察。
+- 交互规则：风险等级默认不选；点击确认时，舆情分类和风险等级均为必选。未选择风险等级时提示“请选择风险等级”，弹窗不关闭。
+- 数据规则：确认后保存所选风险等级；再次打开研判弹窗时回显当前分类和风险等级。
+- 展示范围：舆情列表和舆情详情展示风险等级标签。
+
+### 10.7 数据统计
+
+- 入口规则：左侧导航展示“数据统计”菜单，与舆情汇总、报告管理平级。
+- 筛选规则：页面顶部提供开始日期、结束日期筛选；为空时统计全部舆情数据，设置日期后按舆情上报时间过滤。各统计排行表提供独立筛选；各地市舆情数量支持地区筛选，地市宣传部报送量和各部门报送数量支持部门筛选。
+- 统计范围：统计基于当前舆情数据集。
+- 指标规则：专班监测数量统计统计部门为“舆情专班”的数据；各地市舆情数量按地市维度聚合；地市宣传部报送量强绑定系统部门树中的各地市本级宣传部；各部门报送数量展示除各地市本级宣传部之外的部门报送数据。
+- 展示规则：页面展示统计卡片和排行表，包含专班监测数量、各地市舆情数量、地市宣传部报送量、各部门报送数量。
+- 空状态：筛选范围内无数据时，统计数量显示 0，排行表展示暂无统计数据。
 
 ---
 
@@ -1620,7 +1655,8 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.15：数据隔离升级为本部门及下级部门可见，全部单位筛选改为多级部门级联，录用状态信息按报告管理权限显隐 | 2026-06-29 |
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.16：移除查看全部舆情数据权限点，舆情数据范围统一由部门上下级关系确定 | 2026-06-29 |
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.17：补充短信验证码单日与短时频控、错误次数失效、手机号注册校验和登录按钮状态策略 | 2026-06-30 |
-| 313308ec-6699-40ed-b428-968958be84ed | v1.2.18：系统名称更新为“五个一”机制报送与管理系统，新增 Web/手机端演示切换、手机端舆情汇总与上报适配、其他模块不落移动端、研判风险等级必选、数据统计页面、上报内容 2000 字上限及蓝色标记 PRD | 2026-07-01 |
+| 313308ec-6699-40ed-b428-968958be84ed | v1.2.18：系统名称更新为“五个一”机制报送与管理系统，补充移动端舆情汇总、上报和报告只读预览适配，研判风险等级必选，数据统计页面和上报内容 2000 字上限 | 2026-07-01 |
+| 313308ec-6699-40ed-b428-968958be84ed | v1.2.19：优化移动端底部 Tab 选中样式，补充报告管理只读预览、舆情风险筛选和研判分类展示规则 | 2026-07-01 |
 </textarea>
 <script>
 /* ===== Auth & Roles ===== */
@@ -1634,7 +1670,7 @@ let pendingLoginUser=null;
 let displayMode='web';
 
 function isMobileMode(){return displayMode==='mobile'}
-function isMobileAccessiblePage(page){return ['summary','report','detail'].includes(page)}
+function isMobileAccessiblePage(page){return ['summary','report','detail','manage','preview'].includes(page)}
 function setDisplayMode(mode,skipRender){
   displayMode=mode==='mobile'?'mobile':'web';
   document.body.classList.toggle('demo-mobile',displayMode==='mobile');
@@ -1873,7 +1909,8 @@ document.addEventListener('click',function(e){
 function buildSidebar(){
   const nav=document.getElementById('sidebarNav');
   const items=isMobileMode()?[
-    {id:'summary',icon:'ri-list-check-2',title:'舆情汇总'}
+    {id:'summary',icon:'ri-list-check-2',title:'舆情汇总'},
+    {id:'manage',icon:'ri-file-text-line',title:'报告管理'}
   ]:[
     {id:'summary',icon:'ri-list-check-2',title:'舆情汇总'},
     {id:'stats',icon:'ri-bar-chart-box-line',title:'数据统计'},
@@ -1913,6 +1950,7 @@ const yuqingData=[
   {id:'YQ-20260326-001',type:'本省',region:'浙江/台州',category:'治安事件',riskLevel:'',statDept:'台州市宣传部',title:'台州市某化工企业安全事故引发周边群众关注',source:'台州市宣传部',time:'2026-03-26 08:30',summary:'台州市某化工企业发生安全事故，造成一定环境影响。周边居民通过社交媒体传播现场图片和视频。',reporter:'台州市宣传部'}
 ];
 const yqCategories=['社会民生领域','经济金融领域','涉政涉稳领域','文化科技领域','生态环保领域'];
+function getVisibleYqCategories(){return yqCategories.filter(c=>!String(c).includes('公共'))}
 const riskLevels=['红','黄','蓝','持续观察'];
 function getRiskClass(level){
   return level==='红'?'risk-red':level==='黄'?'risk-yellow':level==='蓝'?'risk-blue':level==='持续观察'?'risk-watch':'';
@@ -2182,13 +2220,15 @@ function getFilterValues(){
     used:hasReportManagePermission()?val('filterUsed'):'',
     province:val('filterProv'),
     city:val('filterCity'),
-    category:val('filterCategory')
+    category:val('filterCategory'),
+    risk:val('filterRisk')
   };
 }
 function matchesYuqingFilters(item,filters,usedIds){
   if(filters.type&&item.type!==filters.type)return false;
   if(filters.province){if(filters.city){if(item.region!==filters.province+'/'+filters.city)return false}else if(!item.region.startsWith(filters.province+'/'))return false}
   if(filters.category&&item.category!==filters.category)return false;
+  if(filters.risk&&item.riskLevel!==filters.risk)return false;
   if(filters.unit){const names=getDeptNamesById(filters.unit);if(names.length&&!names.includes(item.reporter)&&!names.includes(item.source))return false}
   if(filters.dateStart&&item.time.slice(0,10)<filters.dateStart)return false;
   if(filters.dateEnd&&item.time.slice(0,10)>filters.dateEnd)return false;
@@ -2262,6 +2302,22 @@ function getCityNameFromDept(name){
   const m=String(name||'').match(/([^省市区县]+市)宣传部/);
   return m?m[1]:'其他';
 }
+function getPrefectureCityDeptMap(){
+  const map=new Map();
+  (departmentData||[]).forEach(node=>{
+    if(/市$/.test(node.name)&&(node.children||[]).length){
+      const dept=(node.children||[]).find(child=>child.name===node.name+'宣传部');
+      if(dept)map.set(dept.name,node.name);
+    }
+  });
+  return map;
+}
+function getStatUnitName(item){return item.reporter||item.source||item.statDept||'其他'}
+function getStatsFilterValue(id){const el=document.getElementById(id);return el?el.value:''}
+function renderStatsSelect(id,label,options,value){
+  return '<select class="stats-panel-filter" id="'+id+'" onchange="updateStatsPage()"><option value="">'+label+'</option>'
+    +options.map(opt=>'<option value="'+opt+'"'+(opt===value?' selected':'')+'>'+opt+'</option>').join('')+'</select>';
+}
 function countBy(rows,getKey){
   const map=new Map();
   rows.forEach(row=>{
@@ -2277,29 +2333,48 @@ function renderStatsRows(rows){
 }
 function renderStatsPage(){
   const pc=document.getElementById('pageContainer');
-  pc.innerHTML='<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">数据统计</div><div class="page-desc">统计专班监测数量、各地市报送数量、各部门报送数据</div></div></div>'
+  pc.innerHTML='<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">数据统计</div><div class="page-desc">统计专班监测数量、各地市舆情数量、地市宣传部报送量、各部门报送数量</div></div></div>'
     +'<div class="stats-filter"><input type="date" class="filter-date" id="statsDateStart" onchange="updateStatsPage()"><span class="filter-sep">至</span><input type="date" class="filter-date" id="statsDateEnd" onchange="updateStatsPage()"><button class="btn btn-outline" onclick="resetStatsFilter()"><i class="ri-refresh-line"></i>清空筛选</button></div>'
     +'<div id="statsPageBody"></div></div>';
   updateStatsPage();
 }
 function updateStatsPage(){
   const rows=getStatsDateFilteredData();
+  const cityDeptMap=getPrefectureCityDeptMap();
+  const cityFilter=getStatsFilterValue('statsCityFilter');
+  const cityDeptFilter=getStatsFilterValue('statsCityDeptFilter');
+  const deptFilter=getStatsFilterValue('statsDeptFilter');
+  const cityOptions=Array.from(new Set(rows.map(item=>getCityNameFromDept(getStatUnitName(item))).filter(name=>name&&name!=='其他'))).sort((a,b)=>a.localeCompare(b,'zh-CN'));
+  const cityDeptOptions=Array.from(cityDeptMap.keys()).sort((a,b)=>a.localeCompare(b,'zh-CN'));
+  const deptOptions=Array.from(new Set(rows.map(getStatUnitName).filter(name=>!cityDeptMap.has(name)))).sort((a,b)=>a.localeCompare(b,'zh-CN'));
   const squad=rows.filter(item=>item.statDept==='舆情专班').length;
-  const cityRows=countBy(rows.filter(item=>item.statDept!=='舆情专班'),item=>getCityNameFromDept(item.reporter||item.source));
-  const deptRows=countBy(rows,item=>item.reporter||item.source||item.statDept);
+  const citySourceRows=rows.filter(item=>item.statDept!=='舆情专班');
+  const cityRows=countBy(citySourceRows.filter(item=>!cityFilter||getCityNameFromDept(getStatUnitName(item))===cityFilter),item=>getCityNameFromDept(getStatUnitName(item)));
+  const cityDeptRowsRaw=rows.filter(item=>{
+    const unit=getStatUnitName(item);
+    return cityDeptMap.has(unit)&&(!cityDeptFilter||unit===cityDeptFilter);
+  });
+  const cityDeptRows=countBy(cityDeptRowsRaw,item=>getStatUnitName(item));
+  const deptRowsRaw=rows.filter(item=>{
+    const unit=getStatUnitName(item);
+    return !cityDeptMap.has(unit)&&(!deptFilter||unit===deptFilter);
+  });
+  const deptRows=countBy(deptRowsRaw,item=>getStatUnitName(item));
   const body=document.getElementById('statsPageBody');
   if(!body)return;
   body.innerHTML='<div class="stats-grid">'
     +'<div class="stat-card"><div class="stat-icon blue"><i class="ri-radar-line"></i></div><div class="stat-info"><div class="stat-num">'+squad+'</div><div class="stat-label">专班监测数量</div></div></div>'
-    +'<div class="stat-card"><div class="stat-icon orange"><i class="ri-map-2-line"></i></div><div class="stat-info"><div class="stat-num">'+cityRows.reduce((s,r)=>s+r.count,0)+'</div><div class="stat-label">地市报送数量</div></div></div>'
-    +'<div class="stat-card"><div class="stat-icon green"><i class="ri-building-2-line"></i></div><div class="stat-info"><div class="stat-num">'+deptRows.length+'</div><div class="stat-label">报送部门数</div></div></div></div>'
-    +'<div class="stats-panel"><div class="stats-panel-title">各地市报送数量</div><table class="stats-table"><thead><tr><th style="width:40px">排名</th><th>地市</th><th>数量</th></tr></thead><tbody>'+renderStatsRows(cityRows)+'</tbody></table></div>'
-    +'<div class="stats-panel"><div class="stats-panel-title">各部门报送数据</div><table class="stats-table"><thead><tr><th style="width:40px">排名</th><th>部门</th><th>数量</th></tr></thead><tbody>'+renderStatsRows(deptRows)+'</tbody></table></div>';
+    +'<div class="stat-card"><div class="stat-icon orange"><i class="ri-map-2-line"></i></div><div class="stat-info"><div class="stat-num">'+citySourceRows.length+'</div><div class="stat-label">地市舆情数量</div></div></div>'
+    +'<div class="stat-card"><div class="stat-icon green"><i class="ri-building-2-line"></i></div><div class="stat-info"><div class="stat-num">'+cityDeptRowsRaw.length+'</div><div class="stat-label">地市宣传部报送量</div></div></div></div>'
+    +'<div class="stats-panel"><div class="stats-panel-head"><div class="stats-panel-title">各地市舆情数量</div>'+renderStatsSelect('statsCityFilter','全部地区',cityOptions,cityFilter)+'</div><table class="stats-table"><thead><tr><th style="width:40px">排名</th><th>地市</th><th>数量</th></tr></thead><tbody>'+renderStatsRows(cityRows)+'</tbody></table></div>'
+    +'<div class="stats-panel"><div class="stats-panel-head"><div class="stats-panel-title">地市宣传部报送量</div>'+renderStatsSelect('statsCityDeptFilter','全部部门',cityDeptOptions,cityDeptFilter)+'</div><table class="stats-table"><thead><tr><th style="width:40px">排名</th><th>地市宣传部</th><th>数量</th></tr></thead><tbody>'+renderStatsRows(cityDeptRows)+'</tbody></table></div>'
+    +'<div class="stats-panel"><div class="stats-panel-head"><div class="stats-panel-title">各部门报送数量</div>'+renderStatsSelect('statsDeptFilter','全部部门',deptOptions,deptFilter)+'</div><table class="stats-table"><thead><tr><th style="width:40px">排名</th><th>部门</th><th>数量</th></tr></thead><tbody>'+renderStatsRows(deptRows)+'</tbody></table></div>';
 }
 function resetStatsFilter(){
   const s=document.getElementById('statsDateStart'),e=document.getElementById('statsDateEnd');
   if(s)s.value='';
   if(e)e.value='';
+  ['statsCityFilter','statsCityDeptFilter','statsDeptFilter'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
   updateStatsPage();
 }
 
@@ -2322,7 +2397,8 @@ function renderSummaryPage(){
     +(canSeeUsed?'<select class="filter-select" id="filterUsed" onchange="filterList()"><option value="">录用状态</option><option value="yes">已录用</option><option value="no">未录用</option></select>':'')
     +'<select class="filter-select" id="filterProv" onchange="onFilterProvChange()"><option value="">全部省份</option>'+provinceCityData.map(p=>'<option value="'+p.name+'">'+p.name+'</option>').join('')+'</select>'
     +'<select class="filter-select" id="filterCity" onchange="filterList()" style="display:none"><option value="">全部城市</option></select>'
-	    +'<select class="filter-select" id="filterCategory" onchange="filterList()"><option value="">全部分类</option>'+yqCategories.map(c=>'<option>'+c+'</option>').join('')+'</select></div>'
+	    +'<select class="filter-select" id="filterCategory" onchange="filterList()"><option value="">全部分类</option>'+getVisibleYqCategories().map(c=>'<option>'+c+'</option>').join('')+'</select>'
+    +'<select class="filter-select" id="filterRisk" onchange="filterList()"><option value="">全部风险</option>'+riskLevels.map(r=>'<option>'+r+'</option>').join('')+'</select></div>'
     +'<div class="action-bar">'+(canUse?'<button class="select-all-btn" onclick="toggleSelectAll()"><i class="ri-checkbox-blank-circle-line" id="selectAllIcon"></i>全选</button>':'')+'<span class="list-count" id="listCount"></span></div>'
     +'<div class="yuqing-list" id="yuqingList"></div></div>';
   renderUnitCascade();
@@ -2417,7 +2493,7 @@ function renderList(data,usedIds){
 }
 function showTagModal(yqId){
   const item=yuqingData.find(d=>d.id===yqId);if(!item)return;
-  const opts=yqCategories.map(c=>'<label style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius-md);cursor:pointer;'+(item.category===c?'background:var(--primary-bg)':'')+'"><input type="radio" name="tagChoice" value="'+c+'"'+(item.category===c?' checked':'')+' style="accent-color:var(--primary)"><span style="font-size:13px">'+c+'</span></label>').join('');
+  const opts=getVisibleYqCategories().map(c=>'<label style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius-md);cursor:pointer;'+(item.category===c?'background:var(--primary-bg)':'')+'"><input type="radio" name="tagChoice" value="'+c+'"'+(item.category===c?' checked':'')+' style="accent-color:var(--primary)"><span style="font-size:13px">'+c+'</span></label>').join('');
   const risks=riskLevels.map(r=>'<label style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius-md);cursor:pointer;'+(item.riskLevel===r?'background:var(--primary-bg)':'')+'"><input type="radio" name="riskChoice" value="'+r+'"'+(item.riskLevel===r?' checked':'')+' style="accent-color:var(--primary)"><span class="risk-tag '+getRiskClass(r)+'">'+r+'</span></label>').join('');
   const body='<div style="font-size:13px;font-weight:600;margin-bottom:8px">舆情分类<span class="req">*</span></div>'+(opts||'<p style="color:var(--text-tertiary)">无分类可选</p>')+'<div style="height:12px"></div><div style="font-size:13px;font-weight:600;margin-bottom:8px">风险等级<span class="req">*</span></div>'+risks;
   showModal('舆情研判',body,'<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmTag(\''+yqId+'\')">确认</button>');
@@ -2511,15 +2587,15 @@ function handleUseSingle(id){selectedIds.clear();selectedIds.add(id);handleUseTo
 function confirmUseToReport(){const ch=document.querySelector('input[name="rptChoice"]:checked');if(!ch){showToast('error','请选择报告');return}const r=reportData.find(x=>x.id===ch.value);if(r){yuqingData.filter(d=>selectedIds.has(d.id)).forEach(item=>{if(!r.items.find(i=>i.id===item.id))r.items.push(item)})}closeModal();showToast('success','已录用 '+selectedIds.size+' 条');const rid=ch.value;selectedIds.clear();document.getElementById('btnUse').classList.remove('enabled');setTimeout(()=>navigate('edit',rid),500)}
 
 /* ===== Manage ===== */
-function renderManagePage(){const pc=document.getElementById('pageContainer');pc.innerHTML='<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">报告管理</div></div>'+(hasPermission('p2-1')?'<button class="btn btn-primary" onclick="createNewReport()"><i class="ri-add-line"></i>新建报告</button>':'')+'</div><div class="report-list" id="reportList"></div></div>';renderManageList()}
-function renderManageList(){const list=document.getElementById('reportList');if(!list)return;list.innerHTML=reportData.map(r=>{const sm={draft:['草稿','status-draft'],published:['已发布','status-published']};const[l,c]=sm[r.status]||['',''];const draftActions=r.status==='draft'?(hasPermission('p2-2')?'<button class="btn btn-primary btn-sm" onclick="navigate(\'edit\',\''+r.id+'\')"><i class="ri-edit-line"></i>编辑</button>':'')+(hasPermission('p2-3')?'<button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="deleteReport(\''+r.id+'\')"><i class="ri-delete-bin-line"></i></button>':''):'';return'<div class="report-card" onclick="navigate(\'preview\',\''+r.id+'\')"><div class="report-body"><div class="report-meta"><span class="report-id">'+r.id+'</span><span class="status-tag '+c+'">'+l+'</span></div><div class="report-title">'+r.title+'</div><div class="report-info"><span><i class="ri-time-line"></i> '+r.time+'</span><span><i class="ri-file-list-3-line"></i> '+r.items.length+' 条</span></div></div><div class="report-actions" onclick="event.stopPropagation()">'+draftActions+'<button class="btn btn-outline btn-sm" onclick="navigate(\'preview\',\''+r.id+'\')"><i class="ri-eye-line"></i>预览</button></div></div>'}).join('')}
+function renderManagePage(){const pc=document.getElementById('pageContainer');pc.innerHTML='<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">报告管理</div></div>'+(!isMobileMode()&&hasPermission('p2-1')?'<button class="btn btn-primary" onclick="createNewReport()"><i class="ri-add-line"></i>新建报告</button>':'')+'</div><div class="report-list" id="reportList"></div></div>';renderManageList()}
+function renderManageList(){const list=document.getElementById('reportList');if(!list)return;list.innerHTML=reportData.map(r=>{const sm={draft:['草稿','status-draft'],published:['已发布','status-published']};const[l,c]=sm[r.status]||['',''];const draftActions=!isMobileMode()&&r.status==='draft'?(hasPermission('p2-2')?'<button class="btn btn-primary btn-sm" onclick="navigate(\'edit\',\''+r.id+'\')"><i class="ri-edit-line"></i>编辑</button>':'')+(hasPermission('p2-3')?'<button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="deleteReport(\''+r.id+'\')"><i class="ri-delete-bin-line"></i></button>':''):'';return'<div class="report-card" onclick="navigate(\'preview\',\''+r.id+'\')"><div class="report-body"><div class="report-meta"><span class="report-id">'+r.id+'</span><span class="status-tag '+c+'">'+l+'</span></div><div class="report-title">'+r.title+'</div><div class="report-info"><span><i class="ri-time-line"></i> '+r.time+'</span><span><i class="ri-file-list-3-line"></i> '+r.items.length+' 条</span></div></div><div class="report-actions" onclick="event.stopPropagation()">'+draftActions+'<button class="btn btn-outline btn-sm" onclick="navigate(\'preview\',\''+r.id+'\')"><i class="ri-eye-line"></i>预览</button></div></div>'}).join('')}
 function createNewReport(){const id='BG-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(reportData.length+1).padStart(3,'0');const d=new Date();const r={id,title:'',status:'draft',time:d.toISOString().slice(0,16).replace('T',' '),items:[]};reportData.unshift(r);renderManageList();navigate('edit',id);setTimeout(()=>openSelectFromSummary(),100)}
 function deleteReport(id){showModal('确认删除','<p style="font-size:14px;color:var(--text-secondary)">确定删除该报告？</p>','<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" style="background:var(--red)" onclick="reportData.splice(reportData.findIndex(r=>r.id===\''+id+'\'),1);closeModal();showToast(\'success\',\'已删除\');renderManageList()">确认</button>')}
 
 /* ===== Preview ===== */
 function renderPreviewPage(reportId){const report=reportData.find(r=>r.id===reportId);if(!report)return;const li=report.items.filter(i=>i.type==='本省'),ei=report.items.filter(i=>i.type==='外省镜鉴');
 function bodyItems(items,offset){return items.map((it,i)=>'<div class="doc-section" style="margin-bottom:20px"><div class="doc-section-title">'+(offset+i+1)+'、'+it.title+'</div><div class="doc-item">'+it.summary+'</div>'+(it.suggestion?'<div class="doc-item" style="color:var(--text-secondary);font-size:13px;margin-top:8px"><i class="ri-lightbulb-line" style="color:var(--orange)"></i> 建议意见：'+it.suggestion+'</div>':'')+'<div class="doc-item" style="color:var(--text-tertiary);font-size:12px;margin-top:4px">（'+it.source+' | '+it.time+'）</div></div>').join('')}
-document.getElementById('pageContainer').innerHTML='<div class="page active"><div style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center"><button class="btn btn-ghost" onclick="navigate(\'manage\')"><i class="ri-arrow-left-line"></i> 返回</button><div style="display:flex;gap:8px">'+(report.status==='draft'&&hasPermission('p2-2')?'<button class="btn btn-primary btn-sm" onclick="navigate(\'edit\',\''+report.id+'\')"><i class="ri-edit-line"></i>编辑</button>':'')+'<button class="btn btn-outline btn-sm" onclick="exportWord(\''+report.id+'\')"><i class="ri-download-line"></i>导出 Word</button></div></div>'
+document.getElementById('pageContainer').innerHTML='<div class="page active"><div style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center"><button class="btn btn-ghost" onclick="navigate(\'manage\')"><i class="ri-arrow-left-line"></i> 返回</button><div style="display:flex;gap:8px">'+(!isMobileMode()&&report.status==='draft'&&hasPermission('p2-2')?'<button class="btn btn-primary btn-sm" onclick="navigate(\'edit\',\''+report.id+'\')"><i class="ri-edit-line"></i>编辑</button>':'')+(!isMobileMode()?'<button class="btn btn-outline btn-sm" onclick="exportWord(\''+report.id+'\')"><i class="ri-download-line"></i>导出 Word</button>':'')+'</div></div>'
 +'<div class="doc-preview"><div class="doc-header"><div class="doc-title">'+report.title+'</div><div class="doc-date">'+report.time+'</div></div>'
 +'<div class="doc-section"><div class="doc-section-title">【内容提要】</div><div class="doc-toc">'+(li.length?'<div class="toc-title">一、省内舆情</div>'+li.map((it,i)=>'<div class="toc-entry">'+(i+1)+'. '+it.title+'</div>').join(''):'')+(ei.length?'<div class="toc-title" style="margin-top:10px">二、外省舆情镜鉴</div>'+ei.map((it,i)=>'<div class="toc-entry">'+(i+1)+'. '+it.title+'</div>').join(''):'')+'</div></div>'
 +(li.length?'<div class="body-section-title">一、本省舆情</div>'+bodyItems(li,0):'')
