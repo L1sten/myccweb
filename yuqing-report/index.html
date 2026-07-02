@@ -1602,10 +1602,10 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 
 - <span style="color:#0052d9">入口规则：左侧导航展示“数据统计”菜单，与舆情汇总、报告管理平级；拥有“查看数据统计”权限的用户可见。</span>
 - <span style="color:#d93025">移动端规则：拥有“查看数据统计”权限的用户在移动端底部 Tab 中可见“数据统计”入口，位置位于“舆情汇总”和“报告管理”之间。</span>
-- <span style="color:#0052d9">筛选规则：页面顶部提供开始日期、结束日期筛选；为空时统计全部舆情数据，设置日期后按舆情上报时间过滤。各统计排行表提供独立筛选；各地市舆情数量支持地区筛选，地市宣传部报送量和各部门报送数量支持部门筛选。</span>
+- <span style="color:#0052d9">筛选规则：页面顶部提供开始日期、结束日期筛选；为空时统计全部舆情数据，设置日期后按舆情上报时间过滤。各地区舆情数量支持省份筛选，选择某省后同时展示该省及该省下地市数据；不选择省份时并列展示全部省级和地市数据。地市宣传部报送量不提供筛选，固定展示 11 个地市本级宣传部；各部门报送数量支持部门筛选。</span>
 - <span style="color:#0052d9">统计范围：统计基于当前舆情数据集。</span>
-- <span style="color:#0052d9">指标规则：专班监测数量统计统计部门为“舆情专班”的数据；各地市舆情数量按地市维度聚合；地市宣传部报送量强绑定系统部门树中的各地市本级宣传部；各部门报送数量展示除各地市本级宣传部之外的部门报送数据。</span>
-- <span style="color:#0052d9">展示规则：页面展示统计卡片和排行表，包含专班监测数量、各地市舆情数量、地市宣传部报送量、各部门报送数量。</span>
+- <span style="color:#0052d9">指标规则：专班监测数量统计统计部门为“舆情专班”的数据；各地区舆情数量按舆情地域生成省级汇总和城市明细，省级与城市并列展示；地市宣传部报送量强绑定系统部门树中的 11 个地市本级宣传部；各部门报送数量展示除各地市本级宣传部之外的部门报送数据。</span>
+- <span style="color:#0052d9">展示规则：页面展示统计卡片和排行表，包含专班监测数量、各地区舆情数量、地市宣传部报送量、各部门报送数量；地市宣传部报送量按数量从大到小排序，数量为 0 的地市宣传部也展示。</span>
 - <span style="color:#0052d9">空状态：筛选范围内无数据时，统计数量显示 0，排行表展示暂无统计数据。</span>
 
 ### <span style="color:#0052d9">10.8 编号生成策略</span>
@@ -1672,6 +1672,7 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.20：PRD 本期新增需求集中蓝色标识，数据统计顶部新增各部门报送数量统计卡 | 2026-07-01 |
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.21：确定舆情编号和报告编号按日期加同日序号生成，报告编号改为同日最大序号递增，并补充编号稳定规则 | 2026-07-01 |
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.22：移动端底部新增数据统计 Tab，数据统计页去除冗余说明和清空筛选按钮，PRD 中本次移动端数据统计需求改为红色标识 | 2026-07-02 |
+| 313308ec-6699-40ed-b428-968958be84ed | v1.2.23：数据统计各地区舆情数量改为省级与地市并列展示，地市宣传部报送量固定展示 11 个地市本级宣传部并去除筛选 | 2026-07-02 |
 </textarea>
 <script>
 /* ===== Auth & Roles ===== */
@@ -2335,6 +2336,26 @@ function getCityNameFromDept(name){
   const m=String(name||'').match(/([^省市区县]+市)宣传部/);
   return m?m[1]:'其他';
 }
+function normalizeProvinceName(name){
+  name=String(name||'').trim();
+  if(!name)return '';
+  if(name==='全国')return '全国';
+  if(/(省|市|自治区|特别行政区)$/.test(name))return name;
+  if(['北京','天津','上海','重庆'].includes(name))return name+'市';
+  if(name==='内蒙古')return '内蒙古自治区';
+  if(['广西','宁夏','新疆','西藏'].includes(name))return name+'自治区';
+  return name+'省';
+}
+function normalizeCityName(name){
+  name=String(name||'').trim();
+  if(!name||name==='全国')return '';
+  if(/(市|区|县|州|盟)$/.test(name))return name;
+  return name+'市';
+}
+function getRegionParts(item){
+  const parts=String((item&&item.region)||'').split('/');
+  return {province:normalizeProvinceName(parts[0]||''),city:normalizeCityName(parts[1]||'')};
+}
 function getPrefectureCityDeptMap(){
   const map=new Map();
   (departmentData||[]).forEach(node=>{
@@ -2359,6 +2380,19 @@ function countBy(rows,getKey){
   });
   return Array.from(map.entries()).map(([name,count])=>({name,count})).sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name,'zh-CN'));
 }
+function buildRegionStatRows(rows,provinceFilter){
+  const map=new Map();
+  rows.forEach(item=>{
+    const parts=getRegionParts(item);
+    if(provinceFilter&&parts.province!==provinceFilter)return;
+    if(parts.province)map.set(parts.province,(map.get(parts.province)||0)+1);
+    if(parts.city)map.set(parts.city,(map.get(parts.city)||0)+1);
+  });
+  return Array.from(map.entries()).map(([name,count])=>({name,count})).sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name,'zh-CN'));
+}
+function buildFixedCityDeptRows(rows,cityDeptMap){
+  return Array.from(cityDeptMap.keys()).map(name=>({name,count:rows.filter(item=>getStatUnitName(item)===name).length})).sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name,'zh-CN'));
+}
 function renderStatsRows(rows){
   const max=Math.max(1,...rows.map(r=>r.count));
   if(!rows.length)return '<tr><td colspan="3" style="text-align:center;color:var(--text-tertiary);padding:26px 8px">暂无统计数据</td></tr>';
@@ -2374,20 +2408,18 @@ function renderStatsPage(){
 function updateStatsPage(){
   const rows=getStatsDateFilteredData();
   const cityDeptMap=getPrefectureCityDeptMap();
-  const cityFilter=getStatsFilterValue('statsCityFilter');
-  const cityDeptFilter=getStatsFilterValue('statsCityDeptFilter');
+  const provinceFilter=getStatsFilterValue('statsProvinceFilter');
   const deptFilter=getStatsFilterValue('statsDeptFilter');
-  const cityOptions=Array.from(new Set(rows.map(item=>getCityNameFromDept(getStatUnitName(item))).filter(name=>name&&name!=='其他'))).sort((a,b)=>a.localeCompare(b,'zh-CN'));
-  const cityDeptOptions=Array.from(cityDeptMap.keys()).sort((a,b)=>a.localeCompare(b,'zh-CN'));
-  const deptOptions=Array.from(new Set(rows.map(getStatUnitName).filter(name=>!cityDeptMap.has(name)))).sort((a,b)=>a.localeCompare(b,'zh-CN'));
   const squad=rows.filter(item=>item.statDept==='舆情专班').length;
   const citySourceRows=rows.filter(item=>item.statDept!=='舆情专班');
-  const cityRows=countBy(citySourceRows.filter(item=>!cityFilter||getCityNameFromDept(getStatUnitName(item))===cityFilter),item=>getCityNameFromDept(getStatUnitName(item)));
+  const provinceOptions=Array.from(new Set(citySourceRows.map(item=>getRegionParts(item).province).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'zh-CN'));
+  const deptOptions=Array.from(new Set(rows.map(getStatUnitName).filter(name=>!cityDeptMap.has(name)))).sort((a,b)=>a.localeCompare(b,'zh-CN'));
+  const cityRows=buildRegionStatRows(citySourceRows,provinceFilter);
   const cityDeptRowsRaw=rows.filter(item=>{
     const unit=getStatUnitName(item);
-    return cityDeptMap.has(unit)&&(!cityDeptFilter||unit===cityDeptFilter);
+    return cityDeptMap.has(unit);
   });
-  const cityDeptRows=countBy(cityDeptRowsRaw,item=>getStatUnitName(item));
+  const cityDeptRows=buildFixedCityDeptRows(rows,cityDeptMap);
   const deptRowsRaw=rows.filter(item=>{
     const unit=getStatUnitName(item);
     return !cityDeptMap.has(unit)&&(!deptFilter||unit===deptFilter);
@@ -2400,8 +2432,8 @@ function updateStatsPage(){
     +'<div class="stat-card"><div class="stat-icon orange"><i class="ri-map-2-line"></i></div><div class="stat-info"><div class="stat-num">'+citySourceRows.length+'</div><div class="stat-label">地市舆情数量</div></div></div>'
     +'<div class="stat-card"><div class="stat-icon green"><i class="ri-building-2-line"></i></div><div class="stat-info"><div class="stat-num">'+cityDeptRowsRaw.length+'</div><div class="stat-label">地市宣传部报送量</div></div></div>'
     +'<div class="stat-card"><div class="stat-icon blue"><i class="ri-community-line"></i></div><div class="stat-info"><div class="stat-num">'+deptRowsRaw.length+'</div><div class="stat-label">各部门报送数量</div></div></div></div>'
-    +'<div class="stats-panel"><div class="stats-panel-head"><div class="stats-panel-title">各地市舆情数量</div>'+renderStatsSelect('statsCityFilter','全部地区',cityOptions,cityFilter)+'</div><table class="stats-table"><thead><tr><th style="width:40px">排名</th><th>地市</th><th>数量</th></tr></thead><tbody>'+renderStatsRows(cityRows)+'</tbody></table></div>'
-    +'<div class="stats-panel"><div class="stats-panel-head"><div class="stats-panel-title">地市宣传部报送量</div>'+renderStatsSelect('statsCityDeptFilter','全部部门',cityDeptOptions,cityDeptFilter)+'</div><table class="stats-table"><thead><tr><th style="width:40px">排名</th><th>地市宣传部</th><th>数量</th></tr></thead><tbody>'+renderStatsRows(cityDeptRows)+'</tbody></table></div>'
+    +'<div class="stats-panel"><div class="stats-panel-head"><div class="stats-panel-title">各地区舆情数量</div>'+renderStatsSelect('statsProvinceFilter','全部地区',provinceOptions,provinceFilter)+'</div><table class="stats-table"><thead><tr><th style="width:40px">排名</th><th>地区</th><th>数量</th></tr></thead><tbody>'+renderStatsRows(cityRows)+'</tbody></table></div>'
+    +'<div class="stats-panel"><div class="stats-panel-head"><div class="stats-panel-title">地市宣传部报送量</div></div><table class="stats-table"><thead><tr><th style="width:40px">排名</th><th>地市宣传部</th><th>数量</th></tr></thead><tbody>'+renderStatsRows(cityDeptRows)+'</tbody></table></div>'
     +'<div class="stats-panel"><div class="stats-panel-head"><div class="stats-panel-title">各部门报送数量</div>'+renderStatsSelect('statsDeptFilter','全部部门',deptOptions,deptFilter)+'</div><table class="stats-table"><thead><tr><th style="width:40px">排名</th><th>部门</th><th>数量</th></tr></thead><tbody>'+renderStatsRows(deptRows)+'</tbody></table></div>';
 }
 function renderSummaryPage(){
