@@ -430,7 +430,7 @@ body.demo-mobile .sidebar{width:100%;height:48px;max-height:48px;border-right:0;
 body.demo-mobile .sidebar-header{height:48px;padding:0 96px 0 54px;justify-content:center;position:relative}
 body.demo-mobile .sidebar-title{font-size:13px;white-space:normal;line-height:1.25;text-align:center;position:absolute;left:50%;transform:translateX(-50%);width:220px}
 body.demo-mobile .sidebar-logo{width:30px;height:30px;border-radius:8px;position:absolute;left:14px;top:9px}
-body.demo-mobile .sidebar-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;position:absolute;left:0;right:0;bottom:0;height:60px;padding:6px 12px;background:#fff;border-top:1px solid var(--border);box-shadow:0 -8px 18px rgba(15,23,42,.06);z-index:16}
+body.demo-mobile .sidebar-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;position:absolute;left:0;right:0;bottom:0;height:60px;padding:6px 12px;background:#fff;border-top:1px solid var(--border);box-shadow:0 -8px 18px rgba(15,23,42,.06);z-index:16}
 body.demo-mobile .nav-section{display:flex;gap:6px;padding-top:0;border-top:0;margin:0}
 body.demo-mobile .nav-label{display:none}
 body.demo-mobile .nav-item{height:48px;padding:4px 8px;margin:0;justify-content:center;gap:4px;border-radius:10px;flex-direction:column;position:relative;background:transparent}
@@ -1562,11 +1562,11 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 
 ### <span style="color:#0052d9">10.2 移动端适配范围</span>
 
-- <span style="color:#0052d9">范围规则：移动端覆盖舆情汇总、舆情上报和报告管理预览能力。</span>
-- <span style="color:#0052d9">菜单规则：移动端底部展示“舆情汇总”“报告管理”两个主入口；舆情上报从舆情汇总页按钮进入。</span>
-- <span style="color:#0052d9">隐藏规则：移动端不展示数据统计、部门管理、用户管理、角色管理等后台管理入口。</span>
+- <span style="color:#d93025">范围规则：移动端覆盖舆情汇总、舆情上报、数据统计和报告管理预览能力。</span>
+- <span style="color:#d93025">菜单规则：移动端底部展示“舆情汇总”“数据统计”“报告管理”三个主入口，数据统计位于报告管理前；舆情上报从舆情汇总页按钮进入。</span>
+- <span style="color:#d93025">隐藏规则：移动端不展示部门管理、用户管理、角色管理等后台管理入口。</span>
 - <span style="color:#0052d9">权限规则：移动端隐藏录用至报告、报告新建、报告编辑、报告删除等操作；报告管理仅支持查看列表和报告预览。</span>
-- <span style="color:#0052d9">验收标准：移动端舆情汇总、舆情上报、报告管理列表和报告预览页面内容不横向溢出，主要按钮可点击，表单控件可正常输入和选择。</span>
+- <span style="color:#d93025">验收标准：移动端舆情汇总、舆情上报、数据统计、报告管理列表和报告预览页面内容不横向溢出，主要按钮可点击，表单控件可正常输入和选择。</span>
 
 ### <span style="color:#0052d9">10.3 移动端舆情汇总</span>
 
@@ -1601,6 +1601,7 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 ### <span style="color:#0052d9">10.7 数据统计</span>
 
 - <span style="color:#0052d9">入口规则：左侧导航展示“数据统计”菜单，与舆情汇总、报告管理平级；拥有“查看数据统计”权限的用户可见。</span>
+- <span style="color:#d93025">移动端规则：拥有“查看数据统计”权限的用户在移动端底部 Tab 中可见“数据统计”入口，位置位于“舆情汇总”和“报告管理”之间。</span>
 - <span style="color:#0052d9">筛选规则：页面顶部提供开始日期、结束日期筛选；为空时统计全部舆情数据，设置日期后按舆情上报时间过滤。各统计排行表提供独立筛选；各地市舆情数量支持地区筛选，地市宣传部报送量和各部门报送数量支持部门筛选。</span>
 - <span style="color:#0052d9">统计范围：统计基于当前舆情数据集。</span>
 - <span style="color:#0052d9">指标规则：专班监测数量统计统计部门为“舆情专班”的数据；各地市舆情数量按地市维度聚合；地市宣传部报送量强绑定系统部门树中的各地市本级宣传部；各部门报送数量展示除各地市本级宣传部之外的部门报送数据。</span>
@@ -1670,6 +1671,7 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.19：优化移动端底部 Tab 选中样式，补充报告管理只读预览、舆情风险筛选和研判分类展示规则 | 2026-07-01 |
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.20：PRD 本期新增需求集中蓝色标识，数据统计顶部新增各部门报送数量统计卡 | 2026-07-01 |
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.21：确定舆情编号和报告编号按日期加同日序号生成，报告编号改为同日最大序号递增，并补充编号稳定规则 | 2026-07-01 |
+| 313308ec-6699-40ed-b428-968958be84ed | v1.2.22：移动端底部新增数据统计 Tab，数据统计页去除冗余说明和清空筛选按钮，PRD 中本次移动端数据统计需求改为红色标识 | 2026-07-02 |
 </textarea>
 <script>
 /* ===== Auth & Roles ===== */
@@ -1683,7 +1685,7 @@ let pendingLoginUser=null;
 let displayMode='web';
 
 function isMobileMode(){return displayMode==='mobile'}
-function isMobileAccessiblePage(page){return ['summary','report','detail','manage','preview'].includes(page)}
+function isMobileAccessiblePage(page){return ['summary','stats','report','detail','manage','preview'].includes(page)}
 function setDisplayMode(mode,skipRender){
   displayMode=mode==='mobile'?'mobile':'web';
   document.body.classList.toggle('demo-mobile',displayMode==='mobile');
@@ -1921,14 +1923,11 @@ document.addEventListener('click',function(e){
 /* ===== Sidebar ===== */
 function buildSidebar(){
   const nav=document.getElementById('sidebarNav');
-  const items=isMobileMode()?[
-    {id:'summary',icon:'ri-list-check-2',title:'舆情汇总'},
-    {id:'manage',icon:'ri-file-text-line',title:'报告管理'}
-  ]:[
+  const items=[
     {id:'summary',icon:'ri-list-check-2',title:'舆情汇总'},
     {id:'manage',icon:'ri-file-text-line',title:'报告管理'}
   ];
-  if(!isMobileMode()&&hasPermission('p5-1'))items.splice(1,0,{id:'stats',icon:'ri-bar-chart-box-line',title:'数据统计'});
+  if(hasPermission('p5-1'))items.splice(1,0,{id:'stats',icon:'ri-bar-chart-box-line',title:'数据统计'});
   const sys=[
     {id:'departments',icon:'ri-building-2-line',title:'部门管理'},
     {id:'users',icon:'ri-user-settings-line',title:'用户管理'},
@@ -2367,8 +2366,8 @@ function renderStatsRows(rows){
 }
 function renderStatsPage(){
   const pc=document.getElementById('pageContainer');
-  pc.innerHTML='<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">数据统计</div><div class="page-desc">统计专班监测数量、各地市舆情数量、地市宣传部报送量、各部门报送数量</div></div></div>'
-    +'<div class="stats-filter"><input type="date" class="filter-date" id="statsDateStart" onchange="updateStatsPage()"><span class="filter-sep">至</span><input type="date" class="filter-date" id="statsDateEnd" onchange="updateStatsPage()"><button class="btn btn-outline" onclick="resetStatsFilter()"><i class="ri-refresh-line"></i>清空筛选</button></div>'
+  pc.innerHTML='<div class="page active"><div class="page-header"><div class="page-header-left"><div class="page-heading">数据统计</div></div></div>'
+    +'<div class="stats-filter"><input type="date" class="filter-date" id="statsDateStart" onchange="updateStatsPage()"><span class="filter-sep">至</span><input type="date" class="filter-date" id="statsDateEnd" onchange="updateStatsPage()"></div>'
     +'<div id="statsPageBody"></div></div>';
   updateStatsPage();
 }
@@ -2405,14 +2404,6 @@ function updateStatsPage(){
     +'<div class="stats-panel"><div class="stats-panel-head"><div class="stats-panel-title">地市宣传部报送量</div>'+renderStatsSelect('statsCityDeptFilter','全部部门',cityDeptOptions,cityDeptFilter)+'</div><table class="stats-table"><thead><tr><th style="width:40px">排名</th><th>地市宣传部</th><th>数量</th></tr></thead><tbody>'+renderStatsRows(cityDeptRows)+'</tbody></table></div>'
     +'<div class="stats-panel"><div class="stats-panel-head"><div class="stats-panel-title">各部门报送数量</div>'+renderStatsSelect('statsDeptFilter','全部部门',deptOptions,deptFilter)+'</div><table class="stats-table"><thead><tr><th style="width:40px">排名</th><th>部门</th><th>数量</th></tr></thead><tbody>'+renderStatsRows(deptRows)+'</tbody></table></div>';
 }
-function resetStatsFilter(){
-  const s=document.getElementById('statsDateStart'),e=document.getElementById('statsDateEnd');
-  if(s)s.value='';
-  if(e)e.value='';
-  ['statsCityFilter','statsCityDeptFilter','statsDeptFilter'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
-  updateStatsPage();
-}
-
 function renderSummaryPage(){
   const pc=document.getElementById('pageContainer');
   const canReport=hasPermission('p1-1');
