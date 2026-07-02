@@ -424,7 +424,7 @@
     .asset-card {
       background: #fff;
       border: 1px solid var(--line);
-      min-height: 262px;
+      min-height: 226px;
       position: relative;
       box-shadow: 0 2px 8px rgba(28, 48, 84, .05);
     }
@@ -439,7 +439,13 @@
       place-items: center;
       color: #718096;
       position: relative;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      cursor: pointer;
     }
+    .thumb:hover img { transform: scale(1.02); }
+    .thumb img { transition: transform .18s ease; }
     .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .play {
       position: absolute;
@@ -458,7 +464,6 @@
     .asset-title { font-weight: 800; line-height: 1.35; height: 38px; overflow: hidden; }
     button.asset-title { width: 100%; border: 0; background: transparent; padding: 0; text-align: left; color: var(--ink); cursor: pointer; }
     button.asset-title:hover { color: var(--brand); }
-    .asset-desc { margin-top: 8px; color: var(--muted); font-size: 12px; height: 34px; line-height: 1.45; overflow: hidden; }
     .asset-meta { margin-top: 10px; display: flex; align-items: center; justify-content: space-between; color: #8a94a6; font-weight: 700; font-size: 12px; }
     .tag { padding: 2px 7px; font-size: 12px; background: #fff2e2; color: #c26c0a; }
     .card-actions {
@@ -492,8 +497,8 @@
       position: fixed;
       right: 18px;
       top: 72px;
+      bottom: 18px;
       width: 620px;
-      max-height: calc(100vh - 92px);
       background: #fff;
       border: 1px solid var(--line);
       box-shadow: var(--shadow);
@@ -507,8 +512,12 @@
     .notice-tabs { display: flex; border-bottom: 1px solid var(--line); padding: 0 18px; }
     .notice-tab { height: 44px; padding: 0 18px; border: 0; border-bottom: 3px solid transparent; background: transparent; color: #536075; font-weight: 900; }
     .notice-tab.active { color: var(--brand); border-bottom-color: var(--brand); }
-    .drawer-tools { padding: 12px 18px; display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px solid var(--line); }
-    .log-list { overflow: auto; padding: 8px 18px 18px; }
+    .drawer-tools { padding: 12px 18px; display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px solid var(--line); align-items: flex-start; }
+    .log-filter-group { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .custom-date-range { display: none; gap: 6px; align-items: center; color: var(--muted); font-size: 13px; }
+    .custom-date-range.show { display: flex; }
+    .custom-date-range .input { width: 130px; }
+    .log-list { overflow: auto; padding: 8px 18px 18px; flex: 1; }
     .log-item {
       display: grid;
       grid-template-columns: 10px 1fr auto;
@@ -958,12 +967,20 @@
       <button class="notice-tab" id="shareTab" type="button" onclick="switchNoticeTab('share')">共享记录</button>
     </div>
     <div class="drawer-tools">
-      <select class="select" id="logRange" onchange="renderLogs()">
-        <option value="7">近 7 天</option>
-        <option value="30" selected>近 30 天</option>
-        <option value="365">近 1 年</option>
-        <option value="all">全部</option>
-      </select>
+      <div class="log-filter-group">
+        <select class="select" id="logRange" onchange="renderLogs()">
+          <option value="7">近 7 天</option>
+          <option value="30" selected>近 30 天</option>
+          <option value="365">近 1 年</option>
+          <option value="custom">自定义</option>
+          <option value="all">全部</option>
+        </select>
+        <div class="custom-date-range" id="logCustomRange">
+          <input class="input" id="logStartDate" type="date" value="2026-06-01" onchange="renderLogs()">
+          <span>至</span>
+          <input class="input" id="logEndDate" type="date" value="2026-06-29" onchange="renderLogs()">
+        </div>
+      </div>
       <div style="display:flex;gap:8px">
         <button class="btn" type="button" onclick="markAllRead()">全部已读</button>
         <button class="btn primary" type="button" onclick="exportLogs()">导出 CSV</button>
@@ -1206,10 +1223,9 @@
 
 ### 2.6 权限与可见性
 
-- 通知中心入口面向具备日志查看权限的用户展示。
-- Excel 导出入口面向具备日志导出权限的用户展示。
-- 批量备注入口面向具备素材编辑权限的用户展示。
-- 用户有效期配置和批量设置入口面向具备用户管理权限的管理员展示。
+- 线上已有权限点、既有控制范围和既有角色授权不因本期需求调整。
+- 本期新增能力涉及的新增权限点统一在“权限点配置”模块说明。
+- 无权限操作不展示入口；涉及数据范围的功能仍受原素材库、部门、角色数据权限管控。
 
 ---
 
@@ -1217,7 +1233,7 @@
 
 ### 3.1 模块目标与边界
 
-- 记录所有下载和共享过的素材，形成可查询、可导出的操作记录。
+- 记录部门素材库、公共素材库的下载行为，以及共享过的素材，形成可查询、可导出的操作记录。
 - 本模块只记录下载和共享行为，不改变下载、共享权限和原操作流程。
 
 ### 3.2 页面结构
@@ -1251,7 +1267,7 @@
 
 - 展示规则：展示素材所在库和文件夹路径。
 - 交互规则：路径为空时显示素材库根目录。
-- 数据规则：取下载时素材所在业务路径；不记录用户本机下载路径。
+- 数据规则：取下载时素材所在业务路径；不记录用户本机下载路径；仅用于下载记录展示。
 
 下载人：
 
@@ -1271,6 +1287,12 @@
 - 交互规则：不支持在记录列表中编辑。
 - 数据规则：取共享行为对应的目标素材库；不涉及排序。
 
+来源素材库：
+
+- 展示规则：共享记录中仅展示素材所属库名称，取值为个人素材库、部门素材库或公共素材库，不展示具体文件夹路径。
+- 交互规则：不支持在记录列表中编辑。
+- 数据规则：取共享时素材所在业务路径的素材库层级。
+
 阅读状态：
 
 - 展示规则：未读日志在通知入口形成红点提示。
@@ -1288,7 +1310,7 @@
 
 下载记录写入：
 
-- 默认状态：用户点击素材下载并下载成功后写入日志。
+- 默认状态：用户点击部门素材库或公共素材库素材下载并下载成功后写入日志；个人素材库下载不写入通知中心下载记录。
 - 结果变化：新增日志记录，通知入口显示红点。
 - 失败处理：下载失败不写入成功下载日志。
 
@@ -1306,24 +1328,27 @@
 
 Excel 导出：
 
-- 默认状态：具备导出权限时展示。
+- 默认状态：具备通知中心权限时展示。
 - 点击反馈：导出当前筛选结果。
 - 结果变化：不改变日志阅读状态。
 
 ### 3.6 数据规则
 
-- 取数规则：取用户权限范围内可查看的下载记录和共享记录；原型按全员记录展示。
+- 下载记录取数规则：仅取部门素材库和公共素材库的下载记录，并受这两个素材库的数据权限管控；用户只能看到自己有权查看的部门素材库或公共素材库下载记录。
+- 共享记录取数规则：取用户权限范围内可查看的共享记录。
 - 数据筛选规则：下载记录按下载时间范围过滤，共享记录按共享时间范围过滤。
 - 数据排序规则：下载记录默认按下载时间倒序，共享记录默认按共享时间倒序。
 - 去重规则：同一素材多次下载或多次共享分别记录，不合并。
 
 ### 3.7 验收标准
 
-- 下载素材后通知中心下载记录页签新增一条记录。
+- 下载部门素材库或公共素材库素材后，通知中心下载记录页签新增一条记录。
+- 下载个人素材库素材后，不在通知中心下载记录页签新增记录。
 - 共享素材后通知中心共享记录页签新增一条记录。
 - 未读下载记录或共享记录存在时通知入口显示红点。
 - 点击记录或全部已读后阅读状态更新。
 - 近 1 年筛选仅展示当前页签近 1 年内记录。
+- 自定义日期筛选仅展示所选开始日期 00:00:00 至结束日期 23:59:59 范围内的记录。
 - Excel 导出内容与当前页签、当前筛选结果一致。
 
 ---
@@ -1357,13 +1382,13 @@ Excel 导出：
 ### 4.4 操作规则
 
 - 默认状态：未选择素材时按钮不可用。
-- 启用状态：至少选择一条且具备编辑权限时可点击。
+- 启用状态：至少选择一条，且具备对应素材库批量备注权限和素材编辑权限时可点击。
 - 保存反馈：保存成功后刷新素材描述摘要，并提示追加成功。
 - 部分失败：存在无权限素材时展示成功数量和失败明细。
 
 ### 4.5 数据规则
 
-- 取数规则：取当前用户有编辑权限且已选中的素材。
+- 取数规则：取当前用户具备对应素材库批量备注权限、具备编辑权限且已选中的素材。
 - 数据筛选规则：批量备注不改变列表筛选条件。
 - 数据排序规则：批量备注不改变列表排序。
 - 写入规则：原描述为空时直接写入备注；原描述不为空时在原描述后追加备注。
@@ -1386,7 +1411,8 @@ Excel 导出：
 
 ### 5.2 页面结构
 
-- 素材列表保持原有进入详情方式，可通过素材标题或更多操作进入素材详情。
+- 素材列表保持原有进入详情方式。
+- 素材列表卡片不展示素材描述，描述在详情页或编辑场景中展示。
 - 素材详情采用页面式布局，不使用弹窗；页面顶部展示返回列表、上一条、下一条、下载、共享、以图搜图、图搜视频操作。
 - 页面主体左侧展示素材预览区和基础文件属性，右侧展示信息页签区。
 - 右侧信息页签包含基本信息、结构化信息、共享记录、敏感信息识别和下载记录；本期原型默认展示基本信息。
@@ -1407,7 +1433,7 @@ Excel 导出：
 
 ### 5.4 操作规则
 
-- 点击素材标题或更多操作进入素材详情，不改变列表选中状态。
+- 进入素材详情不改变列表选中状态。
 - 点击下载后触发下载动作，并写入通知中心下载日志。
 - 点击关闭或返回后回到原列表位置。
 
@@ -1511,7 +1537,51 @@ Excel 导出：
 
 ---
 
-## 7. 总体验收场景
+## 7. 权限点配置
+
+### 7.1 模块目标与边界
+
+- 在系统管理的角色权限分配中，为本期新增能力补充权限点。
+- 线上已有权限点保持不变，不调整既有权限点名称、层级、勾选状态和控制范围。
+- 本期仅新增通知中心和批量备注相关权限点。
+- 用户有效期配置和批量设置沿用现有用户管理权限，不新增独立权限点。
+
+### 7.2 新增权限点清单
+
+| 所属模块 | 新增权限点 | 建议放置位置 | 控制范围 |
+|----------|------------|--------------|----------|
+| 通知中心 | 通知中心 | 功能权限分配中的通知中心模块 | 控制通知中心入口、下载记录页签、共享记录页签、时间筛选、全部已读和导出操作的可见性与可用性 |
+| 个人素材库 | 批量备注 | 个人素材库权限组内 | 控制个人素材库素材的批量备注入口和保存操作 |
+| 部门素材库 | 批量备注 | 部门素材库权限组内 | 控制部门素材库素材的批量备注入口和保存操作 |
+| 公共素材库 | 批量备注 | 公共素材库权限组内 | 控制公共素材库素材的批量备注入口和保存操作 |
+
+### 7.3 权限规则
+
+通知中心：
+
+- 有权限用户可查看通知中心入口，并可进入通知中心查看下载记录和共享记录。
+- 无权限用户不展示通知中心入口。
+- 通知中心权限不扩大素材数据范围；下载记录仍只展示用户有权查看的部门素材库和公共素材库记录，共享记录仍按用户可见范围展示。
+- 通知中心权限不改变素材下载、共享、查看等既有操作权限。
+
+批量备注：
+
+- 有对应素材库批量备注权限时，用户可对该素材库下有权编辑的素材执行批量备注。
+- 无对应素材库批量备注权限时，该素材库场景下不展示批量备注入口，或在混合选择时将无权限素材列为失败项。
+- 批量备注权限不改变素材查看、下载、上传、删除、移动、共享等既有权限。
+- 当用户同时选择多个素材库的素材时，系统仅对用户具备批量备注权限且具备编辑权限的素材执行追加备注。
+
+### 7.4 验收标准
+
+- 角色权限分配中可配置通知中心权限点。
+- 角色权限分配中可在个人素材库、部门素材库、公共素材库下分别配置批量备注权限点。
+- 未授予通知中心权限的用户不展示通知中心入口。
+- 未授予对应素材库批量备注权限的用户不可对该素材库素材执行批量备注。
+- 新增权限点不影响线上已有权限点和已有角色授权。
+
+---
+
+## 8. 总体验收场景
 
 - 素材下载和共享行为能在通知中心形成记录，并触发红点。
 - 通知中心支持下载记录、共享记录、近 1 年筛选和 Excel 导出。
@@ -1520,6 +1590,7 @@ Excel 导出：
 - 素材详情页内下载素材同样写入下载日志。
 - 用户管理列表展示有效期，新建和编辑弹窗可配置有效期。
 - 到期账号自动停用，且不能直接登录。
+- 新增通知中心和批量备注权限点可在角色权限分配中配置，且不影响线上已有权限点。
 </textarea>
 
   <script>
@@ -1528,6 +1599,7 @@ Excel 导出：
     let detailIndex = 0;
     let editingUserId = null;
     let noticeTab = 'download';
+    const visibleDownloadLibraries = ['部门素材库', '公共素材库'];
 
     const assets = [
       { id: 1, type: 'image', title: '52小龙趣跑 龙湾cityrun.jpg', path: '个人素材库/活动报道/龙湾cityrun', person: '李春松', library: '个人库', time: '2026-06-26 13:42:35', source: '原创', desc: '绿色跑道、起跑拱门和群众活动现场，可用于体育活动报道。', img: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=900&q=80' },
@@ -1573,6 +1645,14 @@ Excel 导出：
       return { image: '图片', video: '视频', audio: '音频', file: '文件' }[type] || '素材';
     }
 
+    function libraryNameFromPath(path) {
+      return String(path || '').split('/')[0] || '素材库';
+    }
+
+    function canRecordDownload(assetOrLog) {
+      return visibleDownloadLibraries.includes(libraryNameFromPath(assetOrLog.path));
+    }
+
     function renderAssets() {
       const grid = document.getElementById('assetGrid');
       grid.innerHTML = assets.map((asset, index) => {
@@ -1582,10 +1662,9 @@ Excel 导出：
         return `<article class="asset-card ${asset.checked ? 'selected' : ''}">
           <input class="checkbox asset-select" type="checkbox" ${asset.checked ? 'checked' : ''} onchange="toggleAsset(${asset.id}, this.checked)">
           <button class="asset-more" type="button" onclick="openAssetDetail(${index})">•••</button>
-          <div class="thumb">${visual}</div>
+          <button class="thumb" type="button" onclick="openAssetDetail(${index})" aria-label="查看${asset.title}详情">${visual}</button>
           <div class="asset-body">
             <button class="asset-title" type="button" onclick="openAssetDetail(${index})">${asset.title}</button>
-            <div class="asset-desc">${asset.desc}</div>
             <div class="asset-meta"><span>${asset.time}</span><span class="tag">${asset.source}</span></div>
           </div>
         </article>`;
@@ -1689,6 +1768,7 @@ Excel 导出：
     }
 
     function addDownloadLog(asset) {
+      if (!canRecordDownload(asset)) return false;
       const now = new Date(today.getTime() + downloadLogs.length * 60000);
       const pad = value => String(value).padStart(2, '0');
       const time = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
@@ -1704,6 +1784,7 @@ Excel 导出：
       });
       updateNoticeDot();
       renderLogs();
+      return true;
     }
 
     function addShareLog(asset) {
@@ -1726,8 +1807,8 @@ Excel 导出：
     function downloadAsset(id) {
       const asset = assets.find(item => item.id === id);
       if (!asset) return;
-      addDownloadLog(asset);
-      showToast('下载已开始，通知中心已记录日志');
+      const recorded = addDownloadLog(asset);
+      showToast(recorded ? '下载已开始，通知中心已记录日志' : '下载已开始，个人素材库不写入下载记录');
     }
 
     function downloadCurrentDetail() {
@@ -1745,8 +1826,13 @@ Excel 导出：
         showToast('请先选择要下载的素材');
         return;
       }
-      selected.forEach(addDownloadLog);
-      showToast(`已记录 ${selected.length} 条下载日志`);
+      const recorded = selected.filter(addDownloadLog).length;
+      const skipped = selected.length - recorded;
+      if (!recorded) {
+        showToast('选中素材均为个人素材库，不写入下载记录');
+        return;
+      }
+      showToast(skipped ? `已记录 ${recorded} 条下载日志，${skipped} 条个人素材库下载不计入` : `已记录 ${recorded} 条下载日志`);
     }
 
     function shareSelected() {
@@ -1779,6 +1865,7 @@ Excel 导出：
 
     function renderLogs() {
       const range = document.getElementById('logRange').value;
+      document.getElementById('logCustomRange').classList.toggle('show', range === 'custom');
       const list = document.getElementById('logList');
       const filtered = filterLogsByRange(range);
       if (!filtered.length) {
@@ -1791,7 +1878,7 @@ Excel 导出：
           : `共享时间：${log.time}　共享人：${log.person}　目标素材库：${log.target}`;
         const sourceLine = noticeTab === 'download'
           ? `路径位置：${log.path}`
-          : `来源素材库：${log.path}`;
+          : `来源素材库：${libraryNameFromPath(log.path)}`;
         return `<div class="log-item" onclick="readLog(${log.id})">
           <span class="${log.unread ? 'unread-dot' : ''}"></span>
           <div>
@@ -1806,8 +1893,20 @@ Excel 导出：
     }
 
     function filterLogsByRange(range) {
-      const logs = currentNoticeLogs();
+      const logs = currentNoticeLogs().filter(log => noticeTab !== 'download' || canRecordDownload(log));
       if (range === 'all') return logs;
+      if (range === 'custom') {
+        const startValue = document.getElementById('logStartDate').value;
+        const endValue = document.getElementById('logEndDate').value;
+        if (!startValue || !endValue) return [];
+        const start = new Date(`${startValue}T00:00:00`);
+        const end = new Date(`${endValue}T23:59:59`);
+        if (end < start) return [];
+        return logs.filter(log => {
+          const time = new Date(log.time.replace(' ', 'T'));
+          return time >= start && time <= end;
+        });
+      }
       const days = Number(range);
       const threshold = new Date(today);
       threshold.setDate(threshold.getDate() - days);
@@ -1834,7 +1933,7 @@ Excel 导出：
       const body = filtered.map(log => {
         const row = noticeTab === 'download'
           ? [log.time, log.title, log.path, log.person]
-          : [log.time, log.title, log.path, log.person, log.target];
+          : [log.time, log.title, libraryNameFromPath(log.path), log.person, log.target];
         return row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(',');
       }).join('\n');
       const blob = new Blob([header + body], { type: 'text/csv;charset=utf-8;' });
@@ -2207,7 +2306,7 @@ Excel 导出：
     }
 
     function renderChangelog() {
-      document.getElementById('changelogBody').innerHTML = '<table class="changelog-table"><thead><tr><th>时间</th><th>说明</th></tr></thead><tbody><tr><td>2026-07-01 15:01</td><td>优化通知中心、批量备注、用户有效期和素材详情：通知中心新增下载/共享记录页签，批量弹窗精简，用户支持批量设置有效期，素材详情改为页面式并支持上一条/下一条，列表卡片去除单卡下载入口。</td></tr><tr><td>2026-06-30 10:48</td><td>优化 PRD 浮动控制条：调整至右下角竖向排列，PRD 按钮支持“收起 / 展开”状态文案。</td></tr><tr><td>2026-06-29</td><td>优化前后台入口与交付形态：素材中心复刻前台横向导航，头像菜单进入系统管理/返回前台，页面新增右侧 PRD 面板、PRD 下载和更新记录。</td></tr><tr><td>2026-06-29</td><td>初始创建：智能媒资系统运营优化合并项目，包含下载通知中心、批量追加备注、素材详情页连续切换和用户有效期管理 PRD 与原型。</td></tr></tbody></table>';
+      document.getElementById('changelogBody').innerHTML = '<table class="changelog-table"><thead><tr><th>时间</th><th>说明</th></tr></thead><tbody><tr><td>2026-07-02 18:01</td><td>PRD 新增独立权限点配置模块：线上已有权限点保持不变，仅新增通知中心权限点，以及个人素材库、部门素材库、公共素材库下的批量备注权限点。</td></tr><tr><td>2026-07-02 17:32</td><td>优化素材列表卡片：点击缩略图可进入详情页，列表卡片移除素材描述展示，仅保留标题、时间和来源标签。</td></tr><tr><td>2026-07-02 17:22</td><td>优化通知中心记录规则：下载记录仅保留部门素材库和公共素材库并按数据权限展示，共享记录来源素材库仅显示库名称，新增自定义日期筛选，通知弹窗底部与页面底部对齐。</td></tr><tr><td>2026-07-01 15:01</td><td>优化通知中心、批量备注、用户有效期和素材详情：通知中心新增下载/共享记录页签，批量弹窗精简，用户支持批量设置有效期，素材详情改为页面式并支持上一条/下一条，列表卡片去除单卡下载入口。</td></tr><tr><td>2026-06-30 10:48</td><td>优化 PRD 浮动控制条：调整至右下角竖向排列，PRD 按钮支持“收起 / 展开”状态文案。</td></tr><tr><td>2026-06-29</td><td>优化前后台入口与交付形态：素材中心复刻前台横向导航，头像菜单进入系统管理/返回前台，页面新增右侧 PRD 面板、PRD 下载和更新记录。</td></tr><tr><td>2026-06-29</td><td>初始创建：智能媒资系统运营优化合并项目，包含下载通知中心、批量追加备注、素材详情页连续切换和用户有效期管理 PRD 与原型。</td></tr></tbody></table>';
     }
 
     renderAssets();
