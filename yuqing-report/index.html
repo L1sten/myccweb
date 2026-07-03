@@ -151,6 +151,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'PingFang SC','Microso
 .search-input::placeholder{color:rgba(29,33,41,.5)}.search-input:focus{border-color:var(--primary)}
 .mobile-search-row{display:contents}
 .mobile-filter-toggle{display:none}
+.mobile-summary-reset{display:inline-flex;align-items:center;justify-content:center;gap:4px;height:34px;padding:0 12px;border:1px solid var(--border-light);border-radius:999px;background:var(--bg-page);color:var(--text-tertiary);font-size:12px;font-family:inherit;cursor:pointer;white-space:nowrap}
+.mobile-summary-reset:hover{border-color:var(--primary-light);color:var(--primary);background:var(--primary-bg)}
 .date-range-filter{height:37px;border:1px solid var(--border);border-radius:var(--radius-md);background:#fff;display:flex;align-items:center;gap:6px;padding:0 8px;color:var(--text-secondary)}
 .date-range-filter:focus-within{border-color:var(--primary)}
 .filter-select{border:1px solid var(--border);border-radius:var(--radius-md);padding:9px 12px;font-size:13px;outline:none;background:#fff;font-family:inherit;min-width:110px;cursor:pointer;color:var(--text-secondary)}
@@ -477,11 +479,11 @@ body.demo-mobile .stats-date-range .filter-date{width:calc(50% - 16px);font-size
 body.demo-mobile .stats-reset-btn{height:42px;padding:0 14px;font-size:14px;font-weight:600}
 body.demo-mobile .mobile-search-row{grid-column:1 / -1;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}
 body.demo-mobile .search-input-wrap{width:100%;min-width:0}
-body.demo-mobile .mobile-filter-toggle,body.demo-mobile .mobile-summary-reset{display:inline-flex;align-items:center;justify-content:center;gap:4px;height:40px;padding:0 12px;border:1px solid var(--border);border-radius:var(--radius-md);background:#fff;color:var(--text-secondary);font-size:12px;font-family:inherit;cursor:pointer;white-space:nowrap}
-body.demo-mobile .mobile-filter-toggle:hover,body.demo-mobile .mobile-summary-reset:hover{border-color:var(--primary-light);color:var(--primary)}
+body.demo-mobile .mobile-filter-toggle{display:inline-flex;align-items:center;justify-content:center;gap:4px;height:40px;padding:0 12px;border:1px solid var(--border);border-radius:var(--radius-md);background:#fff;color:var(--text-secondary);font-size:12px;font-family:inherit;cursor:pointer;white-space:nowrap}
+body.demo-mobile .mobile-filter-toggle:hover{border-color:var(--primary-light);color:var(--primary)}
 body.demo-mobile .mobile-summary-reset{display:none}
 body.demo-mobile .search-bar:not(.mobile-filter-collapsed) .mobile-summary-reset{display:inline-flex}
-body.demo-mobile .search-bar>.mobile-summary-reset{grid-column:2;justify-self:end;width:auto;min-width:82px}
+body.demo-mobile .search-bar>.mobile-summary-reset{grid-column:1 / -1;justify-self:end;width:auto;min-width:74px;margin-top:2px}
 body.demo-mobile .search-bar.mobile-filter-collapsed>.date-range-filter,
 body.demo-mobile .search-bar.mobile-filter-collapsed>.filter-select,
 body.demo-mobile .search-bar.mobile-filter-collapsed>.unit-cascade{display:none!important}
@@ -1697,6 +1699,7 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.22：移动端底部新增数据统计 Tab，数据统计页去除冗余说明和清空筛选按钮，PRD 中本次移动端数据统计需求改为红色标识 | 2026-07-02 |
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.23：数据统计各地区舆情数量改为省级与地市并列展示，地市宣传部报送量固定展示 11 个地市本级宣传部并去除筛选 | 2026-07-02 |
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.24：移动端舆情汇总高级筛选默认折叠并增加重置按钮，数据统计日期筛选合并为日期范围控件并支持重置 | 2026-07-03 |
+| 313308ec-6699-40ed-b428-968958be84ed | v1.2.25：舆情汇总 Web 端保留重置按钮，并统一为与移动端一致的浅色胶囊样式 | 2026-07-03 |
 </textarea>
 <script>
 /* ===== Auth & Roles ===== */
