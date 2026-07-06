@@ -741,6 +741,15 @@
     .required::before { content: "* "; color: var(--red); }
     .helper { color: var(--muted); font-size: 12px; margin-top: 6px; }
     .radio-group { display: flex; align-items: center; gap: 18px; }
+    .desc-mode-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 10px;
+      font-weight: 800;
+    }
+    .desc-mode-row .radio-group { gap: 16px; }
+    .desc-mode-row label { text-align: left; }
     .radio-inline { display: inline-flex; align-items: center; gap: 8px; }
     .radio-inline .input { width: 150px; height: 34px; }
     .user-tabs { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--line); margin-bottom: 22px; }
@@ -988,7 +997,8 @@
                 <select class="select" id="statsLibraryFilter" onchange="renderStats()">
                   <option value="all">全部素材库</option>
                   <option value="个人素材库">个人素材库</option>
-                  <option value="部门素材库">部门素材库</option>
+                  <option value="视频部门">视频部门</option>
+                  <option value="文旅部门">文旅部门</option>
                   <option value="公共素材库">公共素材库</option>
                 </select>
               </div>
@@ -1075,20 +1085,20 @@
               <span class="field-count"><span id="batchAuthorCount">0</span>/30</span>
             </div>
           </div>
-          <div class="form-row"><label>素材来源类型</label><select class="select compact-select" id="batchSourceInput"><option value="">不修改</option><option>原创</option><option>AI生成</option><option>其他</option></select></div>
+          <div class="form-row"><label>素材来源类型</label><select class="select compact-select" id="batchSourceInput"><option value="">留空则不修改</option><option>原创</option><option>AI生成</option><option>其他</option></select></div>
           <div class="form-row">
             <label>素材描述</label>
-            <div class="input-count-row textarea-row">
-              <textarea class="textarea" id="remarkText" maxlength="300" placeholder="留空则不修改素材描述"></textarea>
-              <span class="field-count"><span id="remarkCount">0</span>/300</span>
-            </div>
-          </div>
-          <div class="form-row">
-            <label>描述写入方式</label>
             <div>
-              <div class="radio-group">
-                <label><input type="radio" name="batchDescMode" value="cover" checked> 覆盖</label>
-                <label><input type="radio" name="batchDescMode" value="append"> 追加</label>
+              <div class="input-count-row textarea-row">
+                <textarea class="textarea" id="remarkText" maxlength="300" placeholder="留空则不修改素材描述"></textarea>
+                <span class="field-count"><span id="remarkCount">0</span>/300</span>
+              </div>
+              <div class="desc-mode-row">
+                <span>描述写入方式</span>
+                <div class="radio-group">
+                  <label><input type="radio" name="batchDescMode" value="cover" checked> 覆盖</label>
+                  <label><input type="radio" name="batchDescMode" value="append"> 追加</label>
+                </div>
               </div>
             </div>
           </div>
@@ -1285,7 +1295,7 @@
 
 - 时间范围筛选统一支持近 7 天、近 30 天、近 1 年、自定义、全部。
 - 自定义时间需填写开始日期和结束日期；结束日期早于开始日期时不展示结果。
-- 素材库筛选支持全部素材库、个人素材库、部门素材库、公共素材库。
+- 素材库筛选支持全部素材库、个人素材库、公共素材库；部门素材库需精确到部门名称，例如视频部门、文旅部门。
 
 ### 2.3 分页与排序
 
@@ -1348,21 +1358,21 @@
 
 - 下载时间。
 - 素材名称。
-- 素材库。
+- 素材库：个人素材库和公共素材库展示库名称；部门素材库精确到部门名称，例如视频部门。
 - 下载人。
 
 共享记录：
 
 - 共享时间。
 - 素材名称。
-- 来源素材库。
+- 来源素材库：个人素材库和公共素材库展示库名称；部门素材库精确到部门名称，例如视频部门。
 - 共享人。
 - 目标素材库。
 
 ### 3.4 筛选规则
 
 - 时间范围筛选作用于当前页签。
-- 下载记录和共享记录支持素材库筛选。
+- 下载记录和共享记录支持素材库筛选；部门类选项按部门名称展开，不使用泛化的“部门素材库”作为筛选项。
 - 切换页签后保留当前页签的默认筛选条件。
 - 自定义时间按记录发生时间过滤。
 
@@ -1393,7 +1403,7 @@
 - 顶部导航显示“资源动态”，不再显示“同步中心”。
 - 页面不展示独立通知入口、红点、未读点和全部已读。
 - 我同步的、我接收的保留同步任务列表能力。
-- 下载记录、共享记录支持时间范围和素材库筛选。
+- 下载记录、共享记录支持时间范围和素材库筛选，部门素材库记录可按具体部门素材库筛选。
 - 下载记录和共享记录页签的导出按钮生成 Excel 文件，内容与当前页签和筛选条件一致。
 
 ---
@@ -1413,7 +1423,7 @@
   - 素材名称。
   - 素材作者。
   - 素材描述。
-  - 描述写入方式：覆盖 / 追加。
+  - 描述写入方式：作为素材描述输入框下方的附属选项展示，支持覆盖 / 追加。
   - 素材来源类型：原创 / AI生成 / 其他。
 - 弹窗底部包含取消和保存按钮。
 
@@ -1446,6 +1456,7 @@
 素材来源类型：
 
 - 非必填。
+- 默认展示“留空则不修改”。
 - 可选原创、AI生成、其他。
 - 不选择时不更新来源类型。
 
@@ -1637,7 +1648,7 @@
 - 顶部导航展示资源动态，不再展示同步中心。
 - 资源动态包含我同步的、我接收的、下载记录、共享记录。
 - 下载记录和共享记录无红点、无未读状态、无全部已读。
-- 下载记录和共享记录支持时间范围、素材库筛选和 Excel 导出。
+- 下载记录和共享记录支持时间范围、素材库筛选和 Excel 导出，部门素材库筛选与展示均精确到部门名称。
 - 多条素材可批量编辑名称、作者、描述和来源类型。
 - 描述支持覆盖和追加，默认覆盖。
 - 素材详情页支持上一条、下一条连续切换。
@@ -1654,18 +1665,18 @@
 
     const assets = [
       { id: 1, type: 'image', title: '52小龙趣跑 龙湾cityrun.jpg', path: '个人素材库/活动报道/龙湾cityrun', person: '李春松', library: '个人库', time: '2026-06-26 13:42:35', source: '原创', desc: '绿色跑道、起跑拱门和群众活动现场，可用于体育活动报道。', img: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=900&q=80' },
-      { id: 2, type: 'image', title: '叶延龄摄《瑶溪山水》手机13968878819.jpg', path: '部门素材库/自然风光/瑶溪', person: '陈胜楠', library: '部门库', time: '2026-05-26 11:11:42', source: '原创', desc: '瑶溪山水风光，适合作为生态治理和城市形象素材。', img: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80' },
+      { id: 2, type: 'image', title: '叶延龄摄《瑶溪山水》手机13968878819.jpg', path: '部门素材库/自然风光/瑶溪', person: '陈胜楠', library: '部门库', dept: '视频部门', time: '2026-05-26 11:11:42', source: '原创', desc: '瑶溪山水风光，适合作为生态治理和城市形象素材。', img: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80' },
       { id: 3, type: 'video', title: '温州湾新区 党政代表团赴文成县考察学习活动', path: '公共素材库/政务活动/考察学习', person: '叶雨琦', library: '公共库', time: '2026-04-24 10:32:24', source: '原创', desc: '政务活动视频素材，包含队伍行进、现场交流和会议片段。', img: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80' },
       { id: 4, type: 'audio', title: '龙湾新闻采访同期声-城市更新.wav', path: '个人素材库/采访同期声/城市更新', person: '毛琪森', library: '个人库', time: '2026-04-08 09:18:09', source: '采集', desc: '城市更新主题采访同期声，可用于短视频配音和广播剪辑。', img: '' },
-      { id: 5, type: 'file', title: '龙湾历史文化街区资料汇编.pdf', path: '部门素材库/文档资料/历史文化', person: '项和平', library: '部门库', time: '2026-03-12 16:40:28', source: '整理', desc: '历史文化街区资料，包含文字说明和图片索引。', img: '' },
+      { id: 5, type: 'file', title: '龙湾历史文化街区资料汇编.pdf', path: '部门素材库/文档资料/历史文化', person: '项和平', library: '部门库', dept: '文旅部门', time: '2026-03-12 16:40:28', source: '整理', desc: '历史文化街区资料，包含文字说明和图片索引。', img: '' },
       { id: 6, type: 'image', title: '城市夜景航拍素材-滨海片区.jpg', path: '公共素材库/城市形象/航拍', person: '夏静', library: '公共库', time: '2026-02-18 20:20:10', source: '原创', desc: '滨海片区夜景航拍，适合城市宣传与片头包装。', img: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=900&q=80' }
     ];
 
     const downloadLogs = [
       { id: 5, time: '2026-06-29 19:02:18', title: '52小龙趣跑 龙湾cityrun.jpg', path: '个人素材库/活动报道/龙湾cityrun', person: '夏静', type: '图片', library: '个人库' },
-      { id: 1, time: '2026-06-29 18:20:11', title: '叶延龄摄《瑶溪山水》手机13968878819.jpg', path: '部门素材库/自然风光/瑶溪', person: '李春松', type: '图片', library: '部门库' },
+      { id: 1, time: '2026-06-29 18:20:11', title: '叶延龄摄《瑶溪山水》手机13968878819.jpg', path: '部门素材库/自然风光/瑶溪', person: '李春松', type: '图片', library: '部门库', dept: '视频部门' },
       { id: 2, time: '2026-06-28 09:12:33', title: '温州湾新区 党政代表团赴文成县考察学习活动', path: '公共素材库/政务活动/考察学习', person: '毛琪森', type: '视频', library: '公共库' },
-      { id: 3, time: '2026-06-12 14:05:49', title: '龙湾历史文化街区资料汇编.pdf', path: '部门素材库/文档资料/历史文化', person: '项和平', type: '文件', library: '部门库' },
+      { id: 3, time: '2026-06-12 14:05:49', title: '龙湾历史文化街区资料汇编.pdf', path: '部门素材库/文档资料/历史文化', person: '项和平', type: '文件', library: '部门库', dept: '文旅部门' },
       { id: 4, time: '2025-11-04 10:02:19', title: '城市夜景航拍素材-滨海片区.jpg', path: '公共素材库/城市形象/航拍', person: '叶雨琦', type: '图片', library: '公共库' }
     ];
 
@@ -1707,6 +1718,14 @@
 
     function libraryNameFromPath(path) {
       return String(path || '').split('/')[0] || '素材库';
+    }
+
+    function statsLibraryName(log) {
+      const base = libraryNameFromPath(log.path);
+      if (base === '部门素材库') {
+        return log.dept || '部门素材库';
+      }
+      return base;
     }
 
     function renderAssets() {
@@ -1854,7 +1873,8 @@
         path: asset.path,
         person: '李春松',
         type: assetTypeName(asset.type),
-        library: asset.library
+        library: asset.library,
+        dept: asset.dept || ''
       });
       renderStats();
     }
@@ -1869,6 +1889,7 @@
         title: asset.title,
         path: asset.path,
         person: '李春松',
+        dept: asset.dept || '',
         target: '协作成员'
       });
       renderStats();
@@ -1949,8 +1970,8 @@
             ? `下载时间：${log.time}　下载人：${log.person}`
             : `共享时间：${log.time}　共享人：${log.person}　目标素材库：${log.target}`;
           const sourceLine = statsTab === 'download'
-            ? `素材库：${libraryNameFromPath(log.path)}`
-            : `来源素材库：${libraryNameFromPath(log.path)}　目标素材库：${log.target}`;
+            ? `素材库：${statsLibraryName(log)}`
+            : `来源素材库：${statsLibraryName(log)}　目标素材库：${log.target}`;
           return `<div class="record-item">
             <div>
               <div class="record-title">${log.title}</div>
@@ -1994,7 +2015,7 @@
     function filterStatsLogs() {
       const range = document.getElementById('statsRange').value;
       const library = document.getElementById('statsLibraryFilter').value;
-      let logs = currentRecordLogs().filter(log => library === 'all' || libraryNameFromPath(log.path) === library);
+      let logs = currentRecordLogs().filter(log => library === 'all' || statsLibraryName(log) === library);
       if (range === 'all') return logs;
       if (range === 'custom') {
         const startValue = document.getElementById('statsStartDate').value;
@@ -2027,8 +2048,8 @@
         : ['任务类型', '素材名称', '文件格式', '大小', '开始时间', '结束时间', '目标渠道', '状态'];
       const rows = isRecordStatsTab()
         ? filterStatsLogs().map(log => statsTab === 'download'
-          ? [log.time, log.title, libraryNameFromPath(log.path), log.person]
-          : [log.time, log.title, libraryNameFromPath(log.path), log.person, log.target])
+          ? [log.time, log.title, statsLibraryName(log), log.person]
+          : [log.time, log.title, statsLibraryName(log), log.person, log.target])
         : filterSyncRecords().map(item => [statsTab === 'mine' ? '我同步的' : '我接收的', item.title, item.format, item.size, item.start, item.end, item.channel, item.status]);
       const table = `<table><thead><tr>${headers.map(item => `<th>${item}</th>`).join('')}</tr></thead><tbody>${rows.map(row => `<tr>${row.map(item => `<td>${String(item).replace(/</g, '&lt;').replace(/>/g, '&gt;')}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
       const blob = new Blob([`\ufeff${table}`], { type: 'application/vnd.ms-excel;charset=utf-8;' });
@@ -2408,7 +2429,7 @@
     }
 
     function renderChangelog() {
-      document.getElementById('changelogBody').innerHTML = '<table class="changelog-table"><thead><tr><th>时间</th><th>说明</th></tr></thead><tbody><tr><td>2026-07-03 16:45</td><td>统计中心更名为资源动态，下载记录去除路径位置展示和导出字段。</td></tr><tr><td>2026-07-03 16:20</td><td>批量备注升级为批量编辑，支持名称、作者、描述和来源类型统一修改；同步中心改为统计中心，新增下载记录和共享记录统计页签。</td></tr><tr><td>2026-07-03 14:26</td><td>调整通知中心数据口径：通知中心定位为面向管理者的系统级追溯模块，展示系统全部下载和共享记录，不受用户原有素材库数据权限管控。</td></tr><tr><td>2026-07-02 18:01</td><td>PRD 新增独立权限点配置模块：线上已有权限点保持不变，仅新增通知中心权限点，以及个人素材库、部门素材库、公共素材库下的批量备注权限点。</td></tr><tr><td>2026-07-02 17:32</td><td>优化素材列表卡片：点击缩略图可进入详情页，列表卡片移除素材描述展示，仅保留标题、时间和来源标签。</td></tr><tr><td>2026-07-02 17:22</td><td>优化通知中心记录规则：下载记录仅保留部门素材库和公共素材库并按数据权限展示，共享记录来源素材库仅显示库名称，新增自定义日期筛选，通知弹窗底部与页面底部对齐。</td></tr><tr><td>2026-07-01 15:01</td><td>优化通知中心、批量备注、用户有效期和素材详情：通知中心新增下载/共享记录页签，批量弹窗精简，用户支持批量设置有效期，素材详情改为页面式并支持上一条/下一条，列表卡片去除单卡下载入口。</td></tr><tr><td>2026-06-30 10:48</td><td>优化 PRD 浮动控制条：调整至右下角竖向排列，PRD 按钮支持“收起 / 展开”状态文案。</td></tr><tr><td>2026-06-29</td><td>优化前后台入口与交付形态：素材中心复刻前台横向导航，头像菜单进入系统管理/返回前台，页面新增右侧 PRD 面板、PRD 下载和更新记录。</td></tr><tr><td>2026-06-29</td><td>初始创建：智能媒资系统运营优化合并项目，包含下载通知中心、批量追加备注、素材详情页连续切换和用户有效期管理 PRD 与原型。</td></tr></tbody></table>';
+      document.getElementById('changelogBody').innerHTML = '<table class="changelog-table"><thead><tr><th>时间</th><th>说明</th></tr></thead><tbody><tr><td>2026-07-06 10:16</td><td>资源动态素材库筛选和记录展示精确到部门名称，批量编辑弹窗优化来源类型默认文案和描述写入方式布局。</td></tr><tr><td>2026-07-03 16:45</td><td>统计中心更名为资源动态，下载记录去除路径位置展示和导出字段。</td></tr><tr><td>2026-07-03 16:20</td><td>批量备注升级为批量编辑，支持名称、作者、描述和来源类型统一修改；同步中心改为统计中心，新增下载记录和共享记录统计页签。</td></tr><tr><td>2026-07-03 14:26</td><td>调整通知中心数据口径：通知中心定位为面向管理者的系统级追溯模块，展示系统全部下载和共享记录，不受用户原有素材库数据权限管控。</td></tr><tr><td>2026-07-02 18:01</td><td>PRD 新增独立权限点配置模块：线上已有权限点保持不变，仅新增通知中心权限点，以及个人素材库、部门素材库、公共素材库下的批量备注权限点。</td></tr><tr><td>2026-07-02 17:32</td><td>优化素材列表卡片：点击缩略图可进入详情页，列表卡片移除素材描述展示，仅保留标题、时间和来源标签。</td></tr><tr><td>2026-07-02 17:22</td><td>优化通知中心记录规则：下载记录仅保留部门素材库和公共素材库并按数据权限展示，共享记录来源素材库仅显示库名称，新增自定义日期筛选，通知弹窗底部与页面底部对齐。</td></tr><tr><td>2026-07-01 15:01</td><td>优化通知中心、批量备注、用户有效期和素材详情：通知中心新增下载/共享记录页签，批量弹窗精简，用户支持批量设置有效期，素材详情改为页面式并支持上一条/下一条，列表卡片去除单卡下载入口。</td></tr><tr><td>2026-06-30 10:48</td><td>优化 PRD 浮动控制条：调整至右下角竖向排列，PRD 按钮支持“收起 / 展开”状态文案。</td></tr><tr><td>2026-06-29</td><td>优化前后台入口与交付形态：素材中心复刻前台横向导航，头像菜单进入系统管理/返回前台，页面新增右侧 PRD 面板、PRD 下载和更新记录。</td></tr><tr><td>2026-06-29</td><td>初始创建：智能媒资系统运营优化合并项目，包含下载通知中心、批量追加备注、素材详情页连续切换和用户有效期管理 PRD 与原型。</td></tr></tbody></table>';
     }
 
     renderAssets();
