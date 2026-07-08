@@ -193,7 +193,9 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'PingFang SC','Microso
 .yq-tag-local{background:var(--primary-bg);color:var(--primary)}
 .yq-tag-external{background:var(--orange-bg);color:var(--orange)}
 .yq-tag-cat{background:var(--green-bg);color:var(--green)}
-.yq-tag-btn{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-top:12px;transition:var(--transition);color:var(--text-quaternary)}
+.yq-tag-response{background:#eef3f8;color:#4e5969}
+.yq-card-actions{display:flex;flex-direction:column;gap:8px;flex-shrink:0;margin-top:12px}
+.yq-tag-btn{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:var(--transition);color:var(--text-quaternary)}
 .yq-tag-btn:hover{background:var(--bg-page);color:var(--primary)}
 .yq-location{display:flex;align-items:center;gap:2px;font-size:10px;color:var(--text-tertiary)}
 .yq-location i{font-size:12px}
@@ -493,6 +495,8 @@ body.demo-mobile .unit-cascade-panel{width:100%;max-height:240px}
 body.demo-mobile .filter-sep{display:none}
 body.demo-mobile .action-bar{justify-content:space-between}
 body.demo-mobile .yuqing-card{padding:14px;gap:10px;align-items:flex-start}
+body.demo-mobile .yq-card-actions{gap:6px;margin-top:10px}
+body.demo-mobile .yq-tag-btn{width:32px;height:32px;border-radius:8px;background:var(--bg-page)}
 body.demo-mobile .yq-meta{flex-wrap:wrap;gap:6px}
 body.demo-mobile .yq-title{white-space:normal;line-height:1.45;margin:8px 0}
 body.demo-mobile .yq-footer{flex-direction:column;align-items:flex-start;gap:4px}
@@ -1642,6 +1646,14 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 - <span style="color:#0052d9">稳定规则：编号生成后固定不变，编辑、发布、删除、录用状态变化不触发重排，已生成编号不因后续操作重新分配。</span>
 - <span style="color:#0052d9">异常规则：超过 999 条时继续递增为 1000、1001 等，不截断、不重置。</span>
 
+### <span style="color:#0052d9">10.9 回应建议</span>
+
+- <span style="color:#0052d9">入口规则：舆情汇总列表中，每条舆情在“研判”操作后展示“回应建议”按钮；移动端同步展示该操作入口。</span>
+- <span style="color:#0052d9">弹窗规则：点击“回应建议”后打开弹窗，提供“尽快回应、妥善回应、暂不回应、内部通报”四个单选项。</span>
+- <span style="color:#0052d9">交互规则：回应建议默认不选；确认时必须选择一项，未选择时提示“请选择回应建议”，弹窗不关闭。</span>
+- <span style="color:#0052d9">数据规则：确认后保存所选回应建议；再次打开弹窗时回显当前选择。</span>
+- <span style="color:#0052d9">展示规则：舆情列表和舆情详情展示已保存的回应建议标签。</span>
+
 ---
 
 ## 11. 全局交互规则
@@ -1700,6 +1712,7 @@ body.demo-mobile .prd-panel,body.demo-mobile .split-drag{display:none!important}
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.23：数据统计各地区舆情数量改为省级与地市并列展示，地市宣传部报送量固定展示 11 个地市本级宣传部并去除筛选 | 2026-07-02 |
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.24：移动端舆情汇总高级筛选默认折叠并增加重置按钮，数据统计日期筛选合并为日期范围控件并支持重置 | 2026-07-03 |
 | 313308ec-6699-40ed-b428-968958be84ed | v1.2.25：舆情汇总 Web 端保留重置按钮，并统一为与移动端一致的浅色胶囊样式 | 2026-07-03 |
+| 313308ec-6699-40ed-b428-968958be84ed | v1.2.26：舆情汇总新增回应建议按钮，支持选择尽快回应、妥善回应、暂不回应、内部通报并在列表和详情回显 | 2026-07-08 |
 </textarea>
 <script>
 /* ===== Auth & Roles ===== */
@@ -1992,6 +2005,7 @@ const yuqingData=[
 const yqCategories=['社会民生领域','经济金融领域','涉政涉稳领域','文化科技领域','生态环保领域'];
 function getVisibleYqCategories(){return yqCategories.filter(c=>!String(c).includes('公共'))}
 const riskLevels=['红','黄','蓝','持续观察'];
+const responseAdviceOptions=['尽快回应','妥善回应','暂不回应','内部通报'];
 function getRiskClass(level){
   return level==='红'?'risk-red':level==='黄'?'risk-yellow':level==='蓝'?'risk-blue':level==='持续观察'?'risk-watch':'';
 }
@@ -2592,13 +2606,15 @@ function renderList(data,usedIds){
     const used=uid.has(item.id);
     const catTag=item.category?'<span class="yq-tag yq-tag-cat">'+item.category+'</span>':'';
     const riskTag=riskTagHTML(item.riskLevel);
+    const adviceTag=item.responseAdvice?'<span class="yq-tag yq-tag-response">'+item.responseAdvice+'</span>':'';
+    const actionBtns=canJudge?'<div class="yq-card-actions"><div class="yq-tag-btn" onclick="event.stopPropagation();showTagModal(\''+item.id+'\')" title="研判"><i class="ri-price-tag-3-line"></i></div><div class="yq-tag-btn" onclick="event.stopPropagation();showResponseAdviceModal(\''+item.id+'\')" title="回应建议"><i class="ri-chat-check-line"></i></div></div>':'';
     return '<div class="yuqing-card '+(canUse&&checked?'selected':'')+'">'
       +(canUse?'<div class="yq-check '+(checked?'checked':'')+'" onclick="event.stopPropagation();toggleCheck(\''+item.id+'\')"></div>':'')
       +'<div class="yq-body" onclick="navigate(\'detail\',\''+item.id+'\')">'
-        +'<div class="yq-meta"><span class="yq-id">'+item.id+'</span><span class="yq-tag '+tagCls+'">'+item.type+'</span>'+catTag+riskTag+'<span class="yq-location"><i class="ri-map-pin-2-line"></i>'+item.region+'</span>'+(canSeeUsed?'<span class="yq-used '+(used?'yq-used-yes':'yq-used-no')+'">'+(used?'已录用':'未录用')+'</span>':'')+'</div>'
+        +'<div class="yq-meta"><span class="yq-id">'+item.id+'</span><span class="yq-tag '+tagCls+'">'+item.type+'</span>'+catTag+riskTag+adviceTag+'<span class="yq-location"><i class="ri-map-pin-2-line"></i>'+item.region+'</span>'+(canSeeUsed?'<span class="yq-used '+(used?'yq-used-yes':'yq-used-no')+'">'+(used?'已录用':'未录用')+'</span>':'')+'</div>'
         +'<div class="yq-title">'+item.title+'</div>'
         +'<div class="yq-footer"><span class="yq-source"><i class="ri-building-line"></i>'+item.source+'</span><span class="yq-time"><i class="ri-time-line"></i>'+item.time+'</span></div></div>'
-      +(canJudge?'<div class="yq-tag-btn" onclick="event.stopPropagation();showTagModal(\''+item.id+'\')" title="打标"><i class="ri-price-tag-3-line"></i></div>':'')+'</div>';
+      +actionBtns+'</div>';
   }).join('');
   document.getElementById('listCount').textContent='共 '+data.length+' 条';
 }
@@ -2618,6 +2634,19 @@ function confirmTag(yqId){
   if(item){item.category=ch.value;item.riskLevel=risk.value;showToast('success','已完成研判');filterList()}
   closeModal();
 }
+function showResponseAdviceModal(yqId){
+  const item=yuqingData.find(d=>d.id===yqId);if(!item)return;
+  const opts=responseAdviceOptions.map(v=>'<label style="display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:var(--radius-md);cursor:pointer;'+(item.responseAdvice===v?'background:var(--primary-bg)':'')+'"><input type="radio" name="responseAdviceChoice" value="'+v+'"'+(item.responseAdvice===v?' checked':'')+' style="accent-color:var(--primary)"><span style="font-size:13px">'+v+'</span></label>').join('');
+  const body='<div style="font-size:13px;font-weight:600;margin-bottom:8px">回应建议<span class="req">*</span></div>'+opts;
+  showModal('回应建议',body,'<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmResponseAdvice(\''+yqId+'\')">确认</button>');
+}
+function confirmResponseAdvice(yqId){
+  const ch=document.querySelector('input[name="responseAdviceChoice"]:checked');
+  if(!ch){showToast('error','请选择回应建议');return}
+  const item=yuqingData.find(d=>d.id===yqId);
+  if(item){item.responseAdvice=ch.value;showToast('success','已保存回应建议');filterList()}
+  closeModal();
+}
 
 function toggleCheck(id){if(selectedIds.has(id))selectedIds.delete(id);else selectedIds.add(id);document.getElementById('btnUse').classList.toggle('enabled',selectedIds.size>0);filterList()}
 function toggleSelectAll(){const vis=getVisibleIds();if(selectedIds.size===vis.length&&vis.length>0)selectedIds.clear();else vis.forEach(id=>selectedIds.add(id));document.getElementById('btnUse').classList.toggle('enabled',selectedIds.size>0);filterList()}
@@ -2628,9 +2657,10 @@ function renderDetailPage(id){
   const tagCls=item.type==='本省'?'yq-tag-local':'yq-tag-external';
   const catTag=item.category?'<span class="yq-tag yq-tag-cat">'+item.category+'</span>':'';
   const riskTag=riskTagHTML(item.riskLevel);
+  const adviceTag=item.responseAdvice?'<span class="yq-tag yq-tag-response">'+item.responseAdvice+'</span>':'';
   const useBtn=!isMobileMode()&&hasPermission('p1-2')?'<button class="btn btn-primary" onclick="handleUseSingle(\''+item.id+'\')"><i class="ri-file-add-line"></i>录用至报告</button>':'';
   document.getElementById('pageContainer').innerHTML='<div class="page active"><div style="margin-bottom:16px"><button class="btn btn-ghost" onclick="navigate(\'summary\')"><i class="ri-arrow-left-line"></i> 返回列表</button></div>'
-    +'<div class="detail-card"><div class="detail-meta"><span class="yq-id">'+item.id+'</span><span class="yq-tag '+tagCls+'">'+item.type+'</span>'+catTag+riskTag+'<span class="yq-location"><i class="ri-map-pin-2-line"></i>'+item.region+'</span></div>'
+    +'<div class="detail-card"><div class="detail-meta"><span class="yq-id">'+item.id+'</span><span class="yq-tag '+tagCls+'">'+item.type+'</span>'+catTag+riskTag+adviceTag+'<span class="yq-location"><i class="ri-map-pin-2-line"></i>'+item.region+'</span></div>'
     +'<div class="detail-title">'+item.title+'</div>'
     +'<div class="detail-section"><h3>舆情内容</h3><div class="detail-content">'+item.summary+'</div></div>'
     +'<div class="detail-section"><h3>基本信息</h3>'
@@ -2680,7 +2710,7 @@ function submitAllReportItems(){
       if(contentEl.value.trim().length>2000){contentEl.classList.add('error');valid=false;tooLong=true;return}
       const time=(timeEl.value||new Date().toISOString().slice(0,16)).replace('T',' ');
       const unit=unitEl.value||loginUser.org;
-      created.push({id:generateYqIdForBatch(time.slice(0,10),created),type:'本省',region:prov.value+'/'+city.value,category:'',riskLevel:'',statDept:unit,title:titleEl.value.trim(),source:unit,time:time,summary:contentEl.value.trim(),reporter:unit});
+      created.push({id:generateYqIdForBatch(time.slice(0,10),created),type:'本省',region:prov.value+'/'+city.value,category:'',riskLevel:'',responseAdvice:'',statDept:unit,title:titleEl.value.trim(),source:unit,time:time,summary:contentEl.value.trim(),reporter:unit});
     }
   });
   if(tooLong){showToast('error','内容最多输入2000字');return}
