@@ -1754,6 +1754,56 @@ a{color:inherit;text-decoration:none}
 .edit-form-row{display:grid;grid-template-columns:110px minmax(0,1fr);align-items:center;gap:14px}
 .edit-form-row.full{grid-column:1/-1}
 .edit-form-row.full .edit-control{grid-column:2}
+.region-cascade{position:relative;min-width:0}
+.region-cascade-trigger{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  text-align:left;
+  cursor:pointer;
+}
+.region-cascade.open .region-cascade-trigger{
+  border-color:var(--primary);
+  box-shadow:0 0 0 2px rgba(0,82,217,.12);
+}
+.region-cascade-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.region-cascade-caret{color:#9AA4B2;font-size:14px;transition:transform .16s ease}
+.region-cascade.open .region-cascade-caret{transform:rotate(180deg)}
+.region-cascade-menu{
+  position:absolute;
+  left:0;
+  top:54px;
+  z-index:45;
+  width:min(660px,calc(100vw - 100px));
+  min-height:238px;
+  display:none;
+  grid-template-columns:repeat(3,minmax(180px,1fr));
+  overflow:auto;
+  background:#fff;
+  border:1px solid #D8DEE8;
+  border-radius:4px;
+  box-shadow:0 10px 28px rgba(31,45,61,.16);
+}
+.region-cascade.open .region-cascade-menu{display:grid}
+.region-level{min-width:180px;border-right:1px solid #E5EAF2}
+.region-level:last-child{border-right:0}
+.region-level-title{padding:12px 16px 8px;color:var(--weak);font-size:12px;font-weight:800}
+.region-option{
+  width:100%;
+  min-height:42px;
+  padding:0 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  color:var(--text);
+  font-size:14px;
+  font-weight:700;
+  text-align:left;
+}
+.region-option:hover,.region-option.active{color:var(--primary);background:#F2F7FF}
+.region-option.active::after{content:"✓";font-weight:900}
 .edit-label{
   color:var(--text);
   font-size:14px;
@@ -2085,6 +2135,7 @@ a{color:inherit;text-decoration:none}
   .edit-modal-card .modal-body,.matrix-form-modal-card .modal-body{padding:18px 14px}
   .edit-form-grid{grid-template-columns:1fr;column-gap:0;row-gap:14px}
   .edit-form-row.full{grid-column:auto}
+  .region-cascade-menu{width:calc(100vw - 56px);grid-template-columns:repeat(3,180px)}
   .owner-panel{grid-column:auto;grid-template-columns:1fr}
   .owner-panel > .edit-label{text-align:left}
   .owner-row{grid-template-columns:28px minmax(150px,1fr) minmax(150px,1fr) minmax(160px,1fr) auto;overflow:auto}
@@ -2216,8 +2267,8 @@ a{color:inherit;text-decoration:none}
           </div>
           <div class="matrix-tab-panel active" data-matrix-panel="list">
           <div class="matrix-filterbar">
-            <div class="matrix-filter"><label>所属部门</label><select class="select" data-filter="department"><option value="">请选择</option><option>舟山市网信办</option></select></div>
-            <div class="matrix-filter"><label>地区</label><select class="select" data-filter="region"><option value="">请选择</option><option>市本级</option><option>定海区</option><option>普陀区</option><option>岱山县</option><option>嵊泗县</option></select></div>
+            <div class="matrix-filter"><label>所属部门</label><select class="select" data-filter="department"><option value="">请选择</option></select></div>
+            <div class="matrix-filter"><label>地区</label><select class="select" data-filter="region"><option value="">请选择</option><option>舟山市</option><option>舟山市/定海区</option><option>舟山市/普陀区</option><option>舟山市/岱山县</option><option>舟山市/嵊泗县</option></select></div>
             <div class="matrix-filter media-type-filter">
               <label>媒体类型</label>
               <div class="media-cascade" id="mediaTypeSelect">
@@ -2282,16 +2333,16 @@ a{color:inherit;text-decoration:none}
                 </tr>
               </thead>
               <tbody>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第1行"></td><td>1</td><td><a href="#">新舟山</a></td><td>市本级</td><td>视频号</td><td>视频号</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">市新闻传媒中心-王...</a></td><td><a href="#">0580-2281956</a></td><td class="right">35.6万</td><td>自动采集</td><td>2026-06-17 15:58:52</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第2行"></td><td>2</td><td><a href="#">舟山发布</a></td><td>市本级</td><td>微信</td><td>微信</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>--</td><td><a href="#">市新闻办-周...</a></td><td><a href="#">0580-2282110</a></td><td class="right">48.12万</td><td>自动采集</td><td>2026-06-17 19:45:01</td><td>2025-12-03 17:00:41</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第3行"></td><td>3</td><td><a href="#">舟山广电</a></td><td>市本级</td><td>其他</td><td>百家号</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山广电融媒...</a></td><td><a href="#">0580-2286508</a></td><td class="right">18.8万</td><td>自动采集</td><td>2026-06-18 11:21:00</td><td>2025-11-13 16:18:04</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第4行"></td><td>4</td><td><a href="#">定海山</a></td><td>定海区</td><td>其他</td><td>人民号</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">定海融媒-张...</a></td><td><a href="#">0580-2026178</a></td><td class="right">12.4万</td><td>自动采集</td><td>2026-06-08 18:40:00</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第5行"></td><td>5</td><td><a href="#">普陀新闻网</a></td><td>普陀区</td><td>抖音</td><td>抖音</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">普陀融媒-李...</a></td><td><a href="#">0580-3019786</a></td><td class="right">26.5万</td><td>自动采集</td><td>2026-06-15 10:26:53</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第6行"></td><td>6</td><td><a href="#">仙岛岱山</a></td><td>岱山县</td><td>微博</td><td>微博</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">岱山融媒-陈...</a></td><td><a href="#">0580-4480901</a></td><td class="right">9.7万</td><td>自动采集</td><td>2026-06-17 16:41:34</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第7行"></td><td>7</td><td><a href="#">最嵊泗</a></td><td>嵊泗县</td><td>抖音</td><td>抖音</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">嵊泗融媒-沈...</a></td><td><a href="#">0580-5081234</a></td><td class="right">8.2万</td><td>自动采集</td><td>2026-06-17 17:30:53</td><td>2026-01-29 14:27:09</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第8行"></td><td>8</td><td><a href="#">舟山文旅</a></td><td>市本级</td><td>微博</td><td>微博</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山文旅-林...</a></td><td><a href="#">0580-2281320</a></td><td class="right">22.9万</td><td>自动采集</td><td>2026-06-17 22:00:00</td><td>2026-01-29 14:27:44</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第9行"></td><td>9</td><td><a href="#">舟山交通</a></td><td>市本级</td><td>微信</td><td>微信</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">市交通运输局-许...</a></td><td><a href="#">0580-2280912</a></td><td class="right">6.8万</td><td>自动采集</td><td>2026-06-17 19:41:41</td><td>2026-01-26 15:48:38</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第10行"></td><td>10</td><td><a href="#">舟山公安</a></td><td>市本级</td><td>视频号</td><td>视频号</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山市公安局-方...</a></td><td><a href="#">0580-2070110</a></td><td class="right">15.1万</td><td>自动采集</td><td>2026-06-17 09:00:01</td><td>2026-01-26 15:48:55</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第1行"></td><td>1</td><td><a href="#">新舟山</a></td><td>舟山市</td><td>视频号</td><td>视频号</td><td>舟山市新闻传媒中心</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">市新闻传媒中心-王...</a></td><td><a href="#">0580-2281956</a></td><td class="right">35.6万</td><td>自动采集</td><td>2026-06-17 15:58:52</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第2行"></td><td>2</td><td><a href="#">舟山发布</a></td><td>舟山市</td><td>微信</td><td>微信</td><td>舟山市人民政府新闻办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>--</td><td><a href="#">市新闻办-周...</a></td><td><a href="#">0580-2282110</a></td><td class="right">48.12万</td><td>自动采集</td><td>2026-06-17 19:45:01</td><td>2025-12-03 17:00:41</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第3行"></td><td>3</td><td><a href="#">舟山广电</a></td><td>舟山市</td><td>其他</td><td>百家号</td><td>舟山市广播电视总台</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山广电融媒...</a></td><td><a href="#">0580-2286508</a></td><td class="right">18.8万</td><td>自动采集</td><td>2026-06-18 11:21:00</td><td>2025-11-13 16:18:04</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第4行"></td><td>4</td><td><a href="#">定海山</a></td><td>舟山市/定海区</td><td>其他</td><td>人民号</td><td>定海区融媒体中心</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">定海融媒-张...</a></td><td><a href="#">0580-2026178</a></td><td class="right">12.4万</td><td>自动采集</td><td>2026-06-08 18:40:00</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第5行"></td><td>5</td><td><a href="#">普陀新闻网</a></td><td>舟山市/普陀区</td><td>抖音</td><td>抖音</td><td>普陀区融媒体中心</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">普陀融媒-李...</a></td><td><a href="#">0580-3019786</a></td><td class="right">26.5万</td><td>自动采集</td><td>2026-06-15 10:26:53</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第6行"></td><td>6</td><td><a href="#">仙岛岱山</a></td><td>舟山市/岱山县</td><td>微博</td><td>微博</td><td>岱山县融媒体中心</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">岱山融媒-陈...</a></td><td><a href="#">0580-4480901</a></td><td class="right">9.7万</td><td>自动采集</td><td>2026-06-17 16:41:34</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第7行"></td><td>7</td><td><a href="#">最嵊泗</a></td><td>舟山市/嵊泗县</td><td>抖音</td><td>抖音</td><td>嵊泗县融媒体中心</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">嵊泗融媒-沈...</a></td><td><a href="#">0580-5081234</a></td><td class="right">8.2万</td><td>自动采集</td><td>2026-06-17 17:30:53</td><td>2026-01-29 14:27:09</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第8行"></td><td>8</td><td><a href="#">舟山文旅</a></td><td>舟山市</td><td>微博</td><td>微博</td><td>舟山市文化和广电旅游体育局</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山文旅-林...</a></td><td><a href="#">0580-2281320</a></td><td class="right">22.9万</td><td>自动采集</td><td>2026-06-17 22:00:00</td><td>2026-01-29 14:27:44</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第9行"></td><td>9</td><td><a href="#">舟山交通</a></td><td>舟山市</td><td>微信</td><td>微信</td><td>舟山市交通运输局</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">市交通运输局-许...</a></td><td><a href="#">0580-2280912</a></td><td class="right">6.8万</td><td>自动采集</td><td>2026-06-17 19:41:41</td><td>2026-01-26 15:48:38</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第10行"></td><td>10</td><td><a href="#">舟山公安</a></td><td>舟山市</td><td>视频号</td><td>视频号</td><td>舟山市公安局</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山市公安局-方...</a></td><td><a href="#">0580-2070110</a></td><td class="right">15.1万</td><td>自动采集</td><td>2026-06-17 09:00:01</td><td>2026-01-26 15:48:55</td><td><button class="table-action" type="button">操作</button></td></tr>
               </tbody>
             </table>
           </div>
@@ -2625,9 +2676,21 @@ a{color:inherit;text-decoration:none}
           <label class="edit-label required">账号名称：</label>
           <div class="edit-control"><input class="input" id="createAccountName" placeholder="请输入账号名称"></div>
         </div>
+        <div class="edit-form-row full">
+          <label class="edit-label required">地区：</label>
+          <div class="edit-control region-cascade" data-region-cascade="create">
+            <button class="select region-cascade-trigger" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="region-cascade-label" data-region-label>请选择地区</span><span class="region-cascade-caret">⌄</span></button>
+            <input type="hidden" id="createProvince"><input type="hidden" id="createCity"><input type="hidden" id="createDistrict">
+            <div class="region-cascade-menu" role="listbox" aria-label="地区三级选择">
+              <div class="region-level"><div class="region-level-title">省</div><div data-region-options="province"></div></div>
+              <div class="region-level"><div class="region-level-title">市</div><div data-region-options="city"></div></div>
+              <div class="region-level"><div class="region-level-title">区县</div><div data-region-options="district"></div></div>
+            </div>
+          </div>
+        </div>
         <div class="edit-form-row">
-          <label class="edit-label required">所属部门：</label>
-          <div class="edit-control"><input class="input" id="createDepartment" value="舟山市网信办" readonly aria-readonly="true"></div>
+          <label class="edit-label">所属部门：</label>
+          <div class="edit-control"><input class="input" id="createDepartment" maxlength="50" placeholder="请输入所属部门"></div>
         </div>
         <div class="edit-form-row">
           <label class="edit-label required">媒体类型：</label>
@@ -2672,14 +2735,14 @@ a{color:inherit;text-decoration:none}
             <div class="owner-list" data-owner-list>
               <div class="owner-row">
                 <span class="owner-index">1</span>
-                <input class="input owner-department" value="舟山市网信办" readonly aria-label="负责人所属部门">
+                <input class="input owner-department" maxlength="50" placeholder="请输入负责人所属部门" aria-label="负责人所属部门">
                 <select class="select owner-name"><option value="">请选择运维负责人姓名</option><option>王嘉诚</option><option>陈啸</option><option>周舟</option></select>
                 <input class="input owner-contact" placeholder="请输入运维负责人联系方式">
                 <button class="owner-delete" type="button">删除</button>
               </div>
               <div class="owner-row">
                 <span class="owner-index">2</span>
-                <input class="input owner-department" value="舟山市网信办" readonly aria-label="负责人所属部门">
+                <input class="input owner-department" maxlength="50" placeholder="请输入负责人所属部门" aria-label="负责人所属部门">
                 <select class="select owner-name"><option value="">请选择运维负责人姓名</option><option>王嘉诚</option><option>陈啸</option><option>周舟</option></select>
                 <input class="input owner-contact" placeholder="请输入运维负责人联系方式">
                 <button class="owner-delete" type="button">删除</button>
@@ -2713,9 +2776,21 @@ a{color:inherit;text-decoration:none}
           <label class="edit-label required">账号名称：</label>
           <div class="edit-control"><input class="input" id="editAccountName" value="浙江公安"></div>
         </div>
+        <div class="edit-form-row full">
+          <label class="edit-label required">地区：</label>
+          <div class="edit-control region-cascade" data-region-cascade="edit">
+            <button class="select region-cascade-trigger" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="region-cascade-label" data-region-label>请选择地区</span><span class="region-cascade-caret">⌄</span></button>
+            <input type="hidden" id="editProvince"><input type="hidden" id="editCity"><input type="hidden" id="editDistrict">
+            <div class="region-cascade-menu" role="listbox" aria-label="地区三级选择">
+              <div class="region-level"><div class="region-level-title">省</div><div data-region-options="province"></div></div>
+              <div class="region-level"><div class="region-level-title">市</div><div data-region-options="city"></div></div>
+              <div class="region-level"><div class="region-level-title">区县</div><div data-region-options="district"></div></div>
+            </div>
+          </div>
+        </div>
         <div class="edit-form-row">
-          <label class="edit-label required">所属部门：</label>
-          <div class="edit-control"><input class="input" id="editDepartment" value="舟山市网信办" readonly aria-readonly="true"></div>
+          <label class="edit-label">所属部门：</label>
+          <div class="edit-control"><input class="input" id="editDepartment" maxlength="50" placeholder="请输入所属部门"></div>
         </div>
         <div class="edit-form-row">
           <label class="edit-label required">媒体类型：</label>
@@ -2765,14 +2840,14 @@ a{color:inherit;text-decoration:none}
             <div class="owner-list" data-owner-list>
               <div class="owner-row">
                 <span class="owner-index">1</span>
-                <input class="input owner-department" value="舟山市网信办" readonly aria-label="负责人所属部门">
+                <input class="input owner-department" value="宁波市公安局高新技术产业开发区分局" maxlength="50" aria-label="负责人所属部门">
                 <select class="select owner-name"><option>王嘉诚</option><option selected>陈啸</option><option>周舟</option></select>
                 <input class="input owner-contact" value="13857139956">
                 <button class="owner-delete" type="button">删除</button>
               </div>
               <div class="owner-row">
                 <span class="owner-index">2</span>
-                <input class="input owner-department" value="舟山市网信办" readonly aria-label="负责人所属部门">
+                <input class="input owner-department" value="宁波市公安局高新技术产业开发区分局" maxlength="50" aria-label="负责人所属部门">
                 <select class="select owner-name"><option selected>王嘉诚</option><option>陈啸</option><option>周舟</option></select>
                 <input class="input owner-contact" value="13967972882">
                 <button class="owner-delete" type="button">删除</button>
@@ -2822,7 +2897,7 @@ a{color:inherit;text-decoration:none}
             <div class="audit-detail-item full"><span class="audit-detail-label">账号名称：</span><span class="audit-detail-value" id="auditDetailName">宁波高新区公安</span></div>
             <div class="audit-detail-item"><span class="audit-detail-label">类别：</span><span class="audit-detail-value">宁波市公安局</span></div>
             <div class="audit-detail-item"><span class="audit-detail-label">所属部门：</span><span class="audit-detail-value" id="auditDetailDepartment">宁波市公安局高新技术产业开发区分局</span></div>
-            <div class="audit-detail-item"><span class="audit-detail-label">地区：</span><span class="audit-detail-value" id="auditDetailRegion">市本级</span></div>
+            <div class="audit-detail-item"><span class="audit-detail-label">地区：</span><span class="audit-detail-value" id="auditDetailRegion">舟山市</span></div>
             <div class="audit-detail-item"><span class="audit-detail-label">媒体类型：</span><span class="audit-detail-value" id="auditDetailMedia">视频号</span></div>
             <div class="audit-detail-item"><span class="audit-detail-label">子类型：</span><span class="audit-detail-value" id="auditDetailSubtype">视频号</span></div>
             <div class="audit-detail-item"><span class="audit-detail-label">属性：</span><span class="audit-detail-value">单位</span></div>
@@ -3196,9 +3271,9 @@ a{color:inherit;text-decoration:none}
 
 地区：
 
-- 展示规则：列表在媒体类型左侧展示地区，精确到区县；市级账号展示为「市本级」，区县账号展示定海区、普陀区、岱山县、嵊泗县等区县名称。
-- 交互规则：筛选区提供地区下拉筛选；选择地区后列表刷新，清空后恢复全量地区。
-- 数据规则：取账号台账中的属地信息；支持精确筛选；缺失时展示 `--`；默认不参与排序。
+- 展示规则：列表在媒体类型左侧展示地区；市级账号直接展示城市名称「舟山市」，有区县的账号按「市/区县」两级路径展示，例如「舟山市/定海区」。
+- 交互规则：筛选区提供与列表展示值一致的地区下拉筛选；新增、编辑弹窗使用单一的省市区三级级联控件，点击控件后在同一浮层内依次选择省、市、区县，上一级变化后刷新并重置下一级选项。
+- 数据规则：地区选项取当前租户可用的行政区划字典；列表展示所选区县值，选择市级时展示城市名称，不使用「市本级」等跨租户通用文案；缺失时展示 `--`。
 
 媒体类型 / 子类型：
 
@@ -3208,9 +3283,9 @@ a{color:inherit;text-decoration:none}
 
 所属部门 / 所属圈层：
 
-- 展示规则：所属部门展示「舟山市网信办」；所属圈层展示核心圈、紧密圈、协同圈，缺失时展示 `--`。
-- 交互规则：所属部门筛选仅提供「舟山市网信办」，选择后刷新列表；多条件筛选取交集。
-- 数据规则：矩阵账号列表及新增、编辑弹窗中的所属部门统一固定为「舟山市网信办」；新增、编辑场景下该字段只读，不允许修改。所属圈层支持精确筛选，默认不参与排序。
+- 展示规则：所属部门按账号列表返回结果展示，缺失时展示 `-`；所属圈层展示核心圈、紧密圈、协同圈，缺失时展示 `--`。
+- 交互规则：所属部门筛选为非必填下拉框，选项根据当前账号列表返回的所属部门名称去重生成；选择后按部门名称精确筛选，选择「请选择」时不附加所属部门条件。
+- 数据规则：账号所属部门和每名运维负责人的所属部门均为非必填自定义文本，字符上限 50；两者分别保存，不要求保持一致。所属圈层支持精确筛选，默认不参与排序。
 
 属性 / 是否认证：
 
@@ -3264,15 +3339,15 @@ a{color:inherit;text-decoration:none}
 
 新增账号：
 
-- 展示规则：表单展示账号名称、所属部门、媒体类型、子类型、是否认证、属性、运行情况、所属圈层、粉丝数、自主情况、备注和运维负责人。
-- 交互规则：所属部门默认展示「舟山市网信办」且只读；支持添加、删除多名运维负责人；必填项缺失时禁止保存并提示；保存成功后关闭弹窗并刷新列表。
-- 数据规则：媒体类型固定为微信、微博、抖音、视频号、其他；运行情况固定为正常、停更、待注销、已注销、已关停；所属圈层固定为核心圈、紧密圈、协同圈；保存前校验账号是否重复，重复时禁止覆盖已有账号；新账号地区默认市本级，采集情况默认自动采集。
+- 展示规则：表单展示账号名称、地区、所属部门、媒体类型、子类型、是否认证、属性、运行情况、所属圈层、粉丝数、自主情况、备注和运维负责人；地区仅展示一个三级级联选择控件，选中后回显完整省市区路径。
+- 交互规则：点击地区控件后在同一浮层内按省、市、区县三级选择，选择区县后自动收起；当前租户默认回填浙江省、舟山市、舟山市。账号所属部门为非必填输入框，支持最多 50 个字符；每名运维负责人的所属部门同样支持自定义输入且最多 50 个字符。支持添加、删除多名运维负责人；必填项缺失时禁止保存并提示；保存成功后关闭弹窗并刷新列表。
+- 数据规则：地区三级均为必填，选项取当前租户地区字典；媒体类型固定为微信、微博、抖音、视频号、其他；运行情况固定为正常、停更、待注销、已注销、已关停；所属圈层固定为核心圈、紧密圈、协同圈；保存前校验账号是否重复，重复时禁止覆盖已有账号；采集情况默认自动采集。
 
 编辑账号：
 
-- 展示规则：表单字段和字典与新增账号一致，回填当前账号名称、媒体类型、子类型、认证情况、属性、运行情况、所属圈层、粉丝数、自主情况、备注和运维负责人。
-- 交互规则：所属部门固定展示「舟山市网信办」且只读；支持添加、删除多名运维负责人；修改后保存产生操作记录；关闭前有未保存修改时提示确认。
-- 数据规则：运行情况发生变化时提交审核，审核通过后生效；地区和采集情况不在弹窗中修改；编辑不回溯改写既有内容和传播数据。
+- 展示规则：表单字段和字典与新增账号一致，回填当前账号名称、省市区地区、媒体类型、子类型、认证情况、属性、运行情况、所属圈层、粉丝数、自主情况、备注和运维负责人。
+- 交互规则：账号所属部门和运维负责人所属部门均回填当前数据并允许修改，字段非必填且最多输入 50 个字符；支持添加、删除多名运维负责人；修改后保存产生操作记录；关闭前有未保存修改时提示确认。
+- 数据规则：地区修改后更新列表、筛选、传播分析和周报使用的账号地区归属；运行情况发生变化时提交审核，审核通过后生效；采集情况不在弹窗中修改；编辑不回溯改写既有内容和传播数据。
 
 采集状态：
 
@@ -3315,19 +3390,20 @@ a{color:inherit;text-decoration:none}
 | 字段 | 规则 |
 |---|---|
 | 账号名称 | 必填，支持关键词搜索 |
-| 地区编码 | 使用省、市、区县、市本级层级字典；舟山首期精确到区县 |
-| 所属部门编码 | 固定对应「舟山市网信办」，用于列表、筛选、新增和编辑展示 |
+| 地区编码 | 分别保存省、市、区县三级编码；字典按当前租户加载，舟山租户精确到区县 |
+| 所属部门 | 非必填自定义文本，最多 50 个字符；列表、筛选、新增和编辑使用同一返回值 |
 | 媒体类型 / 子类型 | 一级类型与二级类型分开存储 |
 | 运行情况 | 正常、停更、待注销、已注销、已关停 |
 | 采集情况 | 自动采集、无法采集 |
 | 无法采集原因 | 详情字段，记录未接入、采集异常、平台不支持、人工停用等原因 |
-| 运维负责人 / 联系方式 | 支持多人，至少明确一名主负责人 |
+| 运维负责人 / 所属部门 / 联系方式 | 支持多人，至少明确一名主负责人；每名负责人的所属部门可自定义输入且最多 50 个字符 |
 | 创建时间 / 更新时间 / 版本号 | 用于排序、审计和并发控制 |
 
 地区字典：
 
-- 首期展示市本级、定海区、普陀区、岱山县、嵊泗县。
-- 页面展示名称与接口编码分离，列表、筛选、传播分析和周报使用同一字典。
+- 新增、编辑弹窗通过单一控件完成省、市、区县三级联动选择，当前舟山租户可选浙江省 / 舟山市 / 舟山市、定海区、普陀区、岱山县、嵊泗县。
+- 市级账号的区县级展示值使用实际城市名称「舟山市」，不使用「市本级」。
+- 各租户加载自身可用行政区划；页面展示名称与地区编码分离，列表、筛选、传播分析和周报使用同一字典。
 
 媒体类型字典：
 
@@ -3398,7 +3474,9 @@ a{color:inherit;text-decoration:none}
 - 采集情况下拉仅展示自动采集、无法采集。
 - 列表、编辑表单、审核详情和统计卡使用同一状态枚举。
 - 已注销与已关停可分别筛选、分别统计。
-- 地区展示精确到区县，且筛选、传播分析和周报使用统一编码字典。
+- 新增、编辑弹窗均使用单一的省市区三级级联控件，切换上级后下级选项正确刷新，完成区县选择后控件回显完整路径。
+- 地区列表有区县时按「市/区县」展示，市级展示实际城市名称；筛选、传播分析和周报使用统一编码字典。
+- 账号所属部门和运维负责人所属部门均为非必填自定义输入，最多 50 个字符；列表所属部门下拉选项按返回结果动态生成并支持精确筛选。
 - 媒体类型与子类型按一级、二级结构保存和筛选。
 - 运行情况变更必须进入审核，驳回或撤回不改变当前状态。
 - 新增、编辑、移出矩阵、审核和导出均有明确成功、失败和权限反馈。
@@ -3674,7 +3752,7 @@ a{color:inherit;text-decoration:none}
 
 表 3 矩阵账号本周内容及传播效果：
 
-- 展示规则：按区县聚合展示地区、账号数量、地区内账号发文总量、账号发文详情、传播量和互动量，不展示平台列和代表内容列；地区精确到区县，市级账号归入「市本级」。
+- 展示规则：按区县聚合展示地区、账号数量、地区内账号发文总量、账号发文详情、传播量和互动量，不展示平台列和代表内容列；地区精确到区县，市级账号归入「舟山市」。
 - 交互规则：预览弹窗中只读展示。
 - 数据规则：
   - 取数规则：来源为矩阵账号管理和矩阵传播分析结果，只统计已纳入正能量矩阵、可定向采集、且在统计周期内产生可核验内容数据的账号。
@@ -3729,6 +3807,10 @@ a{color:inherit;text-decoration:none}
 <script>
 
 var changelogData = [
+  {
+    "time": "2026-07-14 14:59",
+    "desc": "发布更新：矩阵账号地区改为单控件省市区三级级联，列表按市/区县路径展示；所属部门支持账号及负责人自定义输入，列表筛选按返回结果动态生成"
+  },
   {
     "time": "2026-07-14 14:28",
     "desc": "发布更新：矩阵账号管理移除内容定位字段，同步删除统计卡、筛选项、列表列、新增编辑表单、审核详情及 PRD 口径"
@@ -4005,6 +4087,18 @@ if(document.readyState==='loading'){
   function cellText(row,index){
     return row.children[index]?row.children[index].textContent.trim():'';
   }
+  function syncDepartmentFilterOptions(){
+    var filter=document.querySelector('[data-filter="department"]');
+    if(!filter){return;}
+    var selected=filter.value;
+    var departments=[];
+    [].slice.call(document.querySelectorAll('.matrix-table tbody tr')).forEach(function(row){
+      var department=cellText(row,6);
+      if(department&&department!=='-'&&department!=='--'&&departments.indexOf(department)===-1){departments.push(department);}
+    });
+    filter.innerHTML='<option value="">请选择</option>'+departments.map(function(department){return '<option>'+department+'</option>';}).join('');
+    if(departments.indexOf(selected)>-1){filter.value=selected;}
+  }
   function applyMatrixFilters(){
     var matrixRows=[].slice.call(document.querySelectorAll('.matrix-table tbody tr'));
     var directTypes=['微信','微博','抖音','视频号'];
@@ -4040,6 +4134,7 @@ if(document.readyState==='loading'){
     var totalText=document.querySelector('.matrix-tab-panel.active .matrix-pagination .matrix-total');
     if(totalText){totalText.textContent='共 '+visibleIndex+' 条';}
   }
+  syncDepartmentFilterOptions();
   if(mediaTypeSelect){
     var mediaTrigger=mediaTypeSelect.querySelector('.media-select-trigger');
     var mediaLabel=mediaTypeSelect.querySelector('[data-media-label]');
@@ -4172,6 +4267,98 @@ if(document.readyState==='loading'){
     if(selectedValue&&values.indexOf(selectedValue)>-1){subtypeSelect.value=selectedValue;}
     else if(values.length===1){subtypeSelect.value=values[0];}
   }
+  var regionCascadeData={
+    '浙江省':{
+      '舟山市':['舟山市','定海区','普陀区','岱山县','嵊泗县']
+    }
+  };
+  function renderRegionOptions(root,level,values,selectedValue){
+    var container=root&&root.querySelector('[data-region-options="'+level+'"]');
+    if(!container){return;}
+    container.innerHTML=values.map(function(value){return '<button class="region-option'+(value===selectedValue?' active':'')+'" type="button" data-region-level="'+level+'" data-region-value="'+value+'">'+value+'</button>';}).join('');
+  }
+  function updateRegionCascadeLabel(prefix){
+    var root=document.querySelector('[data-region-cascade="'+prefix+'"]');
+    var province=document.getElementById(prefix+'Province');
+    var city=document.getElementById(prefix+'City');
+    var district=document.getElementById(prefix+'District');
+    var label=root&&root.querySelector('[data-region-label]');
+    if(!label||!province||!city||!district){return;}
+    var path=[province.value,city.value,district.value].filter(Boolean);
+    label.textContent=path.length?path.join(' / '):'请选择地区';
+  }
+  function closeRegionCascade(root){
+    if(!root){return;}
+    root.classList.remove('open');
+    var trigger=root.querySelector('.region-cascade-trigger');
+    if(trigger){trigger.setAttribute('aria-expanded','false');}
+  }
+  function setRegionCascade(prefix,provinceValue,cityValue,districtValue){
+    var root=document.querySelector('[data-region-cascade="'+prefix+'"]');
+    var province=document.getElementById(prefix+'Province');
+    var city=document.getElementById(prefix+'City');
+    var district=document.getElementById(prefix+'District');
+    if(!root||!province||!city||!district){return;}
+    var provinces=Object.keys(regionCascadeData);
+    province.value=provinces.indexOf(provinceValue)>-1?provinceValue:'';
+    var cities=province.value?Object.keys(regionCascadeData[province.value]||{}):[];
+    city.value=cities.indexOf(cityValue)>-1?cityValue:'';
+    var districts=province.value&&city.value?(regionCascadeData[province.value][city.value]||[]):[];
+    district.value=districts.indexOf(districtValue)>-1?districtValue:'';
+    renderRegionOptions(root,'province',provinces,province.value);
+    renderRegionOptions(root,'city',cities,city.value);
+    renderRegionOptions(root,'district',districts,district.value);
+    updateRegionCascadeLabel(prefix);
+  }
+  function bindRegionCascade(prefix){
+    var root=document.querySelector('[data-region-cascade="'+prefix+'"]');
+    var trigger=root&&root.querySelector('.region-cascade-trigger');
+    var province=document.getElementById(prefix+'Province');
+    var city=document.getElementById(prefix+'City');
+    var district=document.getElementById(prefix+'District');
+    if(!root||!trigger||!province||!city||!district){return;}
+    trigger.addEventListener('click',function(event){
+      event.stopPropagation();
+      [].slice.call(document.querySelectorAll('.region-cascade.open')).forEach(function(item){if(item!==root){closeRegionCascade(item);}});
+      var isOpen=root.classList.toggle('open');
+      trigger.setAttribute('aria-expanded',isOpen?'true':'false');
+    });
+    root.addEventListener('click',function(event){
+      event.stopPropagation();
+      var option=event.target.closest('.region-option');
+      if(!option){return;}
+      var level=option.dataset.regionLevel;
+      var value=option.dataset.regionValue;
+      if(level==='province'){
+        province.value=value;
+        city.value='';
+        district.value='';
+        renderRegionOptions(root,'province',Object.keys(regionCascadeData),province.value);
+        renderRegionOptions(root,'city',Object.keys(regionCascadeData[province.value]||{}),'');
+        renderRegionOptions(root,'district',[],'');
+      }
+      if(level==='city'){
+        city.value=value;
+        district.value='';
+        renderRegionOptions(root,'city',Object.keys(regionCascadeData[province.value]||{}),city.value);
+        renderRegionOptions(root,'district',regionCascadeData[province.value][city.value]||[],'');
+      }
+      if(level==='district'){
+        district.value=value;
+        renderRegionOptions(root,'district',regionCascadeData[province.value][city.value]||[],district.value);
+        closeRegionCascade(root);
+      }
+      updateRegionCascadeLabel(prefix);
+    });
+    document.addEventListener('click',function(){closeRegionCascade(root);});
+    setRegionCascade(prefix,'浙江省','舟山市','舟山市');
+  }
+  function getRegionListLabel(prefix){
+    var city=document.getElementById(prefix+'City');
+    var district=document.getElementById(prefix+'District');
+    if(!city||!district){return '-';}
+    return district.value&&district.value!==city.value?city.value+'/'+district.value:(city.value||district.value||'-');
+  }
   function renumberOwnerRows(form){
     if(!form){return;}
     [].slice.call(form.querySelectorAll('.owner-row')).forEach(function(row,index){
@@ -4182,7 +4369,7 @@ if(document.readyState==='loading'){
   function createOwnerRow(){
     var row=document.createElement('div');
     row.className='owner-row';
-    row.innerHTML='<span class="owner-index"></span><input class="input owner-department" value="舟山市网信办" readonly aria-label="负责人所属部门"><select class="select owner-name"><option value="">请选择运维负责人姓名</option><option>王嘉诚</option><option>陈啸</option><option>周舟</option></select><input class="input owner-contact" placeholder="请输入运维负责人联系方式"><button class="owner-delete" type="button">删除</button>';
+    row.innerHTML='<span class="owner-index"></span><input class="input owner-department" maxlength="50" placeholder="请输入负责人所属部门" aria-label="负责人所属部门"><select class="select owner-name"><option value="">请选择运维负责人姓名</option><option>王嘉诚</option><option>陈啸</option><option>周舟</option></select><input class="input owner-contact" placeholder="请输入运维负责人联系方式"><button class="owner-delete" type="button">删除</button>';
     return row;
   }
   function bindOwnerControls(form){
@@ -4224,8 +4411,8 @@ if(document.readyState==='loading'){
       if(field.tagName==='SELECT'){field.selectedIndex=0;return;}
       if(!field.readOnly){field.value='';}
     });
-    document.getElementById('createDepartment').value='舟山市网信办';
     document.getElementById('createFans').value='0';
+    setRegionCascade('create','浙江省','舟山市','舟山市');
     syncSubtypeOptions(document.getElementById('createMediaType'),document.getElementById('createSubtype'),'');
     var list=form.querySelector('[data-owner-list]');
     if(list){
@@ -4243,7 +4430,7 @@ if(document.readyState==='loading'){
   }
   function saveCreateMatrix(){
     var form=modal&&modal.querySelector('.matrix-account-form');
-    if(!form||!matrixFormIsComplete(form,['createAccountName','createMediaType','createSubtype','createAccountAttr','createRunState','createOperateType'],'createVerified')){
+    if(!form||!matrixFormIsComplete(form,['createAccountName','createProvince','createCity','createDistrict','createMediaType','createSubtype','createAccountAttr','createRunState','createOperateType'],'createVerified')){
       showMatrixToast('请完整填写必填项和运维负责人信息');
       return;
     }
@@ -4252,6 +4439,8 @@ if(document.readyState==='loading'){
   }
   var createForm=modal&&modal.querySelector('.matrix-account-form');
   var editForm=editMatrixModal&&editMatrixModal.querySelector('.matrix-account-form');
+  bindRegionCascade('create');
+  bindRegionCascade('edit');
   bindOwnerControls(createForm);
   bindOwnerControls(editForm);
   bindRemarkCounter(document.getElementById('createRemark'),document.getElementById('createRemarkCount'));
@@ -4282,6 +4471,8 @@ if(document.readyState==='loading'){
     if(!editMatrixModal||!row){return;}
     var cells=row.children;
     var name=(cells[2]||{}).textContent||'';
+    var regionPath=((cells[3]||{}).textContent||'舟山市').trim().split('/');
+    var region=regionPath[regionPath.length-1]||'舟山市';
     var media=(cells[4]||{}).textContent||'';
     var subtype=(cells[5]||{}).textContent||'';
     var attr=(cells[7]||{}).textContent||'';
@@ -4293,7 +4484,9 @@ if(document.readyState==='loading'){
     var accountName=document.getElementById('editAccountName');
     if(accountName){accountName.value=name.trim();}
     var departmentInput=document.getElementById('editDepartment');
-    if(departmentInput){departmentInput.value='舟山市网信办';}
+    if(departmentInput){departmentInput.value=((cells[6]||{}).textContent||'').trim().replace(/^--?$/,'');}
+    if(editForm){[].slice.call(editForm.querySelectorAll('.owner-department')).forEach(function(input){input.value=departmentInput?departmentInput.value:'';});}
+    setRegionCascade('edit',row.dataset.province||'浙江省',row.dataset.city||regionPath[0]||'舟山市',region||'舟山市');
     var editMedia=document.getElementById('editMediaType');
     var editSubtype=document.getElementById('editSubtype');
     setSelectValue(editMedia,media.trim());
@@ -4321,7 +4514,7 @@ if(document.readyState==='loading'){
   function saveEditMatrix(){
     if(!activeActionRow){closeEditMatrix();return;}
     var form=editMatrixModal.querySelector('.matrix-account-form');
-    if(!matrixFormIsComplete(form,['editAccountName','editMediaType','editSubtype','editAccountAttr','editRunState','editOperateType'],'editVerified')){
+    if(!matrixFormIsComplete(form,['editAccountName','editProvince','editCity','editDistrict','editMediaType','editSubtype','editAccountAttr','editRunState','editOperateType'],'editVerified')){
       showMatrixToast('请完整填写必填项和运维负责人信息');
       return;
     }
@@ -4329,20 +4522,24 @@ if(document.readyState==='loading'){
     var oldState=cellText(row,9);
     var nextState=document.getElementById('editRunState').value;
     updateRowCell(row,2,document.getElementById('editAccountName').value.trim());
+    updateRowCell(row,3,getRegionListLabel('edit'));
     updateRowCell(row,4,document.getElementById('editMediaType').value);
     updateRowCell(row,5,document.getElementById('editSubtype').value);
-    updateRowCell(row,6,'舟山市网信办');
+    updateRowCell(row,6,document.getElementById('editDepartment').value.trim()||'-');
     updateRowCell(row,7,document.getElementById('editAccountAttr').value);
     updateRowCell(row,8,document.querySelector('input[name="editVerified"]:checked').parentElement.textContent.trim());
     updateRowCell(row,10,document.getElementById('editOperateType').value);
     updateRowCell(row,13,document.getElementById('editFans').value.trim()||'-');
     row.dataset.circle=document.getElementById('editCircle').value;
+    row.dataset.province=document.getElementById('editProvince').value;
+    row.dataset.city=document.getElementById('editCity').value;
     if(nextState!==oldState){
       showMatrixToast('运行情况变更已提交审核，当前状态将在审核通过后生效');
     }else{
       showMatrixToast('账号信息已保存');
     }
     closeEditMatrix();
+    syncDepartmentFilterOptions();
     applyMatrixFilters();
   }
   function openDeleteConfirm(){
@@ -4357,6 +4554,7 @@ if(document.readyState==='loading'){
     if(activeActionRow){
       activeActionRow.remove();
       activeActionRow=null;
+      syncDepartmentFilterOptions();
       applyMatrixFilters();
       showMatrixToast('账号已移出矩阵，历史内容和传播数据保留');
     }
@@ -4484,7 +4682,7 @@ if(document.readyState==='loading'){
     {event:'舟山警民深夜接力守护迷路孩童',region:'普陀',reachWan:1330.5,host:'普陀区网'}
   ];
   var baseMatrixRows=[
-    {region:'市本级',accountCount:6,platform:'多平台',totalPosts:39,postDetails:'新舟山(8)、舟山发布(6)、舟山广电(5)、舟山文旅(7)、舟山交通(6)、舟山公安(7)',reach:'2377.1万',interact:'31.6万'},
+    {region:'舟山市',accountCount:6,platform:'多平台',totalPosts:39,postDetails:'新舟山(8)、舟山发布(6)、舟山广电(5)、舟山文旅(7)、舟山交通(6)、舟山公安(7)',reach:'2377.1万',interact:'31.6万'},
     {region:'定海区',accountCount:1,platform:'微博',totalPosts:55,postDetails:'定海网络文化(55)',reach:'1352.6万',interact:'18.4万'},
     {region:'普陀区',accountCount:1,platform:'微信公众号',totalPosts:41,postDetails:'普陀新闻网(41)',reach:'1981.5万',interact:'24.8万'},
     {region:'岱山县',accountCount:1,platform:'抖音',totalPosts:67,postDetails:'仙岛岱山(67)',reach:'1136.3万',interact:'-'},
