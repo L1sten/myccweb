@@ -45,16 +45,27 @@
       background: #fff;
       transition: width .2s ease, opacity .2s ease;
     }
-    .prd-panel.collapsed { width: 0; opacity: 0; overflow: hidden; border-left: 0; }
+    .prd-panel.collapsed { width: 0 !important; opacity: 0; overflow: hidden; border-left: 0; }
     .split-drag {
-      width: 4px;
+      width: 8px;
       cursor: col-resize;
       flex-shrink: 0;
-      background: #dde5f0;
+      background: transparent;
       position: relative;
       z-index: 20;
+      touch-action: none;
     }
-    .split-drag:hover { background: var(--brand); }
+    .split-drag::before {
+      content: "";
+      position: absolute;
+      inset: 0 3px;
+      background: #dde5f0;
+      transition: background .15s ease;
+    }
+    .split-drag:hover::before,
+    .split-drag.dragging::before { background: var(--brand); }
+    body.split-resizing { cursor: col-resize; user-select: none; }
+    body.split-resizing .prd-panel { transition: none; }
     .prd-toc {
       width: 178px;
       flex-shrink: 0;
@@ -1382,7 +1393,11 @@
 
 - 默认状态：仅下载记录和共享记录页签展示；具备当前页签导出权限时可点击。
 - 点击反馈：导出当前页签、当前筛选条件下的 Excel 文件。
-- 文件规则：导出文件为 Excel；下载记录文件名为“智能媒资下载记录_导出时间.xlsx”，共享记录文件名为“智能媒资共享记录_导出时间.xlsx”，导出时间格式为 yyyyMMddHHmm。
+- 文件规则：导出文件为 Excel；下载记录文件名为“智能媒资下载记录_导出时间.xlsx”，共享记录文件名为“智能媒资共享记录_导出时间.xlsx”，导出时间格式为 yyyyMMddHHmmss。
+- 下载记录表头：按“下载时间、素材名称、素材库、下载人”的顺序导出。
+- 下载记录 Sheet 名：固定为“下载记录”，不拼接导出时间或其他时间戳。
+- 共享记录表头：按“共享时间、素材名称、来源素材库、共享人、目标素材库”的顺序导出。
+- 共享记录 Sheet 名：固定为“共享记录”，不拼接导出时间或其他时间戳。
 - 结果变化：不改变页面记录状态。
 
 查看：
@@ -2078,7 +2093,7 @@
     function exportFileTimestamp() {
       const now = new Date();
       const pad = value => String(value).padStart(2, '0');
-      return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}`;
+      return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
     }
 
     function toggleUserMenu(force) {
@@ -2428,6 +2443,42 @@
       toggleText.textContent = panel.classList.contains('collapsed') ? 'PRD 展开' : 'PRD 收起';
     }
 
+    function initSplitDrag() {
+      const handle = document.getElementById('splitDrag');
+      const panel = document.getElementById('prdPanel');
+      const split = document.querySelector('.app-split');
+      if (!handle || !panel || !split) return;
+
+      const finishDrag = event => {
+        if (!handle.classList.contains('dragging')) return;
+        handle.classList.remove('dragging');
+        document.body.classList.remove('split-resizing');
+        if (event && handle.hasPointerCapture(event.pointerId)) {
+          handle.releasePointerCapture(event.pointerId);
+        }
+      };
+
+      handle.addEventListener('pointerdown', event => {
+        if (panel.classList.contains('collapsed')) return;
+        event.preventDefault();
+        handle.setPointerCapture(event.pointerId);
+        handle.classList.add('dragging');
+        document.body.classList.add('split-resizing');
+      });
+
+      handle.addEventListener('pointermove', event => {
+        if (!handle.classList.contains('dragging')) return;
+        const splitRect = split.getBoundingClientRect();
+        const minPanelWidth = 320;
+        const maxPanelWidth = Math.max(minPanelWidth, Math.min(760, splitRect.width - 560));
+        const nextWidth = Math.min(maxPanelWidth, Math.max(minPanelWidth, splitRect.right - event.clientX));
+        panel.style.width = `${nextWidth}px`;
+      });
+
+      handle.addEventListener('pointerup', finishDrag);
+      handle.addEventListener('pointercancel', finishDrag);
+    }
+
     function downloadPrd() {
       const md = document.getElementById('prdMdSource').textContent
         .replace(/&lt;/g, '<')
@@ -2449,6 +2500,7 @@
 
     function renderChangelog() {
       document.getElementById('changelogBody').innerHTML = '<table class="changelog-table"><thead><tr><th>时间</th><th>说明</th></tr></thead><tbody><tr><td>2026-07-06 13:54</td><td>完善批量编辑追加描述规则，追加时用英文分号分隔新旧描述；补充资源动态下载记录和共享记录导出 Excel 文件名规则。</td></tr><tr><td>2026-07-06 11:27</td><td>批量编辑改为整体校验整体保存，任一素材失败时全部素材不更新并提示失败原因。</td></tr><tr><td>2026-07-06 10:16</td><td>资源动态素材库筛选和记录展示精确到部门名称，批量编辑弹窗优化来源类型默认文案和描述写入方式布局。</td></tr><tr><td>2026-07-03 16:45</td><td>统计中心更名为资源动态，下载记录去除路径位置展示和导出字段。</td></tr><tr><td>2026-07-03 16:20</td><td>批量备注升级为批量编辑，支持名称、作者、描述和来源类型统一修改；同步中心改为统计中心，承载同步任务、下载记录和共享记录。</td></tr><tr><td>2026-07-03 14:26</td><td>调整通知中心数据口径：通知中心定位为面向管理者的系统级追溯模块，展示系统全部下载和共享记录，不受用户原有素材库数据权限管控。</td></tr><tr><td>2026-07-02 18:01</td><td>PRD 新增独立权限点配置模块：线上已有权限点保持不变，仅新增通知中心权限点，以及个人素材库、部门素材库、公共素材库下的批量备注权限点。</td></tr><tr><td>2026-07-02 17:32</td><td>优化素材列表卡片：点击缩略图可进入详情页，列表卡片移除素材描述展示，仅保留标题、时间和来源标签。</td></tr><tr><td>2026-07-02 17:22</td><td>优化通知中心记录规则：下载记录仅保留部门素材库和公共素材库并按数据权限展示，共享记录来源素材库仅显示库名称，新增自定义日期筛选，通知弹窗底部与页面底部对齐。</td></tr><tr><td>2026-07-01 15:01</td><td>优化通知中心、批量备注、用户有效期和素材详情：通知中心新增下载/共享记录页签，批量弹窗精简，用户支持批量设置有效期，素材详情改为页面式并支持上一条/下一条，列表卡片去除单卡下载入口。</td></tr><tr><td>2026-06-30 10:48</td><td>优化 PRD 浮动控制条：调整至右下角竖向排列，PRD 按钮支持“收起 / 展开”状态文案。</td></tr><tr><td>2026-06-29</td><td>优化前后台入口与交付形态：素材中心复刻前台横向导航，头像菜单进入系统管理/返回前台，页面新增右侧 PRD 面板、PRD 下载和更新记录。</td></tr><tr><td>2026-06-29</td><td>初始创建：智能媒资系统运营优化合并项目，包含下载通知中心、批量追加备注、素材详情页连续切换和用户有效期管理 PRD 与原型。</td></tr></tbody></table>';
+      document.querySelector('#changelogBody tbody').insertAdjacentHTML('afterbegin', '<tr><td>2026-07-14 14:35</td><td>修复原型与 PRD 分栏拖拽；资源动态导出文件名精确到秒，并补充下载记录、共享记录的 Excel 表头与固定 Sheet 名规则。</td></tr>');
     }
 
     renderAssets();
@@ -2456,6 +2508,7 @@
     renderStats();
     renderPrdPanel();
     renderChangelog();
+    initSplitDrag();
   </script>
 </body>
 </html>
