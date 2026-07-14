@@ -668,48 +668,6 @@ a{color:inherit;text-decoration:none}
   font-size:13px;
 }
 .run-sub-values b{color:var(--text);font-size:16px}
-.position-stat-grid{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:18px;
-}
-.position-stat{
-  min-height:72px;
-  display:grid;
-  grid-template-columns:48px minmax(120px,1fr) 1px 72px;
-  align-items:center;
-  gap:12px;
-  border-radius:7px;
-  background:#F7F9FE;
-  padding:12px 18px;
-}
-.position-icon{
-  width:44px;
-  height:44px;
-  display:grid;
-  place-items:center;
-  border-radius:8px;
-  color:#fff;
-  font-size:20px;
-  font-weight:900;
-}
-.position-icon.blue{background:linear-gradient(135deg,#1687F3,#55C6F4)}
-.position-icon.green{background:#38D66B}
-.position-icon.orange{background:#FFB33D}
-.position-name{
-  color:var(--muted);
-  font-size:16px;
-  font-weight:900;
-  white-space:nowrap;
-}
-.position-divider{height:32px;background:var(--line)}
-.position-value{
-  color:var(--text);
-  font-size:32px;
-  font-weight:900;
-  text-align:center;
-  font-variant-numeric:tabular-nums;
-}
 .matrix-board{
   background:#fff;
   border:1px solid var(--line-soft);
@@ -2071,7 +2029,6 @@ a{color:inherit;text-decoration:none}
   .kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   .layout-2,.layout-report,.chart-grid{grid-template-columns:1fr}
   .run-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .position-stat-grid{grid-template-columns:1fr}
   .report-doc-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .weekly-settings-grid{grid-template-columns:1fr}
   .analysis-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -2113,11 +2070,7 @@ a{color:inherit;text-decoration:none}
   .matrix-run-panel{padding:14px}
   .matrix-titlebar{align-items:flex-start;flex-direction:column}
   .matrix-mode-tabs{width:100%;overflow:auto}
-  .run-stat-grid,.position-stat-grid{grid-template-columns:1fr}
-  .position-stat{grid-template-columns:44px minmax(0,1fr) 1px 68px;padding:10px 12px}
-  .position-name{white-space:normal}
-  .position-name{font-size:14px}
-  .position-value{font-size:24px}
+  .run-stat-grid{grid-template-columns:1fr}
   .matrix-board-head{align-items:flex-start;flex-direction:column;padding:12px 14px}
   .matrix-board-tabs{gap:20px;min-height:38px}
   .matrix-toolbar-actions{width:100%;justify-content:flex-start}
@@ -2247,27 +2200,6 @@ a{color:inherit;text-decoration:none}
             </div>
           </div>
 
-          <p class="matrix-label" style="margin-top:12px">内容定位 <span class="matrix-help">?</span></p>
-          <div class="position-stat-grid">
-            <div class="position-stat">
-              <span class="position-icon blue">◎</span>
-              <span class="position-name">采编账号</span>
-              <span class="position-divider"></span>
-              <span class="position-value">330</span>
-            </div>
-            <div class="position-stat">
-              <span class="position-icon green">▰</span>
-              <span class="position-name">经营账号</span>
-              <span class="position-divider"></span>
-              <span class="position-value">0</span>
-            </div>
-            <div class="position-stat">
-              <span class="position-icon orange">↗</span>
-              <span class="position-name">内容信息发布账号</span>
-              <span class="position-divider"></span>
-              <span class="position-value">0</span>
-            </div>
-          </div>
         </div>
 
         <div class="matrix-board">
@@ -2317,7 +2249,6 @@ a{color:inherit;text-decoration:none}
             <div class="matrix-filter"><label>属性</label><select class="select" data-filter="attribute"><option value="">请选择</option><option>单位</option><option>个人</option><option>其他</option></select></div>
             <div class="matrix-filter search"><input class="input" data-filter="keyword" placeholder="请输入关键字搜索"></div>
             <div class="matrix-filter"><label>是否认证</label><select class="select" data-filter="verified"><option value="">请选择</option><option>是</option><option>否</option></select></div>
-            <div class="matrix-filter"><label>内容定位</label><select class="select" data-filter="position"><option value="">请选择</option><option>采编</option><option>经营</option><option>内容信息发布</option></select></div>
             <div class="matrix-filter"><label>自主情况</label><select class="select" data-filter="operate"><option value="">请选择</option><option>自主运营</option><option>代运营</option><option>--</option></select></div>
             <div class="matrix-filter"><label>变更记录</label><select class="select" data-filter="changeRecord"><option value="">请选择</option><option>有变更</option><option>无变更</option></select></div>
             <div class="matrix-filter"><label>是否已读</label><select class="select" data-filter="read"><option value="">请选择</option><option>是</option><option>否</option></select></div>
@@ -2339,7 +2270,6 @@ a{color:inherit;text-decoration:none}
                   <th>所属部门</th>
                   <th>属性</th>
                   <th>是否认证</th>
-                  <th>内容定位</th>
                   <th>运行情况</th>
                   <th>自主情况</th>
                   <th>运维负责人</th>
@@ -2352,16 +2282,16 @@ a{color:inherit;text-decoration:none}
                 </tr>
               </thead>
               <tbody>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第1行"></td><td>1</td><td><a href="#">新舟山</a></td><td>市本级</td><td>视频号</td><td>视频号</td><td>舟山市网信办</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">市新闻传媒中心-王...</a></td><td><a href="#">0580-2281956</a></td><td class="right">35.6万</td><td>自动采集</td><td>2026-06-17 15:58:52</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第2行"></td><td>2</td><td><a href="#">舟山发布</a></td><td>市本级</td><td>微信</td><td>微信</td><td>舟山市网信办</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>--</td><td><a href="#">市新闻办-周...</a></td><td><a href="#">0580-2282110</a></td><td class="right">48.12万</td><td>自动采集</td><td>2026-06-17 19:45:01</td><td>2025-12-03 17:00:41</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第3行"></td><td>3</td><td><a href="#">舟山广电</a></td><td>市本级</td><td>其他</td><td>百家号</td><td>舟山市网信办</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山广电融媒...</a></td><td><a href="#">0580-2286508</a></td><td class="right">18.8万</td><td>自动采集</td><td>2026-06-18 11:21:00</td><td>2025-11-13 16:18:04</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第4行"></td><td>4</td><td><a href="#">定海山</a></td><td>定海区</td><td>其他</td><td>人民号</td><td>舟山市网信办</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">定海融媒-张...</a></td><td><a href="#">0580-2026178</a></td><td class="right">12.4万</td><td>自动采集</td><td>2026-06-08 18:40:00</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第5行"></td><td>5</td><td><a href="#">普陀新闻网</a></td><td>普陀区</td><td>抖音</td><td>抖音</td><td>舟山市网信办</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">普陀融媒-李...</a></td><td><a href="#">0580-3019786</a></td><td class="right">26.5万</td><td>自动采集</td><td>2026-06-15 10:26:53</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第6行"></td><td>6</td><td><a href="#">仙岛岱山</a></td><td>岱山县</td><td>微博</td><td>微博</td><td>舟山市网信办</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">岱山融媒-陈...</a></td><td><a href="#">0580-4480901</a></td><td class="right">9.7万</td><td>自动采集</td><td>2026-06-17 16:41:34</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第7行"></td><td>7</td><td><a href="#">最嵊泗</a></td><td>嵊泗县</td><td>抖音</td><td>抖音</td><td>舟山市网信办</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">嵊泗融媒-沈...</a></td><td><a href="#">0580-5081234</a></td><td class="right">8.2万</td><td>自动采集</td><td>2026-06-17 17:30:53</td><td>2026-01-29 14:27:09</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第8行"></td><td>8</td><td><a href="#">舟山文旅</a></td><td>市本级</td><td>微博</td><td>微博</td><td>舟山市网信办</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山文旅-林...</a></td><td><a href="#">0580-2281320</a></td><td class="right">22.9万</td><td>自动采集</td><td>2026-06-17 22:00:00</td><td>2026-01-29 14:27:44</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第9行"></td><td>9</td><td><a href="#">舟山交通</a></td><td>市本级</td><td>微信</td><td>微信</td><td>舟山市网信办</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">市交通运输局-许...</a></td><td><a href="#">0580-2280912</a></td><td class="right">6.8万</td><td>自动采集</td><td>2026-06-17 19:41:41</td><td>2026-01-26 15:48:38</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第10行"></td><td>10</td><td><a href="#">舟山公安</a></td><td>市本级</td><td>视频号</td><td>视频号</td><td>舟山市网信办</td><td>单位</td><td>是</td><td>采编</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山市公安局-方...</a></td><td><a href="#">0580-2070110</a></td><td class="right">15.1万</td><td>自动采集</td><td>2026-06-17 09:00:01</td><td>2026-01-26 15:48:55</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第1行"></td><td>1</td><td><a href="#">新舟山</a></td><td>市本级</td><td>视频号</td><td>视频号</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">市新闻传媒中心-王...</a></td><td><a href="#">0580-2281956</a></td><td class="right">35.6万</td><td>自动采集</td><td>2026-06-17 15:58:52</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第2行"></td><td>2</td><td><a href="#">舟山发布</a></td><td>市本级</td><td>微信</td><td>微信</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>--</td><td><a href="#">市新闻办-周...</a></td><td><a href="#">0580-2282110</a></td><td class="right">48.12万</td><td>自动采集</td><td>2026-06-17 19:45:01</td><td>2025-12-03 17:00:41</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第3行"></td><td>3</td><td><a href="#">舟山广电</a></td><td>市本级</td><td>其他</td><td>百家号</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山广电融媒...</a></td><td><a href="#">0580-2286508</a></td><td class="right">18.8万</td><td>自动采集</td><td>2026-06-18 11:21:00</td><td>2025-11-13 16:18:04</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第4行"></td><td>4</td><td><a href="#">定海山</a></td><td>定海区</td><td>其他</td><td>人民号</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">定海融媒-张...</a></td><td><a href="#">0580-2026178</a></td><td class="right">12.4万</td><td>自动采集</td><td>2026-06-08 18:40:00</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第5行"></td><td>5</td><td><a href="#">普陀新闻网</a></td><td>普陀区</td><td>抖音</td><td>抖音</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">普陀融媒-李...</a></td><td><a href="#">0580-3019786</a></td><td class="right">26.5万</td><td>自动采集</td><td>2026-06-15 10:26:53</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第6行"></td><td>6</td><td><a href="#">仙岛岱山</a></td><td>岱山县</td><td>微博</td><td>微博</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">岱山融媒-陈...</a></td><td><a href="#">0580-4480901</a></td><td class="right">9.7万</td><td>自动采集</td><td>2026-06-17 16:41:34</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第7行"></td><td>7</td><td><a href="#">最嵊泗</a></td><td>嵊泗县</td><td>抖音</td><td>抖音</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">嵊泗融媒-沈...</a></td><td><a href="#">0580-5081234</a></td><td class="right">8.2万</td><td>自动采集</td><td>2026-06-17 17:30:53</td><td>2026-01-29 14:27:09</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第8行"></td><td>8</td><td><a href="#">舟山文旅</a></td><td>市本级</td><td>微博</td><td>微博</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山文旅-林...</a></td><td><a href="#">0580-2281320</a></td><td class="right">22.9万</td><td>自动采集</td><td>2026-06-17 22:00:00</td><td>2026-01-29 14:27:44</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第9行"></td><td>9</td><td><a href="#">舟山交通</a></td><td>市本级</td><td>微信</td><td>微信</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">市交通运输局-许...</a></td><td><a href="#">0580-2280912</a></td><td class="right">6.8万</td><td>自动采集</td><td>2026-06-17 19:41:41</td><td>2026-01-26 15:48:38</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第10行"></td><td>10</td><td><a href="#">舟山公安</a></td><td>市本级</td><td>视频号</td><td>视频号</td><td>舟山市网信办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山市公安局-方...</a></td><td><a href="#">0580-2070110</a></td><td class="right">15.1万</td><td>自动采集</td><td>2026-06-17 09:00:01</td><td>2026-01-26 15:48:55</td><td><button class="table-action" type="button">操作</button></td></tr>
               </tbody>
             </table>
           </div>
@@ -2712,10 +2642,6 @@ a{color:inherit;text-decoration:none}
           <div class="edit-control"><div class="radio-line"><label class="radio-pill"><input type="radio" name="createVerified" value="是">是</label><label class="radio-pill"><input type="radio" name="createVerified" value="否">否</label></div></div>
         </div>
         <div class="edit-form-row">
-          <label class="edit-label required">内容定位：</label>
-          <div class="edit-control"><select class="select" id="createContentPosition"><option value="">请选择内容定位</option><option>采编</option><option>经营</option><option>内容信息发布</option></select></div>
-        </div>
-        <div class="edit-form-row">
           <label class="edit-label required">属性：</label>
           <div class="edit-control"><select class="select" id="createAccountAttr"><option value="">请选择属性</option><option>单位</option><option>个人</option><option>其他</option></select></div>
         </div>
@@ -2807,10 +2733,6 @@ a{color:inherit;text-decoration:none}
               <label class="radio-pill"><input type="radio" name="editVerified">否</label>
             </div>
           </div>
-        </div>
-        <div class="edit-form-row">
-          <label class="edit-label required">内容定位：</label>
-          <div class="edit-control"><select class="select" id="editContentPosition"><option>采编</option><option>经营</option><option>内容信息发布</option></select></div>
         </div>
         <div class="edit-form-row">
           <label class="edit-label required">属性：</label>
@@ -2905,7 +2827,6 @@ a{color:inherit;text-decoration:none}
             <div class="audit-detail-item"><span class="audit-detail-label">子类型：</span><span class="audit-detail-value" id="auditDetailSubtype">视频号</span></div>
             <div class="audit-detail-item"><span class="audit-detail-label">属性：</span><span class="audit-detail-value">单位</span></div>
             <div class="audit-detail-item"><span class="audit-detail-label">是否认证：</span><span class="audit-detail-value">是</span></div>
-            <div class="audit-detail-item"><span class="audit-detail-label">内容定位：</span><span class="audit-detail-value">采编</span></div>
             <div class="audit-detail-item"><span class="audit-detail-label">运行情况：</span><span class="audit-detail-value"><span class="audit-status stopped" id="auditDetailState">停更</span></span></div>
             <div class="audit-detail-item"><span class="audit-detail-label">采集情况：</span><span class="audit-detail-value" id="auditDetailCollection">自动采集</span></div>
             <div class="audit-detail-item"><span class="audit-detail-label">无法采集原因：</span><span class="audit-detail-value" id="auditDetailCollectionReason">-</span></div>
@@ -3181,7 +3102,7 @@ a{color:inherit;text-decoration:none}
 | 矩阵管理 | 矩阵管理导出 | 导出当前筛选条件下的账号列表 |
 | 矩阵管理 | 新增 | 使用「新建」入口新增矩阵账号 |
 | 矩阵管理 | 详情 | 查看矩阵账号基础信息、采集情况和运行状态 |
-| 矩阵管理 | 修改 | 编辑账号基础信息、内容定位、运行情况和采集状态 |
+| 矩阵管理 | 修改 | 编辑账号基础信息、运行情况和采集状态 |
 | 矩阵管理 | 状态变更提交 | 提交账号运行情况变更审核 |
 | 矩阵管理 | 状态变更审核 | 审核、驳回账号运行情况变更申请 |
 | 矩阵管理 | 批量审核 | 批量处理多条待审核状态变更申请 |
@@ -3244,27 +3165,26 @@ a{color:inherit;text-decoration:none}
 
 - 状态卡分别展示正常、停更、待注销、已注销、已关停五类运行情况。
 - 状态卡展示总数，并在有变化时展示较上月变化值。
-- 内容定位卡展示采编账号、经营账号、内容信息发布账号。
 - 无数据时展示 `0`，不隐藏卡片。
 
 交互规则：
 
-- 点击运营范围后，状态统计和内容定位统计同步刷新。
+- 点击运营范围后，状态统计同步刷新。
 - 点击状态卡可作为快捷筛选条件，下方账号列表按对应运行状态过滤。
 - 状态变化值只作为趋势提示，不作为跳转入口。
 
 数据规则：
 
 - 取数规则：统计当前筛选范围内的矩阵账号。
-- 数据筛选规则：按运营范围、运行情况、内容定位取交集；「全部」不附加运营范围条件。
-- 数据排序规则：状态卡按正常、停更、待注销、已注销、已关停固定顺序展示；内容定位按采编、经营、内容信息发布固定顺序展示。
+- 数据筛选规则：按运营范围、运行情况取交集；「全部」不附加运营范围条件。
+- 数据排序规则：状态卡按正常、停更、待注销、已注销、已关停固定顺序展示。
 - 统计口径：较上月变化值以本月账号状态快照与上月账号状态快照对比，不回溯改写既有状态快照。
 
 ### 3.4 筛选条件与列表字段
 
 筛选条件：
 
-- 展示规则：筛选区展示所属部门、地区、媒体类型、运行情况、所属圈层、采集情况、属性、是否认证、内容定位、自主情况、变更记录、是否已读和关键词搜索。
+- 展示规则：筛选区展示所属部门、地区、媒体类型、运行情况、所属圈层、采集情况、属性、是否认证、自主情况、变更记录、是否已读和关键词搜索。
 - 交互规则：下拉筛选项选择后即时生效；关键词搜索支持输入后回车或点击搜索触发；点击重置后清空筛选、关键词和排序状态，并回到第一页。
 - 数据规则：下拉项采用精确匹配，关键词对账号名称、运维负责人、联系方式做模糊匹配，多条件取交集。
 
@@ -3297,12 +3217,6 @@ a{color:inherit;text-decoration:none}
 - 展示规则：属性展示单位、个人或其他；是否认证展示是/否。
 - 交互规则：选择筛选项后列表实时刷新；清空筛选后展示全量结果。
 - 数据规则：取账号台账和平台认证信息；缺失认证信息时展示 `--`。
-
-内容定位：
-
-- 展示规则：展示采编、经营、内容信息发布等定位；多个定位以逗号或标签形式展示。
-- 交互规则：筛选内容定位后，只展示命中任一选中定位的账号。
-- 数据规则：取账号台账维护结果；支持多选筛选；默认不参与排序。
 
 运行情况：
 
@@ -3350,13 +3264,13 @@ a{color:inherit;text-decoration:none}
 
 新增账号：
 
-- 展示规则：表单展示账号名称、所属部门、媒体类型、子类型、是否认证、内容定位、属性、运行情况、所属圈层、粉丝数、自主情况、备注和运维负责人。
+- 展示规则：表单展示账号名称、所属部门、媒体类型、子类型、是否认证、属性、运行情况、所属圈层、粉丝数、自主情况、备注和运维负责人。
 - 交互规则：所属部门默认展示「舟山市网信办」且只读；支持添加、删除多名运维负责人；必填项缺失时禁止保存并提示；保存成功后关闭弹窗并刷新列表。
-- 数据规则：媒体类型固定为微信、微博、抖音、视频号、其他；内容定位固定为采编、经营、内容信息发布；运行情况固定为正常、停更、待注销、已注销、已关停；所属圈层固定为核心圈、紧密圈、协同圈；保存前校验账号是否重复，重复时禁止覆盖已有账号；新账号地区默认市本级，采集情况默认自动采集。
+- 数据规则：媒体类型固定为微信、微博、抖音、视频号、其他；运行情况固定为正常、停更、待注销、已注销、已关停；所属圈层固定为核心圈、紧密圈、协同圈；保存前校验账号是否重复，重复时禁止覆盖已有账号；新账号地区默认市本级，采集情况默认自动采集。
 
 编辑账号：
 
-- 展示规则：表单字段和字典与新增账号一致，回填当前账号名称、媒体类型、子类型、认证情况、内容定位、属性、运行情况、所属圈层、粉丝数、自主情况、备注和运维负责人。
+- 展示规则：表单字段和字典与新增账号一致，回填当前账号名称、媒体类型、子类型、认证情况、属性、运行情况、所属圈层、粉丝数、自主情况、备注和运维负责人。
 - 交互规则：所属部门固定展示「舟山市网信办」且只读；支持添加、删除多名运维负责人；修改后保存产生操作记录；关闭前有未保存修改时提示确认。
 - 数据规则：运行情况发生变化时提交审核，审核通过后生效；地区和采集情况不在弹窗中修改；编辑不回溯改写既有内容和传播数据。
 
@@ -3816,6 +3730,10 @@ a{color:inherit;text-decoration:none}
 
 var changelogData = [
   {
+    "time": "2026-07-14 14:28",
+    "desc": "发布更新：矩阵账号管理移除内容定位字段，同步删除统计卡、筛选项、列表列、新增编辑表单、审核详情及 PRD 口径"
+  },
+  {
     "time": "2026-07-14 14:08",
     "desc": "发布更新：重构矩阵账号新增、编辑弹窗字段与固定字典，所属部门统一固定为「舟山市网信办」，同步列表、筛选和 PRD 口径"
   },
@@ -4106,14 +4024,13 @@ if(document.readyState==='loading'){
       var matched=(matchedMedia
         && (!filters.department||cellText(row,6)===filters.department)
         && (!filters.region||cellText(row,3)===filters.region)
-        && (!filters.runState||cellText(row,10)===filters.runState)
+        && (!filters.runState||cellText(row,9)===filters.runState)
         && (!filters.circle||row.dataset.circle===filters.circle)
-        && (!filters.collection||cellText(row,15)===filters.collection)
+        && (!filters.collection||cellText(row,14)===filters.collection)
         && (!filters.attribute||cellText(row,7)===filters.attribute)
         && (!filters.verified||cellText(row,8)===filters.verified)
-        && (!filters.position||cellText(row,9)===filters.position)
-        && (!filters.operate||cellText(row,11)===filters.operate)
-        && (!keyword||[2,12,13].some(function(column){return cellText(row,column).toLowerCase().indexOf(keyword)>-1;})));
+        && (!filters.operate||cellText(row,10)===filters.operate)
+        && (!keyword||[2,11,12].some(function(column){return cellText(row,column).toLowerCase().indexOf(keyword)>-1;})));
       row.style.display=matched?'':'none';
       if(matched){
         visibleIndex++;
@@ -4326,7 +4243,7 @@ if(document.readyState==='loading'){
   }
   function saveCreateMatrix(){
     var form=modal&&modal.querySelector('.matrix-account-form');
-    if(!form||!matrixFormIsComplete(form,['createAccountName','createMediaType','createSubtype','createContentPosition','createAccountAttr','createRunState','createOperateType'],'createVerified')){
+    if(!form||!matrixFormIsComplete(form,['createAccountName','createMediaType','createSubtype','createAccountAttr','createRunState','createOperateType'],'createVerified')){
       showMatrixToast('请完整填写必填项和运维负责人信息');
       return;
     }
@@ -4369,10 +4286,9 @@ if(document.readyState==='loading'){
     var subtype=(cells[5]||{}).textContent||'';
     var attr=(cells[7]||{}).textContent||'';
     var verified=(cells[8]||{}).textContent||'';
-    var position=(cells[9]||{}).textContent||'';
-    var runState=(cells[10]||{}).textContent||'';
-    var operate=(cells[11]||{}).textContent||'';
-    var fans=(cells[14]||{}).textContent||'0';
+    var runState=(cells[9]||{}).textContent||'';
+    var operate=(cells[10]||{}).textContent||'';
+    var fans=(cells[13]||{}).textContent||'0';
     if(!row.dataset.accountId){row.dataset.accountId='MATRIX-'+String([].slice.call(row.parentNode.children).indexOf(row)+1).padStart(4,'0');}
     var accountName=document.getElementById('editAccountName');
     if(accountName){accountName.value=name.trim();}
@@ -4382,7 +4298,6 @@ if(document.readyState==='loading'){
     var editSubtype=document.getElementById('editSubtype');
     setSelectValue(editMedia,media.trim());
     syncSubtypeOptions(editMedia,editSubtype,subtype.trim());
-    setSelectValue(document.getElementById('editContentPosition'),position.trim()==='内部信息发布'?'内容信息发布':position.trim());
     setSelectValue(document.getElementById('editAccountAttr'),attr.trim());
     setSelectValue(document.getElementById('editRunState'),runState.trim());
     setSelectValue(document.getElementById('editOperateType'),operate.trim());
@@ -4406,12 +4321,12 @@ if(document.readyState==='loading'){
   function saveEditMatrix(){
     if(!activeActionRow){closeEditMatrix();return;}
     var form=editMatrixModal.querySelector('.matrix-account-form');
-    if(!matrixFormIsComplete(form,['editAccountName','editMediaType','editSubtype','editContentPosition','editAccountAttr','editRunState','editOperateType'],'editVerified')){
+    if(!matrixFormIsComplete(form,['editAccountName','editMediaType','editSubtype','editAccountAttr','editRunState','editOperateType'],'editVerified')){
       showMatrixToast('请完整填写必填项和运维负责人信息');
       return;
     }
     var row=activeActionRow;
-    var oldState=cellText(row,10);
+    var oldState=cellText(row,9);
     var nextState=document.getElementById('editRunState').value;
     updateRowCell(row,2,document.getElementById('editAccountName').value.trim());
     updateRowCell(row,4,document.getElementById('editMediaType').value);
@@ -4419,9 +4334,8 @@ if(document.readyState==='loading'){
     updateRowCell(row,6,'舟山市网信办');
     updateRowCell(row,7,document.getElementById('editAccountAttr').value);
     updateRowCell(row,8,document.querySelector('input[name="editVerified"]:checked').parentElement.textContent.trim());
-    updateRowCell(row,9,document.getElementById('editContentPosition').value);
-    updateRowCell(row,11,document.getElementById('editOperateType').value);
-    updateRowCell(row,14,document.getElementById('editFans').value.trim()||'-');
+    updateRowCell(row,10,document.getElementById('editOperateType').value);
+    updateRowCell(row,13,document.getElementById('editFans').value.trim()||'-');
     row.dataset.circle=document.getElementById('editCircle').value;
     if(nextState!==oldState){
       showMatrixToast('运行情况变更已提交审核，当前状态将在审核通过后生效');
