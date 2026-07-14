@@ -569,7 +569,11 @@ a{color:inherit;text-decoration:none}
   height:26px;
   position:relative;
   color:var(--weak);
+  cursor:pointer;
 }
+.expand-corners:hover{color:var(--primary)}
+.matrix-stats-restore{display:none}
+.matrix-stats-restore.visible{display:inline-block}
 .expand-corners::before,
 .expand-corners::after{
   content:"";
@@ -711,17 +715,18 @@ a{color:inherit;text-decoration:none}
   flex-wrap:wrap;
 }
 .matrix-filterbar{
-  padding:0 18px 12px;
+  padding:4px 18px 16px;
   display:grid;
-  grid-template-columns:repeat(6,minmax(0,1fr));
+  grid-template-columns:repeat(3,minmax(0,1fr));
   align-items:center;
-  gap:12px 14px;
+  gap:12px 20px;
+  border-top:1px solid var(--line-soft);
 }
 .matrix-filter{
   display:grid;
-  grid-template-columns:max-content minmax(0,1fr);
+  grid-template-columns:68px minmax(0,1fr);
   align-items:center;
-  gap:6px;
+  gap:8px;
   min-width:0;
 }
 .media-type-filter{position:relative;z-index:20}
@@ -741,6 +746,7 @@ a{color:inherit;text-decoration:none}
   justify-content:flex-end;
   gap:8px;
 }
+.matrix-filter.actions .btn{min-width:64px}
 .media-cascade{position:relative;min-width:0}
 .media-select-trigger{
   display:flex;
@@ -2219,12 +2225,12 @@ a{color:inherit;text-decoration:none}
           <div class="matrix-titlebar">
             <h1>账号运行情况统计</h1>
             <div class="matrix-mode-tabs" aria-label="运营类型">
-              <button type="button">全部</button>
+              <button type="button" class="active" data-operate-scope="">全部</button>
               <span class="split"></span>
-              <button type="button" class="active">自主运营</button>
+              <button type="button" data-operate-scope="自主运营">自主运营</button>
               <span class="split"></span>
-              <button type="button">代运营</button>
-              <span class="expand-corners" aria-hidden="true"></span>
+              <button type="button" data-operate-scope="代运营">代运营</button>
+              <button class="expand-corners" id="hideMatrixStats" data-panel-toggle type="button" aria-label="隐藏账号运行情况统计" title="隐藏账号运行情况统计"></button>
             </div>
           </div>
           <p class="matrix-label">状态</p>
@@ -2263,6 +2269,7 @@ a{color:inherit;text-decoration:none}
               <button class="btn primary" id="openCreate" type="button"><span class="btn-icon add"></span>新建</button>
               <button class="btn" type="button">删除</button>
               <button class="btn" type="button"><span class="btn-icon export"></span>导出</button>
+              <button class="expand-corners matrix-stats-restore" id="showMatrixStats" data-panel-toggle type="button" aria-label="展示账号运行情况统计" title="展示账号运行情况统计"></button>
             </div>
           </div>
           <div class="matrix-tab-panel active" data-matrix-panel="list">
@@ -2295,14 +2302,12 @@ a{color:inherit;text-decoration:none}
               </div>
             </div>
             <div class="matrix-filter"><label>运行情况</label><select class="select" data-filter="runState"><option value="">请选择</option><option>正常</option><option>停更</option><option>待注销</option><option>已注销</option><option>已关停</option></select></div>
-            <div class="matrix-filter"><label>所属圈层</label><select class="select" data-filter="circle"><option value="">请选择</option><option>核心圈</option><option>紧密圈</option><option>协同圈</option></select></div>
             <div class="matrix-filter"><label>采集情况</label><select class="select" data-filter="collection"><option value="">请选择</option><option>自动采集</option><option>无法采集</option></select></div>
             <div class="matrix-filter"><label>属性</label><select class="select" data-filter="attribute"><option value="">请选择</option><option>单位</option><option>个人</option><option>其他</option></select></div>
-            <div class="matrix-filter search"><input class="input" data-filter="keyword" placeholder="请输入关键字搜索"></div>
             <div class="matrix-filter"><label>是否认证</label><select class="select" data-filter="verified"><option value="">请选择</option><option>是</option><option>否</option></select></div>
-            <div class="matrix-filter"><label>自主情况</label><select class="select" data-filter="operate"><option value="">请选择</option><option>自主运营</option><option>代运营</option><option>--</option></select></div>
+            <div class="matrix-filter"><label>自主情况</label><select class="select" data-filter="operate"><option value="">请选择</option><option>自主运营</option><option>代运营</option></select></div>
             <div class="matrix-filter"><label>变更记录</label><select class="select" data-filter="changeRecord"><option value="">请选择</option><option>有变更</option><option>无变更</option></select></div>
-            <div class="matrix-filter"><label>是否已读</label><select class="select" data-filter="read"><option value="">请选择</option><option>是</option><option>否</option></select></div>
+            <div class="matrix-filter search"><label>关键词</label><input class="input" data-filter="keyword" placeholder="请输入账号、负责人或联系方式"></div>
             <div class="matrix-filter actions">
               <button class="btn primary small" type="button" id="queryMatrixFilters">查询</button>
               <button class="btn small" type="button" id="resetMatrixFilters">重置</button>
@@ -2334,7 +2339,7 @@ a{color:inherit;text-decoration:none}
               </thead>
               <tbody>
                 <tr><td class="center"><input type="checkbox" aria-label="选择第1行"></td><td>1</td><td><a href="#">新舟山</a></td><td>舟山市</td><td>视频号</td><td>视频号</td><td>舟山市新闻传媒中心</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">市新闻传媒中心-王...</a></td><td><a href="#">0580-2281956</a></td><td class="right">35.6万</td><td>自动采集</td><td>2026-06-17 15:58:52</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
-                <tr><td class="center"><input type="checkbox" aria-label="选择第2行"></td><td>2</td><td><a href="#">舟山发布</a></td><td>舟山市</td><td>微信</td><td>微信</td><td>舟山市人民政府新闻办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>--</td><td><a href="#">市新闻办-周...</a></td><td><a href="#">0580-2282110</a></td><td class="right">48.12万</td><td>自动采集</td><td>2026-06-17 19:45:01</td><td>2025-12-03 17:00:41</td><td><button class="table-action" type="button">操作</button></td></tr>
+                <tr><td class="center"><input type="checkbox" aria-label="选择第2行"></td><td>2</td><td><a href="#">舟山发布</a></td><td>舟山市</td><td>微信</td><td>微信</td><td>舟山市人民政府新闻办</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>代运营</td><td><a href="#">市新闻办-周...</a></td><td><a href="#">0580-2282110</a></td><td class="right">48.12万</td><td>自动采集</td><td>2026-06-17 19:45:01</td><td>2025-12-03 17:00:41</td><td><button class="table-action" type="button">操作</button></td></tr>
                 <tr><td class="center"><input type="checkbox" aria-label="选择第3行"></td><td>3</td><td><a href="#">舟山广电</a></td><td>舟山市</td><td>其他</td><td>百家号</td><td>舟山市广播电视总台</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">舟山广电融媒...</a></td><td><a href="#">0580-2286508</a></td><td class="right">18.8万</td><td>自动采集</td><td>2026-06-18 11:21:00</td><td>2025-11-13 16:18:04</td><td><button class="table-action" type="button">操作</button></td></tr>
                 <tr><td class="center"><input type="checkbox" aria-label="选择第4行"></td><td>4</td><td><a href="#">定海山</a></td><td>舟山市/定海区</td><td>其他</td><td>人民号</td><td>定海区融媒体中心</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">定海融媒-张...</a></td><td><a href="#">0580-2026178</a></td><td class="right">12.4万</td><td>自动采集</td><td>2026-06-08 18:40:00</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
                 <tr><td class="center"><input type="checkbox" aria-label="选择第5行"></td><td>5</td><td><a href="#">普陀新闻网</a></td><td>舟山市/普陀区</td><td>抖音</td><td>抖音</td><td>普陀区融媒体中心</td><td>单位</td><td>是</td><td><span class="status-dot">正常</span></td><td>自主运营</td><td><a href="#">普陀融媒-李...</a></td><td><a href="#">0580-3019786</a></td><td class="right">26.5万</td><td>自动采集</td><td>2026-06-15 10:26:53</td><td>--</td><td><button class="table-action" type="button">操作</button></td></tr>
@@ -2554,9 +2559,6 @@ a{color:inherit;text-decoration:none}
             <span>至</span>
             <input class="input" type="date" value="2026-06-18" aria-label="结束日期">
           </div>
-          <div class="report-list-filter">
-            <input class="input search" type="search" placeholder="请输入关键词搜索" aria-label="搜索报告">
-          </div>
         </div>
 
         <div class="report-doc-grid" id="reportDocGrid">
@@ -2713,16 +2715,12 @@ a{color:inherit;text-decoration:none}
           <div class="edit-control"><select class="select" id="createRunState"><option value="">请选择运行情况</option><option>正常</option><option>停更</option><option>待注销</option><option>已注销</option><option>已关停</option></select></div>
         </div>
         <div class="edit-form-row">
-          <label class="edit-label">所属圈层：</label>
-          <div class="edit-control"><select class="select" id="createCircle"><option value="">请选择所属圈层</option><option>核心圈</option><option>紧密圈</option><option>协同圈</option></select></div>
-        </div>
-        <div class="edit-form-row">
           <label class="edit-label">粉丝数：</label>
           <div class="edit-control"><input class="input" id="createFans" type="number" min="0" value="0"></div>
         </div>
         <div class="edit-form-row">
           <label class="edit-label required">自主情况：</label>
-          <div class="edit-control"><select class="select" id="createOperateType"><option value="">请选择自主情况</option><option>自主运营</option><option>代运营</option><option>--</option></select></div>
+          <div class="edit-control"><select class="select" id="createOperateType"><option value="">请选择自主情况</option><option>自主运营</option><option>代运营</option></select></div>
         </div>
         <div class="edit-form-row full">
           <label class="edit-label">备注：</label>
@@ -2815,11 +2813,7 @@ a{color:inherit;text-decoration:none}
         </div>
         <div class="edit-form-row">
           <label class="edit-label required">运行情况：</label>
-          <div class="edit-control"><select class="select" id="editRunState"><option>正常</option><option>停更</option><option>待注销</option><option>已注销</option><option>已关停</option></select><span class="field-help">修改运行情况后提交审核，当前状态审核通过后生效</span></div>
-        </div>
-        <div class="edit-form-row">
-          <label class="edit-label">所属圈层：</label>
-          <div class="edit-control"><select class="select" id="editCircle"><option value="">请选择所属圈层</option><option>核心圈</option><option>紧密圈</option><option>协同圈</option></select></div>
+          <div class="edit-control"><select class="select" id="editRunState"><option>正常</option><option>停更</option><option>待注销</option><option>已注销</option><option>已关停</option></select></div>
         </div>
         <div class="edit-form-row">
           <label class="edit-label">粉丝数：</label>
@@ -2827,7 +2821,7 @@ a{color:inherit;text-decoration:none}
         </div>
         <div class="edit-form-row">
           <label class="edit-label required">自主情况：</label>
-          <div class="edit-control"><select class="select" id="editOperateType"><option>自主运营</option><option>代运营</option><option>--</option></select></div>
+          <div class="edit-control"><select class="select" id="editOperateType"><option>自主运营</option><option>代运营</option></select></div>
         </div>
         <div class="edit-form-row full">
           <label class="edit-label">备注：</label>
@@ -2905,7 +2899,6 @@ a{color:inherit;text-decoration:none}
             <div class="audit-detail-item"><span class="audit-detail-label">运行情况：</span><span class="audit-detail-value"><span class="audit-status stopped" id="auditDetailState">停更</span></span></div>
             <div class="audit-detail-item"><span class="audit-detail-label">采集情况：</span><span class="audit-detail-value" id="auditDetailCollection">自动采集</span></div>
             <div class="audit-detail-item"><span class="audit-detail-label">无法采集原因：</span><span class="audit-detail-value" id="auditDetailCollectionReason">-</span></div>
-            <div class="audit-detail-item"><span class="audit-detail-label">所属圈层：</span><span class="audit-detail-value">--</span></div>
             <div class="audit-detail-item"><span class="audit-detail-label">粉丝数：</span><span class="audit-detail-value">--</span></div>
             <div class="audit-detail-item"><span class="audit-detail-label">自主情况：</span><span class="audit-detail-value">自主运营</span></div>
             <div class="audit-detail-item"><span class="audit-detail-label">备注：</span><span class="audit-detail-value">--</span></div>
@@ -3224,6 +3217,7 @@ a{color:inherit;text-decoration:none}
 交互规则：
 
 - 点击「全部 / 自主运营 / 代运营」后，统计卡和账号列表同步刷新。
+- 点击账号运行情况统计面板右上角的隐藏按钮后，整个统计面板隐藏，账号列表上移；列表右上角展示恢复按钮，点击后重新展示统计面板。
 - 点击「新媒体矩阵 / 状态变更审核」tab 后切换对应列表面板；两个 tab 的筛选条件相互独立保留。
 - 点击分页、每页条数或可排序字段时，不清空当前筛选条件。
 - 仅具备对应权限的用户可新增、编辑、移出矩阵、提交状态变更或审核状态变更。
@@ -3259,7 +3253,7 @@ a{color:inherit;text-decoration:none}
 
 筛选条件：
 
-- 展示规则：筛选区展示所属部门、地区、媒体类型、运行情况、所属圈层、采集情况、属性、是否认证、自主情况、变更记录、是否已读和关键词搜索。
+- 展示规则：筛选区展示所属部门、地区、媒体类型、运行情况、采集情况、属性、是否认证、自主情况、变更记录和关键词搜索。
 - 交互规则：下拉筛选项选择后即时生效；关键词搜索支持输入后回车或点击搜索触发；点击重置后清空筛选、关键词和排序状态，并回到第一页。
 - 数据规则：下拉项采用精确匹配，关键词对账号名称、运维负责人、联系方式做模糊匹配，多条件取交集。
 
@@ -3281,11 +3275,11 @@ a{color:inherit;text-decoration:none}
 - 交互规则：选择微信、微博、抖音、视频号时直接按对应媒体类型筛选；选择其他下的子类型时，按具体子类型筛选。
 - 数据规则：取平台字典和账号台账；支持精确筛选；默认不作为首要排序字段。
 
-所属部门 / 所属圈层：
+所属部门：
 
-- 展示规则：所属部门按账号列表返回结果展示，缺失时展示 `-`；所属圈层展示核心圈、紧密圈、协同圈，缺失时展示 `--`。
+- 展示规则：所属部门按账号列表返回结果展示，缺失时展示 `-`。
 - 交互规则：所属部门筛选为非必填下拉框，选项根据当前账号列表返回的所属部门名称去重生成；选择后按部门名称精确筛选，选择「请选择」时不附加所属部门条件。
-- 数据规则：账号所属部门和每名运维负责人的所属部门均为非必填自定义文本，字符上限 50；两者分别保存，不要求保持一致。所属圈层支持精确筛选，默认不参与排序。
+- 数据规则：账号所属部门和每名运维负责人的所属部门均为非必填自定义文本，字符上限 50；两者分别保存，不要求保持一致。
 
 属性 / 是否认证：
 
@@ -3301,9 +3295,9 @@ a{color:inherit;text-decoration:none}
 
 自主情况：
 
-- 展示规则：展示自主运营、代运营或 `--`。
+- 展示规则：仅展示自主运营或代运营。
 - 交互规则：顶部运营范围切换和筛选项均可影响该字段范围，二者同时存在时取交集。
-- 数据规则：取账号运营归属；支持精确筛选；默认不参与排序。
+- 数据规则：取账号运营归属，固定为自主运营、代运营两项；支持精确筛选；默认不参与排序。
 
 运维负责人 / 联系方式：
 
@@ -3339,13 +3333,13 @@ a{color:inherit;text-decoration:none}
 
 新增账号：
 
-- 展示规则：表单展示账号名称、地区、所属部门、媒体类型、子类型、是否认证、属性、运行情况、所属圈层、粉丝数、自主情况、备注和运维负责人；地区仅展示一个三级级联选择控件，选中后回显完整省市区路径。
+- 展示规则：表单展示账号名称、地区、所属部门、媒体类型、子类型、是否认证、属性、运行情况、粉丝数、自主情况、备注和运维负责人；地区仅展示一个三级级联选择控件，选中后回显完整省市区路径。
 - 交互规则：点击地区控件后在同一浮层内按省、市、区县三级选择，选择区县后自动收起；当前租户默认回填浙江省、舟山市、舟山市。账号所属部门为非必填输入框，支持最多 50 个字符；每名运维负责人的所属部门同样支持自定义输入且最多 50 个字符。支持添加、删除多名运维负责人；必填项缺失时禁止保存并提示；保存成功后关闭弹窗并刷新列表。
-- 数据规则：地区三级均为必填，选项取当前租户地区字典；媒体类型固定为微信、微博、抖音、视频号、其他；运行情况固定为正常、停更、待注销、已注销、已关停；所属圈层固定为核心圈、紧密圈、协同圈；保存前校验账号是否重复，重复时禁止覆盖已有账号；采集情况默认自动采集。
+- 数据规则：地区三级均为必填，选项取当前租户地区字典；媒体类型固定为微信、微博、抖音、视频号、其他；运行情况固定为正常、停更、待注销、已注销、已关停；自主情况固定为自主运营、代运营；保存前校验账号是否重复，重复时禁止覆盖已有账号；采集情况默认自动采集。
 
 编辑账号：
 
-- 展示规则：表单字段和字典与新增账号一致，回填当前账号名称、省市区地区、媒体类型、子类型、认证情况、属性、运行情况、所属圈层、粉丝数、自主情况、备注和运维负责人。
+- 展示规则：表单字段和字典与新增账号一致，回填当前账号名称、省市区地区、媒体类型、子类型、认证情况、属性、运行情况、粉丝数、自主情况、备注和运维负责人。
 - 交互规则：账号所属部门和运维负责人所属部门均回填当前数据并允许修改，字段非必填且最多输入 50 个字符；支持添加、删除多名运维负责人；修改后保存产生操作记录；关闭前有未保存修改时提示确认。
 - 数据规则：地区修改后更新列表、筛选、传播分析和周报使用的账号地区归属；运行情况发生变化时提交审核，审核通过后生效；采集情况不在弹窗中修改；编辑不回溯改写既有内容和传播数据。
 
@@ -3410,11 +3404,6 @@ a{color:inherit;text-decoration:none}
 - 一级类型：微信、微博、抖音、视频号、其他。
 - 其他类型的二级类型：头条号、百家号、人民号、知乎号、潮鸣号、客户端。
 - 一级类型为其他时，二级类型必填；其他一级类型的二级类型默认与一级类型一致。
-
-所属圈层字典：
-
-- 固定为核心圈、紧密圈、协同圈。
-- 新增和编辑弹窗使用同一字典；未选择时展示 `--`。
 
 判重规则：
 
@@ -3644,7 +3633,7 @@ a{color:inherit;text-decoration:none}
 - 顶部导航点击「正能量热点报告」进入本模块，默认进入自动报告页。
 - 一级 tab 展示自动报告、人工报告。
 - 自动报告页内容区展示日报、周报类型切换；人工报告页不展示该类型切换。
-- 筛选区展示发布时间起止日期和关键词搜索。
+- 筛选区仅展示发布时间起止日期。
 - 列表区以报告卡片展示报告名称、统计日期或统计周期。
 - 周报卡片展示统计周期。
 - 鼠标悬停报告卡片时展示「下载」和「预览」按钮，按钮不常驻占用列表空间。
@@ -3807,6 +3796,10 @@ a{color:inherit;text-decoration:none}
 <script>
 
 var changelogData = [
+  {
+    "time": "2026-07-14 16:24",
+    "desc": "发布更新：矩阵账号管理移除所属圈层和是否已读，统一自主情况双选项并联动顶部统计与列表，支持统计面板隐藏恢复；重排筛选区并精简周报搜索入口"
+  },
   {
     "time": "2026-07-14 14:59",
     "desc": "发布更新：矩阵账号地区改为单控件省市区三级级联，列表按市/区县路径展示；所属部门支持账号及负责人自定义输入，列表筛选按返回结果动态生成"
@@ -4060,9 +4053,9 @@ if(document.readyState==='loading'){
     if(views[name]){setView(name);}
   });
   [].slice.call(document.querySelectorAll('.range-tabs, .analysis-tabs, .matrix-mode-tabs, .matrix-board-tabs')).forEach(function(group){
-    [].slice.call(group.querySelectorAll('button')).forEach(function(btn){
+    [].slice.call(group.querySelectorAll('button:not([data-panel-toggle])')).forEach(function(btn){
       btn.addEventListener('click',function(){
-        [].slice.call(group.querySelectorAll('button')).forEach(function(item){
+        [].slice.call(group.querySelectorAll('button:not([data-panel-toggle])')).forEach(function(item){
           item.classList.toggle('active',item===btn);
         });
       });
@@ -4084,6 +4077,7 @@ if(document.readyState==='loading'){
 
   var mediaTypeSelect=document.getElementById('mediaTypeSelect');
   var selectedMediaFilter='';
+  var matrixOperateScope='';
   function cellText(row,index){
     return row.children[index]?row.children[index].textContent.trim():'';
   }
@@ -4107,19 +4101,17 @@ if(document.readyState==='loading'){
       filters[control.dataset.filter]=(control.value||'').trim();
     });
     var keyword=(filters.keyword||'').toLowerCase();
-    var circleDefaults=['核心圈','核心圈','紧密圈','紧密圈','协同圈','协同圈'];
     var visibleIndex=0;
     matrixRows.forEach(function(row,index){
       if(!row.dataset.accountId){row.dataset.accountId='MATRIX-'+String(index+1).padStart(4,'0');}
-      if(!row.dataset.circle){row.dataset.circle=circleDefaults[index%circleDefaults.length];}
       var media=cellText(row,4);
       var subtype=cellText(row,5);
       var matchedMedia=!selectedMediaFilter || (directTypes.indexOf(selectedMediaFilter)>-1 || selectedMediaFilter==='其他' ? media===selectedMediaFilter : subtype===selectedMediaFilter);
       var matched=(matchedMedia
+        && (!matrixOperateScope||cellText(row,10)===matrixOperateScope)
         && (!filters.department||cellText(row,6)===filters.department)
         && (!filters.region||cellText(row,3)===filters.region)
         && (!filters.runState||cellText(row,9)===filters.runState)
-        && (!filters.circle||row.dataset.circle===filters.circle)
         && (!filters.collection||cellText(row,14)===filters.collection)
         && (!filters.attribute||cellText(row,7)===filters.attribute)
         && (!filters.verified||cellText(row,8)===filters.verified)
@@ -4134,6 +4126,39 @@ if(document.readyState==='loading'){
     var totalText=document.querySelector('.matrix-tab-panel.active .matrix-pagination .matrix-total');
     if(totalText){totalText.textContent='共 '+visibleIndex+' 条';}
   }
+  var matrixStatusStats={
+    '':[['325',''],['5','+5'],['0','--'],['1','+1'],['12','+12']],
+    '自主运营':[['320',''],['4','+4'],['0','--'],['1','+1'],['10','+10']],
+    '代运营':[['5',''],['1','+1'],['0','--'],['0','--'],['2','+2']]
+  };
+  function updateMatrixStatusStats(scope){
+    var stats=matrixStatusStats[scope]||matrixStatusStats[''];
+    [].slice.call(document.querySelectorAll('.run-stat')).forEach(function(card,index){
+      var value=card.querySelector('.run-stat-value');
+      var change=card.querySelector('.run-change');
+      if(value){value.textContent=stats[index][0];}
+      if(change&&change.firstElementChild){change.firstElementChild.textContent=stats[index][1];}
+    });
+  }
+  [].slice.call(document.querySelectorAll('[data-operate-scope]')).forEach(function(button){
+    button.addEventListener('click',function(){
+      matrixOperateScope=button.dataset.operateScope;
+      updateMatrixStatusStats(matrixOperateScope);
+      applyMatrixFilters();
+    });
+  });
+  var matrixStatsPanel=document.querySelector('.matrix-run-panel');
+  var hideMatrixStats=document.getElementById('hideMatrixStats');
+  var showMatrixStats=document.getElementById('showMatrixStats');
+  function setMatrixStatsVisible(visible){
+    if(!matrixStatsPanel||!showMatrixStats){return;}
+    matrixStatsPanel.style.display=visible?'':'none';
+    showMatrixStats.classList.toggle('visible',!visible);
+  }
+  if(hideMatrixStats){hideMatrixStats.addEventListener('click',function(){setMatrixStatsVisible(false);});}
+  if(showMatrixStats){showMatrixStats.addEventListener('click',function(){setMatrixStatsVisible(true);});}
+  updateMatrixStatusStats(matrixOperateScope);
+  applyMatrixFilters();
   syncDepartmentFilterOptions();
   if(mediaTypeSelect){
     var mediaTrigger=mediaTypeSelect.querySelector('.media-select-trigger');
@@ -4494,7 +4519,6 @@ if(document.readyState==='loading'){
     setSelectValue(document.getElementById('editAccountAttr'),attr.trim());
     setSelectValue(document.getElementById('editRunState'),runState.trim());
     setSelectValue(document.getElementById('editOperateType'),operate.trim());
-    setSelectValue(document.getElementById('editCircle'),row.dataset.circle||'');
     var fansInput=document.getElementById('editFans');
     if(fansInput){fansInput.value=fans.trim();}
     [].slice.call(document.querySelectorAll('input[name="editVerified"]')).forEach(function(input){
@@ -4530,7 +4554,6 @@ if(document.readyState==='loading'){
     updateRowCell(row,8,document.querySelector('input[name="editVerified"]:checked').parentElement.textContent.trim());
     updateRowCell(row,10,document.getElementById('editOperateType').value);
     updateRowCell(row,13,document.getElementById('editFans').value.trim()||'-');
-    row.dataset.circle=document.getElementById('editCircle').value;
     row.dataset.province=document.getElementById('editProvince').value;
     row.dataset.city=document.getElementById('editCity').value;
     if(nextState!==oldState){
