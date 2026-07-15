@@ -37,6 +37,8 @@
       "5a3f7a59d4b9c0c7f04f8b1015e45ccc597c058b5b2150a3cff62c078b244b8b",
     "positive-energy-situation-optimization":
       "99a71ba25cb60402863f541504360aead30e8e86515e8fb80c605ebf395a99ba",
+    "dongpo-calendar-ai":
+      "5aaf4eeb71500c0d49d0ec934c3622a46a64739a619f90872c098e5f2c2f9d5f",
   };
 
   var isLocalPreview =
