@@ -176,6 +176,10 @@
         .workbench.module-detail .page-head,
         .workbench.module-detail .toolbar { display: none; }
         .workbench.module-detail .content-scroll { padding: 14px 14px 22px; }
+        .workbench:not(.module-materials) > .toolbar { display: none; }
+        .material-center-tabs { display: none; }
+        .workbench.module-materials .province-tabs { display: none; }
+        .workbench.module-materials .material-center-tabs { display: flex; }
         .page-head {
             flex-shrink: 0;
             background: #fff;
@@ -2564,7 +2568,7 @@
                         <button class="nav-item">首页</button>
                         <button class="nav-item">搜索中心</button>
                         <button class="nav-item active" data-module="assets" onclick="switchModule('assets')">全省资源库</button>
-                        <button class="nav-item" data-module="catalog" onclick="switchPanel('catalog')">素材中心</button>
+                        <button class="nav-item" data-module="materials" onclick="switchModule('materials')">素材中心</button>
                         <button class="nav-item">审批中心</button>
                         <button class="nav-item">同步中心</button>
                         <button class="nav-item">智能标签库</button>
@@ -2605,7 +2609,7 @@
 
 	                    <section class="workbench">
 	                        <div class="page-head">
-	                            <div class="material-tabs-line">
+	                            <div class="material-tabs-line province-tabs">
 	                                <div class="resource-tabs">
 	                                    <button class="resource-tab active">成品稿件</button>
 	                                    <button class="resource-tab">成品视频</button>
@@ -2613,9 +2617,19 @@
 	                                    <button class="resource-tab">成品音频</button>
 	                                </div>
 	                            </div>
+	                            <div class="material-tabs-line material-center-tabs">
+	                                <div class="tab-row">
+	                                    <button class="lib-tab active">全部</button>
+	                                    <button class="lib-tab">视频</button>
+	                                    <button class="lib-tab">音频</button>
+	                                    <button class="lib-tab">图片</button>
+	                                    <button class="lib-tab">文件</button>
+	                                </div>
+	                                <div class="material-scope"><span>部门回收站</span><strong>A部门素材</strong></div>
+	                            </div>
 	                        </div>
 
-	                        <div class="toolbar hidden">
+	                        <div class="toolbar">
                             <div class="asset-action-bar">
                                 <div class="upload-combo">
                                     <button class="btn primary" onclick="toggleUploadMenu(event, 'assetUploadMenu')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>上传</button>
@@ -2677,6 +2691,43 @@
                                     <div class="summary-note">格式、重名、配额</div>
                                 </div>
                             </div>
+
+	                            <div class="view-panel" id="panel-materials">
+	                                <div class="asset-grid">
+	                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+	                                        <div class="asset-folder"><input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()"><div class="folder-icon"></div></div>
+	                                        <div class="asset-body"><div class="asset-title">美术报第四届“新芽杯”国际少儿书画大赛</div><div class="asset-meta"><span>文件夹 · 72 张</span></div><div class="asset-time">2025-12-01 17:15:24</div></div>
+	                                    </article>
+	                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+	                                        <div class="asset-folder"><input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()"><div class="folder-icon"></div></div>
+	                                        <div class="asset-body"><div class="asset-title">美术报第五届“新芽杯”国际少儿书画大赛 传承经典 筑梦未来</div><div class="asset-meta"><span>文件夹 · 58 张</span></div><div class="asset-time">2025-12-01 16:11:42</div></div>
+	                                    </article>
+	                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+	                                        <div class="asset-thumb thumb-scene-c thumb-video"><input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()"></div>
+	                                        <div class="asset-body"><div class="asset-title">秀我中国｜张海迪在全球妇女峰会担振心愿.mp4</div><div class="asset-meta"><span>MP4 · 156.78MB</span><span class="state red">原创</span></div><div class="asset-time">2026-02-05 15:03:12</div></div>
+	                                    </article>
+	                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+	                                        <div class="asset-thumb thumb-scene-a thumb-video"><input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()"></div>
+	                                        <div class="asset-body"><div class="asset-title">“别怕，我们一起走！”云南鲁甸三名中学生安全撤离.mp4</div><div class="asset-meta"><span>MP4 · 286MB</span><span class="state red">原创</span></div><div class="asset-time">2026-01-28 11:32:11</div></div>
+	                                    </article>
+	                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+	                                        <div class="asset-thumb thumb-scene-d"><input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()"></div>
+	                                        <div class="asset-body"><div class="asset-title">上传图片测试</div><div class="asset-meta"><span>JPG · 4.4MB</span></div><div class="asset-time">2026-01-21 14:46:16</div></div>
+	                                    </article>
+	                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+	                                        <div class="asset-thumb thumb-scene-b thumb-video"><input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()"></div>
+	                                        <div class="asset-body"><div class="asset-title">v0269cg10004d4e669vog65imi2ols60.MP4</div><div class="asset-meta"><span>MP4 · 320MB</span></div><div class="asset-time">2025-12-26 14:05:40</div></div>
+	                                    </article>
+	                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+	                                        <div class="asset-thumb thumb-scene-b"><input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()"></div>
+	                                        <div class="asset-body"><div class="asset-title">刘清霞 秋日浪漫(1).jpg</div><div class="asset-meta"><span>JPG · 8.2MB</span></div><div class="asset-time">2025-12-02 17:59:46</div></div>
+	                                    </article>
+	                                    <article class="asset-card selected" onclick="switchPanel('catalog')">
+	                                        <div class="asset-thumb thumb-scene-d"><input class="asset-check" type="checkbox" checked onclick="event.stopPropagation(); updateSelectedCount()"></div>
+	                                        <div class="asset-body"><div class="asset-title">DSC00077.jpeg</div><div class="asset-meta"><span>JPEG · 8.6MB</span><span class="state red">原创</span></div><div class="asset-time">2025-12-02 17:27:06</div></div>
+	                                    </article>
+	                                </div>
+	                            </div>
 
 	                            <div class="view-panel active" id="panel-assets">
 	                                <div class="resource-list-shell">
@@ -2893,7 +2944,7 @@
 
                             <div class="view-panel" id="panel-catalog">
                                 <div class="detail-page-toolbar">
-                                    <button class="btn ghost" onclick="switchPanel('assets')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>返回列表</button>
+                                    <button class="btn ghost" onclick="switchPanel('materials')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>返回列表</button>
                                     <div class="detail-page-actions">
                                         <button class="btn">下载</button>
                                         <button class="btn">分享</button>
@@ -4432,6 +4483,7 @@
 
     <script>
         var changelogData = [
+            { time: '2026-07-20 17:52', desc: '修复素材中心入口：恢复独立素材列表及上传、筛选、批量编目操作，素材详情返回列表时回到素材中心' },
             { time: '2026-07-20 17:04', desc: '发布素材详情资源标注能力：支持按素材类型维护分类标签、弹窗添加删除与清空，全部标签仅由人工维护，不读取或合并 AI 自动标签' },
             { time: '2026-06-25 16:18', desc: '发布素材库上传文件夹与专辑切换优化：补充个人、部门、公共素材库上传文件夹 PRD，专辑上一条/下一条改为首尾不可循环并优化切换按钮位置' },
             { time: '2026-06-25 12:10', desc: '发布全省资源库稿件类型筛选和稿件详情优化：补齐图集、视频稿、视频专辑稿、音频专辑稿详情，收敛 PRD 章节顺序、编目权限和编目管理口径' },
@@ -4572,6 +4624,7 @@
         function switchPanel(name) {
             var panels = {
                 assets: document.getElementById('panel-assets'),
+                materials: document.getElementById('panel-materials'),
                 catalog: document.getElementById('panel-catalog'),
                 imageAlbum: document.getElementById('panel-image-album'),
                 videoStory: document.getElementById('panel-video-story'),
@@ -4587,22 +4640,25 @@
             if (workbench) {
                 workbench.classList.toggle('module-templates', name === 'templates');
                 workbench.classList.toggle('module-detail', isDetail);
+                workbench.classList.toggle('module-materials', name === 'materials');
             }
             document.querySelectorAll('.nav-item[data-module]').forEach(function (item) {
                 var module = item.getAttribute('data-module');
                 item.classList.toggle('active',
                     (name === 'templates' && module === 'templates') ||
-                    (name === 'catalog' && module === 'catalog') ||
-                    (name !== 'templates' && name !== 'catalog' && module === 'assets')
+                    ((name === 'materials' || name === 'catalog') && module === 'materials') ||
+                    (name !== 'templates' && name !== 'materials' && name !== 'catalog' && module === 'assets')
                 );
             });
+            var contentScroll = document.querySelector('.content-scroll');
+            if (contentScroll) contentScroll.scrollTop = 0;
         }
 
         function switchModule(name) {
 	        if (name === 'templates') {
 	            switchPanel('templates');
-	        } else if (name === 'catalog') {
-	            switchPanel('catalog');
+	        } else if (name === 'materials') {
+	            switchPanel('materials');
 	        } else {
 	            switchPanel('assets');
 	        }
@@ -5235,11 +5291,6 @@
 	                    switchDetailTab(tabs[next].getAttribute('data-detail-tab'));
 	                });
 	            });
-            document.querySelectorAll('.nav-item[data-module]').forEach(function (item) {
-                item.addEventListener('click', function () {
-                    switchModule(item.getAttribute('data-module'));
-                });
-            });
 	            document.addEventListener('keydown', function (event) {
 	                if (event.key === 'Escape') {
 	                    closeTemplateModal();
