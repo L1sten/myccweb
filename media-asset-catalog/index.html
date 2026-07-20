@@ -884,6 +884,87 @@
         .catalog-form-grid textarea { min-height: 78px; resize: vertical; }
         .catalog-form-grid input:focus, .catalog-form-grid select:focus, .catalog-form-grid textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,82,217,.08); }
         .catalog-form-grid .full-field { grid-column: 2; }
+        .detail-tab-panel[hidden] { display: none; }
+        .annotation-shell { min-height: 470px; display: flex; flex-direction: column; }
+        .annotation-toolbar {
+            min-height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--line-soft);
+        }
+        .annotation-summary { color: var(--muted); font-size: 12px; }
+        .annotation-summary b { color: var(--ink); font-size: 14px; margin-right: 4px; }
+        .annotation-actions { display: flex; align-items: center; gap: 8px; }
+        .annotation-list { flex: 1; padding: 0 16px 14px; }
+        .annotation-row {
+            display: grid;
+            grid-template-columns: 92px minmax(0, 1fr) 58px;
+            gap: 12px;
+            align-items: start;
+            min-height: 48px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--line-soft);
+        }
+        .annotation-row:last-child { border-bottom: 0; }
+        .annotation-list.view .annotation-row { grid-template-columns: 92px minmax(0, 1fr); }
+        .annotation-label { padding-top: 4px; color: var(--muted); text-align: right; white-space: nowrap; }
+        .annotation-values { min-width: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+        .annotation-tag {
+            min-height: 26px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 2px 8px;
+            border: 1px solid #c9dcfb;
+            border-radius: 4px;
+            background: #f4f8ff;
+            color: #315b93;
+            line-height: 20px;
+            word-break: break-word;
+        }
+        .annotation-tag:nth-child(3n+2) { border-color: #cce8dd; background: #f1faf6; color: #287456; }
+        .annotation-tag:nth-child(3n) { border-color: #ead8b9; background: #fff9ef; color: #8a6221; }
+        .annotation-source { height: 18px; display: inline-flex; align-items: center; padding: 0 4px; border-radius: 3px; background: rgba(255,255,255,.8); color: var(--subtle); font-size: 10px; line-height: 18px; }
+        .annotation-tag-remove { width: 18px; height: 18px; padding: 0; border: 0; background: transparent; color: var(--muted); font-size: 16px; line-height: 18px; }
+        .annotation-tag-remove:hover { color: var(--red); }
+        .annotation-empty { padding-top: 3px; color: var(--subtle); }
+        .annotation-add { width: 28px; height: 26px; border: 1px dashed var(--primary-line); border-radius: 4px; background: #fff; color: var(--primary); font-size: 17px; line-height: 1; }
+        .annotation-add:hover { background: var(--primary-soft); }
+        .annotation-input { width: 148px; height: 28px; border: 1px solid var(--primary); border-radius: 4px; padding: 0 8px; color: var(--text); outline: 0; box-shadow: 0 0 0 3px rgba(0,82,217,.08); }
+        .annotation-clear { height: 28px; padding: 0; border: 0; background: transparent; color: var(--muted); font-size: 12px; }
+        .annotation-clear:hover { color: var(--red); }
+        .annotation-clear:disabled { color: var(--subtle); cursor: not-allowed; }
+        .annotation-error, .annotation-loading { min-height: 420px; display: grid; place-items: center; padding: 28px; text-align: center; color: var(--muted); }
+        .annotation-error strong { display: block; color: var(--ink); margin-bottom: 8px; }
+        .annotation-error .btn { margin: 14px auto 0; }
+        .annotation-modal-overlay { display: none; position: fixed; inset: 0; z-index: 520; background: rgba(15, 23, 42, .38); }
+        .annotation-modal-overlay.show { display: block; }
+        .annotation-modal {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            z-index: 521;
+            width: min(820px, calc(100vw - 32px));
+            max-height: min(760px, calc(100vh - 40px));
+            transform: translate(-50%, -50%);
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: var(--shadow-strong);
+            overflow: hidden;
+        }
+        .annotation-modal.show { display: flex; flex-direction: column; }
+        .annotation-modal-head { height: 52px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 18px; border-bottom: 1px solid var(--line); }
+        .annotation-modal-title { font-size: 16px; font-weight: 700; color: var(--ink); }
+        .annotation-modal-body { min-height: 0; overflow-y: auto; }
+	    .annotation-modal.saving .annotation-modal-body { pointer-events: none; opacity: .72; }
+        .annotation-modal-body .annotation-list { padding: 0 18px 10px; }
+        .annotation-modal-footer { min-height: 58px; flex-shrink: 0; display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding: 10px 18px; border-top: 1px solid var(--line); background: #fbfcff; }
+	    .annotation-modal-footer .btn:disabled { color: var(--subtle); border-color: var(--line); background: #f2f3f5; cursor: not-allowed; }
         .album-detail {
             display: grid;
             grid-template-columns: minmax(0, 3fr) minmax(280px, 1fr);
@@ -2419,6 +2500,9 @@
             .catalog-form-grid { grid-template-columns: 1fr; }
             .catalog-form-grid label { text-align: left; }
             .catalog-form-grid .full-field { grid-column: 1; }
+            .annotation-row { grid-template-columns: 70px minmax(0, 1fr) 46px; gap: 8px; }
+            .annotation-list.view .annotation-row { grid-template-columns: 70px minmax(0, 1fr); }
+            .annotation-label { text-align: left; }
             .detail-page-toolbar { grid-template-columns: 1fr; padding: 10px; }
 	            .detail-page-actions { justify-self: start; }
 	            .album-detail { grid-template-columns: 1fr; }
@@ -2480,7 +2564,7 @@
                         <button class="nav-item">首页</button>
                         <button class="nav-item">搜索中心</button>
                         <button class="nav-item active" data-module="assets" onclick="switchModule('assets')">全省资源库</button>
-                        <button class="nav-item">素材中心</button>
+                        <button class="nav-item" data-module="catalog" onclick="switchPanel('catalog')">素材中心</button>
                         <button class="nav-item">审批中心</button>
                         <button class="nav-item">同步中心</button>
                         <button class="nav-item">智能标签库</button>
@@ -2832,17 +2916,18 @@
                                             <span class="state red" style="margin-left:auto">原创</span>
                                         </div>
                                     </section>
-                                    <section class="catalog-detail-card">
-                                        <div class="detail-tabs">
-                                            <button class="detail-tab">基本信息</button>
-                                            <button class="detail-tab active">编目信息</button>
-                                            <button class="detail-tab">结构化信息</button>
-                                            <button class="detail-tab">共享记录</button>
-                                            <button class="detail-tab">敏感信息识别</button>
-                                            <button class="detail-tab">下载记录</button>
-                                            <span class="state amber" style="margin-left:auto">草稿 · 缺版权</span>
-                                        </div>
-                                        <div class="catalog-form-shell">
+	                                    <section class="catalog-detail-card">
+	                                        <div class="detail-tabs" role="tablist" aria-label="素材详情信息">
+	                                            <button class="detail-tab" role="tab" aria-selected="false" aria-controls="detail-panel-basic" data-detail-tab="basic" onclick="switchDetailTab('basic')">基本信息</button>
+	                                            <button class="detail-tab active" role="tab" aria-selected="true" aria-controls="detail-panel-catalogInfo" data-detail-tab="catalogInfo" onclick="switchDetailTab('catalogInfo')">编目信息</button>
+	                                            <button class="detail-tab" role="tab" aria-selected="false" aria-controls="detail-panel-annotation" data-detail-tab="annotation" onclick="switchDetailTab('annotation')">资源标注</button>
+	                                            <button class="detail-tab" role="tab" aria-selected="false" aria-controls="detail-panel-structured" data-detail-tab="structured" onclick="switchDetailTab('structured')">结构化信息</button>
+	                                            <button class="detail-tab" role="tab" aria-selected="false" aria-controls="detail-panel-share" data-detail-tab="share" onclick="switchDetailTab('share')">共享记录</button>
+	                                            <button class="detail-tab" role="tab" aria-selected="false" aria-controls="detail-panel-sensitive" data-detail-tab="sensitive" onclick="switchDetailTab('sensitive')">敏感信息识别</button>
+	                                            <button class="detail-tab" role="tab" aria-selected="false" aria-controls="detail-panel-download" data-detail-tab="download" onclick="switchDetailTab('download')">下载记录</button>
+	                                            <span class="state amber" id="catalogDraftState" style="margin-left:auto">草稿 · 缺版权</span>
+	                                        </div>
+	                                        <div class="catalog-form-shell detail-tab-panel" id="detail-panel-catalogInfo" role="tabpanel" data-detail-panel="catalogInfo">
                                             <div class="template-line">
                                                 <label>编目界面模板</label>
                                                 <select><option>人物库编目模板</option><option>新闻图片编目模板</option><option>非遗文化编目模板</option></select>
@@ -2876,14 +2961,43 @@
                                             <div class="catalog-section-title">关联信息</div>
                                             <div class="catalog-form-grid">
                                                 <label>相关人物</label><input placeholder="请输入" value="全球妇女峰会参会嘉宾">
-                                                <label>相关地点</label><input placeholder="请输入" value="北京">
-                                            </div>
-                                        </div>
-                                    </section>
-                                </div>
-                            </div>
+	                                                <label>相关地点</label><input placeholder="请输入" value="北京">
+	                                            </div>
+	                                        </div>
+	                                        <div class="detail-tab-panel" id="detail-panel-annotation" role="tabpanel" data-detail-panel="annotation" hidden>
+	                                            <div class="annotation-shell" id="annotationShell">
+	                                                <div class="annotation-toolbar">
+	                                                    <div class="annotation-summary"><b id="annotationCount">0</b>个标签</div>
+	                                                    <div class="annotation-actions">
+	                                                        <button class="btn" id="annotationEditBtn" onclick="startAnnotationEdit()">编辑</button>
+	                                                    </div>
+	                                                </div>
+	                                                <div id="annotationContent"></div>
+	                                            </div>
+	                                        </div>
+	                                        <div class="detail-tab-panel" id="detail-panel-basic" role="tabpanel" data-detail-panel="basic" hidden></div>
+	                                        <div class="detail-tab-panel" id="detail-panel-structured" role="tabpanel" data-detail-panel="structured" hidden></div>
+	                                        <div class="detail-tab-panel" id="detail-panel-share" role="tabpanel" data-detail-panel="share" hidden></div>
+	                                        <div class="detail-tab-panel" id="detail-panel-sensitive" role="tabpanel" data-detail-panel="sensitive" hidden></div>
+	                                        <div class="detail-tab-panel" id="detail-panel-download" role="tabpanel" data-detail-panel="download" hidden></div>
+	                                    </section>
+	                                </div>
+	                            </div>
 
-                            <div class="view-panel" id="panel-image-album">
+	                            <div class="annotation-modal-overlay" id="annotationModalOverlay" onclick="cancelAnnotationEdit()"></div>
+	                            <section class="annotation-modal" id="annotationModal" role="dialog" aria-modal="true" aria-labelledby="annotationModalTitle">
+	                                <div class="annotation-modal-head">
+	                                    <div class="annotation-modal-title" id="annotationModalTitle">编辑资源标注</div>
+	                                    <button class="icon-btn" id="annotationCloseBtn" aria-label="关闭" title="关闭" onclick="cancelAnnotationEdit()">×</button>
+	                                </div>
+	                                <div class="annotation-modal-body" id="annotationModalList"></div>
+	                                <div class="annotation-modal-footer">
+	                                    <button class="btn" id="annotationCancelBtn" onclick="cancelAnnotationEdit()">取消</button>
+	                                    <button class="btn primary" id="annotationSaveBtn" onclick="saveAnnotationEdit()">确定</button>
+	                                </div>
+	                            </section>
+
+	                            <div class="view-panel" id="panel-image-album">
                                 <div class="article-source-toolbar">
                                     <button class="btn">阅读原文</button>
                                 </div>
@@ -3413,8 +3527,8 @@
     <textarea id="prdMdSource" style="display:none">
 # 智能媒资编目与全省资源库稿件详情 PRD
 
-**版本**：v1.6
-**日期**：2026-06-25
+**版本**：v1.7
+**日期**：2026-07-17
 **适用范围**：智能媒资系统素材库、全省资源库、素材详情、编目管理
 
 ---
@@ -3431,11 +3545,12 @@
 - 个人素材库、部门素材库、公共素材库的上传按钮新增上传文件夹能力。
 - 图集稿、视频稿、视频专辑稿、音频专辑稿从全省资源库进入详情页查看。
 - 素材详情支持按模板填写编目信息，并保存草稿或完成编目。
+- 素材详情支持按业务分类查看和维护资源标签，提升素材检索与复用效率。
 - 编目管理作为独立模块，支持管理员维护通用编目模板和字段配置。
 
 ### 1.3 用户角色
 
-- 采编人员：查看稿件详情、查看素材详情、补充编目信息、完成编目。
+- 采编人员：查看稿件详情、查看素材详情、补充编目信息、维护资源标注、完成编目。
 - 素材管理员：维护素材库、检查字段质量、管理模板。
 - 审核人员：在审批中心审核共享入库申请及其编目信息。
 - 系统管理员：配置素材类型、模板权限和字段规则。
@@ -3446,6 +3561,7 @@
 - 用户在个人素材库、部门素材库或公共素材库中通过上传按钮上传本地文件夹。
 - 用户从全省资源库进入图集稿、视频稿、视频专辑稿、音频专辑稿详情。
 - 采编人员在素材详情页按模板补齐编目信息。
+- 采编人员在素材详情页查看并维护各分类下的资源标签。
 - 管理员在编目管理中维护不同业务场景的编目模板。
 
 ### 1.5 本期范围
@@ -3454,12 +3570,14 @@
 - 个人素材库、部门素材库、公共素材库上传按钮新增上传文件夹入口。
 - 全省资源库图集稿、视频稿、视频专辑稿、音频专辑稿详情查看。
 - 素材详情编目信息 Tab、保存草稿、完成编目、模板切换。
+- 素材详情资源标注 Tab、分类标签查看与编辑。
 - 编目管理模块的模板列表、新建模板、编辑模板、复制、删除、设为默认。
 
 ### 1.6 非本期范围
 
 - 不新增审批中心流程。
 - 不新增智能分析模型配置。
+- 不新增标签分类、标签词库和自动标注规则配置。
 - 不新增图像、视频、音频在线编辑能力。
 - 不改变已有上传文件入口、上传限制和素材入库规则。
 - 不改变已有素材下载、分享、取至个人的审批规则。
@@ -3479,13 +3597,15 @@
 - 顶部主导航包含首页、搜索中心、资源中心、素材中心、审批中心、同步中心、标签中心、全省资源库、编目管理。
 - 图集稿、视频稿、视频专辑稿、音频专辑稿的详情入口归属于全省资源库。
 - 普通素材详情编目入口归属于素材详情。
+- 普通素材详情资源标注入口归属于素材详情。
 - 编目模板维护入口归属于编目管理。
 
 ### 2.2 筛选与查询
 
 - 本期新增稿件类型筛选；地域、时间、关键词搜索等筛选能力沿用现有全省资源库列表规则。
 - 稿件类型筛选按图集稿件、视频稿件、视频专辑稿件、音频专辑稿件筛选。
-- 多个筛选条件同时使用时取交集。
+- 未触发语义检索时，多个普通筛选条件同时使用时取交集。
+- 触发语义检索且有返回结果时，语义检索优先级最高，列表以语义检索结果为准。
 - 清空筛选后恢复当前模块默认列表。
 
 ### 2.3 分页与排序
@@ -3501,6 +3621,7 @@
 - 保存、删除、完成编目等操作执行中展示进行中状态，完成后刷新当前列表或详情信息。
 - 删除等高风险操作需二次确认。
 - 操作失败时展示失败原因，并保留用户已填写内容。
+- 资源标注保存期间禁用重复提交；保存失败时保留本轮编辑内容。
 
 ### 2.5 空状态与异常状态
 
@@ -3508,6 +3629,7 @@
 - 稿件详情媒体加载失败时展示占位状态，不影响稿件信息查看。
 - 专辑无媒体条目时展示空状态，不展示上一条、下一条切换按钮。
 - 专辑仅一条媒体时展示当前媒体，不提供上一条、下一条切换能力。
+- 资源标注无标签时按分类展示空态；加载失败时展示重试入口，不展示上次缓存内容。
 
 ### 2.6 权限与可见性
 
@@ -3515,6 +3637,7 @@
 - 编辑类入口根据权限隐藏或禁用；禁用时需展示不可操作原因。
 - 管理类入口仅对具备编目模板管理权限的用户可见。
 - 下载、分享、取至个人沿用现有系统权限规则。
+- 资源标注查看和编辑沿用素材详情的数据权限范围；无编辑权限时仅展示标签内容，不展示编辑操作。
 
 ---
 
@@ -3595,7 +3718,8 @@
   - 取数规则：取当前用户权限范围内可查看的成品稿件。
   - 数据筛选规则：按稿件类型精确匹配；全部稿件类型不限制稿件类型。
   - 数据排序规则：筛选后沿用现有列表排序规则。
-- 组合规则：稿件类型筛选与现有地域、发布时间、关键词搜索条件同时使用时取交集。
+- 组合规则：未触发语义检索时，稿件类型筛选与现有地域、发布时间、关键词搜索条件同时使用时取交集。
+- 语义检索规则：触发语义检索且有返回结果时，语义检索优先级最高，列表以语义检索结果为准。
 - 空状态：当前组合条件下无匹配稿件时，沿用现有空结果展示和重置筛选入口。
 
 ### 4.4 列表与详情入口联动
@@ -3615,7 +3739,8 @@
 - 稿件类型筛选选项包含图集稿件、视频稿件、视频专辑稿件、音频专辑稿件。
 - 选择任一稿件类型后，列表仅展示匹配该类型的稿件。
 - 清空稿件类型筛选后，列表恢复展示全部稿件类型。
-- 稿件类型筛选与现有地域、发布时间、关键词搜索条件同时使用时取交集。
+- 未触发语义检索时，稿件类型筛选与现有地域、发布时间、关键词搜索条件同时使用时取交集。
+- 触发语义检索且有返回结果时，列表以语义检索结果为准。
 - 列表中不同类型稿件可点击进入对应详情页。
 
 ---
@@ -4045,9 +4170,129 @@
 
 ---
 
-## 10. 编目管理
+## 10. 素材详情资源标注
 
-### 10.1 模板列表
+### 10.1 模块目标与边界
+
+- 在素材详情右侧新增资源标注 Tab，用于查看和维护当前素材的分类标签。
+- 资源标注对象为当前打开的单个素材整体，不包含稿件、专辑、批量素材及视频镜头或时间段级标注。
+- 本模块仅维护当前素材已有分类下的标签，不支持新增、删除或调整标签分类。
+- 本模块不改变编目信息、结构化信息及智能分析结果；保存后的标签可供现有素材检索和资源复用场景使用。
+
+### 10.2 页面结构
+
+- 资源标注作为素材详情右侧信息面板的同级 Tab 展示。
+- Tab 查看态顶部展示当前素材标签总数和编辑入口，主体按固定分类顺序紧凑展示标签。
+- 标签分类全集为：时间、人物、人物表情、地点、组织机构、关键词、主题、场景、物体、动作、事件、构图、画面特征、体育动作、相机移动、图片属性、颜色、景别；页面仅展示当前素材类型适用的分类。
+- 点击编辑后打开资源标注弹窗；弹窗逐类展示标签，并提供添加、单个删除和清空该类操作，底部展示取消、确定。
+
+素材类型与适用分类：
+
+| 素材类型 | 展示分类 |
+|---|---|
+| 图片 | 时间、人物、人物表情、地点、组织机构、关键词、主题、场景、物体、动作、事件、构图、画面特征、体育动作、图片属性、颜色、景别 |
+| 视频 | 时间、人物、人物表情、地点、组织机构、关键词、主题、场景、物体、动作、事件、构图、画面特征、体育动作、相机移动、颜色、景别 |
+| 音频 | 时间、人物、地点、组织机构、关键词、主题、场景、事件 |
+
+### 10.3 字段规则
+
+标签分类：
+
+- 展示规则：当前素材类型适用的分类均展示，不因分类下无标签而隐藏；不适用分类不展示；分类按页面既定顺序排列。
+- 交互规则：分类名称不可编辑；用户不能新增、删除或调整分类顺序。
+- 数据规则：
+  - 取数规则：取当前素材在各固定分类下已保存的有效标签。
+  - 数据筛选规则：仅展示当前素材且当前用户有权查看的标签，不混入其他素材标签。
+  - 数据排序规则：分类按固定顺序展示；分类内标签按已保存顺序展示。
+
+标签内容：
+
+- 展示规则：同一分类下以独立标签展示；长文本在分类内容区域内自然换行；分类无标签时展示“暂无标签”。
+- 交互规则：Tab 查看态不可修改；编辑弹窗内支持添加标签、删除单个标签和清空该分类。新增标签输入后按回车确认；空内容不新增。
+- 数据规则：
+  - 取数规则：取当前素材最近一次保存成功的资源标注。
+  - 数据筛选规则：同一分类下标签在去除首尾空格并统一大小写、全角半角后判重；不同分类可存在相同文本。
+  - 数据排序规则：新增标签追加在当前分类已有标签之后；删除不改变其余标签顺序。
+
+标签来源：
+
+- 展示规则：全部分类仅展示人工维护的标签，不展示标签来源角标。
+- 交互规则：用户通过编辑弹窗人工新增、删除和清空标签。
+- 数据规则：
+  - 取数规则：仅取当前素材最近一次保存成功的人工标签。
+  - 数据筛选规则：不读取或合并 AI 自动标签结果。
+  - 数据排序规则：按人工保存顺序展示，新增标签追加在当前分类末尾。
+
+标签总数：
+
+- 展示规则：展示当前素材各分类下标签数量之和；无标签时展示 0。
+- 交互规则：Tab 查看态仅统计已确定内容；编辑弹窗内的添加、删除、清空不即时改变 Tab 标签总数，点击确定成功后更新，点击取消后保持原数量。
+- 数据规则：
+  - 取数规则：按当前展示状态统计全部分类下的标签条数，同一文本位于不同分类时分别计数。
+  - 数据筛选规则：不统计空值和已删除标签。
+  - 数据排序规则：不涉及排序。
+
+### 10.4 操作规则
+
+| 操作 | 默认与启用状态 | 禁用与权限状态 | 点击反馈 | 结果变化 |
+|---|---|---|---|---|
+| 编辑 | Tab 查看态且用户具备“编辑编目”权限时展示并可用 | 无“编辑编目”权限时不展示；加载失败时不展示 | 打开资源标注弹窗并加载进入编辑前的标签内容 | 创建独立编辑副本，弹窗操作不直接改变 Tab 内容 |
+| 添加 | 编辑弹窗内每个分类展示添加入口 | Tab 查看态、只读态或确定中不可用 | 展示当前分类输入框；空值或重复值提示且不新增 | 合法标签追加至弹窗当前分类末尾 |
+| 删除单个 | 编辑弹窗内每个标签展示删除入口 | Tab 查看态、只读态或确定中不可用 | 点击后从弹窗编辑副本中移除 | 仅移除所选标签，不影响同类其他标签 |
+| 清空该类 | 编辑弹窗内分类有标签时可用 | 分类无标签时禁用；Tab 查看态、只读态或确定中不可用 | 二次确认后清空；取消确认不改变内容 | 仅清空弹窗内当前分类，不影响其他分类 |
+| 确定 | 编辑弹窗底部展示；内容相较进入编辑前发生变化且校验通过时可用 | 内容无变化或提交进行中禁用，避免无效或重复提交 | 展示进行中状态；成功后提示成功；失败时提示原因 | 成功后关闭弹窗并更新 Tab 标签与总数；失败时保留弹窗及编辑草稿 |
+| 取消/关闭 | 编辑弹窗底部和顶部展示 | 提交进行中不可用 | 无修改时直接关闭；有未保存修改时二次确认是否放弃 | 确认放弃后关闭并恢复进入编辑前内容；取消关闭则保留弹窗草稿 |
+| 重新加载 | 资源标注加载失败时展示 | 正常加载时不展示 | 触发当前素材资源标注重新加载 | 成功后恢复标签内容；再次失败时保留失败状态 |
+
+### 10.5 校验规则
+
+- 新增标签去除首尾空格后为空时，不允许加入当前分类。
+- 同一分类下对标签执行 trim、大小写统一和全角半角归一后判重；归一后重复时提示“该分类下已存在相同标签”。
+- 单个标签最长 30 个字符；达到上限后不再接受更多字符。
+- 分类可以为空，保存时不要求每个分类至少存在一个标签。
+- 确定校验仅针对弹窗内本轮编辑后的标签内容；确定成功前不改变 Tab 已保存数据。
+
+### 10.6 权限规则
+
+- 可查看当前素材详情的用户可查看资源标注 Tab 及当前素材标签，不新增资源标注查看权限点。
+- 资源标注编辑复用现有“编辑编目”权限，不新增独立资源标注编辑权限点。
+- 具备“编辑编目”权限的用户可执行编辑、添加、删除、清空、确定和取消。
+- 无“编辑编目”权限的用户按只读方式展示 Tab，不展示编辑入口。
+- 用户仅能查看和维护其素材数据权限范围内的资源标注。
+
+### 10.7 空状态与异常状态
+
+- 单个适用分类无标签时，在该分类内容区域展示“暂无标签”，编辑弹窗内仍可添加标签。
+- 全部适用分类无标签时，适用分类仍按固定顺序展示空态，标签总数展示 0。
+- 加载失败时，资源标注区域展示加载失败信息和重新加载入口，不展示不确定或过期标签。
+- 确定失败时提示失败原因，弹窗保持打开并保留本轮添加、删除和清空结果，用户可继续调整或再次确定。
+- “编辑编目”权限在弹窗打开期间失效时，本次确定失败并提示无操作权限，不覆盖最近一次保存成功内容。
+- 弹窗打开期间不允许切换详情 Tab 或返回列表；用户关闭弹窗后方可执行 Tab 切换或返回。
+
+### 10.8 验收标准
+
+- 素材详情右侧展示资源标注 Tab，点击后切换到资源标注内容且不影响左侧素材预览。
+- 图片、视频、音频素材仅展示适用分类，不适用分类不展示；适用分类无标签时展示“暂无标签”。
+- 资源标注对象为当前单个素材整体，不产生稿件、专辑、批量、镜头或时间段级标注。
+- 标签总数等于 Tab 查看态各分类有效标签条数之和，弹窗未确定前不变化。
+- 点击编辑打开资源标注弹窗，弹窗内容与进入编辑前的 Tab 标签一致。
+- 编辑弹窗内可在任一适用分类添加合法标签；空标签以及 trim、大小写、全半角归一后同类重复的标签不被加入。
+- 全部分类仅展示和保存人工标签，不展示来源角标，不读取或合并 AI 自动标签。
+- 编辑弹窗内可删除单个标签，且不影响同类其他标签和其他分类。
+- 清空该类需二次确认，确认后仅清空当前分类；空分类的清空操作不可用。
+- 弹窗内容无变化时确定按钮禁用；有变化时可确定并防止重复提交，成功后关闭弹窗并更新 Tab 最新标签。
+- 确定失败时弹窗保持打开，未提交内容不丢失，用户可再次确定或取消。
+- 点击取消关闭弹窗，放弃本轮全部修改，Tab 内容与进入编辑前一致。
+- 有未保存修改时点击取消、关闭按钮、遮罩或按 Escape 均需二次确认；取消关闭后草稿继续保留。
+- 弹窗关闭前不可切换详情 Tab 或返回列表，关闭后可正常执行。
+- 无“编辑编目”权限时可查看标签但不展示编辑入口。
+- 加载失败时展示重新加载入口，重新加载成功后恢复资源标注内容。
+
+---
+
+## 11. 编目管理
+
+### 11.1 模板列表
 
 模板卡片：
 
@@ -4067,7 +4312,7 @@
   - 数据筛选规则：同一素材库范围内仅允许一个默认模板。
   - 数据排序规则：默认模板优先展示。
 
-### 10.2 新建与编辑模板
+### 11.2 新建与编辑模板
 
 模板基础信息：
 
@@ -4087,7 +4332,7 @@
   - 数据筛选规则：不涉及筛选。
   - 数据排序规则：按字段展示顺序排列。
 
-### 10.3 操作规则
+### 11.3 操作规则
 
 新建模板：
 
@@ -4129,7 +4374,7 @@
 - 点击反馈：保存失败时展示失败原因并保留当前编辑内容。
 - 结果变化：保存成功后关闭弹窗并刷新模板列表。
 
-### 10.4 验收标准
+### 11.4 验收标准
 
 - 编目管理作为顶部独立模块进入。
 - 模板列表展示模板名称、描述、字段数量、创建时间、更新时间、默认标识和适用范围。
@@ -4141,20 +4386,20 @@
 
 ---
 
-## 11. 权限规则
+## 12. 权限规则
 
-### 11.1 编目权限规则
+### 12.1 编目权限规则
 
 | 权限点 | 可见性与操作影响 |
 |---|---|
 | 查看编目信息 | 有权限时可查看素材或稿件的编目信息；无权限时不展示编目信息入口 |
-| 编辑编目 | 有权限时可编辑编目字段、保存草稿、完成编目；无权限时编目信息只读 |
+| 编辑编目 | 有权限时可编辑编目字段、保存草稿、完成编目，并可编辑资源标注；无权限时编目信息与资源标注只读，不展示资源标注编辑入口 |
 | 编目模板管理 | 有权限时展示编目管理和模板管理入口；无权限时不展示管理入口 |
 | 审核编目 | 有权限时可审核带编目信息的共享申请 |
 
 ---
 
-## 12. 验收标准
+## 13. 验收标准
 
 - 个人素材库、部门素材库、公共素材库的上传按钮均提供上传文件和上传文件夹两个选项。
 - 点击上传文件夹后打开系统文件夹选择窗口。
@@ -4163,9 +4408,15 @@
 - 稿件类型筛选选项包含图集稿件、视频稿件、视频专辑稿件、音频专辑稿件。
 - 选择任一稿件类型后，列表仅展示匹配该类型的稿件；清空后恢复全部类型。
 - 点击稿件标题可进入图集稿、视频稿、视频专辑稿、音频专辑稿详情。
-- 稿件类型筛选与现有地域、发布时间、关键词搜索条件同时作用于稿件列表。
+- 未触发语义检索时，稿件类型筛选与现有地域、发布时间、关键词搜索条件同时作用于稿件列表并取交集。
+- 触发语义检索且有返回结果时，列表以语义检索结果为准。
 - 素材详情编目信息展示模板选择、自动保存草稿、保存草稿、完成编目和模板管理。
 - 必填字段缺失时允许保存草稿，不允许完成编目。
+- 素材详情资源标注面向当前单个素材整体，图片、视频、音频仅展示适用分类，不支持稿件、专辑、批量、镜头或时间段级标注。
+- 资源标注 Tab 以查看态紧凑展示标签，点击编辑后通过弹窗完成添加标签、删除单个标签、清空该类、确定和取消，并正确处理分类空态。
+- 资源标注仅展示和保存人工标签，不读取或合并 AI 自动标签；同类重复标签不可新增。
+- 弹窗无变化时确定禁用；确定失败保留草稿；脏关闭需二次确认；弹窗关闭前不执行 Tab 切换或返回。
+- 资源标注编辑复用“编辑编目”权限，无权限时保持只读且不展示编辑入口。
 - 图集详情左侧展示主图、图片图说、图片列表和正文内容。
 - 图集详情图片切换后更新主图、当前序号、图片图说和缩略图高亮。
 - 图集详情图片切换后正文内容和右侧稿件级智能信息保持不变。
@@ -4177,16 +4428,11 @@
 - 编目管理支持模板列表、新建模板、编辑模板、复制模板、删除模板和设为默认。
 - 新建模板和编辑模板均使用弹窗。
 - 保存模板时校验模板名称、适用范围、字段名和字段类型。
-
-
-
-
-
-
     </textarea>
 
     <script>
         var changelogData = [
+            { time: '2026-07-20 17:04', desc: '发布素材详情资源标注能力：支持按素材类型维护分类标签、弹窗添加删除与清空，全部标签仅由人工维护，不读取或合并 AI 自动标签' },
             { time: '2026-06-25 16:18', desc: '发布素材库上传文件夹与专辑切换优化：补充个人、部门、公共素材库上传文件夹 PRD，专辑上一条/下一条改为首尾不可循环并优化切换按钮位置' },
             { time: '2026-06-25 12:10', desc: '发布全省资源库稿件类型筛选和稿件详情优化：补齐图集、视频稿、视频专辑稿、音频专辑稿详情，收敛 PRD 章节顺序、编目权限和编目管理口径' },
             { time: '2026-06-22 17:49', desc: '发布专辑详情优化：图集图说随图片切换、正文独立展示，图集/视频专辑/音频专辑统一总稿件与单素材信息结构，并同步顶部操作和 PRD 口径' },
@@ -4344,12 +4590,22 @@
             }
             document.querySelectorAll('.nav-item[data-module]').forEach(function (item) {
                 var module = item.getAttribute('data-module');
-                item.classList.toggle('active', (name === 'templates' && module === 'templates') || (name !== 'templates' && module === 'assets'));
+                item.classList.toggle('active',
+                    (name === 'templates' && module === 'templates') ||
+                    (name === 'catalog' && module === 'catalog') ||
+                    (name !== 'templates' && name !== 'catalog' && module === 'assets')
+                );
             });
         }
 
         function switchModule(name) {
-            switchPanel(name === 'templates' ? 'templates' : 'assets');
+	        if (name === 'templates') {
+	            switchPanel('templates');
+	        } else if (name === 'catalog') {
+	            switchPanel('catalog');
+	        } else {
+	            switchPanel('assets');
+	        }
         }
 
         var albumMediaData = {
@@ -4431,10 +4687,174 @@
             switchAlbumMedia(kind, next);
         }
 
-        function toggleSuggestion(el) {
+	        function toggleSuggestion(el) {
             el.classList.toggle('active');
             showToast(el.classList.contains('active') ? '已采纳系统建议' : '已移除建议标签');
-        }
+	        }
+
+	        var annotationMediaType = 'video';
+	        var annotationCategories = [
+	            { key: 'time', label: '时间', media: ['image', 'video', 'audio'], tags: [{ text: '2026年6月', source: 'manual' }, { text: '夏季', source: 'manual' }] },
+	            { key: 'person', label: '人物', media: ['image', 'video', 'audio'], tags: [{ text: '张海迪', source: 'manual' }, { text: '峰会嘉宾', source: 'manual' }] },
+	            { key: 'expression', label: '人物表情', media: ['image', 'video'], tags: [{ text: '微笑', source: 'manual' }] },
+	            { key: 'location', label: '地点', media: ['image', 'video', 'audio'], tags: [{ text: '北京', source: 'manual' }, { text: '国家会议中心', source: 'manual' }] },
+	            { key: 'organization', label: '组织机构', media: ['image', 'video', 'audio'], tags: [{ text: '全球妇女峰会', source: 'manual' }] },
+	            { key: 'keyword', label: '关键词', media: ['image', 'video', 'audio'], tags: [{ text: '女性发展', source: 'manual' }, { text: '公益', source: 'manual' }] },
+	            { key: 'theme', label: '主题', media: ['image', 'video', 'audio'], tags: [{ text: '女性发展', source: 'manual' }] },
+	            { key: 'scene', label: '场景', media: ['image', 'video', 'audio'], tags: [{ text: '会议现场', source: 'manual' }, { text: '采访区', source: 'manual' }] },
+	            { key: 'object', label: '物体', media: ['image', 'video'], tags: [{ text: '话筒', source: 'manual' }, { text: '轮椅', source: 'manual' }] },
+	            { key: 'action', label: '动作', media: ['image', 'video'], tags: [{ text: '发言', source: 'manual' }, { text: '交流', source: 'manual' }] },
+	            { key: 'event', label: '事件', media: ['image', 'video', 'audio'], tags: [{ text: '全球妇女峰会', source: 'manual' }] },
+	            { key: 'composition', label: '构图', media: ['image', 'video'], tags: [{ text: '人物居中', source: 'manual' }] },
+	            { key: 'visual', label: '画面特征', media: ['image', 'video'], tags: [{ text: '室内', source: 'manual' }, { text: '光线明亮', source: 'manual' }] },
+	            { key: 'sport', label: '体育动作', media: ['image', 'video'], tags: [] },
+	            { key: 'camera', label: '相机移动', media: ['video'], tags: [{ text: '固定镜头', source: 'manual' }, { text: '轻微推镜', source: 'manual' }] },
+	            { key: 'image', label: '图片属性', media: ['image'], tags: [{ text: '横版', source: 'manual' }, { text: '高清', source: 'manual' }] },
+	            { key: 'color', label: '颜色', media: ['image', 'video'], tags: [{ text: '蓝色', source: 'manual' }, { text: '白色', source: 'manual' }] },
+	            { key: 'shot', label: '景别', media: ['image', 'video'], tags: [{ text: '中景', source: 'manual' }, { text: '近景', source: 'manual' }] }
+	        ];
+	        var annotationSaved = annotationCategories.filter(function (item) { return item.media.indexOf(annotationMediaType) !== -1; }).map(function (item) { return { key: item.key, label: item.label, tags: item.tags.map(function (tag) { return { text: tag.text, source: tag.source }; }) }; });
+	        var annotationDraft = null;
+	        var annotationEditing = false;
+	        var annotationSaving = false;
+
+	        function cloneAnnotations(source) {
+	            return source.map(function (item) { return { key: item.key, label: item.label, tags: item.tags.map(function (tag) { return { text: tag.text, source: tag.source }; }) }; });
+	        }
+
+	        function annotationSnapshot(source) { return JSON.stringify(source); }
+	        function normalizeAnnotationText(value) {
+	            var text = String(value || '').trim();
+	            return (text.normalize ? text.normalize('NFKC') : text).toLocaleLowerCase('zh-CN');
+	        }
+	        function annotationTagCount(source) { return source.reduce(function (sum, item) { return sum + item.tags.length; }, 0); }
+	        function renderAnnotations() {
+	            var content = document.getElementById('annotationContent');
+	            if (!content) return;
+	            document.getElementById('annotationCount').textContent = annotationTagCount(annotationSaved);
+	            content.innerHTML = '<div class="annotation-list view">' + annotationSaved.map(function (item) {
+	                var tags = item.tags.map(function (tag) { return '<span class="annotation-tag">' + escapeHtml(tag.text) + '</span>'; }).join('');
+	                if (!tags) tags = '<span class="annotation-empty">暂无标签</span>';
+	                return '<div class="annotation-row"><div class="annotation-label">' + item.label + '</div><div class="annotation-values">' + tags + '</div></div>';
+	            }).join('') + '</div>';
+	        }
+
+	        function renderAnnotationModal() {
+	            var content = document.getElementById('annotationModalList');
+	            if (!content || !annotationDraft) return;
+	            content.innerHTML = '<div class="annotation-list edit">' + annotationDraft.map(function (item) {
+	                var tags = item.tags.map(function (tag, index) { return '<span class="annotation-tag">' + escapeHtml(tag.text) + '<button class="annotation-tag-remove" aria-label="删除' + escapeHtml(tag.text) + '" onclick="removeAnnotationTag(\'' + item.key + '\',' + index + ')">×</button></span>'; }).join('');
+	                if (!tags) tags = '<span class="annotation-empty">暂无标签</span>';
+	                var add = '<button class="annotation-add" title="添加标签" aria-label="为' + item.label + '添加标签" onclick="openAnnotationInput(\'' + item.key + '\', this)">+</button>';
+	                var clear = '<button class="annotation-clear" aria-label="清空' + item.label + '分类标签" ' + (item.tags.length ? '' : 'disabled') + ' onclick="clearAnnotationCategory(\'' + item.key + '\')">清空</button>';
+	                return '<div class="annotation-row"><div class="annotation-label">' + item.label + '</div><div class="annotation-values">' + tags + add + '</div><div>' + clear + '</div></div>';
+	            }).join('') + '</div>';
+	            updateAnnotationSaveState();
+	        }
+
+	        function updateAnnotationSaveState() {
+	            var button = document.getElementById('annotationSaveBtn');
+	            if (button && annotationDraft) button.disabled = annotationSnapshot(annotationDraft) === annotationSnapshot(annotationSaved);
+	        }
+
+	        function switchDetailTab(name) {
+	            if (annotationEditing) return;
+	            document.querySelectorAll('[data-detail-tab]').forEach(function (tab) {
+	                var selected = tab.getAttribute('data-detail-tab') === name;
+	                tab.classList.toggle('active', selected);
+	                tab.setAttribute('aria-selected', selected ? 'true' : 'false');
+	                tab.setAttribute('tabindex', selected ? '0' : '-1');
+	            });
+	            document.querySelectorAll('[data-detail-panel]').forEach(function (panel) { panel.hidden = panel.getAttribute('data-detail-panel') !== name; });
+	            var draftState = document.getElementById('catalogDraftState');
+	            if (draftState) draftState.hidden = name !== 'catalogInfo';
+	            if (name === 'annotation') renderAnnotations();
+	        }
+
+	        function startAnnotationEdit() {
+	            annotationDraft = cloneAnnotations(annotationSaved);
+	            annotationEditing = true;
+	            document.getElementById('annotationModalOverlay').classList.add('show');
+	            document.getElementById('annotationModal').classList.add('show');
+	            renderAnnotationModal();
+	        }
+
+	        function cancelAnnotationEdit() {
+	            if (!annotationEditing || annotationSaving) return;
+	            if (annotationSnapshot(annotationDraft) !== annotationSnapshot(annotationSaved) && !window.confirm('当前修改尚未确定，确认关闭并放弃修改？')) return;
+	            annotationDraft = null;
+	            annotationEditing = false;
+	            document.getElementById('annotationModalOverlay').classList.remove('show');
+	            document.getElementById('annotationModal').classList.remove('show');
+	            renderAnnotations();
+	        }
+
+	        function findAnnotationCategory(key) { return annotationDraft.filter(function (item) { return item.key === key; })[0]; }
+
+	        function openAnnotationInput(key, button) {
+	            if (!annotationEditing || button.parentNode.querySelector('.annotation-input')) return;
+	            var input = document.createElement('input');
+	            input.className = 'annotation-input';
+	            input.placeholder = '输入标签后回车';
+	            input.maxLength = 30;
+	            input.onkeydown = function (event) {
+	                if (event.key === 'Enter') { event.preventDefault(); addAnnotationTag(key, input.value); }
+	                if (event.key === 'Escape') { event.stopPropagation(); renderAnnotationModal(); }
+	            };
+	            button.replaceWith(input);
+	            input.focus();
+	        }
+
+	        function addAnnotationTag(key, value) {
+	            var text = String(value || '').trim();
+	            var normalized = normalizeAnnotationText(text);
+	            var category = findAnnotationCategory(key);
+	            if (!normalized) { showToast('请输入标签内容'); return; }
+	            if (category.tags.some(function (tag) { return normalizeAnnotationText(tag.text) === normalized; })) { showToast('该分类下已存在相同标签'); return; }
+	            category.tags.push({ text: text, source: 'manual' });
+	            renderAnnotationModal();
+	        }
+
+	        function removeAnnotationTag(key, index) { findAnnotationCategory(key).tags.splice(index, 1); renderAnnotationModal(); }
+	        function clearAnnotationCategory(key) {
+	            var category = findAnnotationCategory(key);
+	            if (!category.tags.length || !window.confirm('确认清空“' + category.label + '”分类下的全部标签？')) return;
+	            category.tags = [];
+	            renderAnnotationModal();
+	        }
+
+	        function saveAnnotationEdit() {
+	            var button = document.getElementById('annotationSaveBtn');
+	            var cancelButton = document.getElementById('annotationCancelBtn');
+	            var closeButton = document.getElementById('annotationCloseBtn');
+	            var modal = document.getElementById('annotationModal');
+	            if (button.disabled) return;
+	            annotationSaving = true;
+	            button.disabled = true;
+	            cancelButton.disabled = true;
+	            closeButton.disabled = true;
+	            modal.classList.add('saving');
+	            button.textContent = '确定中...';
+	            setTimeout(function () {
+	                annotationSaving = false;
+	                cancelButton.disabled = false;
+	                closeButton.disabled = false;
+	                modal.classList.remove('saving');
+	                button.textContent = '确定';
+	                if (!navigator.onLine) {
+	                    updateAnnotationSaveState();
+	                    showToast('保存失败，请检查网络后重试');
+	                    return;
+	                }
+	                annotationSaved = cloneAnnotations(annotationDraft);
+	                annotationEditing = false;
+	                annotationDraft = null;
+	                document.getElementById('annotationModalOverlay').classList.remove('show');
+	                document.getElementById('annotationModal').classList.remove('show');
+	                renderAnnotations();
+	                showToast('资源标注已保存');
+	            }, 650);
+	        }
 
         function updateSelectedCount() {
             var count = document.querySelectorAll('.asset-check:checked').length;
@@ -4786,7 +5206,14 @@
         window.addTemplateField = addTemplateField;
         window.deleteTemplateField = deleteTemplateField;
         window.saveTemplateModal = saveTemplateModal;
-        window.showToast = showToast;
+	        window.showToast = showToast;
+	        window.switchDetailTab = switchDetailTab;
+	        window.startAnnotationEdit = startAnnotationEdit;
+	        window.cancelAnnotationEdit = cancelAnnotationEdit;
+	        window.openAnnotationInput = openAnnotationInput;
+	        window.removeAnnotationTag = removeAnnotationTag;
+	        window.clearAnnotationCategory = clearAnnotationCategory;
+	        window.saveAnnotationEdit = saveAnnotationEdit;
 
         document.addEventListener('DOMContentLoaded', function () {
             var md = document.getElementById('prdMdSource').textContent;
@@ -4795,15 +5222,30 @@
             renderChangelog();
             initSplitDrag();
             updateSelectedCount();
-            ['image', 'video', 'audio'].forEach(updateAlbumNavState);
+	            ['image', 'video', 'audio'].forEach(updateAlbumNavState);
+	            renderAnnotations();
+	            document.querySelectorAll('[data-detail-tab]').forEach(function (tab) {
+	                tab.setAttribute('tabindex', tab.classList.contains('active') ? '0' : '-1');
+	                tab.addEventListener('keydown', function (event) {
+	                    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+	                    var tabs = Array.from(document.querySelectorAll('[data-detail-tab]'));
+	                    var next = (tabs.indexOf(tab) + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+	                    event.preventDefault();
+	                    tabs[next].focus();
+	                    switchDetailTab(tabs[next].getAttribute('data-detail-tab'));
+	                });
+	            });
             document.querySelectorAll('.nav-item[data-module]').forEach(function (item) {
                 item.addEventListener('click', function () {
                     switchModule(item.getAttribute('data-module'));
                 });
             });
-            document.addEventListener('keydown', function (event) {
-                if (event.key === 'Escape') closeTemplateModal();
-            });
+	            document.addEventListener('keydown', function (event) {
+	                if (event.key === 'Escape') {
+	                    closeTemplateModal();
+	                    cancelAnnotationEdit();
+	                }
+	            });
         });
     </script>
 </body>
