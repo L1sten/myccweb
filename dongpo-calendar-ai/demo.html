@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="《东坡行旅日历》微信小程序与基础管理后台一期联合评审入口" />
+    <title>东坡行旅日历｜一期联合评审</title>
+    <script src="../auth.js"></script>
+    <style>
+      @font-face{font-family:"Noto Serif SC";src:url("./fonts/noto-serif-sc-500.woff2") format("woff2");font-weight:500;font-display:swap}
+      @font-face{font-family:"Noto Sans SC";src:url("./fonts/noto-sans-sc-400.woff2") format("woff2");font-weight:400;font-display:swap}
+      :root{--ink:#1d2932;--muted:#6d766f;--paper:#f7f0e4;--paper-2:#fffaf1;--cinnabar:#b53b27;--blue:#183b56;--line:rgba(61,54,43,.14)}
+      *{box-sizing:border-box}
+      body{margin:0;color:var(--ink);font-family:"Noto Sans SC","PingFang SC",sans-serif;background:#e9e5dc}
+      button,a{font:inherit}
+      .hero{min-height:440px;padding:54px clamp(24px,7vw,112px) 120px;color:#f7f0e4;background:
+        radial-gradient(circle at 82% 20%,rgba(196,150,83,.2),transparent 25%),
+        linear-gradient(125deg,rgba(15,32,43,.98),rgba(28,46,53,.95)),
+        url("./assets/dongpo-landscape-paper.png") center/cover}
+      .top{display:flex;align-items:center;justify-content:space-between;gap:20px;max-width:1380px;margin:auto}
+      .brand{display:flex;align-items:center;gap:13px}.brand i{display:grid;place-items:center;width:38px;height:38px;border:1px solid rgba(255,255,255,.5);color:#d9aa68;font:500 20px "Noto Serif SC";font-style:normal}.brand span{display:flex;flex-direction:column}.brand b{font:500 17px "Noto Serif SC";letter-spacing:.08em}.brand small{opacity:.64;letter-spacing:.08em}
+      .version{padding:7px 12px;border:1px solid rgba(255,255,255,.25);border-radius:999px;color:#d9c3a2;font-size:12px}
+      .hero-copy{max-width:1380px;margin:64px auto 0;display:grid;grid-template-columns:minmax(0,760px) 1fr;gap:60px;align-items:end}
+      .eyebrow{color:#d7aa6a;font-size:13px;letter-spacing:.2em}.hero h1{font:500 clamp(38px,5vw,70px)/1.16 "Noto Serif SC";letter-spacing:.04em;margin:18px 0}.hero p{max-width:680px;color:rgba(247,240,228,.7);font-size:16px;line-height:1.85;margin:0}
+      .status{justify-self:end;padding:22px 24px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);backdrop-filter:blur(8px);min-width:270px}.status small{display:block;color:#d9aa68;margin-bottom:9px}.status b{font:500 22px "Noto Serif SC"}.status p{font-size:12px;line-height:1.7;margin-top:7px}
+      main{max-width:1380px;margin:-72px auto 0;padding:0 clamp(20px,4vw,58px) 70px;position:relative}
+      .launch-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+      .launch{padding:30px;background:var(--paper-2);border:1px solid rgba(255,255,255,.8);box-shadow:0 18px 44px rgba(35,30,23,.09);display:grid;grid-template-columns:1fr auto;gap:22px;align-items:end}
+      .launch .index{color:var(--cinnabar);font:500 13px "Noto Serif SC";letter-spacing:.15em}.launch h2{font:500 28px "Noto Serif SC";margin:9px 0}.launch p{color:var(--muted);line-height:1.7;margin:0}.launch a{display:inline-flex;align-items:center;justify-content:center;min-width:122px;height:42px;border-radius:3px;background:var(--blue);color:white;text-decoration:none}.launch:first-child a{background:var(--cinnabar)}
+      .credentials{grid-column:1/-1;margin-top:8px;padding-top:15px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:12px;color:#68645e;font-size:12px}.credentials code{padding:3px 7px;background:#f0e8dc;color:#4e4337}
+      .section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin:58px 0 20px}.section-head span{color:var(--cinnabar);font-size:12px;letter-spacing:.18em}.section-head h2{font:500 30px "Noto Serif SC";margin:7px 0}.section-head p{color:var(--muted);margin:0}
+      .scope{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);background:var(--paper-2)}.scope article{min-height:168px;padding:24px;border-right:1px solid var(--line)}.scope article:last-child{border-right:0}.scope b{display:block;font:500 19px "Noto Serif SC";margin:8px 0 12px}.scope p{font-size:13px;line-height:1.8;color:var(--muted);margin:0}.scope em{color:var(--cinnabar);font-style:normal;font-size:12px}
+      .review-stage{background:#dcd8d0;border:1px solid rgba(50,43,34,.12);min-height:720px;padding:24px;position:relative;overflow:hidden}
+      .stage-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px}.switch{display:flex;padding:4px;background:rgba(255,255,255,.65);border:1px solid rgba(35,39,40,.12)}.switch button{border:0;background:transparent;padding:9px 16px;color:#647078;cursor:pointer}.switch button.active{background:#183b56;color:#fff}.new-window{color:#274b67;text-decoration:none;font-size:13px}
+      .frame-wrap{display:flex;justify-content:center;align-items:flex-start;min-height:640px;transition:.25s}.frame-wrap.phone iframe{width:430px;height:900px;border:0;background:white;box-shadow:0 20px 45px rgba(30,28,24,.2);transform-origin:top center;transform:scale(.69);margin-bottom:-279px}.frame-wrap.desktop iframe{width:100%;height:760px;border:0;background:white;box-shadow:0 20px 45px rgba(30,28,24,.14)}
+      .checklist{display:grid;grid-template-columns:1fr 1fr;gap:16px}.checklist article{padding:24px 26px;background:rgba(255,250,241,.72);border:1px solid var(--line)}.checklist h3{font:500 20px "Noto Serif SC";margin:0 0 14px}.checklist ul{margin:0;padding-left:20px;color:var(--muted);line-height:2}.checklist li::marker{color:var(--cinnabar)}
+      footer{display:flex;justify-content:space-between;gap:18px;margin-top:44px;padding-top:24px;border-top:1px solid var(--line);color:#777268;font-size:12px}
+      @media(max-width:900px){.hero{padding-top:28px}.hero-copy{grid-template-columns:1fr;margin-top:45px}.status{justify-self:start}.launch-grid,.checklist{grid-template-columns:1fr}.scope{grid-template-columns:1fr 1fr}.scope article:nth-child(2){border-right:0}.scope article:nth-child(-n+2){border-bottom:1px solid var(--line)}.launch{grid-template-columns:1fr}.launch a{justify-self:start}.frame-wrap.desktop iframe{min-width:980px}.review-stage{overflow:auto}}
+      @media(max-width:560px){.hero{min-height:520px;padding-left:22px;padding-right:22px}.top{align-items:flex-start}.version{white-space:nowrap}.hero h1{font-size:40px}.status{min-width:0;width:100%}main{padding-left:14px;padding-right:14px}.scope{grid-template-columns:1fr}.scope article{border-right:0;border-bottom:1px solid var(--line)!important}.stage-bar{align-items:flex-start;flex-direction:column}.review-stage{padding:14px}.frame-wrap.phone iframe{transform:scale(.78);margin-bottom:-198px}.section-head{align-items:flex-start;flex-direction:column}footer{flex-direction:column}}
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <div class="top">
+        <div class="brand"><i>东</i><span><b>东坡行旅日历</b><small>DONGPO JOURNEY CALENDAR</small></span></div>
+        <span class="version">一期评审版 · 2026.07.24</span>
+      </div>
+      <div class="hero-copy">
+        <div><span class="eyebrow">微信小程序 × 基础管理后台</span><h1>一期联合评审</h1><p>本页用于客户对焦小程序完整体验、行旅地图、苏粉成长体系及 Web 基础管理能力。下方可直接切换并操作两个真实原型入口。</p></div>
+        <aside class="status"><small>当前状态</small><b>核心闭环可体验</b><p>今日、行旅、问东坡、我的及内容管理后台均已接入共享业务数据。</p></aside>
+      </div>
+    </header>
+    <main>
+      <section class="launch-grid" aria-label="原型入口">
+        <article class="launch"><div><span class="index">01 / MINI PROGRAM</span><h2>微信小程序原型</h2><p>体验每日诗句、吟诵收藏、无限提问、七天问答、行旅打卡与五级苏粉名片。</p></div><a href="./index.html" target="_blank" rel="noreferrer">打开小程序</a></article>
+        <article class="launch"><div><span class="index">02 / ADMIN</span><h2>基础管理后台</h2><p>维护日历、行旅、问东坡配置、苏粉用户、预览日期和后台账号。</p></div><a href="./admin.html" target="_blank" rel="noreferrer">打开后台</a><div class="credentials"><span>演示账号 <code>13800000001</code></span><span>密码 <code>admin123</code></span></div></article>
+      </section>
+
+      <div class="section-head"><div><span>REVIEW SCOPE</span><h2>本次对焦范围</h2></div><p>聚焦一期首发可落地功能，不包含运营分析与地图点位编辑。</p></div>
+      <section class="scope">
+        <article><em>每日内容</em><b>两日一词</b><p>连续两日共用同一首作品与整首吟诵，每日展示不同句子。</p></article>
+        <article><em>文化行旅</em><b>十二程十八处</b><p>地图全点开放，支持按程聚焦、文化详情、定位打卡与地方勋章。</p></article>
+        <article><em>AI 对话</em><b>无限提问</b><p>近七天成功问答直接回填到当前聊天流，不另设历史入口。</p></article>
+        <article><em>身份成长</em><b>五级苏粉名片</b><p>积分自动升级，身份卡、分享预览与下载图片保持同一等级主题。</p></article>
+      </section>
+
+      <div class="section-head"><div><span>LIVE PROTOTYPE</span><h2>在线操作预览</h2></div><p>评审时可在本页切换，也可打开独立窗口获得完整尺寸。</p></div>
+      <section class="review-stage">
+        <div class="stage-bar">
+          <div class="switch" role="group" aria-label="选择预览入口"><button class="active" data-view="mini">小程序</button><button data-view="admin">管理后台</button></div>
+          <a class="new-window" href="./index.html" target="_blank" rel="noreferrer">在新窗口打开 ↗</a>
+        </div>
+        <div class="frame-wrap phone"><iframe title="东坡行旅日历小程序实时预览" src="./index.html"></iframe></div>
+      </section>
+
+      <div class="section-head"><div><span>ACCEPTANCE FOCUS</span><h2>建议重点验收</h2></div></div>
+      <section class="checklist">
+        <article><h3>小程序体验</h3><ul><li>签到、吟诵、收藏与积分刷新后不重复</li><li>近七天问答直接出现在聊天流且提问不限次</li><li>行旅按程聚焦、点位状态及杭州默认点亮正确</li><li>五个等级名片主题可清晰辨识并保持分享一致</li></ul></article>
+        <article><h3>后台管理</h3><ul><li>草稿不会覆盖小程序已发布内容</li><li>日历、行旅、问东坡内容校验与发布结果明确</li><li>用户详情只读展示业务明细，不展示问答正文</li><li>预览配置支持列表增删改查，账号密码独立重置</li></ul></article>
+      </section>
+      <footer><span>《东坡行旅日历》一期评审原型</span><span><a href="./review.html" style="color:inherit">进入开发评审与 PRD ↗</a>　建议使用最新版 Chrome、Edge 或 Safari 浏览</span></footer>
+    </main>
+    <script>
+      const frameWrap = document.querySelector(".frame-wrap");
+      const frame = frameWrap.querySelector("iframe");
+      const newWindow = document.querySelector(".new-window");
+      document.querySelectorAll(".switch button").forEach((button) => {
+        button.addEventListener("click", () => {
+          const admin = button.dataset.view === "admin";
+          document.querySelectorAll(".switch button").forEach((item) => item.classList.toggle("active", item === button));
+          frameWrap.className = `frame-wrap ${admin ? "desktop" : "phone"}`;
+          frame.src = admin ? "./admin.html" : "./index.html";
+          frame.title = admin ? "东坡行旅日历基础管理后台实时预览" : "东坡行旅日历小程序实时预览";
+          newWindow.href = frame.src;
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="941" height="1672" viewBox="0 0 941 1672">
+  <defs>
+    <filter id="ink" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="2.2"/>
+    </filter>
+  </defs>
+  <path
+    d="M273 906
+       Q396 817 518 790
+       Q445 765 373 746
+       Q575 696 772 895
+       Q758 792 741 693
+       Q718 703 695 715
+       Q734 789 770 861
+       Q688 878 610 885
+       Q690 720 741 642
+       Q700 700 639 776
+       Q681 803 721 828
+       Q733 834 743 838
+       Q683 727 608 632
+       Q616 952 596 1291
+       Q563 1384 520 1466
+       Q476 1423 437 1370
+       Q601 1092 748 831
+       Q653 810 559 790"
+    fill="none"
+    stroke="#6f4a3b"
+    stroke-opacity=".23"
+    stroke-width="14"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    filter="url(#ink)"
+  />
+  <path
+    d="M273 906
+       Q396 817 518 790
+       Q445 765 373 746
+       Q575 696 772 895
+       Q758 792 741 693
+       Q718 703 695 715
+       Q734 789 770 861
+       Q688 878 610 885
+       Q690 720 741 642
+       Q700 700 639 776
+       Q681 803 721 828
+       Q733 834 743 838
+       Q683 727 608 632
+       Q616 952 596 1291
+       Q563 1384 520 1466
+       Q476 1423 437 1370
+       Q601 1092 748 831
+       Q653 810 559 790"
+    fill="none"
+    stroke="#9e3829"
+    stroke-opacity=".72"
+    stroke-width="6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M273 906
+       Q396 817 518 790
+       Q445 765 373 746
+       Q575 696 772 895
+       Q758 792 741 693
+       Q718 703 695 715
+       Q734 789 770 861
+       Q688 878 610 885
+       Q690 720 741 642
+       Q700 700 639 776
+       Q681 803 721 828
+       Q733 834 743 838
+       Q683 727 608 632
+       Q616 952 596 1291
+       Q563 1384 520 1466
+       Q476 1423 437 1370
+       Q601 1092 748 831
+       Q653 810 559 790"
+    fill="none"
+    stroke="#f0d4bc"
+    stroke-opacity=".58"
+    stroke-width="1.5"
+    stroke-dasharray="10 8"
+    stroke-linecap="round"
+  />
+</svg>
