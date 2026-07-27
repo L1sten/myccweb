@@ -390,7 +390,7 @@
   <main class="app-split">
     <section class="page-container" aria-label="东坡行旅日历小程序原型">
       <div class="system-shell">
-        <iframe class="prototype-frame" name="prototypeFrame" src="./index.html?v=v1.0.7" title="东坡行旅日历交互原型"></iframe>
+        <iframe class="prototype-frame" name="prototypeFrame" src="./index.html?v=v1.0.8" title="东坡行旅日历交互原型"></iframe>
       </div>
     </section>
     <div class="split-drag" id="splitDrag" role="separator" tabindex="0" aria-orientation="vertical" aria-label="调整产品原型与需求文档的宽度" aria-valuemin="360"></div>
@@ -404,7 +404,7 @@
       <article class="prd-content" id="prdContent">
         <div class="document-head">
           <span>需求评审文档</span>
-          <b>v1.0.7 · 2026.07.27</b>
+          <b>v1.0.8 · 2026.07.27</b>
         </div>
         <div id="prdArticle"></div>
       </article>
@@ -412,10 +412,10 @@
   </main>
 
   <div class="top-controls" aria-label="评审页工具">
-    <a class="control-btn" href="./index.html?v=v1.0.7" target="prototypeFrame">小程序</a>
-    <a class="control-btn" href="./admin.html?v=v1.0.7" target="prototypeFrame">管理后台</a>
+    <a class="control-btn" href="./index.html?v=v1.0.8" target="prototypeFrame">小程序</a>
+    <a class="control-btn" href="./admin.html?v=v1.0.8" target="prototypeFrame">管理后台</a>
     <button class="control-btn" id="prdToggle" type="button">收起 PRD</button>
-    <a class="control-btn" id="downloadBtn" href="./PRD.md?v=v1.0.7" download="东坡行旅日历小程序_PRD.md">下载 PRD</a>
+    <a class="control-btn" id="downloadBtn" href="./PRD.md?v=v1.0.8" download="东坡行旅日历小程序_PRD.md">下载 PRD</a>
     <button class="control-btn desktop-only" id="changeBtn" type="button">更新记录</button>
   </div>
 
@@ -1350,6 +1350,7 @@
       var toggle = document.getElementById('prdToggle');
       var changeMask = document.getElementById('changeMask');
       var changelogData = [
+        { time: "2026-07-27 16:00", desc: "优化“我的”身份信息、珍藏横滑与诗笺分享体验；分享诗笺采用瘦长构图、端正双层朱文章和紧凑操作按钮，昵称限制为15字；同步收敛基础管理后台。" },
         { time: "2026-07-27 14:01", desc: "修复开发评审页内嵌小程序与后台仍命中旧缓存的问题；为评审入口增加 v1.0.7 版本标识并同步最新原型、后台与 PRD。" },
         { time: "2026-07-27 12:21", desc: "同步 7 月 27 日本地评审版本：优化行旅全貌与按程聚焦、游客/微信身份、珍藏滑动筛选分享、五级苏粉身份卡与山水名片；收敛后台日历、行旅、推荐问题、用户查询导出和账号管理。" },
         { time: "2026-07-24 14:52", desc: "以本地项目为唯一发布基准重新构建；修复旧版8点行旅数据未升级导致地点名称与文化内容丢失的问题，历史访问者刷新后自动迁移至十二程十八处。" },
