@@ -390,7 +390,7 @@
   <main class="app-split">
     <section class="page-container" aria-label="东坡行旅日历小程序原型">
       <div class="system-shell">
-        <iframe class="prototype-frame" name="prototypeFrame" src="./index.html?v=v1.0.10" title="东坡行旅日历交互原型"></iframe>
+        <iframe class="prototype-frame" name="prototypeFrame" src="./index.html?v=v1.0.11" title="东坡行旅日历交互原型"></iframe>
       </div>
     </section>
     <div class="split-drag" id="splitDrag" role="separator" tabindex="0" aria-orientation="vertical" aria-label="调整产品原型与需求文档的宽度" aria-valuemin="360"></div>
@@ -404,7 +404,7 @@
       <article class="prd-content" id="prdContent">
         <div class="document-head">
           <span>需求评审文档</span>
-          <b>v1.0.10 · 2026.07.28</b>
+          <b>v1.0.11 · 2026.07.28</b>
         </div>
         <div id="prdArticle"></div>
       </article>
@@ -412,10 +412,10 @@
   </main>
 
   <div class="top-controls" aria-label="评审页工具">
-    <a class="control-btn" href="./index.html?v=v1.0.10" target="prototypeFrame">小程序</a>
-    <a class="control-btn" href="./admin.html?v=v1.0.10" target="prototypeFrame">管理后台</a>
+    <a class="control-btn" href="./index.html?v=v1.0.11" target="prototypeFrame">小程序</a>
+    <a class="control-btn" href="./admin.html?v=v1.0.11" target="prototypeFrame">管理后台</a>
     <button class="control-btn" id="prdToggle" type="button">收起 PRD</button>
-    <a class="control-btn" id="downloadBtn" href="./PRD.md?v=v1.0.10" download="东坡行旅日历小程序_PRD.md">下载 PRD</a>
+    <a class="control-btn" id="downloadBtn" href="./PRD.md?v=v1.0.11" download="东坡行旅日历小程序_PRD.md">下载 PRD</a>
     <button class="control-btn desktop-only" id="changeBtn" type="button">更新记录</button>
   </div>
 
@@ -1354,6 +1354,7 @@
       var toggle = document.getElementById('prdToggle');
       var changeMask = document.getElementById('changeMask');
       var changelogData = [
+        { time: "2026-07-28 14:33", desc: "优化“我的”身份卡：支持直接点击用户名修改昵称；头像认证、首页苏粉身份入口与“苏粉初识”徽章统一为朱砂圆底白色 V，并保持行旅完成状态原有勾印语义。" },
         { time: "2026-07-28 11:02", desc: "同步 7 月 28 日当前本地版本：珍藏页移除日期筛选并完善诗笺分享；签到明细仅展示最近七个北京时间自然日且统一显示“已签到”；更新一期 PRD、开发评审页、小程序及后台。" },
         { time: "2026-07-27 20:02", desc: "修复五级苏粉身份卡山水背景层，恢复山形取景并保持信息可读；统一“问东坡”页头为左对齐层级；同步最新小程序、后台与开发评审页。" },
         { time: "2026-07-27 16:00", desc: "优化“我的”身份信息、珍藏横滑与诗笺分享体验；分享诗笺采用瘦长构图、端正双层朱文章和紧凑操作按钮，昵称限制为15字；同步收敛基础管理后台。" },
