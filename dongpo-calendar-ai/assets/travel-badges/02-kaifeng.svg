@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc" style="--badge-wash:#e9dcc5">
+  <title id="title">汴京·京华初鸣</title>
+  <desc id="desc">北宋都城城门、重檐与石阶</desc>
+  <defs>
+    <radialGradient id="paperWash" cx="35%" cy="28%" r="78%">
+      <stop offset="0" stop-color="#fffaf0"/>
+      <stop offset=".55" stop-color="#f6efe2"/>
+      <stop offset="1" stop-color="#e9dcc5"/>
+    </radialGradient>
+    <filter id="paperGrain" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency=".72" numOctaves="3" seed="14" result="noise"/>
+      <feColorMatrix in="noise" type="saturate" values="0" result="gray"/>
+      <feComponentTransfer in="gray">
+        <feFuncA type="table" tableValues="0 .065"/>
+      </feComponentTransfer>
+    </filter>
+    <filter id="softLift" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#3b2a1c" flood-opacity=".12"/>
+    </filter>
+    <clipPath id="medalClip"><circle cx="256" cy="256" r="222"/></clipPath>
+  </defs>
+  <g filter="url(#softLift)">
+    <circle cx="256" cy="256" r="222" fill="url(#paperWash)" stroke="#7f4d2b" stroke-width="5"/>
+    <circle cx="256" cy="256" r="207" fill="none" stroke="#7f4d2b" stroke-width="2.5" stroke-opacity=".5"/>
+    <circle cx="256" cy="256" r="192" fill="#e9dcc5" fill-opacity=".28" stroke="#7f4d2b" stroke-width="2" stroke-opacity=".24" stroke-dasharray="5 7"/>
+  </g>
+  <g clip-path="url(#medalClip)" filter="url(#paperGrain)">
+    <rect x="32" y="32" width="448" height="448" fill="#6d5b46"/>
+  </g>
+  <g color="#7f4d2b" transform="translate(112 108) scale(4.5)">
+    <style>
+      .line,.fine,.wash{stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+      .line{fill:none;stroke-width:2.7}
+      .fine{fill:none;stroke-width:2.1}
+      .wash{fill:var(--badge-wash);stroke-width:2.3}
+    </style>
+    
+    <path class="wash" d="M12 27h40l-7-9H19Z"/>
+    <path class="line" d="M17 28v22m30-22v22M11 50h42M23 27v-6h18v6"/>
+    <path d="M26 50V36h12v14" fill="currentColor"/>
+    <path class="fine" d="M17 33h30M25 16h14"/>
+  </g>
+  <g fill="#7f4d2b" opacity=".6">
+    <circle cx="256" cy="55" r="3"/>
+    <circle cx="457" cy="256" r="3"/>
+    <circle cx="55" cy="256" r="3"/>
+  </g>
+  <path d="M246 455h20" stroke="#b53b27" stroke-width="6" stroke-linecap="round"/>
+</svg>

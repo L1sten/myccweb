@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>东坡行旅十八地徽章</title>
+  <script src="../auth.js"></script>
+  <style>
+    @font-face {
+      font-family: "Noto Serif SC";
+      src: url("./fonts/noto-serif-sc-500.woff2") format("woff2");
+      font-weight: 500;
+    }
+    @font-face {
+      font-family: "Noto Sans SC";
+      src: url("./fonts/noto-sans-sc-400.woff2") format("woff2");
+      font-weight: 400;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: #f6efe2; }
+    body { color: #2e2923; font-family: "Noto Serif SC", serif; }
+    .gallery {
+      width: 1920px;
+      height: 1080px;
+      padding: 58px 74px 46px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 26px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 14% 12%, rgba(255,255,255,.72), transparent 28%),
+        linear-gradient(rgba(246,239,226,.93), rgba(240,228,209,.94)),
+        url("./assets/dongpo-landscape-paper.png") center / cover;
+    }
+    .gallery header { display: flex; align-items: end; justify-content: space-between; border-bottom: 1px solid rgba(83,63,41,.2); padding-bottom: 18px; }
+    .gallery h1 { margin: 0; font-size: 35px; line-height: 1; letter-spacing: .14em; font-weight: 500; }
+    .gallery header p { margin: 0; color: #766652; font-family: "Noto Sans SC", sans-serif; font-size: 15px; letter-spacing: .08em; }
+    .badge-grid { display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(3, 1fr); gap: 16px 18px; min-height: 0; }
+    .badge-card { min-width: 0; display: grid; grid-template-rows: 1fr auto; justify-items: center; align-items: center; padding: 6px 9px 12px; border: 1px solid rgba(88,67,43,.12); border-radius: 16px; background: rgba(255,251,243,.58); box-shadow: inset 0 0 0 1px rgba(255,255,255,.45); }
+    .badge-card img { width: 190px; height: 190px; display: block; }
+    .badge-card figcaption { width: 100%; display: grid; grid-template-columns: 30px 1fr; align-items: center; gap: 9px; padding-top: 2px; text-align: left; }
+    .badge-card i { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; color: #fff8ef; background: #b53b27; font-family: "Noto Sans SC", sans-serif; font-size: 12px; font-style: normal; }
+    .badge-card b { display: block; font-size: 18px; line-height: 1.15; letter-spacing: .08em; font-weight: 500; }
+    .badge-card small { display: block; margin-top: 4px; color: #7b6954; font-family: "Noto Sans SC", sans-serif; font-size: 12px; letter-spacing: .06em; }
+    .single { width: 512px; height: 512px; overflow: hidden; background: transparent; }
+    .single img { width: 512px; height: 512px; display: block; }
+  </style>
+</head>
+<body>
+  <main id="app" aria-live="polite"></main>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const resolveAsset = (path) => path.startsWith("/") ? `.${path}` : path;
+    fetch("./assets/travel-badges/index.json")
+      .then((response) => response.json())
+      .then((badges) => {
+        const selected = params.get("id");
+        const app = document.getElementById("app");
+        if (selected) {
+          const badge = badges.find((item) => item.id === selected);
+          if (!badge) throw new Error("Unknown badge");
+          app.className = "single";
+          app.innerHTML = `<img src="${resolveAsset(badge.asset)}" alt="${badge.historicName}·${badge.badge}" />`;
+          return;
+        }
+        app.className = "gallery";
+        app.innerHTML = `
+          <header>
+            <h1>东坡行旅十八地徽章</h1>
+            <p>宋式册页 · 双环印章 · 地方意象</p>
+          </header>
+          <section class="badge-grid">
+            ${badges.map((badge) => `
+              <figure class="badge-card">
+                <img src="${resolveAsset(badge.asset)}" alt="${badge.historicName}·${badge.badge}" />
+                <figcaption>
+                  <i>${String(badge.order).padStart(2, "0")}</i>
+                  <span><b>${badge.historicName} · ${badge.badge}</b><small>${badge.visual}</small></span>
+                </figcaption>
+              </figure>
+            `).join("")}
+          </section>
+        `;
+      });
+  </script>
+</body>
+</html>
