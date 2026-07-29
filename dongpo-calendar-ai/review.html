@@ -390,7 +390,7 @@
   <main class="app-split">
     <section class="page-container" aria-label="东坡行旅日历小程序原型">
       <div class="system-shell">
-        <iframe class="prototype-frame" name="prototypeFrame" src="./index.html?v=v1.0.13" title="东坡行旅日历交互原型"></iframe>
+        <iframe class="prototype-frame" name="prototypeFrame" src="./index.html?v=v1.0.14" title="东坡行旅日历交互原型"></iframe>
       </div>
     </section>
     <div class="split-drag" id="splitDrag" role="separator" tabindex="0" aria-orientation="vertical" aria-label="调整产品原型与需求文档的宽度" aria-valuemin="360"></div>
@@ -404,7 +404,7 @@
       <article class="prd-content" id="prdContent">
         <div class="document-head">
           <span>需求评审文档</span>
-          <b>v1.0.13 · 2026.07.29</b>
+          <b>v1.0.14 · 2026.07.29</b>
         </div>
         <div id="prdArticle"></div>
       </article>
@@ -412,10 +412,10 @@
   </main>
 
   <div class="top-controls" aria-label="评审页工具">
-    <a class="control-btn" href="./index.html?v=v1.0.13" target="prototypeFrame">小程序</a>
-    <a class="control-btn" href="./admin.html?v=v1.0.13" target="prototypeFrame">管理后台</a>
+    <a class="control-btn" href="./index.html?v=v1.0.14" target="prototypeFrame">小程序</a>
+    <a class="control-btn" href="./admin.html?v=v1.0.14" target="prototypeFrame">管理后台</a>
     <button class="control-btn" id="prdToggle" type="button">收起 PRD</button>
-    <a class="control-btn" id="downloadBtn" href="./PRD.md?v=v1.0.13" download="东坡行旅日历小程序_PRD.md">下载 PRD</a>
+    <a class="control-btn" id="downloadBtn" href="./PRD.md?v=v1.0.14" download="东坡行旅日历小程序_PRD.md">下载 PRD</a>
     <button class="control-btn desktop-only" id="changeBtn" type="button">更新记录</button>
   </div>
 
@@ -1361,6 +1361,7 @@
       var toggle = document.getElementById('prdToggle');
       var changeMask = document.getElementById('changeMask');
       var changelogData = [
+        { time: "2026-07-29 11:11", desc: "修复 GitHub Pages 严格上线校验：移除无效的项目目录级 `.nojekyll`，业务页面与 v1.0.13 交互内容保持不变。" },
         { time: "2026-07-29 09:52", desc: "优化行旅徽章大图：改用透明 SVG，移除右上角点亮标志，并将行程序号统一为中文“第X程”；保留状态文案与原有关闭、焦点返回交互。" },
         { time: "2026-07-28 19:42", desc: "补齐游客登录与退出流程：未登录权益操作统一唤起微信授权且不增加积分，游客头像使用古风学生形象；重绘并实装 18 枚行旅徽章，支持行旅详情与“我的”点击查看大图。" },
         { time: "2026-07-28 14:33", desc: "优化“我的”身份卡：支持直接点击用户名修改昵称；头像认证、首页苏粉身份入口与“苏粉初识”徽章统一为朱砂圆底白色 V，并保持行旅完成状态原有勾印语义。" },
