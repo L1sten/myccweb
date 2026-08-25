@@ -879,7 +879,7 @@ a{color:inherit;text-decoration:none}
 }
 .table-action.is-open::after{content:"⌃"}
 .matrix-action-menu{
-  position:fixed;
+  position:absolute;
   z-index:130;
   display:none;
   min-width:96px;
@@ -1381,6 +1381,14 @@ a{color:inherit;text-decoration:none}
   color:var(--muted);
   vertical-align:top;
 }
+.matrix-report-table{table-layout:fixed}
+.matrix-report-table th:nth-child(1){width:11%}
+.matrix-report-table th:nth-child(2){width:12%}
+.matrix-report-table th:nth-child(3){width:17%}
+.matrix-report-table th:nth-child(4){width:46%}
+.matrix-report-table th:nth-child(5){width:14%}
+.matrix-report-table td:not(:nth-child(4)){text-align:center;vertical-align:middle}
+.matrix-report-table td:nth-child(4){line-height:1.75;text-align:left;word-break:break-word}
 .report-note{
   border-left:3px solid var(--orange);
   background:var(--orange-50);
@@ -2555,9 +2563,9 @@ a{color:inherit;text-decoration:none}
         <div class="report-list-tools">
           <div class="report-list-filter">
             <span>发布时间：</span>
-            <input class="input" type="date" value="2026-06-03" aria-label="开始日期">
+            <input class="input" type="date" value="2026-05-29" aria-label="开始日期">
             <span>至</span>
-            <input class="input" type="date" value="2026-06-18" aria-label="结束日期">
+            <input class="input" type="date" value="2026-08-20" aria-label="结束日期">
           </div>
         </div>
 
@@ -2610,18 +2618,18 @@ a{color:inherit;text-decoration:none}
               <div class="report-doc-date">2026-06-13 <span>星期六</span></div>
             </div>
           </article>
-          <article class="report-doc-card" data-report-mode="auto" data-report-type="weekly" data-report-id="week-20260618" tabindex="0">
+          <article class="report-doc-card" data-report-mode="auto" data-report-type="weekly" data-report-id="week-20260820" tabindex="0">
             <div class="report-card-actions"><button class="report-download-btn" type="button">下载</button><button class="report-preview-btn" type="button">预览</button></div>
             <div class="report-doc-body">
-              <h2 class="report-doc-title">正能量周报</h2>
+              <h2 class="report-doc-title">涉舟山网络正能量数据简报</h2>
               <div class="report-doc-line"></div>
-              <div class="report-doc-date">2026-06-12 16:00 至 2026-06-18 16:00</div>
+              <div class="report-doc-date">2026-08-14 16:00 至 2026-08-20 16:00</div>
             </div>
           </article>
           <article class="report-doc-card" data-report-mode="auto" data-report-type="weekly" data-report-id="week-20260611" tabindex="0">
             <div class="report-card-actions"><button class="report-download-btn" type="button">下载</button><button class="report-preview-btn" type="button">预览</button></div>
             <div class="report-doc-body">
-              <h2 class="report-doc-title">正能量周报</h2>
+              <h2 class="report-doc-title">涉舟山网络正能量数据简报</h2>
               <div class="report-doc-line"></div>
               <div class="report-doc-date">2026-06-05 16:00 至 2026-06-11 16:00</div>
             </div>
@@ -2629,7 +2637,7 @@ a{color:inherit;text-decoration:none}
           <article class="report-doc-card" data-report-mode="auto" data-report-type="weekly" data-report-id="week-20260604" tabindex="0">
             <div class="report-card-actions"><button class="report-download-btn" type="button">下载</button><button class="report-preview-btn" type="button">预览</button></div>
             <div class="report-doc-body">
-              <h2 class="report-doc-title">正能量周报</h2>
+              <h2 class="report-doc-title">涉舟山网络正能量数据简报</h2>
               <div class="report-doc-line"></div>
               <div class="report-doc-date">2026-05-29 16:00 至 2026-06-04 16:00</div>
             </div>
@@ -2645,7 +2653,7 @@ a{color:inherit;text-decoration:none}
           <article class="report-doc-card" data-report-mode="manual" data-report-type="weekly" data-report-id="week-20260528" tabindex="0">
             <div class="report-card-actions"><button class="report-download-btn" type="button">下载</button><button class="report-preview-btn" type="button">预览</button></div>
             <div class="report-doc-body">
-              <h2 class="report-doc-title">正能量周报</h2>
+              <h2 class="report-doc-title">涉舟山网络正能量数据简报</h2>
               <div class="report-doc-line"></div>
               <div class="report-doc-date">2026-05-22 16:00 至 2026-05-28 16:00</div>
             </div>
@@ -2951,8 +2959,8 @@ a{color:inherit;text-decoration:none}
     <div class="modal-body preview-modal-body">
       <div class="report-manuscript" aria-label="周报正文预览">
         <div class="preview-cover">
-          <h2 id="previewReportName">涉舟网络正能量数据简报</h2>
-          <div id="previewReportPeriod">2026-06-12 16:00 至 2026-06-18 16:00</div>
+          <h2 id="previewReportName">涉舟山网络正能量数据简报</h2>
+          <div id="previewReportPeriod">2026-08-14 16:00 至 2026-08-20 16:00</div>
         </div>
         <div class="preview-summary-grid" hidden>
           <div class="preview-summary-item"><strong id="previewPoolCount">224</strong><span>稿池投稿篇次</span></div>
@@ -2962,14 +2970,14 @@ a{color:inherit;text-decoration:none}
         </div>
         <div class="report-section">
           <h3>一、总体情况</h3>
-          <p class="report-copy" id="previewOverviewText">6月12日16时至6月18日16时，我办通过网讯舆情系统监测发现主要新闻APP网站和社交平台涉舟信息共计30万余条。同期正能量态势感知首页显示，正能量稿件情感分布中赞扬类占比44.8%、惊奇类占比36.8%、喜悦类占比16.8%（见图1）。</p>
+          <p class="report-copy" id="previewOverviewText">2026年8月14日16时至8月20日16时，我办监测发现主要新闻 APP、网站和社交平台涉舟山信息共计30条。整体来看，正向情绪内容占比86.7%；正能量稿件情感分布中赞扬类占比56.7%（见图 1）。</p>
           <figure class="emotion-figure" aria-label="正能量稿件情感分布图">
             <svg class="emotion-svg" viewBox="0 0 620 360" role="img" aria-label="正能量稿件情感分布图">
               <g fill="none" stroke-width="56" stroke-linecap="round" transform="rotate(-90 250 170)">
-                <circle cx="250" cy="170" r="98" stroke="#19C6E0" pathLength="100" stroke-dasharray="44.8 55.2" stroke-dashoffset="0"/>
-                <circle cx="250" cy="170" r="98" stroke="#FF7786" pathLength="100" stroke-dasharray="36.8 63.2" stroke-dashoffset="-44.8"/>
-                <circle cx="250" cy="170" r="98" stroke="#FFE79C" pathLength="100" stroke-dasharray="16.8 83.2" stroke-dashoffset="-81.6"/>
-                <circle cx="250" cy="170" r="98" stroke="#35D468" pathLength="100" stroke-dasharray="1.6 98.4" stroke-dashoffset="-98.4"/>
+                <circle cx="250" cy="170" r="98" stroke="#19C6E0" pathLength="100" stroke-dasharray="56.7 43.3" stroke-dashoffset="0"/>
+                <circle cx="250" cy="170" r="98" stroke="#FF7786" pathLength="100" stroke-dasharray="23.3 76.7" stroke-dashoffset="-56.7"/>
+                <circle cx="250" cy="170" r="98" stroke="#FFE79C" pathLength="100" stroke-dasharray="6.7 93.3" stroke-dashoffset="-80"/>
+                <circle cx="250" cy="170" r="98" stroke="#35D468" pathLength="100" stroke-dasharray="13.3 86.7" stroke-dashoffset="-86.7"/>
               </g>
               <circle cx="250" cy="170" r="62" fill="#fff"/>
               <text x="250" y="181" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#2B2F36" font-weight="800">情感分布</text>
@@ -2981,10 +2989,10 @@ a{color:inherit;text-decoration:none}
                 <path d="M270 48 L280 24 L306 24" stroke="#D85AEF"/>
               </g>
               <g font-family="Arial, sans-serif" font-size="16" fill="#8A8F99" font-weight="700">
-                <text x="412" y="142">赞扬 56</text><text x="490" y="142">44.8%</text>
-                <text x="26" y="288">惊奇 46</text><text x="106" y="288">36.8%</text>
-                <text x="38" y="48">喜悦 21</text><text x="118" y="48">16.8%</text>
-                <text x="150" y="18">厌恶 2</text><text x="214" y="18">1.6%</text>
+                <text x="412" y="142">赞扬 17</text><text x="490" y="142">56.7%</text>
+                <text x="26" y="288">惊奇 7</text><text x="106" y="288">23.3%</text>
+                <text x="38" y="48">喜悦 2</text><text x="118" y="48">6.7%</text>
+                <text x="150" y="18">厌恶 4</text><text x="214" y="18">13.3%</text>
                 <text x="312" y="18">愤怒 0</text><text x="376" y="18">0%</text>
               </g>
               <g font-family="Arial, sans-serif" font-size="16" fill="#7B8190">
@@ -3002,11 +3010,11 @@ a{color:inherit;text-decoration:none}
         </div>
         <div class="report-section">
           <h3>二、工作情况</h3>
-          <p class="report-copy" id="previewWorkText">6月13日至6月18日，新莓汇热点管理列表共产生涉舟正能量热点事件 6 个（见表 1）。舟山 6 个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品 224 篇次，其中市网信办已录用热点选题稿件 8 篇（见表 2）。从账号表现来看，本周共有 5 个重点正能量账号参与传播（见表 3）。</p>
+          <p class="report-copy" id="previewWorkText">8月14日至8月20日，共产生全网涉舟山正能量热点事件23个（见表 1），其中阅读量超500万热点事件19个，涉舟山正面热点报道事件总阅读量超过6.62亿。舟山6个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品223篇次（见表 2）。从账号表现来看，本周共有49个活跃正能量账号参与传播（见表 3）。</p>
         <div class="report-table-wrap">
           <table class="report-table">
-            <caption style="caption-side:top;text-align:center;font-weight:800;margin:6px 0">表 1.涉舟正能量热点事件</caption>
-            <thead><tr><th>序号</th><th>事件</th><th>属地</th><th>传播量</th><th>来源账号</th></tr></thead>
+            <caption style="caption-side:top;text-align:center;font-weight:800;margin:6px 0">表 1. 涉舟山正能量热点事件</caption>
+            <thead><tr><th>序号</th><th>事件</th><th>属地</th><th>传播量</th><th>主持人</th></tr></thead>
             <tbody id="previewHotBody"></tbody>
           </table>
         </div>
@@ -3015,7 +3023,7 @@ a{color:inherit;text-decoration:none}
         <h3>三、“新莓汇”正能量稿池投稿情况</h3>
         <div class="report-table-wrap">
           <table class="report-table">
-            <caption style="caption-side:top;text-align:center;font-weight:800;margin:6px 0">表 2.“新莓汇”正能量稿池投稿情况</caption>
+            <caption style="caption-side:top;text-align:center;font-weight:800;margin:6px 0">表 2. “新莓汇”正能量稿池投稿情况</caption>
             <thead><tr><th>序号</th><th>投稿账号</th><th>篇次</th></tr></thead>
             <tbody id="previewPoolBody"></tbody>
           </table>
@@ -3024,9 +3032,9 @@ a{color:inherit;text-decoration:none}
       <div class="report-section">
         <h3>四、矩阵账号本周内容及传播效果</h3>
         <div class="report-table-wrap">
-          <table class="report-table">
-            <caption style="caption-side:top;text-align:center;font-weight:800;margin:6px 0">表 3.矩阵账号本周内容及传播效果</caption>
-            <thead><tr><th>地区</th><th>账号数量</th><th>地区内账号发文总量</th><th>账号发文详情</th><th>传播量</th><th>互动量</th></tr></thead>
+          <table class="report-table matrix-report-table">
+            <caption style="caption-side:top;text-align:center;font-weight:800;margin:6px 0">表 3. 矩阵账号本周内容及传播效果</caption>
+            <thead><tr><th>地区</th><th>账号数量</th><th>地区内账号发文总量</th><th>账号发文详情</th><th>互动量</th></tr></thead>
             <tbody id="previewMatrixBody"></tbody>
           </table>
         </div>
@@ -3063,8 +3071,8 @@ a{color:inherit;text-decoration:none}
 <textarea id="prdMdSource" style="display:none">
 # 正能量态势感知平台优化项目 PRD
 
-> 版本：v1.6
-> 日期：2026-07-06
+> 版本：v1.7
+> 日期：2026-08-25
 > 需求范围：在现有正能量态势感知平台基础上，新增「矩阵账号管理」「矩阵传播分析」「正能量周报」三个模块，形成账号监测管理、传播分析、周报定时生成与预览闭环。
 
 ---
@@ -3073,11 +3081,11 @@ a{color:inherit;text-decoration:none}
 
 ### 1.1 背景
 
-现有正能量态势感知平台已具备正能量看板、稿件、热榜、热点日报等能力，但客户当前仍依赖运营人员手动整理《涉舟网络正能量数据简报》。人工报告存在三个核心问题：
+现有正能量态势感知平台已具备正能量看板、稿件、热榜、热点日报等能力，但客户当前仍依赖运营人员手动整理《涉舟山网络正能量数据简报》。人工报告存在三个核心问题：
 
 - **统计链路分散**：稿池投稿、热点事件、账号传播表现分别依赖人工汇总，周期复用性弱。
 - **账号名单口径不可落地**：原报告中的「正能量账号名单」来自话题热门参与情况，但平台无法稳定识别所有话题下的热门参与账号，且不同平台开放字段差异较大。
-- **周报缺少产品化入口**：客户需要按固定小时级周期复用《涉舟网络正能量数据简报》，本期明确周报统计周期为上周期周五 `16:00` 至本周期周四 `16:00`，由系统按既有统计口径每周定时生成并支持预览查看。
+- **周报缺少产品化入口**：客户需要按固定小时级周期复用《涉舟山网络正能量数据简报》，本期明确周报统计周期为上周期周五 `16:00` 至本周期周四 `16:00`，由系统按既有统计口径每周定时生成并支持预览查看。
 
 本次优化通过定向采集和管理正能量矩阵账号，分析矩阵账号在统计周期内发布的内容和传播效果，并将结果体现在周报预览中，用可采集、可核验、可复用的口径替代不可实现的「话题热门参与账号名单」。
 
@@ -3110,6 +3118,7 @@ a{color:inherit;text-decoration:none}
 ### 1.6 非本期范围
 
 - 不承诺按话题自动识别全部热门参与账号；周报表 3 改为「矩阵账号本周内容及传播效果」。
+- 周报表 3 按定稿仅展示地区聚合的账号数、发文量、账号发文详情和互动量，不展示传播量；传播量仍在「矩阵传播分析」模块按可用字段展示。
 - 平台无法提供传播量字段时，统一展示「数据缺失」，不得用互动量或估算值替代。
 - 不新增独立的周报一级菜单。
 - 不提供周报正文独立编辑流程。
@@ -3182,7 +3191,7 @@ a{color:inherit;text-decoration:none}
 | 矩阵传播分析 | 导出稿件明细 | 导出当前筛选条件下的稿件传播明细 |
 | 正能量热点报告 | 查看 | 进入正能量热点报告模块，查看自动报告、人工报告、日报和周报列表 |
 | 正能量热点报告 | 日报预览 | 预览正能量热点报告日报内容 |
-| 正能量热点报告 | 周报预览 | 打开周报预览弹窗，查看总体情况、工作情况和三张表 |
+| 正能量热点报告 | 周报预览 | 打开周报预览弹窗，查看总体情况、工作情况、稿池投稿、矩阵账号传播效果和三张表 |
 
 权限规则：
 
@@ -3681,13 +3690,13 @@ a{color:inherit;text-decoration:none}
 
 展示规则：
 
-- 标题展示「涉舟网络正能量数据简报」。
-- 第一部分展示「一、总体情况」，包含网讯舆情系统统计的涉舟信息总量，并引用正能量态势感知首页的正能量稿件情感分布结果。
+- 标题展示「涉舟山网络正能量数据简报」，标题下方展示完整统计周期，格式为 `YYYY-MM-DD 16:00 至 YYYY-MM-DD 16:00`。
+- 第一部分展示「一、总体情况」，包含涉舟山信息总量、正向情绪内容占比和赞扬类占比，并引用正能量态势感知首页的正能量稿件情感分布结果。
 - 图 1 展示「正能量稿件情感分布图」。
-- 第二部分展示「二、工作情况」，包含热点事件、稿池投稿和矩阵账号传播表现的整体描述。
-- 表 1 展示涉舟正能量热点事件。
-- 表 2 展示「新莓汇」正能量稿池投稿情况。
-- 表 3 展示矩阵账号本周内容及传播效果。
+- 第二部分展示「二、工作情况」，包含热点事件总数、阅读量超 500 万事件数、热点事件总阅读量、稿池投稿篇次和活跃正能量账号数。
+- 表 1 展示「涉舟山正能量热点事件」。
+- 第三部分展示「三、“新莓汇”正能量稿池投稿情况」及表 2。
+- 第四部分展示「四、矩阵账号本周内容及传播效果」及表 3。
 
 交互规则：
 
@@ -3699,16 +3708,16 @@ a{color:inherit;text-decoration:none}
 
 - 取数规则：预览引用当前周报生成时确认的报告数据；总体涉舟信息和情感分布按同一固定统计周期取数。
 - 数据筛选规则：按周报固定统计周期和各表业务纳入口径过滤。
-- 数据排序规则：表 1 按传播量降序排序；表 2 按篇次或报告展示优先级排序；表 3 按地区固定顺序展示。
+- 数据排序规则：表 1 按传播量降序排序；表 2 按固定投稿单位顺序展示；表 3 按地区固定顺序展示。
 
 ### 5.5 周报统计口径
 
 总体情况：
 
-- 展示规则：展示当前周期内涉舟信息总量和总体描述。
+- 展示规则：按「统计周期 + 涉舟山信息总量 + 正向情绪内容占比 + 赞扬类占比」生成总体描述。文案示例：`2026年8月14日16时至8月20日16时，我办监测发现主要新闻 APP、网站和社交平台涉舟山信息共计30条。整体来看，正向情绪内容占比86.7%；正能量稿件情感分布中赞扬类占比56.7%（见图 1）。`
 - 交互规则：预览弹窗中只读展示；不可用指标展示「数据缺失」。
 - 数据规则：
-  - 取数规则：涉舟信息总量来自网讯舆情系统，监测方案为舟山，统计对象为主要新闻 APP、网站和社交平台中的涉舟信息。
+  - 取数规则：涉舟山信息总量来自网讯舆情系统，监测方案为舟山，统计对象为主要新闻 APP、网站和社交平台中的涉舟山信息。
   - 数据筛选规则：按固定周报周期过滤；时间口径必须支持小时级，不能按自然日零点到零点替代。
   - 数据排序规则：总体情况为汇总指标，不涉及排序。
 
@@ -3719,15 +3728,31 @@ a{color:inherit;text-decoration:none}
 - 数据规则：
   - 取数规则：来自正能量态势感知首页的正能量稿件情感分布统计，只统计当前周报周期内纳入正能量稿件范围的数据。
   - 数据筛选规则：按固定周报周期过滤；无法识别或缺失情感结果的数据不强制归入任一情感分类。
+  - 统计规则：正向情绪内容数为赞扬、惊奇、喜悦三类数量之和；正向情绪内容占比为三类数量之和除以全部已识别情感稿件数。单一情感占比为该情感数量除以全部已识别情感稿件数，均保留 1 位小数。
   - 数据排序规则：按首页情感分布图既有分类顺序展示。
 
-表 1 涉舟正能量热点事件：
+工作情况描述：
 
-- 展示规则：展示事件名称、属地、传播量、来源账号；传播量缺失时展示 `-`。
+- 展示规则：按「日期范围 + 热点事件总数 + 阅读量超 500 万事件数 + 热点事件总阅读量 + 投稿主体数 + 投稿篇次 + 活跃正能量账号数」生成工作情况描述。文案示例：`8月14日至8月20日，共产生全网涉舟山正能量热点事件23个（见表 1），其中阅读量超500万热点事件19个，涉舟山正面热点报道事件总阅读量超过6.62亿。舟山6个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品223篇次（见表 2）。从账号表现来看，本周共有49个活跃正能量账号参与传播（见表 3）。`
+- 交互规则：预览弹窗中只读展示，各数量随当前周报记录切换，不提供单独编辑。
+- 数据规则：
+  - 热点事件总数：取表 1 实际展示记录数；同名事件若来源记录、传播量或主持人不同，按独立热点记录统计，不仅按事件名称去重。
+  - 超 500 万事件数：统计表 1 中传播量严格大于 500 万的记录；传播量缺失的记录不纳入该指标。
+  - 热点事件总阅读量：汇总表 1 中传播量可用记录，统一换算为亿；文案使用「超过 X 亿」，X 向下截取 2 位小数，避免展示值高于实际汇总值。
+  - 投稿主体数：固定统计表 2 的 6 个投稿单位，包括篇次为 0 的单位。
+  - 投稿篇次：汇总表 2 各投稿单位篇次。
+  - 活跃正能量账号数：汇总表 3 各地区账号数量，同一账号按报告生成时的地区归属去重统计。
+  - 数据筛选规则：所有指标均使用当前周报固定周期和对应表格纳入口径，不使用自然日替代小时级周期。
+  - 数据排序规则：工作情况为汇总描述，不涉及排序。
+
+表 1 涉舟山正能量热点事件：
+
+- 展示规则：展示序号、事件、属地、传播量、主持人；传播量或主持人缺失时展示 `-`。
 - 交互规则：预览弹窗中只读展示。
 - 数据规则：
   - 取数规则：来源为新莓汇热点管理列表中的「全网涉浙 24 小时正能量热点」；统计对象为属地或检索条件命中舟山的正能量热点事件。
   - 数据筛选规则：先按舟山和日期范围筛选，再按固定周报周期做小时级过滤；多条件取交集。
+  - 主持人规则：展示热点事件记录中的主持人；不得使用来源账号、发布账号或其他账号字段替代。
   - 数据排序规则：默认按阅读总量或传播量降序排序，传播量缺失的事件排在可用传播量事件之后。
 
 表 2「新莓汇」正能量稿池投稿情况：
@@ -3737,16 +3762,16 @@ a{color:inherit;text-decoration:none}
 - 数据规则：
   - 取数规则：来源为新莓汇工作台的接收稿件列表；统计对象为市新闻传媒中心、定海区融媒体中心、普陀区融媒体中心、岱山县融媒体中心、嵊泗县融媒体中心、嵊泗网信 6 个固定媒体单位的投稿。
   - 数据筛选规则：按推送时间过滤固定周报周期；同一稿件重复出现时按稿件维度去重；热点选题稿件取处理状态为「市网信办已录用」的稿件。
-  - 数据排序规则：默认按篇次降序排序，篇次相同时按固定媒体单位顺序展示。
+  - 数据排序规则：按市新闻传媒中心、定海区融媒体中心、普陀区融媒体中心、岱山县融媒体中心、嵊泗县融媒体中心、嵊泗网信的固定顺序展示，不按篇次重新排序；篇次为 0 的单位仍保留。
 
 表 3 矩阵账号本周内容及传播效果：
 
-- 展示规则：按区县聚合展示地区、账号数量、地区内账号发文总量、账号发文详情、传播量和互动量，不展示平台列和代表内容列；地区精确到区县，市级账号归入「舟山市」。
+- 展示规则：按区县聚合展示地区、账号数量、地区内账号发文总量、账号发文详情和互动量，不展示传播量、平台和代表内容；地区精确到区县，市级账号归入「舟山市」。
 - 交互规则：预览弹窗中只读展示。
 - 数据规则：
   - 取数规则：来源为矩阵账号管理和矩阵传播分析结果，只统计已纳入正能量矩阵、可定向采集、且在统计周期内产生可核验内容数据的账号。
-  - 账号数量规则：按区县统计矩阵账号管理中该地区有效矩阵账号数量，与矩阵账号管理模块地区字段保持一致。
-  - 地区内账号发文总量规则：汇总该地区所有纳入账号在固定周报周期内符合正能量内容规则的发文数。
+  - 账号数量规则：按区县统计固定周报周期内至少产生 1 条可核验发布内容的活跃矩阵账号数；账号按报告生成时的地区归属去重，与矩阵账号管理模块地区字段保持一致。
+  - 地区内账号发文总量规则：汇总该地区所有纳入账号在固定周报周期内采集到并纳入本期矩阵统计的实际发文数；排除发布时间不在周期内、已删除、无效或重复的内容。
   - 账号发文详情规则：按账号展示发文数明细，格式为「账号名称(发文数)」，多个账号用顿号分隔。
   - 互动量指标规则：与「矩阵传播分析」模块的「总互动量」指标保持一致；微博、抖音、视频号按点赞数、转发数、评论数之和统计，微信按点赞数、转发数、在看数之和统计，其他平台按矩阵传播分析已确认的总互动量口径统计。
   - 数据筛选规则：按固定周报周期、地区、运行情况和采集情况取交集。
@@ -3760,14 +3785,14 @@ a{color:inherit;text-decoration:none}
 - 正能量稿件情感分布取正能量态势感知首页的「正能量稿件情感分布」统计结果。
 - 热点事件取新莓汇热点管理列表中命中舟山并落在统计周期内的正能量热点事件。
 - 稿池投稿取新莓汇工作台接收稿件列表中 6 个固定媒体单位的投稿统计，热点选题稿件取处理状态为「市网信办已录用」的数据。
-- 矩阵账号传播效果取当前统计周期内符合表 3 口径的矩阵账号周期统计。
+- 矩阵账号内容与互动效果取当前统计周期内符合表 3 口径的矩阵账号周期统计。
 
 矩阵账号进入表 3 的条件：
 
 - 已纳入正能量矩阵。
 - 运行情况为正常，采集情况为自动采集。
-- 周期内至少有 1 条符合正能量内容规则的发布内容。
-- 至少具备地区、账号数量、地区内账号发文总量和账号发文详情；传播量或互动量缺失时用 `-` 表示。
+- 周期内至少有 1 条可核验发布内容。
+- 至少具备地区、账号数量、地区内账号发文总量和账号发文详情；互动量缺失时用 `-` 表示。
 
 异常规则：
 
@@ -3786,16 +3811,22 @@ a{color:inherit;text-decoration:none}
 - 点击周报卡片主体或「预览」按钮均直接打开已生成周报预览，不进入设置页。
 - 周报统计周期固定为周五 `16:00` 至次周四 `16:00`，预览和报告表格使用同一固定周期。
 - 页面不提供周报周期手动调整、报告数据手动挑选、移除或恢复能力。
-- 报告预览至少包含涉舟正能量热点事件、「新莓汇」正能量稿池投稿情况、矩阵账号本周内容及传播效果三张表。
+- 报告预览至少包含涉舟山正能量热点事件、「新莓汇」正能量稿池投稿情况、矩阵账号本周内容及传播效果三张表，并按「总体情况、工作情况、稿池投稿、矩阵账号传播效果」四部分展示。
 - 图 1 必须明确为正能量态势感知首页「正能量稿件情感分布」口径，不得与网讯舆情系统涉舟信息总量混写。
-- 表 1 至少展示事件、属地、传播量和来源账号。
+- 总体情况需同时展示正向情绪内容占比和赞扬类占比，两者统计口径不得混用。
+- 工作情况需展示热点事件总数、阅读量超 500 万事件数、热点事件总阅读量、投稿篇次和活跃正能量账号数，且与三张表的汇总结果一致。
+- 表 1 至少展示事件、属地、传播量和主持人。
 - 表 2 至少展示投稿账号、篇次和热点选题稿件数量。
-- 表 3 至少展示地区、账号数量、地区内账号发文总量、账号发文详情、传播量和互动量，不展示平台列和代表内容列。
+- 表 3 仅展示地区、账号数量、地区内账号发文总量、账号发文详情和互动量，不展示传播量、平台列和代表内容列。
 </textarea>
 
 <script>
 
 var changelogData = [
+  {
+    "time": "2026-08-25 17:49",
+    "desc": "周报定稿同步：报告名统一为「涉舟山网络正能量数据简报」，优化总体情况与工作情况统计文案；表 1 改为主持人字段，表 2 固定单位顺序，表 3 移除传播量并同步新版样例数据、下载内容与 PRD v1.7"
+  },
   {
     "time": "2026-07-14 16:24",
     "desc": "发布更新：矩阵账号管理移除所属圈层和是否已读，统一自主情况双选项并联动顶部统计与列表，支持统计面板隐藏恢复；重排筛选区并精简周报搜索入口"
@@ -4487,9 +4518,14 @@ if(document.readyState==='loading'){
     activeActionButton=button;
     button.classList.add('is-open');
     var rect=button.getBoundingClientRect();
-    actionMenu.style.left=Math.max(8,rect.left-14)+'px';
-    actionMenu.style.top=(rect.bottom+6)+'px';
     actionMenu.classList.add('open');
+    var boundary=actionMenu.closest('.page-container');
+    var boundaryRect=boundary?boundary.getBoundingClientRect():{left:0,top:0};
+    var menuWidth=actionMenu.offsetWidth||96;
+    var maxLeft=Math.max(8,(boundary?boundary.clientWidth:window.innerWidth)-menuWidth-8);
+    var menuLeft=Math.max(8,Math.min(rect.left-boundaryRect.left-14,maxLeft));
+    actionMenu.style.left=menuLeft+'px';
+    actionMenu.style.top=(rect.bottom-boundaryRect.top+6)+'px';
     actionMenu.setAttribute('aria-hidden','false');
   }
   function openEditMatrix(row){
@@ -4711,7 +4747,55 @@ if(document.readyState==='loading'){
     {region:'岱山县',accountCount:1,platform:'抖音',totalPosts:67,postDetails:'仙岛岱山(67)',reach:'1136.3万',interact:'-'},
     {region:'嵊泗县',accountCount:1,platform:'视频号',totalPosts:47,postDetails:'最嵊泗(47)',reach:'1291.1万',interact:'14.5万'}
   ];
+  var latestPoolRows=[
+    {account:'市新闻传媒中心',count:12,hotTopicCount:1},
+    {account:'定海区融媒体中心',count:68,hotTopicCount:12},
+    {account:'普陀区融媒体中心',count:57,hotTopicCount:7},
+    {account:'岱山县融媒体中心',count:50,hotTopicCount:8},
+    {account:'嵊泗县融媒体中心',count:36,hotTopicCount:5},
+    {account:'嵊泗网信',count:0,hotTopicCount:0}
+  ];
+  var latestHotRows=[
+    {event:'云尚岱山',region:'舟山',reachWan:26800,reachText:'2.68亿',host:'渔梭'},
+    {event:'国产深海空间站立功',region:'宁波,舟山',reachWan:10700,reachText:'1.07亿',host:'宁波晚报'},
+    {event:'浪尖争霸鲜行舟山',region:'舟山',reachWan:4154.9,reachText:'4154.9万',host:'新舟山'},
+    {event:'8岁小候鸟独自飞到浙江找爸爸',region:'舟山',reachWan:3502.7,reachText:'3502.7万',host:'美丽浙江'},
+    {event:'高志凯在舟山说中国电网了不起',region:'舟山',reachWan:3061.1,reachText:'3061.1万',host:'浙江在线'},
+    {event:'海上千岛游',region:'舟山',reachWan:2340,reachText:'2340万',host:'定有趣'},
+    {event:'枸杞岛',region:'舟山',reachWan:1379.7,reachText:'1379.7万',host:'同城热度 5943'},
+    {event:'舟山姑娘饶欣雨拿下全国田径锦标赛冠军',region:'舟山',reachWan:1253.3,reachText:'1253.3万',host:'仙岛岱山'},
+    {event:'大姐说舟山扎蟹日入七八百',region:'舟山',reachWan:1240,reachText:'1240万',host:'浙江经视'},
+    {event:'大二学生暑假舟山搬蟹18天赚1万',region:'舟山',reachWan:1200.3,reachText:'1200.3万',host:'浙江经视'},
+    {event:'舟山船模复刻两代人海岛记忆',region:'舟山',reachWan:1159.9,reachText:'1159.9万',host:'仙岛岱山'},
+    {event:'嵊泗花鸟岛见证军恋情侣山海之约',region:'舟山',reachWan:1099.3,reachText:'1099.3万',host:'最嵊泗'},
+    {event:'舟山外卖小哥送餐途中救下轻生女子',region:'舟山',reachWan:1095.2,reachText:'1095.2万',host:'普陀新闻网'},
+    {event:'舟山汉服新茶农演绎海岛茶文化',region:'舟山',reachWan:1094,reachText:'1094万',host:'定海山'},
+    {event:'四名游客被困舟山小岛挥国旗获救',region:'舟山',reachWan:1044.3,reachText:'1044.3万',host:'新舟山'},
+    {event:'成品油现货有了舟山价格',region:'舟山',reachWan:1033.6,reachText:'1033.6万',host:'中国蓝新闻'},
+    {event:'与梭仔一起解锁舟山的七夕浪漫时刻',region:'舟山',reachWan:1029.3,reachText:'1029.3万',host:'仙岛岱山'},
+    {event:'普陀嘉定民兵驰援青浦防汛',region:'舟山',reachWan:1002.5,reachText:'1002.5万',host:'-'},
+    {event:'浙江人心心念念的第一风梭子蟹来了',region:'舟山',reachWan:688.5,reachText:'688.5万',host:'新舟山'},
+    {event:'消防员各司其职守护万家平安',region:'舟山',reachWan:477.2,reachText:'477.2万',host:'-'},
+    {event:'大二学生暑假舟山搬蟹18天赚1万',region:'舟山',reachWan:464.7,reachText:'464.7万',host:'-'},
+    {event:'游客涨潮被困挥国旗获救',region:'舟山',reachWan:430,reachText:'430万',host:'-'},
+    {event:'浙江舟山专项特巡保障地下配电房安全',region:'舟山',reachWan:12,reachText:'12万',host:'-'}
+  ];
+  var latestMatrixRows=[
+    {region:'舟山市',accountCount:17,totalPosts:195,postDetails:'舟山文旅(59)、舟山网官方微博(53)、竞舟新闻(13)、舟山交通97官方微博(13)、新舟山(11)、舟山小志来了(9)、旺旺碎丁丁(6)、舟山有意思(6)、一口一个大舟山(5)、有趣舟山(5)、小H赞赞(4)、品味舟山(3)、不只珂珂(2)、在舟山的周律师(2)、普陀山小庄(2)、小赵mua-(1)、爱木偶的小侯(1)',interact:'11.2万'},
+    {region:'定海区',accountCount:6,totalPosts:'1,567',postDetails:'定海山(1448)、闲云战鹤(57)、定有趣(25)、晒网人家(19)、此身愿化青蚨(13)、定海网络文化(5)',interact:'1,622'},
+    {region:'普陀区',accountCount:7,totalPosts:405,postDetails:'中国普陀(140)、普陀新闻网(101)、做人真烦1977(80)、酒窝妈妈育儿经(72)、空夫子曰(10)、普陀区网络文化协会(1)、莲洋猫猫(1)',interact:'9,728'},
+    {region:'岱山县',accountCount:11,totalPosts:411,postDetails:'仙岛岱山(176)、九颗半星星(37)、无冬之旅(37)、金沙凝霞(31)、热水瓶少年(29)、菜包一米一(29)、仙岛时光机(22)、渔村舵手(20)、渔梭3(14)、牧渔枫叶(10)、澜山水手(6)',interact:'1,448'},
+    {region:'嵊泗县',accountCount:8,totalPosts:237,postDetails:'最嵊泗(174)、嵊泗旅游官网(19)、浮川S若梦(16)、嵊鸟岩龙(10)、嵊泗阿姐囡(8)、香椿玛奇朵(7)、泗哥说(2)、谁曾朝不保夕bryant(1)',interact:'2,686'}
+  ];
   var weeklyReportData={
+    'week-20260820':{
+      totalText:'30条',
+      positiveEmotionPercent:86.7,
+      praisePercent:56.7,
+      pool:latestPoolRows,
+      hot:latestHotRows,
+      matrix:latestMatrixRows
+    },
     'week-20260618':{
       totalText:'30万余条',
       pool:basePoolRows,
@@ -4758,7 +4842,7 @@ if(document.readyState==='loading'){
       matrix:baseMatrixRows.slice(1,5)
     }
   };
-  var defaultWeeklyReportId='week-20260618';
+  var defaultWeeklyReportId='week-20260820';
   var activeReportInfo=null;
   function renderReportList(){
     var visibleCount=0;
@@ -4775,8 +4859,8 @@ if(document.readyState==='loading'){
   }
   function getReportInfo(card){
     return {
-      title:(card.querySelector('.report-doc-title')||{}).textContent||'正能量周报',
-      period:(card.querySelector('.report-doc-date')||{}).textContent||'2026-06-12 16:00 至 2026-06-18 16:00',
+      title:(card.querySelector('.report-doc-title')||{}).textContent||'涉舟山网络正能量数据简报',
+      period:(card.querySelector('.report-doc-date')||{}).textContent||'2026-08-14 16:00 至 2026-08-20 16:00',
       type:card.dataset.reportType,
       id:card.dataset.reportId||defaultWeeklyReportId
     };
@@ -4796,10 +4880,18 @@ if(document.readyState==='loading'){
   function matrixAccountTotal(rows){
     return (rows||[]).reduce(function(sum,row){return sum+numValue(row.accountCount||1);},0);
   }
+  function hotReachText(row){
+    if(row&&row.reachText){return row.reachText;}
+    var value=row&&row.reachWan;
+    return value==null||value===''?'-':String(value)+'万';
+  }
+  function hotEventsOverWan(rows,thresholdWan){
+    return (rows||[]).filter(function(row){return numValue(row.reachWan)>thresholdWan;}).length;
+  }
   function openReportPreview(card){
     var info=getReportInfo(card);
     activeReportInfo=info;
-    if(previewReportName){previewReportName.textContent=info.type==='daily'?'正能量热点报告':'涉舟网络正能量数据简报';}
+    if(previewReportName){previewReportName.textContent=info.type==='daily'?'正能量热点报告':'涉舟山网络正能量数据简报';}
     if(previewReportPeriod){previewReportPeriod.textContent=info.period.replace(/\s+/g,' ').trim();}
     renderReportPreviewData(getWeeklyReportData(info),info.period);
     if(reportPreviewModal){
@@ -4814,7 +4906,7 @@ if(document.readyState==='loading'){
     }
   }
   function safeFileName(value){
-    return String(value||'正能量周报').replace(/[\\/:*?"<>|]+/g,'-').replace(/\s+/g,' ').trim();
+    return String(value||'涉舟山网络正能量数据简报').replace(/[\\/:*?"<>|]+/g,'-').replace(/\s+/g,' ').trim();
   }
   function buildReportDocHtml(info){
     var data=getWeeklyReportData(info);
@@ -4822,17 +4914,21 @@ if(document.readyState==='loading'){
     var hotRows=data.hot||[];
     var poolRows=data.pool||[];
     var matrixRows=data.matrix||[];
-    return '<!doctype html><html><head><meta charset="utf-8"><title>'+escapeHtml(info.title+' '+period)+'</title>'+
-      '<style>body{font-family:SimSun,serif;font-size:14pt;line-height:1.8;color:#000}h1{text-align:center;font-size:22pt}h2{font-size:18pt;margin-top:24pt}table{border-collapse:collapse;width:100%;margin:12pt 0}caption{font-weight:bold;margin-bottom:6pt}th,td{border:1px solid #000;padding:6pt;text-align:center;vertical-align:middle}p{text-indent:2em}</style></head><body>'+
-      '<h1>'+escapeHtml(info.title)+'</h1><p>'+escapeHtml(formatReportPeriod(period))+'，我办通过网讯舆情系统监测发现主要新闻APP网站和社交平台涉舟信息共计'+escapeHtml(data.totalText||weeklyPublicOpinionSummary.totalText)+'。</p>'+
-      '<h2>一、工作情况</h2><p>'+escapeHtml(formatWorkPeriod(period))+'，新莓汇热点管理列表共产生涉舟正能量热点事件 '+hotRows.length+' 个。舟山 '+poolRows.length+' 个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品 '+poolRows.reduce(function(sum,row){return sum+numValue(row.count);},0)+' 篇次。从账号表现来看，本周共有 '+matrixAccountTotal(matrixRows)+' 个重点正能量账号参与传播。</p>'+
-      '<table><caption>表 1.涉舟正能量热点事件</caption><thead><tr><th>序号</th><th>事件</th><th>属地</th><th>传播量</th><th>来源账号</th></tr></thead><tbody>'+hotRows.map(function(row,idx){return '<tr><td>'+(idx+1)+'</td><td>'+escapeHtml(row.event)+'</td><td>'+escapeHtml(row.region)+'</td><td>'+escapeHtml(row.reachWan)+'</td><td>'+escapeHtml(row.host)+'</td></tr>';}).join('')+'</tbody></table>'+
-      '<table><caption>表 2.“新莓汇”正能量稿池投稿情况</caption><thead><tr><th>序号</th><th>投稿账号</th><th>篇次</th></tr></thead><tbody>'+poolRows.map(function(row,idx){return '<tr><td>'+(idx+1)+'</td><td>'+escapeHtml(row.account)+'</td><td>'+escapeHtml(row.count)+'（热点选题稿件 '+escapeHtml(row.hotTopicCount)+' 篇）</td></tr>';}).join('')+'</tbody></table>'+
-      '<table><caption>表 3.矩阵账号本周内容及传播效果</caption><thead><tr><th>地区</th><th>账号数量</th><th>地区内账号发文总量</th><th>账号发文详情</th><th>传播量</th><th>互动量</th></tr></thead><tbody>'+matrixRows.map(function(row){return '<tr><td>'+escapeHtml(displayReportCell(row.region))+'</td><td>'+escapeHtml(displayReportCell(row.accountCount))+'</td><td>'+escapeHtml(displayReportCell(row.totalPosts))+'</td><td>'+escapeHtml(displayReportCell(row.postDetails))+'</td><td>'+escapeHtml(displayReportCell(row.reach))+'</td><td>'+escapeHtml(displayReportCell(row.interact))+'</td></tr>';}).join('')+'</tbody></table>'+
+    var reachTotal=hotRows.reduce(function(sum,row){return sum+numValue(row.reachWan);},0);
+    var poolTotal=poolRows.reduce(function(sum,row){return sum+numValue(row.count);},0);
+    var reportTitle=info.type==='weekly'?'涉舟山网络正能量数据简报':info.title;
+    return '<!doctype html><html><head><meta charset="utf-8"><title>'+escapeHtml(reportTitle+' '+period)+'</title>'+
+      '<style>body{font-family:SimSun,serif;font-size:14pt;line-height:1.8;color:#000}h1{text-align:center;font-size:22pt}h2{font-size:18pt;margin-top:24pt}table{border-collapse:collapse;width:100%;margin:12pt 0}caption{font-weight:bold;margin-bottom:6pt}th,td{border:1px solid #000;padding:6pt;text-align:center;vertical-align:middle}p{text-indent:2em}.period,.figure-caption{text-align:center;text-indent:0}.detail{text-align:left}</style></head><body>'+
+      '<h1>'+escapeHtml(reportTitle)+'</h1><p class="period">'+escapeHtml(period)+'</p>'+
+      '<h2>一、总体情况</h2><p>'+escapeHtml(formatReportPeriod(period))+'，我办监测发现主要新闻 APP、网站和社交平台涉舟山信息共计'+escapeHtml(data.totalText||weeklyPublicOpinionSummary.totalText)+'。整体来看，正向情绪内容占比'+escapeHtml(data.positiveEmotionPercent||86.7)+'%；正能量稿件情感分布中赞扬类占比'+escapeHtml(data.praisePercent||56.7)+'%（见图 1）。</p><p class="figure-caption">图 1：正能量稿件情感分布图</p>'+
+      '<h2>二、工作情况</h2><p>'+escapeHtml(formatWorkPeriod(period))+'，共产生全网涉舟山正能量热点事件'+hotRows.length+'个（见表 1），其中阅读量超500万热点事件'+hotEventsOverWan(hotRows,500)+'个，涉舟山正面热点报道事件总阅读量超过'+yiText(reachTotal)+'亿。舟山'+poolRows.length+'个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品'+poolTotal+'篇次（见表 2）。从账号表现来看，本周共有'+matrixAccountTotal(matrixRows)+'个活跃正能量账号参与传播（见表 3）。</p>'+
+      '<table><caption>表 1. 涉舟山正能量热点事件</caption><thead><tr><th>序号</th><th>事件</th><th>属地</th><th>传播量</th><th>主持人</th></tr></thead><tbody>'+hotRows.map(function(row,idx){return '<tr><td>'+(idx+1)+'</td><td>'+escapeHtml(row.event)+'</td><td>'+escapeHtml(row.region)+'</td><td>'+escapeHtml(hotReachText(row))+'</td><td>'+escapeHtml(row.host)+'</td></tr>';}).join('')+'</tbody></table>'+
+      '<h2>三、“新莓汇”正能量稿池投稿情况</h2><table><caption>表 2. “新莓汇”正能量稿池投稿情况</caption><thead><tr><th>序号</th><th>投稿账号</th><th>篇次</th></tr></thead><tbody>'+poolRows.map(function(row,idx){return '<tr><td>'+(idx+1)+'</td><td>'+escapeHtml(row.account)+'</td><td>'+escapeHtml(row.count)+'（热点选题稿件 '+escapeHtml(row.hotTopicCount)+' 篇）</td></tr>';}).join('')+'</tbody></table>'+
+      '<h2>四、矩阵账号本周内容及传播效果</h2><table><caption>表 3. 矩阵账号本周内容及传播效果</caption><thead><tr><th>地区</th><th>账号数量</th><th>地区内账号发文总量</th><th>账号发文详情</th><th>互动量</th></tr></thead><tbody>'+matrixRows.map(function(row){return '<tr><td>'+escapeHtml(displayReportCell(row.region))+'</td><td>'+escapeHtml(displayReportCell(row.accountCount))+'</td><td>'+escapeHtml(displayReportCell(row.totalPosts))+'</td><td class="detail">'+escapeHtml(displayReportCell(row.postDetails))+'</td><td>'+escapeHtml(displayReportCell(row.interact))+'</td></tr>';}).join('')+'</tbody></table>'+
       '</body></html>';
   }
   function downloadReportDocx(info){
-    var reportInfo=info||activeReportInfo||{title:'正能量周报',period:'2026-06-12 16:00 至 2026-06-18 16:00',type:'weekly',id:defaultWeeklyReportId};
+    var reportInfo=info||activeReportInfo||{title:'涉舟山网络正能量数据简报',period:'2026-08-14 16:00 至 2026-08-20 16:00',type:'weekly',id:defaultWeeklyReportId};
     var html=buildReportDocHtml(reportInfo);
     var blob=new Blob(['\ufeff',html],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
     var url=URL.createObjectURL(blob);
@@ -4888,14 +4984,14 @@ if(document.readyState==='loading'){
   var weeklyPublicOpinionSummary={
     source:'网讯舆情系统',
     monitorPlan:'舟山',
-    scope:'主要新闻APP、网站和社交平台涉舟信息',
-    totalText:'30万余条'
+    scope:'主要新闻 APP、网站和社交平台涉舟山信息',
+    totalText:'30条'
   };
   var weeklyEmotionDistribution=[
-    {label:'赞扬',count:56,percent:44.8},
-    {label:'惊奇',count:46,percent:36.8},
-    {label:'喜悦',count:21,percent:16.8},
-    {label:'厌恶',count:2,percent:1.6},
+    {label:'赞扬',count:17,percent:56.7},
+    {label:'惊奇',count:7,percent:23.3},
+    {label:'喜悦',count:2,percent:6.7},
+    {label:'厌恶',count:4,percent:13.3},
     {label:'愤怒',count:0,percent:0},
     {label:'恐惧',count:0,percent:0},
     {label:'悲伤',count:0,percent:0}
@@ -4926,18 +5022,16 @@ if(document.readyState==='loading'){
   }
   function formatReportPeriod(period){
     var dates=parsePeriodDates(period);
-    if(!dates){return '6月12日16时至6月18日16时';}
-    return chineseDateTime(dates[0])+'至'+chineseDateTime(dates[1]);
+    if(!dates){return '2026年8月14日16时至8月20日16时';}
+    return dates[0].getFullYear()+'年'+chineseDateTime(dates[0])+'至'+chineseDateTime(dates[1]);
   }
   function formatWorkPeriod(period){
     var dates=parsePeriodDates(period);
-    if(!dates){return '6月13日至6月18日';}
-    var start=new Date(dates[0].getTime());
-    start.setDate(start.getDate()+1);
-    return chineseDate(start)+'至'+chineseDate(dates[1]);
+    if(!dates){return '8月14日至8月20日';}
+    return chineseDate(dates[0])+'至'+chineseDate(dates[1]);
   }
   function yiText(wanValue){
-    var value=wanValue/10000;
+    var value=Math.floor((wanValue/10000)*100)/100;
     if(value===0){return '0';}
     return value.toFixed(2).replace(/\.?0+$/,'');
   }
@@ -4953,18 +5047,17 @@ if(document.readyState==='loading'){
     var matrixRows=data.matrix||[];
     var matrixTotal=matrixAccountTotal(matrixRows);
     var poolTotal=poolRows.reduce(function(sum,row){return sum+numValue(row.count);},0);
-    var hotTopicTotal=poolRows.reduce(function(sum,row){return sum+numValue(row.hotTopicCount);},0);
     var reachTotal=hotRows.reduce(function(sum,row){return sum+numValue(row.reachWan);},0);
     var displayPeriod=periodText||previewReportPeriod&&previewReportPeriod.textContent||'';
     if(previewPoolCount){previewPoolCount.textContent=poolTotal;}
     if(previewHotCount){previewHotCount.textContent=hotRows.length;}
     if(previewMatrixCount){previewMatrixCount.textContent=matrixTotal;}
-    if(previewReachCount){previewReachCount.textContent=reachTotal.toFixed(1)+'万';}
+    if(previewReachCount){previewReachCount.textContent=yiText(reachTotal)+'亿';}
     if(previewOverviewText){
-      previewOverviewText.innerHTML=escapeHtml(formatReportPeriod(displayPeriod))+'，我办通过网讯舆情系统监测发现主要新闻<strong>APP</strong>网站和社交平台涉舟信息共计<strong>'+escapeHtml(data.totalText||weeklyPublicOpinionSummary.totalText)+'</strong>。同期正能量态势感知首页显示，正能量稿件情感分布中赞扬类占比<strong>44.8%</strong>、惊奇类占比<strong>36.8%</strong>、喜悦类占比<strong>16.8%</strong>（见图1）。';
+      previewOverviewText.innerHTML=escapeHtml(formatReportPeriod(displayPeriod))+'，我办监测发现主要新闻 <strong>APP</strong>、网站和社交平台涉舟山信息共计<strong>'+escapeHtml(data.totalText||weeklyPublicOpinionSummary.totalText)+'</strong>。整体来看，正向情绪内容占比<strong>'+escapeHtml(data.positiveEmotionPercent||86.7)+'%</strong>；正能量稿件情感分布中赞扬类占比<strong>'+escapeHtml(data.praisePercent||56.7)+'%</strong>（见图 1）。';
     }
     if(previewWorkText){
-      previewWorkText.innerHTML=escapeHtml(formatWorkPeriod(displayPeriod))+'，新莓汇热点管理列表共产生涉舟正能量热点事件 <strong>'+hotRows.length+'</strong> 个（见表 1），热点事件阅读量合计接近 <strong>'+yiText(reachTotal)+'</strong> 亿。舟山 <strong>'+poolRows.length+'</strong> 个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品 <strong>'+poolTotal+'</strong> 篇次，其中市网信办已录用热点选题稿件 <strong>'+hotTopicTotal+'</strong> 篇（见表 2）。从账号表现来看，本周共有 <strong>'+matrixTotal+'</strong> 个重点正能量账号参与传播（见表 3）。';
+      previewWorkText.innerHTML=escapeHtml(formatWorkPeriod(displayPeriod))+'，共产生全网涉舟山正能量热点事件<strong>'+hotRows.length+'</strong>个（见表 1），其中阅读量超500万热点事件<strong>'+hotEventsOverWan(hotRows,500)+'</strong>个，涉舟山正面热点报道事件总阅读量超过<strong>'+yiText(reachTotal)+'</strong>亿。舟山<strong>'+poolRows.length+'</strong>个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品<strong>'+poolTotal+'</strong>篇次（见表 2）。从账号表现来看，本周共有<strong>'+matrixTotal+'</strong>个活跃正能量账号参与传播（见表 3）。';
     }
     if(previewPoolBody){
       previewPoolBody.innerHTML=poolRows.length?poolRows.map(function(row,idx){
@@ -4973,13 +5066,13 @@ if(document.readyState==='loading'){
     }
     if(previewHotBody){
       previewHotBody.innerHTML=hotRows.length?hotRows.map(function(row,idx){
-        return '<tr><td>'+(idx+1)+'</td><td>'+escapeHtml(row.event)+'</td><td>'+escapeHtml(row.region)+'</td><td>'+escapeHtml(row.reachWan)+'</td><td>'+escapeHtml(row.host)+'</td></tr>';
+        return '<tr><td>'+(idx+1)+'</td><td>'+escapeHtml(row.event)+'</td><td>'+escapeHtml(row.region)+'</td><td>'+escapeHtml(hotReachText(row))+'</td><td>'+escapeHtml(row.host)+'</td></tr>';
       }).join(''):'<tr><td colspan="5">本周期内暂无热点事件数据。</td></tr>';
     }
     if(previewMatrixBody){
       previewMatrixBody.innerHTML=matrixRows.length?matrixRows.map(function(row){
-        return '<tr><td>'+escapeHtml(displayReportCell(row.region))+'</td><td>'+escapeHtml(displayReportCell(row.accountCount))+'</td><td>'+escapeHtml(displayReportCell(row.totalPosts))+'</td><td>'+escapeHtml(displayReportCell(row.postDetails))+'</td><td>'+escapeHtml(displayReportCell(row.reach))+'</td><td>'+escapeHtml(displayReportCell(row.interact))+'</td></tr>';
-      }).join(''):'<tr><td colspan="6">本周期内暂无矩阵账号传播数据。</td></tr>';
+        return '<tr><td>'+escapeHtml(displayReportCell(row.region))+'</td><td>'+escapeHtml(displayReportCell(row.accountCount))+'</td><td>'+escapeHtml(displayReportCell(row.totalPosts))+'</td><td>'+escapeHtml(displayReportCell(row.postDetails))+'</td><td>'+escapeHtml(displayReportCell(row.interact))+'</td></tr>';
+      }).join(''):'<tr><td colspan="5">本周期内暂无矩阵账号传播数据。</td></tr>';
     }
   }
   var downloadReportDocxBtn=document.getElementById('downloadReportDocx');
