@@ -281,30 +281,6 @@
   line-height: 1.75;
 }
 
-.agreement-meta {
-  margin-top: 16px;
-  padding-top: 14px;
-  display: grid;
-  gap: 6px;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 10px;
-  line-height: 1.6;
-}
-
-.agreement-draft-note {
-  margin-top: 14px;
-  padding: 13px 14px;
-  border: 1px solid rgba(180, 59, 39, 0.18);
-  border-radius: 11px;
-  background: rgba(244, 235, 221, 0.68);
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.75;
-  text-wrap: pretty;
-}
-
-.agreement-draft-note strong,
 .agreement-key-notice strong {
   color: var(--ink);
   font-weight: 600;
