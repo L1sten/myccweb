@@ -1,0 +1,409 @@
+.about-screen {
+  color: var(--ink);
+  background:
+    linear-gradient(180deg, rgba(250, 246, 239, 0.93), rgba(242, 232, 216, 0.88)),
+    var(--paper) url(../assets/dongpo-landscape-paper.png) center bottom / 100% auto no-repeat;
+}
+
+.about-back-icon {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.about-scroll {
+  height: calc(100% - 82px);
+  overflow-y: auto;
+  padding: 18px 18px calc(34px + env(safe-area-inset-bottom));
+  scrollbar-width: none;
+}
+
+.about-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.about-hero {
+  min-height: 248px;
+  position: relative;
+  overflow: hidden;
+  padding: 28px 24px 26px;
+  border: 1px solid rgba(87, 69, 48, 0.16);
+  border-radius: 16px;
+  background: rgba(250, 245, 237, 0.84);
+  text-align: center;
+  box-shadow: 0 10px 26px rgba(64, 48, 31, 0.08);
+}
+
+.about-hero::before,
+.about-hero::after {
+  position: absolute;
+  content: "";
+  pointer-events: none;
+}
+
+.about-hero::before {
+  width: 210px;
+  height: 90px;
+  right: -44px;
+  bottom: -14px;
+  border-radius: 50% 50% 0 0;
+  background: rgba(183, 154, 101, 0.10);
+  transform: rotate(-7deg);
+}
+
+.about-hero::after {
+  inset: 9px;
+  border: 1px solid rgba(87, 69, 48, 0.08);
+  border-radius: 11px;
+}
+
+.about-avatar {
+  width: 66px;
+  height: 66px;
+  margin: 0 auto 18px;
+  display: block;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  padding: 3px;
+  border: 1px solid rgba(180, 59, 39, 0.5);
+  border-radius: 50%;
+  background: rgba(246, 239, 226, 0.92);
+  box-shadow: 0 6px 16px rgba(64, 48, 31, 0.1);
+}
+
+.about-avatar img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 35%;
+  filter: sepia(0.46) contrast(0.86) brightness(1.04);
+}
+
+.about-hero h2 {
+  margin: 0;
+  position: relative;
+  z-index: 1;
+  font: 600 25px/1.2 "Noto Serif SC", serif;
+  letter-spacing: 0.08em;
+}
+
+.about-kicker {
+  margin: 9px 0 17px;
+  position: relative;
+  z-index: 1;
+  color: var(--cinnabar);
+  font: 500 12px/1.2 "Noto Serif SC", serif;
+  letter-spacing: 0.16em;
+}
+
+.about-lead {
+  margin: 0;
+  position: relative;
+  z-index: 1;
+  color: var(--muted);
+  font: 400 12px/1.85 "Noto Serif SC", serif;
+  text-align: left;
+}
+
+.about-section {
+  margin-top: 14px;
+  padding: 20px 18px;
+  border: 1px solid rgba(87, 69, 48, 0.12);
+  border-radius: 14px;
+  background: rgba(250, 246, 239, 0.86);
+}
+
+.about-section h2 {
+  margin: 0 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font: 600 16px/1.2 "Noto Serif SC", serif;
+  letter-spacing: 0.04em;
+}
+
+.about-section h2::before {
+  width: 5px;
+  height: 18px;
+  content: "";
+  border: 1px solid var(--cinnabar);
+  background: rgba(180, 59, 39, 0.08);
+}
+
+.about-section p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+
+.about-section p + p {
+  margin-top: 10px;
+}
+
+.about-credit {
+  display: grid;
+  gap: 7px;
+}
+
+.about-credit + .about-credit {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.about-credit strong {
+  color: var(--ink);
+  font: 600 13px/1.5 "Noto Serif SC", serif;
+}
+
+.about-credit p {
+  margin: 0;
+}
+
+.about-license {
+  color: var(--cinnabar);
+  text-decoration: underline;
+  text-decoration-color: rgba(180, 59, 39, 0.28);
+  text-underline-offset: 3px;
+}
+
+.about-version {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.about-version span {
+  padding: 12px;
+  display: grid;
+  gap: 5px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(244, 235, 221, 0.56);
+}
+
+.about-version b {
+  font: 600 12px/1.2 "Noto Serif SC", serif;
+}
+
+.about-version small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.about-closing {
+  margin: 26px 12px 2px;
+  color: var(--muted);
+  font: 400 12px/1.8 "Noto Serif SC", serif;
+  text-align: center;
+}
+
+.about-legal-footer {
+  margin-top: 18px;
+}
+
+.about-agreement-link {
+  min-height: 56px;
+  padding: 11px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border: 1px solid rgba(87, 69, 48, 0.14);
+  border-radius: 12px;
+  background: rgba(250, 246, 239, 0.82);
+  color: var(--ink);
+  text-decoration: none;
+  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.about-agreement-link span {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.about-agreement-link strong {
+  font: 600 13px/1.35 "Noto Serif SC", serif;
+}
+
+.about-agreement-link small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.about-agreement-link svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  color: var(--cinnabar);
+}
+
+.about-agreement-link:hover,
+.about-agreement-link:focus-visible {
+  border-color: rgba(180, 59, 39, 0.34);
+  background: rgba(252, 248, 242, 0.96);
+}
+
+.about-agreement-link:focus-visible {
+  outline: 2px solid rgba(180, 59, 39, 0.28);
+  outline-offset: 3px;
+}
+
+.about-agreement-link:active {
+  transform: translateY(1px);
+}
+
+.agreement-scroll {
+  padding-top: 16px;
+}
+
+.agreement-intro {
+  padding: 22px 20px;
+  text-align: left;
+}
+
+.agreement-intro h2 {
+  margin: 0;
+  font: 600 22px/1.35 "Noto Serif SC", serif;
+  letter-spacing: 0.04em;
+}
+
+.agreement-intro p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.75;
+}
+
+.agreement-meta {
+  margin-top: 16px;
+  padding-top: 14px;
+  display: grid;
+  gap: 6px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.agreement-draft-note {
+  margin-top: 14px;
+  padding: 13px 14px;
+  border: 1px solid rgba(180, 59, 39, 0.18);
+  border-radius: 11px;
+  background: rgba(244, 235, 221, 0.68);
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.75;
+  text-wrap: pretty;
+}
+
+.agreement-draft-note strong,
+.agreement-key-notice strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.agreement-key-notice {
+  margin-top: 10px;
+  padding: 12px 14px;
+  border: 1px solid rgba(87, 69, 48, 0.13);
+  border-radius: 11px;
+  background: rgba(250, 246, 239, 0.74);
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.75;
+  text-wrap: pretty;
+}
+
+.agreement-section {
+  margin-top: 14px;
+  padding: 19px 18px;
+  border: 1px solid rgba(87, 69, 48, 0.12);
+  border-radius: 14px;
+  background: rgba(250, 246, 239, 0.86);
+}
+
+.agreement-section h2 {
+  margin: 0 0 12px;
+  color: var(--ink);
+  font: 600 15px/1.45 "Noto Serif SC", serif;
+}
+
+.agreement-section h3 {
+  margin: 14px 0 6px;
+  color: var(--ink);
+  font: 600 12px/1.6 "Noto Serif SC", serif;
+}
+
+.agreement-section p,
+.agreement-section li {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+
+.agreement-section p {
+  margin: 0;
+}
+
+.agreement-section p + p {
+  margin-top: 9px;
+}
+
+.agreement-section ul,
+.agreement-section ol {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.agreement-section li + li {
+  margin-top: 7px;
+}
+
+.agreement-section strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.agreement-contact {
+  display: grid;
+  gap: 8px;
+}
+
+.agreement-contact span {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.agreement-contact span:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.agreement-end {
+  margin: 24px 8px 2px;
+  color: var(--muted);
+  font: 400 11px/1.8 "Noto Serif SC", serif;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-screen {
+    animation: none;
+  }
+
+  .about-agreement-link {
+    transition: none;
+  }
+}

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#F4EBDD" />
+    <title>关于 · 东坡行旅日历</title>
+    <script src="../auth.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/mini-B9g_pT3q.css" />
+    <link rel="stylesheet" href="./assets/about.css" />
+  </head>
+  <body>
+    <div class="prototype-stage">
+      <main class="mobile-prototype">
+        <section class="screen detail-screen about-screen" aria-label="关于东坡行旅日历">
+          <header class="detail-header">
+            <button type="button" data-back aria-label="返回我的">
+              <svg class="about-back-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <div>
+              <h1>关于</h1>
+              <span>东坡行旅日历</span>
+            </div>
+            <span aria-hidden="true"></span>
+          </header>
+
+          <div class="about-scroll">
+            <section class="about-hero">
+              <span class="about-avatar">
+                <img src="./assets/dongpo-avatar.png" alt="东坡形象" />
+              </span>
+              <h2>东坡行旅日历</h2>
+              <p class="about-kicker">一程山水，一页东坡</p>
+              <p class="about-lead">《东坡行旅日历》以每日诗词为线索，把苏轼的作品、人生行旅与当代人的日常相连。你可以读一首诗、听一次吟诵、沿地图重走东坡足迹，也可以向「东坡」提问，留下自己的珍藏、签到与行旅印记。我们不只把诗词放进手机，更希望让作品、地点与人生彼此照见。实体日历是每日相逢的入口，小程序则延伸阅读、对话与行旅体验——愿东坡的旷达、真趣与烟火气，陪你走过寻常日子。</p>
+            </section>
+
+            <section class="about-section">
+              <h2>AI 与内容说明</h2>
+              <p>「问东坡」及部分吟诵内容由人工智能生成。「AI 东坡」是围绕苏轼作品、生平与相关文化内容进行的数字化演绎，不代表历史人物本人，也不替代权威学术研究。生成内容可能存在遗漏或偏差；涉及史实、原文与出处时，请以权威出版物及内容页标注的资料来源为准。</p>
+              <p>苏轼原作文本已进入公有领域；现代校勘、标点、注释、版式、书法影像、插图及其他素材可能另有权利，以实际素材清单与授权为准。经授权或按开放许可使用的素材，遵循对应许可条款。</p>
+            </section>
+
+            <section class="about-section">
+              <h2>字体与音乐授权</h2>
+              <div class="about-credit">
+                <strong>字体许可 · 霞鹜文楷 GB Lite</strong>
+                <p>贡献者：LXGW 及 Klee Project Authors；许可协议：<a class="about-license" href="./fonts/LXGWWenKaiGBLite-OFL.txt" target="_blank" rel="noreferrer">SIL Open Font License 1.1</a>。</p>
+              </div>
+              <div class="about-credit">
+                <strong>音乐素材许可 · 古琴《醉渔唱晚》</strong>
+                <p>演奏与录音：Charlie Huang（Charles R. Tsua）。来源：<a class="about-license" href="https://commons.wikimedia.org/wiki/File:Guqin-Zuiyu_Changwan.ogg" target="_blank" rel="noreferrer">Wikimedia Commons</a>；许可：<a class="about-license" href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noreferrer">CC BY-SA 3.0</a>。发布时须保留署名、来源和许可链接；如剪辑、混音或改编，须注明改动，并以相同或兼容许可发布该改编录音。</p>
+              </div>
+            </section>
+
+            <section class="about-section">
+              <h2>版本信息</h2>
+              <div class="about-version">
+                <span><b>原型版本</b><small>v1.0.16</small></span>
+              </div>
+            </section>
+
+            <p class="about-closing">愿你翻开一页日历，<br />也推开一扇通往东坡世界的门。</p>
+
+            <footer class="about-legal-footer">
+              <a class="about-agreement-link" data-agreement-link href="./user-service-agreement.html">
+                <span>
+                  <strong>用户服务协议</strong>
+                  <small>查看完整协议内容</small>
+                </span>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
+            </footer>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      document.querySelector("[data-back]").addEventListener("click", function () {
+        const target = new URL("./index.html", window.location.href);
+        if (new URL(window.location.href).searchParams.get("guest") === "1") {
+          target.searchParams.set("guest", "1");
+        }
+        target.searchParams.set("tab", "profile");
+        window.location.href = target;
+      });
+
+      const agreementLink = document.querySelector("[data-agreement-link]");
+      if (new URL(window.location.href).searchParams.get("guest") === "1") {
+        const target = new URL(agreementLink.href);
+        target.searchParams.set("guest", "1");
+        agreementLink.href = target;
+      }
+    </script>
+  </body>
+</html>
