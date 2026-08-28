@@ -7,6 +7,8 @@
     "network-resource":
       "414fdf50387760864256aa52715b432e71e83e475e718b6bf3190f8f5fe24a9b",
     hzzl: "ab22830162aee1073065712a63d129af6088fe0189d792d3a986d50add2eafa9",
+    "hzzx-mobile-agent":
+      "115314e18bb585f1539e7db2ae20fa7611aeb887f07d7bf8b70dcf45fadd5808",
     "ai-pm-workflow":
       "1a0608917baef8188865f1315a96fc28417dfb8ddd1dabf171f5fabf220b88f2",
     "zhejiang-police":
