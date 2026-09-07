@@ -41,6 +41,8 @@
       "99a71ba25cb60402863f541504360aead30e8e86515e8fb80c605ebf395a99ba",
     "dongpo-calendar-ai":
       "5aaf4eeb71500c0d49d0ec934c3622a46a64739a619f90872c098e5f2c2f9d5f",
+    youxitong:
+      "17a623ddf7013f03f142f7462d6c80c12d88ef97b96d97fb269d09df875e935b",
   };
 
   var isLocalPreview =

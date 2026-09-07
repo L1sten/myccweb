@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'; script-src 'none'; img-src 'self' data:">
+  <title>优洗通全角色业务原型开发交接说明</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:#35435c;font:15px/1.75 "PingFang SC","Microsoft YaHei",sans-serif}.page{width:min(960px,calc(100% - 32px));margin:32px auto;padding:42px 48px;border:1px solid #dce3ed;border-radius:12px;background:#fff;box-shadow:0 18px 48px rgba(7,28,60,.08)}h1,h2,h3{color:#101c33;line-height:1.4}h1{margin:0 0 28px;padding-bottom:16px;border-bottom:2px solid #1f67e8;font-size:28px}h2{margin:30px 0 10px;font-size:20px}h3{font-size:16px}table{width:100%;border-collapse:collapse}th,td{padding:10px 12px;border:1px solid #dce3ed;text-align:left;vertical-align:top}th{background:#f5f8fc;color:#101c33}li{margin:5px 0}code{padding:2px 5px;border-radius:4px;background:#eef4ff;color:#1552b8}@media(max-width:640px){.page{margin:0;width:100%;padding:24px 20px;border:0;border-radius:0}h1{font-size:23px}}
+  </style>
+</head>
+<body><main class="page">
+  <h1>优洗通全角色业务原型开发交接说明</h1>
+  <h2>1. 交付内容</h2>
+  <table><thead><tr><th>文件</th><th>用途</th></tr></thead><tbody><tr><td><code>index.html</code></td><td>多角色、多端统一交互原型入口，内嵌可下载 PRD</td></tr><tr><td><code>PRD.md</code></td><td>面向产品、前端、后端和测试的业务需求基线</td></tr><tr><td><code>styles.css</code> / <code>app.js</code></td><td>原型视觉系统、端形态、角色切换和关键业务交互</td></tr><tr><td><code>开发交接说明.md</code> / <code>开发交接说明.html</code></td><td>本交接说明的两种格式，前后端共同使用</td></tr></tbody></table>
+  <h2>2. 产品端与角色</h2>
+  <ul><li>平台 Web：平台系统管理员、平台运营人员、平台财务人员。</li><li>洗涤厂 Web：洗涤厂管理员、洗涤厂操作员、洗涤厂财务。</li><li>酒店微信小程序：酒店管理员、酒店操作员。</li><li>司机移动端：负责区域与酒店静态清单，微信小程序或 Android 载体待确认。</li><li>固定终端：固定终端操作员。</li><li>顶部“评审角色”只用于原型评审，不代表生产登录方案。</li></ul>
+  <h2>3. 开发主链路</h2>
+  <ol><li>日常脏布草经洗涤厂有效接收入库后形成分品类额度；首次铺货和首次芯片登记单独标识并待确认。</li><li>酒店选择楼层和品类，校验额度、合同价、钱包余额与默认站点。</li><li>生成唯一订单和扣款，订单进入固定站点。</li><li>洗涤厂依次执行已派发、备货中和已出库；送达确认主体待确认。</li><li>酒店从已送达明细发起退污，工厂可全部、部分通过或驳回。</li><li>平台按通过数量与原成交价退款到预存账户，并单独记录退款状态。</li></ol>
+  <h2>4. 业务红线</h2>
+  <ul><li>酒店销售价与工厂成本价在列表、详情、导出、日志、报表中全部隔离，工厂数据面不返回敏感价格字段。</li><li>原型默认酒店操作员不查看精确余额、资金流水、商城和员工管理；最终权限待客户确认。</li><li>品类额度独立校验且不按自然日重置；所有写操作具备幂等保护。</li><li>退污必须关联已送达订单；退污不换货，只按实际通过数量退款。</li><li>一期固定酒店—站点映射；司机只看静态范围；终端仅两个工位。</li><li>充值与商城支付渠道待客户确认，不固化微信支付、线下核款或预存余额任一方案。</li></ul>
+  <h2>5. 页面实现优先级</h2>
+  <h3>P0</h3><ul><li>角色与组织隔离、补充下单、钱包与额度原子校验。</li><li>日常送洗入库、异常事件和额度变动追溯。</li><li>固定站点分配、工厂履约、退污检测和钱包退款。</li><li>酒店、站点、价格维护，业务审计与异常状态。</li></ul>
+  <h3>P1</h3><ul><li>微信支付与线下核款两套充值候选流程；客户确认后实现选定方案。</li><li>库存聚合、RFID 异常、简单商城、员工账号、司机范围、成本报表与结算试算。</li></ul>
+  <h3>P2 / 客户确认后</h3><ul><li>正式结算、商城履约售后、RFID 硬件与历史资产迁移。</li></ul>
+  <h2>6. 前端实现提示</h2>
+  <ul><li>Web 使用表格、筛选、抽屉、确认弹窗与时间线；移动端使用微信小程序组件与安全区。</li><li>“页面状态”提供正常、空、错误、无权限四类验收样例。</li><li>金额保留两位小数，数量带“件”，状态不得只依赖颜色。</li><li>酒店小程序正式实现使用 uni-app 与微信小程序技术栈，并按管理员和操作员收敛菜单和数据。</li><li>司机最终使用微信小程序还是 Android 应用待确认，不因原型画布锁定载体。</li></ul>
+  <h2>7. 后端实现提示</h2>
+  <ul><li>服务端校验角色、组织、酒店、工厂与站点权限。</li><li>额度扣减、钱包扣款、订单创建、站点分配组成同一事务，并提供幂等保护。</li><li>日常送洗入库保存有效、重复与异常事件，额度增加关联原始批次；首次铺货不默认复用该规则。</li><li>退污明细、检测结果、原成交价、退款与流水必须可追溯。</li><li>历史订单保存成交快照；工厂侧结果不得含酒店销售价、余额或平台毛利。</li></ul>
+  <h2>8. 联调与验收</h2>
+  <ul><li>用同一业务样例贯穿小程序、平台 Web、工厂 Web 与终端，不按前后端拆开验收。</li><li>核心样例：云栖酒店 8F 补充被套 40、床单 60、浴巾 20，共 120 件、¥706.00。</li><li>验证送洗入库异常不增加额度，额度变动可回查来源批次。</li><li>验证余额、额度、价格、映射和重复提交异常不会形成半成品订单。</li><li>验证工厂不见酒店销售金额、部分退污正确退款、四类页面状态完整。</li></ul>
+  <h2>9. 上线前确认</h2>
+  <p>PRD 第 13 章 17 项待确认事项应逐项形成书面结论，重点包括额度形成与恢复、订单状态、收货、成本维度、结算周期、操作员权限、商城范围和 RFID 协议。未确认项不得把原型示例值直接固化为生产规则。</p>
+  <h2>10. 账号与敏感信息</h2>
+  <ul><li>公共原型不包含真实客户账号、密码、访问地址或联系方式。</li><li>原型无需业务登录，通过顶部角色选择器评审权限。</li><li>开发、测试、生产账号由负责人通过安全渠道分别提供，不写入公开文档或代码仓库。</li></ul>
+</main></body></html>
