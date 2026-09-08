@@ -10,7 +10,8 @@
 *{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:#35435c;font:15px/1.8 "PingFang SC","Microsoft YaHei",sans-serif}.page{width:min(960px,calc(100% - 32px));margin:32px auto;padding:40px 48px;border:1px solid #dce3ed;border-radius:12px;background:#fff}h1,h2{color:#101c33;line-height:1.4}h1{margin:0 0 26px;padding-bottom:16px;border-bottom:2px solid #1f67e8;font-size:28px}h2{margin:28px 0 10px;font-size:20px}li{margin:9px 0}ul{padding-left:23px}@media(max-width:640px){.page{margin:0;width:100%;padding:24px 20px;border:0;border-radius:0}h1{font-size:23px}}@media print{body{background:#fff}.page{width:100%;margin:0;padding:0;border:0}h2{break-after:avoid}li{break-inside:avoid}}
 </style>
 </head>
-<body><main class="page"><h1>优洗通当前系统开发交接说明</h1>
+<body><main class="page">
+<h1>优洗通当前系统开发交接说明</h1>
 <h2>1. 交付范围</h2>
 <ul>
 <li>本套材料以当前 fullstack/projects/youxitong 实现为依据，包含 PRD.md、index.html 交互原型及其 app.js、styles.css，并提供本说明的 Markdown 与 HTML 两种格式。前端、后端、测试共同使用同一套材料。</li>
@@ -74,7 +75,8 @@
 <li>原型组织、管理员、成员与账号列表使用同一份模拟状态；新增、维护及筛选反馈用于评审。原型不会调用生产服务，真实会话撤销、事务及并发保护必须由后端集成测试验证。</li>
 <li>原型验收包含：建酒店/工厂并继续配人，存量缺管理员补齐，组织角色联动，重复账号、非法角色、酒店名额及最后管理员限制，停启用与密码重置反馈。无权限账号仅查看，错误和空状态不能用成功提示代替。</li>
 <li>正式前端和后端接口、OpenAPI、质量门禁见 fullstack 项目 <code>docs/开发交接文档.md</code> 第 7.4 节；移动端既有请求保持兼容，遇已撤销会话按 401 返回登录。</li>
-<li>本次仅更新本地业务代码及配套材料，未提交或发布；不更新 sessions.md、内嵌发布记录、版本 tag 或其他项目。</li>
+<li>原型 UI 以项目现有组织、用户页面及账号、建档组件为准：组织详情采用右侧抽屉，成员区复用筛选与分页，账号维护统一入口和操作类型切换。评审专用的角色切换、页面状态和 PRD 分栏保留；模拟数据不代表生产数据。</li>
 </ul>
+
 </main></body>
 </html>
