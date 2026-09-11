@@ -136,3 +136,39 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{
 .mobile-ledger small{overflow-wrap:anywhere}
 
 .driver-hotel-row>div{min-width:0;overflow-wrap:anywhere}.driver-hotel-row>i{flex-shrink:0}.driver-list .section-title{gap:10px;align-items:flex-start}.driver-list .section-title strong{min-width:0;overflow-wrap:anywhere}.driver-list .section-title>span{white-space:nowrap}.driver-empty{padding:24px 12px;text-align:center}
+
+/* Mobile storefront and login follow the production UniApp screens. */
+.store-live-head{padding:18px 14px;background:#061a3f;color:#fff}.store-live-head strong,.store-live-head small{display:block}.store-live-head strong{font-size:16px;font-weight:800}.store-live-head small{margin-top:5px;color:#a9bde4;font-size:10px}.store-live-page{padding:14px 13px 100px}.store-live-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.store-live-grid article{min-width:0;overflow:hidden;padding-bottom:10px;border:1px solid var(--line);border-radius:8px;background:#fff}.store-live-image,.store-live-placeholder{width:100%;height:105px;object-fit:cover}.store-live-placeholder{display:grid;place-items:center;background:#eef3f9;color:#0a367a;font-size:28px}.store-live-grid article>strong,.store-live-grid article>small,.store-live-grid article>p,.store-live-foot{display:block;margin:5px 9px 0}.store-live-grid article>strong{font-size:13px;overflow-wrap:anywhere}.store-live-grid article>p{height:32px;overflow:hidden;color:var(--muted);font-size:10px;line-height:16px}.store-live-category{color:#1268f4;font-size:10px}.store-live-stock{color:var(--muted);font-size:10px}.store-live-foot{display:flex;align-items:center;justify-content:space-between;gap:1px}.store-live-foot>b{font-size:14px;color:#061a3f}.store-live-stepper{display:flex;align-items:center;font-size:11px}.store-live-stepper button{min-width:25px;height:44px;padding:0;border:0;background:transparent;color:#1268f4;font-size:17px}.store-live-stepper button:active{background:#eef3f9}.store-live-stepper button:disabled{opacity:.45}.store-live-checkout{position:absolute;bottom:62px;left:0;right:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:white;border-top:1px solid var(--line);z-index:3}.store-live-checkout strong,.store-live-checkout small{display:block}.store-live-checkout small{font-size:11px;color:var(--muted)}.store-live-checkout strong{font-size:16px;color:#061a3f}.store-live-checkout button{min-height:44px;width:130px}.store-live-state{padding:65px 18px;text-align:center;font-size:12px}.store-live-state p{color:var(--muted);line-height:1.6}.mobile-login{height:100%;overflow:auto;padding:48px 20px 24px;background:#061a3f}.mobile-login>header{text-align:center;color:#fff;margin-bottom:32px}.mobile-login>header>div{display:grid;place-items:center;width:42px;height:42px;margin:0 auto 11px;border:1px solid #ffffff38;border-radius:10px;background:#ffffff1a;color:#a9df18;font-size:26px}.mobile-login>header>strong{font-size:24px;letter-spacing:3px}.mobile-login>header>p{font-size:12px;color:#ffffffa3;margin-top:6px}.mobile-login form{padding:20px 16px 17px;border-radius:10px;background:white;box-shadow:0 10px 30px #0003}.mobile-login h2{font-size:18px;color:#061a3f;margin:0}.mobile-login form>p{font-size:12px;color:var(--muted);line-height:1.6}.mobile-login label{display:block;margin-top:15px;color:var(--ink);font-size:12px}.mobile-login input{display:block;box-sizing:border-box;width:100%;min-height:44px;margin-top:6px;padding:10px;border:1px solid var(--line);border-radius:6px;font-size:12px}.mobile-login form>button{width:100%;min-height:44px;margin-top:15px}.mobile-login form>small{display:block;margin-top:13px;font-size:10px;line-height:1.6;color:var(--muted)}.mobile-login .login-error{color:var(--danger)}.mobile-login .login-error:empty{display:none}.device-caption:has(+*){max-width:240px}.device-caption span{max-width:230px;line-height:1.5}.store-live-stepper button:focus-visible,.mobile-login input:focus-visible{outline:2px solid #1268f4;outline-offset:-2px}
+
+/* A quiet, full-width exit action within the mobile profile. */
+.mobile-page > .danger-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 20px;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--danger);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: background-color .16s ease, border-color .16s ease, transform .16s ease;
+}
+.mobile-page > .danger-button:hover {
+  border-color: var(--danger);
+  background: #fff8f8;
+}
+.mobile-page > .danger-button:active {
+  background: #fff0f0;
+  transform: translateY(1px);
+}
+.mobile-page > .danger-button:focus-visible {
+  outline: 2px solid var(--danger);
+  outline-offset: 3px;
+}
