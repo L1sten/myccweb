@@ -88,7 +88,7 @@
     if(section==='工厂结算')return header(section,'按已送达订单中的工厂成本汇总各洗涤厂结算金额。','')+panel('结算汇总','线下结算',table(['工厂组织编号','洗涤厂','已送达订单','结算金额'],[['org-factory-1','桐乡洗涤一厂','128',money(126320)]]));
     if(section==='商城商品')return header(section,'维护酒店耗材商品、统一售价和可售库存。',platformWriter?button('新增商品','createProduct','primary-button'):'')+panel('商品列表','',table(['商品名称','分类','商品说明','统一售价','可售库存','状态'],[['客房高效清洁剂','客房清洁','500ml，温和低泡',money(39),'86',badge('正常','success')],['酒店香氛补充装','香氛用品','清新木质调',money(68),'0',badge('正常','success')]]));
     if(section==='商城订单')return header(section,'查看商城订单金额、商品明细和库存扣减后的订单状态。','')+panel('商城订单','每页 20 条',table(['商城订单号','商品明细','商品件数','订单金额','状态','下单时间'],[['SO202609070006','客房高效清洁剂 × 2','2',money(78),badge('已创建',''),'2026-09-07 10:12']]));
-    if(section==='布草与仓库')return header(section,'按首次芯片入库和租赁备货事件汇总本工厂布草数量。','')+panel('仓库汇总','',table(['布草编号','布草品类','累计入库','累计备货','当前可用'],[['linen-duvet','被套','8642','7356','1286'],['linen-sheet','床单','7906','6920','986'],['linen-towel','浴巾','5672','5486','186']]));
+    if(section==='布草与仓库')return header(section,'按首次芯片入库和租赁备货事件汇总本工厂布草数量。','')+panel('仓库汇总','',table(['布草编号','布草品类','累计入库','累计备货','当前可用'],syncTerminalSkus().map(function(s){var counts={'linen-duvet':[8642,7356,1286],'linen-sheet':[7906,6920,986],'linen-towel':[5672,5486,186]}[s.id];return[esc(s.id),esc(s.name)].concat(counts||['未登记','未登记','未登记']);})));
     if(section==='RFID 扫描记录')return header(section,'查看厂内终端已提交并由系统确认的扫描事件。','')+panel('扫描事件','每页 20 条',table(['事件编号','工作模式','关联业务','布草品类','识别数量','采集方式','提交时间'],[['evt-20260907-028','首次芯片入库','IN-20260907-028','被套','42','MANUAL','2026-09-07 08:58'],['evt-20260907-019','租赁备货','RP202609070018','床单','60','MANUAL','2026-09-07 10:08']]));
     if(section==='业务报表')return header(section,'查看本工厂累计订单、已送达订单、布草总件数和工厂应收。','')+panel('工厂履约汇总','',table(['累计订单','已送达订单','布草总件数','工厂应收'],[['196','128','8268',money(126320)]]));
     return specialState(section);
@@ -207,7 +207,7 @@
   function mobileReplenish(role){
     var total=state.qty['被套']*8+state.qty['床单']*5.5+state.qty['浴巾']*2.8,count=state.qty['被套']+state.qty['床单']+state.qty['浴巾'];
     if(state.view!=='normal')return mobileState();
-    return '<div class="mobile-gradient"><div class="mobile-brandline"><span><b>优洗通</b><i></i>'+esc(role.org)+'</span><button data-action="mobileRecords">账户记录</button></div><div class="quota-label">可补总量</div><div class="quota-number"><strong>200</strong><span>件</span></div><p>按各品类可补数量分别核算</p><div class="wallet-strip"><span class="wallet-symbol">¥</span><span>余额 <b>'+money(12680)+'</b></span>'+badge('余额充足','lime')+'</div></div><section class="mobile-content"><div class="floor-row"><span><small>当前楼层</small><strong>8F 布草清单</strong></span><button data-action="floor">切换楼层 ›</button></div><div class="laundry-list">'+syncTerminalSkus().map(function(s){return laundryRow(s.name,s.price,s.quota);}).join('')+'</div><div class="rule-hint"><b>下单校验</b><span>提交时校验品类额度、账户余额、当前价格和承接工厂。</span></div></section><footer class="mobile-checkout"><span><small>预计扣款</small><strong>'+money(total)+'</strong><i>'+count+' 件</i></span><button data-action="submitOrder"'+(count===0?' disabled':'')+'>确认下单</button></footer>';
+    return '<div class="mobile-gradient"><div class="mobile-brandline"><span><b>优洗通</b><i></i>'+esc(role.org)+'</span><button data-action="mobileRecords">账户记录</button></div><div class="quota-label">可补总量</div><div class="quota-number"><strong>200</strong><span>件</span></div><p>按各品类可补数量分别核算</p><div class="wallet-strip"><span class="wallet-symbol">¥</span><span>余额 <b>'+money(12680)+'</b></span>'+badge('余额充足','lime')+'</div></div><section class="mobile-content"><div class="floor-row"><span><small>当前楼层</small><strong>8F 布草清单</strong></span><button data-action="floor">切换楼层 ›</button></div><div class="laundry-list">'+syncTerminalSkus().map(function(s){return Number.isFinite(s.price)&&Number.isSafeInteger(s.quota)?laundryRow(s.name,s.price,s.quota):'<div class="laundry-row"><span class="laundry-icon">'+s.name.slice(0,1)+'</span><span class="laundry-info"><strong>'+esc(s.name)+'</strong><small>协议价格与额度未配置</small></span><span class="badge">暂不可补充</span></div>';}).join('')+'</div><div class="rule-hint"><b>下单校验</b><span>提交时校验品类额度、账户余额、当前价格和承接工厂。</span></div></section><footer class="mobile-checkout"><span><small>预计扣款</small><strong>'+money(total)+'</strong><i>'+count+' 件</i></span><button data-action="submitOrder"'+(count===0?' disabled':'')+'>确认下单</button></footer>';
   }
 
   function mobileOrders(role){
@@ -242,7 +242,9 @@
 
   function driverHome(role){
     if(state.view!=='normal')return mobileState();
-    return '<div class="driver-hero"><div class="mobile-brandline"><span><b>优洗通</b><i></i>司机工作台</span><button data-action="signOut">退出</button></div><small>司机张师傅</small><h1>本人负责范围</h1><div><span><b>1</b> 个区域</span><span><b>2</b> 家酒店</span></div></div><section class="mobile-page driver-list"><div class="section-title"><strong>城东片区</strong><span>2 家酒店</span></button><button type="button" aria-disabled="true"><i>01</i><span><strong>云栖酒店</strong><small>桐乡市振兴路 18 号 · 服务点：东区站</small></span></div><button type="button" aria-disabled="true"><i>02</i><span><strong>悦澜酒店</strong><small>桐乡市梧桐路 9 号 · 服务点：东区站</small></span></button></section>';
+    var driver=identityUser('user-driver'),hotels=driver&&driver.active?(driver.hotels||[]).filter(function(id,i,ids){return ids.indexOf(id)===i;}).map(identityOrg).filter(function(o){return o&&o.type==='hotel';}):[],area=driver&&driver.area||'未设置区域';
+    var rows=hotels.map(function(h,i){var site=catSite(catalog.mappings[h.id]);return '<article class="driver-hotel-row"><i>'+String(i+1).padStart(2,'0')+'</i><div><strong>'+esc(h.name)+'</strong><small>'+esc(h.address||'地址未配置')+'</small><small>服务点：'+esc(site?site.name:'未配置')+'</small></div></article>';}).join('');
+    return '<div class="driver-hero"><div class="mobile-brandline"><span><b>优洗通</b><i></i>司机工作台</span><button type="button" data-action="signOut">退出</button></div><small>'+esc(driver?driver.name:role.label)+'</small><h1>本人负责范围</h1><div><span><b>'+(hotels.length?1:0)+'</b> 个区域</span><span><b>'+hotels.length+'</b> 家酒店</span></div></div><section class="mobile-page driver-list">'+(hotels.length?'<div class="section-title"><strong>'+esc(area)+'</strong><span>'+hotels.length+' 家酒店</span></div>'+rows:'<div class="driver-empty"><strong>暂无负责酒店</strong><small>请联系优洗通运营人员调整负责范围</small></div>')+'</section>';
   }
 
   function mobileState(){
@@ -414,7 +416,7 @@
   window.addEventListener('beforeunload',catalogSave);
 
 
-  var linenCategories=[{id:'linen-duvet',name:'被套',price:8,quota:80},{id:'linen-sheet',name:'床单',price:5.5,quota:90},{id:'linen-towel',name:'浴巾',price:2.8,quota:30}];
+  var linenCategories=[{id:'linen-duvet',name:'被套',price:8,quota:80},{id:'linen-sheet',name:'床单',price:5.5,quota:90},{id:'linen-towel',name:'浴巾',price:2.8,quota:30},{id:'linen-square-towel',name:'方巾'},{id:'linen-floor-mat',name:'地巾'},{id:'linen-face-towel',name:'面巾'},{id:'linen-inner-pillowcase',name:'内枕套'},{id:'linen-outer-pillowcase',name:'外枕套'}];
   function syncTerminalSkus(){return linenCategories;}
   function syncTerminalOrders(){
     if(!catalog.orders.some(function(o){return o.id==='RP202609070018';}))catalog.orders.push({id:'RP202609070018',hotel:'org-hotel-yunqi',hotelName:'云栖酒店',floorName:'8F',address:'桐乡市振兴路 18 号',factory:'org-factory-1',site:'site-factory-east',factoryName:'桐乡洗涤一厂',siteName:'东区站',qty:{'被套':40,'床单':60,'浴巾':20},total:706,progress:state.progress||0,stocked:{}});
