@@ -1382,13 +1382,11 @@ a{color:inherit;text-decoration:none}
   vertical-align:top;
 }
 .matrix-report-table{table-layout:fixed}
-.matrix-report-table th:nth-child(1){width:11%}
+.matrix-report-table th:nth-child(1){width:17%}
 .matrix-report-table th:nth-child(2){width:12%}
-.matrix-report-table th:nth-child(3){width:17%}
-.matrix-report-table th:nth-child(4){width:46%}
-.matrix-report-table th:nth-child(5){width:14%}
-.matrix-report-table td:not(:nth-child(4)){text-align:center;vertical-align:middle}
-.matrix-report-table td:nth-child(4){line-height:1.75;text-align:left;word-break:break-word}
+.matrix-report-table th:nth-child(3){width:71%}
+.matrix-report-table td{text-align:center;vertical-align:middle}
+.matrix-report-table td:nth-child(3){line-height:1.75;text-align:left;word-break:break-word;text-wrap:pretty}
 .report-note{
   border-left:3px solid var(--orange);
   background:var(--orange-50);
@@ -3010,7 +3008,7 @@ a{color:inherit;text-decoration:none}
         </div>
         <div class="report-section">
           <h3>二、工作情况</h3>
-          <p class="report-copy" id="previewWorkText">8月14日至8月20日，共产生全网涉舟山正能量热点事件23个（见表 1），其中阅读量超500万热点事件19个，涉舟山正面热点报道事件总阅读量超过6.62亿。舟山6个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品223篇次（见表 2）。从账号表现来看，本周共有49个活跃正能量账号参与传播（见表 3）。</p>
+          <p class="report-copy" id="previewWorkText">8月14日至8月20日，共产生全网涉舟山正能量热点事件23个（见表 1），其中阅读量超500万热点事件19个，涉舟山正面热点报道事件总阅读量超过6.62亿。舟山6个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品223篇次（见表 2）。本周共有20个正能量矩阵账号作为贡献账号参与话题（见表 3）。</p>
         <div class="report-table-wrap">
           <table class="report-table">
             <caption style="caption-side:top;text-align:center;font-weight:800;margin:6px 0">表 1. 涉舟山正能量热点事件</caption>
@@ -3030,11 +3028,11 @@ a{color:inherit;text-decoration:none}
         </div>
       </div>
       <div class="report-section">
-        <h3>四、矩阵账号本周内容及传播效果</h3>
+        <h3>四、正能量账号名单</h3>
         <div class="report-table-wrap">
           <table class="report-table matrix-report-table">
-            <caption style="caption-side:top;text-align:center;font-weight:800;margin:6px 0">表 3. 矩阵账号本周内容及传播效果</caption>
-            <thead><tr><th>地区</th><th>账号数量</th><th>地区内账号发文总量</th><th>账号发文详情</th><th>互动量</th></tr></thead>
+            <caption style="caption-side:top;text-align:center;font-weight:800;margin:6px 0">表 3. 正能量账号名单</caption>
+            <thead><tr><th>属地</th><th>数量</th><th>账号名单</th></tr></thead>
             <tbody id="previewMatrixBody"></tbody>
           </table>
         </div>
@@ -3071,8 +3069,8 @@ a{color:inherit;text-decoration:none}
 <textarea id="prdMdSource" style="display:none">
 # 正能量态势感知平台优化项目 PRD
 
-> 版本：v1.8
-> 日期：2026-09-02
+> 版本：v1.9
+> 日期：2026-09-11
 > 需求范围：在现有正能量态势感知平台基础上，新增「矩阵账号管理」「矩阵传播分析」「正能量周报」三个模块，形成账号监测管理、传播分析、周报定时生成与预览闭环。
 
 ---
@@ -3084,17 +3082,17 @@ a{color:inherit;text-decoration:none}
 现有正能量态势感知平台已具备正能量看板、稿件、热榜、热点日报等能力，但客户当前仍依赖运营人员手动整理《涉舟山网络正能量数据简报》。人工报告存在三个核心问题：
 
 - **统计链路分散**：稿池投稿、热点事件、账号传播表现分别依赖人工汇总，周期复用性弱。
-- **账号名单口径不可落地**：原报告中的「正能量账号名单」来自话题热门参与情况，但平台无法稳定识别所有话题下的热门参与账号，且不同平台开放字段差异较大。
+- **账号参与情况需统一口径**：周报需根据新莓汇提供的话题贡献账号名单，与正能量矩阵账号匹配，明确参与账号去重数量和各账号参与话题次数。
 - **周报缺少产品化入口**：客户需要按固定小时级周期复用《涉舟山网络正能量数据简报》，本期明确周报统计周期为上周期周五 `16:00` 至本周期周四 `16:00`，由系统按既有统计口径每周定时生成并支持预览查看。
 
-本次优化通过定向采集和管理正能量矩阵账号，分析矩阵账号在统计周期内发布的内容和传播效果，并将结果体现在周报预览中，用可采集、可核验、可复用的口径替代不可实现的「话题热门参与账号名单」。
+本次优化建立正能量矩阵账号管理和传播分析能力，并在周报中以本期表 1 话题贡献账号名单匹配矩阵账号，形成可核验、可复用的「正能量账号名单」。账号参与话题统计与账号发文、传播分析分别遵循各自业务口径。
 
 ### 1.2 目标
 
 - 建立可维护、可采集、可核验的正能量矩阵账号管理能力。
 - 支持按统计周期分析矩阵账号内容发布、传播量、互动量和重点内容表现。
 - 在正能量热点报告中补充周报定时生成、列表查看和预览能力。
-- 使用「矩阵账号本周内容及传播效果」替代不稳定的「按话题自动识别全部热门参与账号」口径。
+- 按本期表 1 话题贡献账号名单匹配矩阵账号，展示各属地去重账号数量及每个账号参与话题次数。
 
 ### 1.3 用户角色
 
@@ -3117,8 +3115,8 @@ a{color:inherit;text-decoration:none}
 
 ### 1.6 非本期范围
 
-- 不承诺按话题自动识别全部热门参与账号；周报表 3 改为「矩阵账号本周内容及传播效果」。
-- 周报表 3 按定稿仅展示地区聚合的账号数、发文量、账号发文详情和互动量，不展示传播量；传播量仍在「矩阵传播分析」模块按可用字段展示。
+- 周报表 3 仅统计新莓汇提供的本期表 1 话题贡献账号名单中命中的矩阵账号，不扩展为全部热门参与账号识别。
+- 周报表 3 不展示发文量、互动量和传播量；这些指标仍由「矩阵传播分析」模块按自身口径展示。
 - 平台无法提供传播量字段时，统一展示「数据缺失」，不得用互动量或估算值替代。
 - 不新增独立的周报一级菜单。
 - 不提供周报正文独立编辑流程。
@@ -3129,7 +3127,7 @@ a{color:inherit;text-decoration:none}
 - 平台无法提供传播量字段时，统一展示「数据缺失」，不得用互动量或估算值替代。
 - 周报固定周期为上周期周五 `16:00` 至本周期周四 `16:00`，每周四 `16:00` 后按既有统计口径生成当期周报。
 - 粉丝数、阅读数、传播量、互动量等关键指标缺失时统一展示「数据缺失」，不展示为 `0`，除非业务口径明确该指标真实值为 0。
-- 周报数据存在关键字段缺失时允许预览，表格字段缺失用 `-` 表示，不得使用估算值补齐。
+- 周报数据存在关键字段缺失时允许预览；表 3 按完整的矩阵台账及贡献名单统计，其他表格字段缺失用 `-` 表示，不得使用估算值补齐。
 - 正能量矩阵账号列表默认按最新操作时间倒序展示；无最新操作时间时按账号创建时间倒序展示。
 
 ---
@@ -3191,7 +3189,7 @@ a{color:inherit;text-decoration:none}
 | 矩阵传播分析 | 导出稿件明细 | 导出当前筛选条件下的稿件传播明细 |
 | 正能量热点报告 | 查看 | 进入正能量热点报告模块，查看自动报告、人工报告、日报和周报列表 |
 | 正能量热点报告 | 日报预览 | 预览正能量热点报告日报内容 |
-| 正能量热点报告 | 周报预览 | 打开周报预览弹窗，查看总体情况、工作情况、稿池投稿、矩阵账号传播效果和三张表 |
+| 正能量热点报告 | 周报预览 | 打开周报预览弹窗，查看总体情况、工作情况、稿池投稿、正能量账号名单和三张表 |
 
 权限规则：
 
@@ -3350,7 +3348,7 @@ a{color:inherit;text-decoration:none}
 
 - 展示规则：表单字段和字典与新增账号一致，回填当前账号名称、省市区地区、媒体类型、子类型、认证情况、属性、运行情况、粉丝数、自主情况、备注和运维负责人。
 - 交互规则：账号所属部门和运维负责人所属部门均回填当前数据并允许修改，字段非必填且最多输入 50 个字符；支持添加、删除多名运维负责人；修改后保存产生操作记录；关闭前有未保存修改时提示确认。
-- 数据规则：地区修改后更新列表、筛选、传播分析和周报使用的账号地区归属；运行情况发生变化时提交审核，审核通过后生效；采集情况不在弹窗中修改；编辑不回溯改写既有内容和传播数据。
+- 数据规则：地区修改后更新列表、筛选、传播分析及后续生成周报使用的账号地区归属，已生成周报保持生成时快照；运行情况发生变化时提交审核，审核通过后生效；采集情况不在弹窗中修改；编辑不回溯改写既有内容和传播数据。
 
 采集状态：
 
@@ -3362,7 +3360,7 @@ a{color:inherit;text-decoration:none}
 
 - 展示规则：危险操作需二次确认。
 - 交互规则：点击删除后展示「提示 / 确定删除吗?」二次确认弹窗；点击确定后账号从矩阵列表移出，点击取消或关闭时不改变数据。
-- 数据规则：移出矩阵只影响后续账号管理和传播分析范围，不删除既有内容和既有传播数据。
+- 数据规则：移出矩阵影响后续账号管理、传播分析和新生成周报的账号匹配范围，不删除既有内容、既有传播数据或已生成周报快照。
 
 批量删除 / 批量移出：
 
@@ -3464,7 +3462,7 @@ a{color:inherit;text-decoration:none}
 - 矩阵传播分析仅统计矩阵账号台账范围内的数据。
 - 自动采集账号参与新增传播统计；无法采集账号不参与新增传播统计。
 - 账号移出不删除历史内容和历史传播数据。
-- 周报、传播分析和矩阵账号管理使用同一账号、地区和状态字典。
+- 周报、传播分析和矩阵账号管理使用同一账号、地区和状态字典；周报表 3 不以运行情况、采集情况或发文情况限制账号纳入，属地使用报告生成时的账号归属。
 
 ### 3.9 本模块交付验收
 
@@ -3616,7 +3614,7 @@ a{color:inherit;text-decoration:none}
 
 - 支持自定义周期展示发布内容、传播量、互动量、账号表现和稿件明细。
 - 指标卡、趋势图、账号传播详情和稿件传播明细使用同一统计周期和筛选条件。
-- 账号传播详情和稿件传播明细可作为周报表 3 的数据来源。
+- 账号传播详情和稿件传播明细仅按本模块口径统计；周报表 3 使用话题贡献账号名单与矩阵账号的匹配结果，不引用本模块发文数或互动量。
 - 数据缺失、无法采集账号有明确提示，不参与虚假汇总。
 - 导出数据与当前页面筛选结果一致。
 
@@ -3631,9 +3629,9 @@ a{color:inherit;text-decoration:none}
 模块边界：
 
 - 本模块负责日报列表、周报列表、周报定时生成结果展示和报告预览。
-- 本模块引用网讯舆情系统、新莓汇热点管理列表、新莓汇接收稿件列表和矩阵账号传播效果，不负责维护外部系统数据。
+- 本模块引用网讯舆情系统、新莓汇热点管理列表及话题贡献账号名单、新莓汇接收稿件列表和矩阵账号台账，不负责维护外部系统数据。
 - 本模块不提供周报周期手动配置、报告数据手动剔除或报告正文独立编辑流程。
-- 本模块不承诺按话题热门参与情况生成「正能量账号名单」。
+- 本模块仅将本期表 1 话题的贡献账号名单与矩阵账号精确匹配，不扩大话题范围或推测未提供的贡献账号。
 
 ### 5.2 报告列表入口
 
@@ -3683,7 +3681,7 @@ a{color:inherit;text-decoration:none}
 
 - 取数规则：周报统计周期固定为上周期周五 `16:00` 至本周期周四 `16:00`。
 - 生成规则：每周四 `16:00` 后按既有统计口径生成当期周报。
-- 数据筛选规则：涉舟信息、正能量稿件情感分布、热点事件、稿池投稿和矩阵账号传播效果均按同一固定统计周期过滤。
+- 数据筛选规则：涉舟信息、正能量稿件情感分布、热点事件和稿池投稿均按同一固定统计周期过滤；表 3 仅使用本期表 1 纳入话题的贡献账号名单。
 - 数据排序规则：周报列表按生成时间倒序展示；同一生成时间下按统计周期结束时间倒序展示。
 
 ### 5.4 周报预览结构
@@ -3693,16 +3691,16 @@ a{color:inherit;text-decoration:none}
 - 标题展示「涉舟山网络正能量数据简报」，标题下方展示完整统计周期，格式为 `YYYY-MM-DD 16:00 至 YYYY-MM-DD 16:00`。
 - 第一部分展示「一、总体情况」，包含涉舟山信息总量、正向情绪内容占比和赞扬类占比，并引用正能量态势感知首页的正能量稿件情感分布结果。
 - 图 1 展示「正能量稿件情感分布图」。
-- 第二部分展示「二、工作情况」，包含热点事件总数、阅读量超 500 万事件数、热点事件总阅读量、稿池投稿篇次和活跃正能量账号数。
+- 第二部分展示「二、工作情况」，包含热点事件总数、阅读量超 500 万事件数、热点事件总阅读量、稿池投稿篇次和参与话题的正能量矩阵账号数。
 - 表 1 展示「涉舟山正能量热点事件」。
 - 第三部分展示「三、“新莓汇”正能量稿池投稿情况」及表 2。
-- 第四部分展示「四、矩阵账号本周内容及传播效果」及表 3。
+- 第四部分展示「四、正能量账号名单」及表 3。
 
 交互规则：
 
 - 预览弹窗只用于快速查看已生成报告内容，不提供独立编辑流程。
 - 若表格无可用数据，保留表头并展示空状态说明。
-- 周报数据缺失时，预览表格字段用 `-` 表示，必要时补充缺失说明，不使用估算值替代。
+- 其他周报数据缺失时，预览表格字段用 `-` 表示并按需补充说明；表 3 数据完整，未命中显示数量 `0`、名单 `-`，不使用估算值替代。
 
 数据规则：
 
@@ -3733,7 +3731,7 @@ a{color:inherit;text-decoration:none}
 
 工作情况描述：
 
-- 展示规则：按「日期范围 + 热点事件总数 + 阅读量超 500 万事件数 + 热点事件总阅读量 + 投稿主体数 + 投稿篇次 + 活跃正能量账号数」生成工作情况描述。文案示例：`8月14日至8月20日，共产生全网涉舟山正能量热点事件23个（见表 1），其中阅读量超500万热点事件19个，涉舟山正面热点报道事件总阅读量超过6.62亿。舟山6个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品223篇次（见表 2）。从账号表现来看，本周共有49个活跃正能量账号参与传播（见表 3）。`
+- 展示规则：按「日期范围 + 热点事件总数 + 阅读量超 500 万事件数 + 热点事件总阅读量 + 投稿主体数 + 投稿篇次 + 参与话题的正能量矩阵账号数」生成工作情况描述。文案示例：`8月14日至8月20日，共产生全网涉舟山正能量热点事件23个（见表 1），其中阅读量超500万热点事件19个，涉舟山正面热点报道事件总阅读量超过6.62亿。舟山6个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品223篇次（见表 2）。本周共有20个正能量矩阵账号作为贡献账号参与话题（见表 3）。`
 - 交互规则：预览弹窗中只读展示，各数量随当前周报记录切换，不提供单独编辑。
 - 数据规则：
   - 热点事件总数：取表 1 实际展示记录数；同名事件若来源记录、传播量或主持人不同，按独立热点记录统计，不仅按事件名称去重。
@@ -3741,7 +3739,7 @@ a{color:inherit;text-decoration:none}
   - 热点事件总阅读量：汇总表 1 中传播量可用记录，统一换算为亿；文案使用「超过 X 亿」，X 向下截取 2 位小数，避免展示值高于实际汇总值。
   - 投稿主体数：固定统计表 2 的 6 个投稿单位，包括篇次为 0 的单位。
   - 投稿篇次：汇总表 2 各投稿单位篇次。
-  - 活跃正能量账号数：汇总表 3 各地区账号数量，同一账号按报告生成时的地区归属去重统计。
+  - 参与话题的正能量矩阵账号数：统计表 3 命中的矩阵账号去重数量，每个账号仅计 1 个，不汇总账号后的参与话题次数；与各属地数量列汇总保持一致。全期无命中时账号总数显示 `0`。
   - 数据筛选规则：所有指标均使用当前周报固定周期和对应表格纳入口径，不使用自然日替代小时级周期。
   - 数据排序规则：工作情况为汇总描述，不涉及排序。
 
@@ -3765,18 +3763,31 @@ a{color:inherit;text-decoration:none}
   - 数据筛选规则：按推送时间过滤固定周报周期；同一稿件重复出现时按稿件维度去重；热点选题稿件取处理状态为「市网信办已录用」的稿件。
   - 数据排序规则：按市新闻传媒中心、定海区融媒体中心、普陀区融媒体中心、岱山县融媒体中心、嵊泗县融媒体中心、嵊泗网信的固定顺序展示，不按篇次重新排序；篇次为 0 的单位仍保留。
 
-表 3 矩阵账号本周内容及传播效果：
+表 3 正能量账号名单：
 
-- 展示规则：按区县聚合展示地区、账号数量、地区内账号发文总量、账号发文详情和互动量，不展示传播量、平台和代表内容；地区精确到区县，市级账号归入「舟山市」。
-- 交互规则：预览弹窗中只读展示。
+- 展示规则：第四部分及表名统一为「正能量账号名单」，仅展示「属地、数量、账号名单」三列。账号名单按「账号名称（参与话题次数）」展示，多个账号用逗号分隔，长名单完整换行。
+- 交互规则：预览弹窗中只读展示，不提供独立筛选或排序；预览与下载展示同一统计结果。
 - 数据规则：
-  - 取数规则：来源为矩阵账号管理和矩阵传播分析结果，只统计已纳入正能量矩阵、可定向采集、且在统计周期内产生可核验内容数据的账号。
-  - 账号数量规则：按区县统计固定周报周期内至少产生 1 条可核验发布内容的活跃矩阵账号数；账号按报告生成时的地区归属去重，与矩阵账号管理模块地区字段保持一致。
-  - 地区内账号发文总量规则：汇总该地区所有纳入账号在固定周报周期内采集到并纳入本期矩阵统计的实际发文数；排除发布时间不在周期内、已删除、无效或重复的内容。
-  - 账号发文详情规则：按账号展示发文数明细，格式为「账号名称(发文数)」，多个账号用顿号分隔。
-  - 互动量指标规则：与「矩阵传播分析」模块的「总互动量」指标保持一致；微博、抖音、视频号按点赞数、转发数、评论数之和统计，微信按点赞数、转发数、在看数之和统计，其他平台按矩阵传播分析已确认的总互动量口径统计。
-  - 数据筛选规则：按固定周报周期、地区、运行情况和采集情况取交集。
-  - 数据排序规则：默认按地区固定顺序展示；同一地区内账号发文详情按发文数降序展示。
+  - 取数规则：贡献账号名单来源于新莓汇，统计范围仅为本期表 1 实际纳入的正能量话题；每个话题的贡献账号名称与报告生成时矩阵账号台账中的名称完全一致即命中，不做模糊匹配，不附加平台匹配条件。
+  - 数量规则：按属地统计命中账号的去重数量，按账号名称去重，同一账号参与多个话题仍只计 1 个；数量等于该属地名单中的去重账号数，不是参与话题次数之和。矩阵台账中同名记录只计 1 个，不因平台不同重复计数。
+  - 参与次数规则：同一账号在同一话题的贡献名单中重复出现，最多计 1 次；跨话题累加参与次数。同名但属于独立记录的话题分别计数；本期表 1 之外的话题不计入。
+  - 属地规则：按报告生成时矩阵账号归属分组，舟山市、普陀区、岱山县、嵊泗县、定海区分别展示为舟山、普陀、岱山、嵊泗、定海；同名台账记录出现多个属地时，按上述固定属地顺序仅归入首个属地，避免跨属地重复计数；已生成周报保持账号归属和统计结果快照。
+  - 数据筛选规则：仅要求账号在报告生成时属于矩阵且被本期表 1 贡献名单命中，不附加正常运行、自动采集或周期内发文条件；非矩阵账号及名称不完全一致的账号不计入。
+  - 数据排序规则：属地固定按舟山、普陀、岱山、嵊泗、定海排序；同一属地账号按报告生成时的矩阵台账顺序展示，不按参与次数排序。
+  - 空值规则：贡献名单完整且无命中账号的属地仍保留，数量展示 `0`、账号名单展示 `-`。各地矩阵账号固定且数据完整，仅存在命中与未命中，不设置数据缺失状态。
+  - 刷新规则：在周报生成时进行匹配与统计；预览、摘要、工作情况和下载使用同一报告快照，后续台账或贡献名单变更不回溯改写。
+
+展示样例：
+
+| 属地 | 数量 | 账号名单 |
+|---|---:|---|
+| 舟山 | 5 | 来舟只办三件事（1），新舟山（1），舟山网官方微博（1），舟山交通97官方微博（1），骑海豚玩舟山（1） |
+| 普陀 | 7 | 中国普陀（1），橘子水加块冰（3），酒窝妈妈育儿经（3），别让木南失望（2），睡不够的小铭（2），安夏安厦（1），做人真烦1977（1） |
+| 岱山 | 4 | 澜山水手（1），婆婆爱笑（1），仙岛时光机（3），无冬之旅（1） |
+| 嵊泗 | 0 | - |
+| 定海 | 4 | 定海网络文化（2），定有趣（2），定海山（1），闲云战鹤（1） |
+
+- 样例共有 20 个去重账号，排列与参考名单一致；样例仅说明展示结果，不代表已具备各账号与真实话题的关联记录。
 
 ### 5.6 本模块数据口径与异常
 
@@ -3786,21 +3797,21 @@ a{color:inherit;text-decoration:none}
 - 正能量稿件情感分布取正能量态势感知首页的「正能量稿件情感分布」统计结果。
 - 热点事件取新莓汇热点管理列表中命中舟山、落在统计周期内，且同时为「已播报」「已上线」状态的正能量热点话题。
 - 稿池投稿取新莓汇工作台接收稿件列表中 6 个固定媒体单位的投稿统计，热点选题稿件取处理状态为「市网信办已录用」的数据。
-- 矩阵账号内容与互动效果取当前统计周期内符合表 3 口径的矩阵账号周期统计。
+- 正能量账号名单取本期表 1 话题的新莓汇贡献账号名单，与报告生成时的矩阵账号台账匹配后统计。
 
 矩阵账号进入表 3 的条件：
 
-- 已纳入正能量矩阵。
-- 运行情况为正常，采集情况为自动采集。
-- 周期内至少有 1 条可核验发布内容。
-- 至少具备地区、账号数量、地区内账号发文总量和账号发文详情；互动量缺失时用 `-` 表示。
+- 报告生成时已纳入且未被移出正能量矩阵。
+- 名称与本期表 1 至少一个话题的贡献账号名称完全一致。
+- 不要求正常运行、自动采集或周期内至少有一条发文，不读取发文数、互动量作为参与次数。
+- 同一话题内重复名单先按账号去重，跨话题分别累计；数量列再按属地对命中账号去重。
 
 异常规则：
 
 - 当期周报尚未生成时，周报列表展示生成中或暂无周报状态，不能打开不存在的报告内容。
-- 周报生成所需来源数据不可用时，报告表格字段用 `-` 表示，必要时补充缺失说明，不使用其他数据反推。
-- 无矩阵账号数据时，表 3 展示空状态说明，不输出虚假账号。
-- 存在关键字段缺失时，预览保留该数据并用 `-` 表示缺失字段，不使用估算值补齐。
+- 周报生成所需来源数据不可用时，其他报告表格字段用 `-` 表示并按需补充缺失说明；表 3 的矩阵台账及贡献名单按完整数据处理，不使用其他数据反推。
+- 贡献名单及矩阵台账完整且没有命中账号时，表 3 保留全部属地行，数量为 `0`、账号名单为 `-`。
+- 各地矩阵账号固定且矩阵台账、话题贡献名单均有完整数据，表 3 只区分命中与未命中，不设置数据缺失状态；贡献名单为空或未命中矩阵账号时，相关属地数量显示 `0`、名单显示 `-`，全期无命中时工作情况账号总数为 `0`。
 - 网讯舆情系统或正能量稿件情感分布数据不可用时，总体情况和图表展示「数据缺失」，不使用报告表格数据反推。
 - 周报预览失败时，展示失败原因，支持重新打开预览。
 
@@ -3812,19 +3823,28 @@ a{color:inherit;text-decoration:none}
 - 点击周报卡片主体或「预览」按钮均直接打开已生成周报预览，不进入设置页。
 - 周报统计周期固定为周五 `16:00` 至次周四 `16:00`，预览和报告表格使用同一固定周期。
 - 页面不提供周报周期手动调整、报告数据手动挑选、移除或恢复能力。
-- 报告预览至少包含涉舟山正能量热点事件、「新莓汇」正能量稿池投稿情况、矩阵账号本周内容及传播效果三张表，并按「总体情况、工作情况、稿池投稿、矩阵账号传播效果」四部分展示。
+- 报告预览至少包含涉舟山正能量热点事件、「新莓汇」正能量稿池投稿情况、正能量账号名单三张表，并按「总体情况、工作情况、稿池投稿、正能量账号名单」四部分展示。
 - 图 1 必须明确为正能量态势感知首页「正能量稿件情感分布」口径，不得与网讯舆情系统涉舟信息总量混写。
 - 总体情况需同时展示正向情绪内容占比和赞扬类占比，两者统计口径不得混用。
-- 工作情况需展示热点事件总数、阅读量超 500 万事件数、热点事件总阅读量、投稿篇次和活跃正能量账号数，且与三张表的汇总结果一致。
+- 工作情况需展示热点事件总数、阅读量超 500 万事件数、热点事件总阅读量、投稿篇次和参与话题的正能量矩阵账号数，且与三张表的汇总结果一致。
 - 表 1 仅纳入同时满足「播报状态=已播报」和「上线状态=已上线」的新莓汇话题；任一状态不满足时，不得计入热点事件总数、阅读量超 500 万事件数或热点事件总阅读量。
 - 表 1 至少展示事件、属地、传播量和主持人。
 - 表 2 至少展示投稿账号、篇次和热点选题稿件数量。
-- 表 3 仅展示地区、账号数量、地区内账号发文总量、账号发文详情和互动量，不展示传播量、平台列和代表内容列。
+- 表 3 仅展示「属地、数量、账号名单」，数量等于该行命中账号去重数；账号格式为「账号名称（参与话题次数）」，同账号命中 3 个话题时数量计 1、括号显示 3。
+- 同一话题贡献名单重复出现同一账号时仅计 1 次；同名独立话题分别计数；名称不完全一致及非矩阵账号不计入。
+- 非正常运行、无法采集或周期内无发文的矩阵账号，只要贡献名单命中仍应计入。
+- 表 3 按舟山、普陀、岱山、嵊泗、定海顺序展示；参考样例数量为 5、7、4、0、4，总计 20 个账号，不得将参与次数之和作为数量。
+- 零命中属地保留且显示 `0` / `-`，不存在数据缺失状态；预览、工作情况描述、摘要及下载内容保持同一结果。
+- 账号台账或贡献名单后续变化不回溯改写已生成周报。
 </textarea>
 
 <script>
 
 var changelogData = [
+{
+  "time": "2026-09-11 18:01",
+  "desc": "表 3 更新为正能量账号名单：数量按命中矩阵账号去重，账号括号展示参与表 1 话题次数；同步新莓汇贡献账号匹配口径、周报预览、下载内容与 PRD v1.9"
+},
   {
     "time": "2026-08-25 17:49",
     "desc": "周报定稿同步：报告名统一为「涉舟山网络正能量数据简报」，优化总体情况与工作情况统计文案；表 1 改为主持人字段，表 2 固定单位顺序，表 3 移除传播量并同步新版样例数据、下载内容与 PRD v1.7"
@@ -4742,13 +4762,6 @@ if(document.readyState==='loading'){
     {event:'舟山就业方舟启航送岗上海岛',region:'定海',reachWan:1352.6,host:'定海网络文化'},
     {event:'舟山警民深夜接力守护迷路孩童',region:'普陀',reachWan:1330.5,host:'普陀区网'}
   ];
-  var baseMatrixRows=[
-    {region:'舟山市',accountCount:6,platform:'多平台',totalPosts:39,postDetails:'新舟山(8)、舟山发布(6)、舟山广电(5)、舟山文旅(7)、舟山交通(6)、舟山公安(7)',reach:'2377.1万',interact:'31.6万'},
-    {region:'定海区',accountCount:1,platform:'微博',totalPosts:55,postDetails:'定海网络文化(55)',reach:'1352.6万',interact:'18.4万'},
-    {region:'普陀区',accountCount:1,platform:'微信公众号',totalPosts:41,postDetails:'普陀新闻网(41)',reach:'1981.5万',interact:'24.8万'},
-    {region:'岱山县',accountCount:1,platform:'抖音',totalPosts:67,postDetails:'仙岛岱山(67)',reach:'1136.3万',interact:'-'},
-    {region:'嵊泗县',accountCount:1,platform:'视频号',totalPosts:47,postDetails:'最嵊泗(47)',reach:'1291.1万',interact:'14.5万'}
-  ];
   var latestPoolRows=[
     {account:'市新闻传媒中心',count:12,hotTopicCount:1},
     {account:'定海区融媒体中心',count:68,hotTopicCount:12},
@@ -4782,13 +4795,18 @@ if(document.readyState==='loading'){
     {event:'游客涨潮被困挥国旗获救',region:'舟山',reachWan:430,reachText:'430万',host:'-'},
     {event:'浙江舟山专项特巡保障地下配电房安全',region:'舟山',reachWan:12,reachText:'12万',host:'-'}
   ];
-  var latestMatrixRows=[
-    {region:'舟山市',accountCount:17,totalPosts:195,postDetails:'舟山文旅(59)、舟山网官方微博(53)、竞舟新闻(13)、舟山交通97官方微博(13)、新舟山(11)、舟山小志来了(9)、旺旺碎丁丁(6)、舟山有意思(6)、一口一个大舟山(5)、有趣舟山(5)、小H赞赞(4)、品味舟山(3)、不只珂珂(2)、在舟山的周律师(2)、普陀山小庄(2)、小赵mua-(1)、爱木偶的小侯(1)',interact:'11.2万'},
-    {region:'定海区',accountCount:6,totalPosts:'1,567',postDetails:'定海山(1448)、闲云战鹤(57)、定有趣(25)、晒网人家(19)、此身愿化青蚨(13)、定海网络文化(5)',interact:'1,622'},
-    {region:'普陀区',accountCount:7,totalPosts:405,postDetails:'中国普陀(140)、普陀新闻网(101)、做人真烦1977(80)、酒窝妈妈育儿经(72)、空夫子曰(10)、普陀区网络文化协会(1)、莲洋猫猫(1)',interact:'9,728'},
-    {region:'岱山县',accountCount:11,totalPosts:411,postDetails:'仙岛岱山(176)、九颗半星星(37)、无冬之旅(37)、金沙凝霞(31)、热水瓶少年(29)、菜包一米一(29)、仙岛时光机(22)、渔村舵手(20)、渔梭3(14)、牧渔枫叶(10)、澜山水手(6)',interact:'1,448'},
-    {region:'嵊泗县',accountCount:8,totalPosts:237,postDetails:'最嵊泗(174)、嵊泗旅游官网(19)、浮川S若梦(16)、嵊鸟岩龙(10)、嵊泗阿姐囡(8)、香椿玛奇朵(7)、泗哥说(2)、谁曾朝不保夕bryant(1)',interact:'2,686'}
+  // Screenshot-provided aggregate sample; no topic-to-account associations are invented.
+  var latestContributionSample=[
+    {region:'舟山',accounts:[{name:'来舟只办三件事',count:1},{name:'新舟山',count:1},{name:'舟山网官方微博',count:1},{name:'舟山交通97官方微博',count:1},{name:'骑海豚玩舟山',count:1}]},
+    {region:'普陀',accounts:[{name:'中国普陀',count:1},{name:'橘子水加块冰',count:3},{name:'酒窝妈妈育儿经',count:3},{name:'别让木南失望',count:2},{name:'睡不够的小铭',count:2},{name:'安夏安厦',count:1},{name:'做人真烦1977',count:1}]},
+    {region:'岱山',accounts:[{name:'澜山水手',count:1},{name:'婆婆爱笑',count:1},{name:'仙岛时光机',count:3},{name:'无冬之旅',count:1}]},
+    {region:'嵊泗',accounts:[]},
+    {region:'定海',accounts:[{name:'定海网络文化',count:2},{name:'定有趣',count:2},{name:'定海山',count:1},{name:'闲云战鹤',count:1}]}
   ];
+  // Fixed regional roster for the prototype; historical examples demonstrate no matches.
+  var fixedContributionAccounts=latestContributionSample.reduce(function(accounts,row){
+    return accounts.concat(row.accounts.map(function(account){return {name:account.name,region:row.region};}));
+  },[{name:'最嵊泗',region:'嵊泗'}]);
   var weeklyReportData={
     'week-20260820':{
       totalText:'30条',
@@ -4796,13 +4814,12 @@ if(document.readyState==='loading'){
       praisePercent:56.7,
       pool:latestPoolRows,
       hot:latestHotRows,
-      matrix:latestMatrixRows
+      contributionSample:latestContributionSample
     },
     'week-20260618':{
       totalText:'30万余条',
       pool:basePoolRows,
-      hot:baseHotRows,
-      matrix:baseMatrixRows
+      hot:baseHotRows
     },
     'week-20260611':{
       totalText:'28万余条',
@@ -4814,8 +4831,7 @@ if(document.readyState==='loading'){
         {account:'嵊泗县融媒体中心',count:44,hotTopicCount:1},
         {account:'嵊泗网信',count:6,hotTopicCount:0}
       ],
-      hot:baseHotRows.slice(0,5),
-      matrix:baseMatrixRows
+      hot:baseHotRows.slice(0,5)
     },
     'week-20260604':{
       totalText:'26万余条',
@@ -4827,8 +4843,7 @@ if(document.readyState==='loading'){
         {account:'嵊泗县融媒体中心',count:42,hotTopicCount:2},
         {account:'嵊泗网信',count:4,hotTopicCount:0}
       ],
-      hot:baseHotRows.slice(0,4),
-      matrix:baseMatrixRows.slice(0,4)
+      hot:baseHotRows.slice(0,4)
     },
     'week-20260528':{
       totalText:'24万余条',
@@ -4840,8 +4855,7 @@ if(document.readyState==='loading'){
         {account:'嵊泗县融媒体中心',count:40,hotTopicCount:1},
         {account:'嵊泗网信',count:5,hotTopicCount:0}
       ],
-      hot:baseHotRows.slice(1,5),
-      matrix:baseMatrixRows.slice(1,5)
+      hot:baseHotRows.slice(1,5)
     }
   };
   var defaultWeeklyReportId='week-20260820';
@@ -4879,8 +4893,57 @@ if(document.readyState==='loading'){
   function getWeeklyReportData(info){
     return weeklyReportData[info.id]||weeklyReportData[defaultWeeklyReportId];
   }
+  var contributionRegions=['舟山','普陀','岱山','嵊泗','定海'];
+  function contributionRegion(region){
+    return {'舟山市':'舟山','普陀区':'普陀','岱山县':'岱山','嵊泗县':'嵊泗','定海区':'定海'}[region]||region;
+  }
+  function contributionRows(accounts,counts){
+    var seen=new Set();
+    return contributionRegions.map(function(region){
+      var matches=[];
+      accounts.forEach(function(account){
+        if(contributionRegion(account.region)!==region||seen.has(account.name)||!counts.get(account.name)){return;}
+        seen.add(account.name);
+        matches.push({name:account.name,count:counts.get(account.name)});
+      });
+      return {region:region,accounts:matches,accountCount:matches.length};
+    });
+  }
+  function getContributionRows(data){
+    // This aggregate snapshot is for visual demonstration only.
+    if(data.contributionSample){
+      var sampleAccounts=[],sampleCounts=new Map();
+      data.contributionSample.forEach(function(row){row.accounts.forEach(function(account){
+        sampleAccounts.push({name:account.name,region:row.region});sampleCounts.set(account.name,account.count);
+      });});
+      return contributionRows(sampleAccounts,sampleCounts);
+    }
+    var topics=data.hot||[];
+    var accounts=data.matrixAccounts||fixedContributionAccounts;
+    var counts=new Map(),seenTopics=new Map();
+    topics.forEach(function(topic,index){
+      var topicKey=topic.id==null?index:topic.id;
+      var names=seenTopics.get(topicKey)||new Set();
+      (topic.contributors||[]).forEach(function(name){if(typeof name==='string'&&name!==''){names.add(name);}});
+      seenTopics.set(topicKey,names);
+    });
+    seenTopics.forEach(function(names){names.forEach(function(name){counts.set(name,(counts.get(name)||0)+1);});});
+    return contributionRows(accounts,counts);
+  }
   function matrixAccountTotal(rows){
-    return (rows||[]).reduce(function(sum,row){return sum+numValue(row.accountCount||1);},0);
+    var names=new Set();
+    rows.forEach(function(row){row.accounts.forEach(function(account){names.add(account.name);});});
+    return names.size;
+  }
+  function contributionWorkText(rows){
+    var total=matrixAccountTotal(rows);
+    return '本周共有'+total+'个正能量矩阵账号作为贡献账号参与话题（见表 3）。';
+  }
+  function contributionTableHtml(rows){
+    return rows.map(function(row){
+      var names=row.accounts.map(function(account){return account.name+'（'+account.count+'）';}).join('，')||'-';
+      return '<tr><td>'+escapeHtml(row.region)+'</td><td>'+row.accountCount+'</td><td class="detail">'+escapeHtml(names)+'</td></tr>';
+    }).join('');
   }
   function hotReachText(row){
     if(row&&row.reachText){return row.reachText;}
@@ -4915,18 +4978,18 @@ if(document.readyState==='loading'){
     var period=(info.period||'').replace(/\s+/g,' ').trim();
     var hotRows=data.hot||[];
     var poolRows=data.pool||[];
-    var matrixRows=data.matrix||[];
+    var matrixRows=getContributionRows(data);
     var reachTotal=hotRows.reduce(function(sum,row){return sum+numValue(row.reachWan);},0);
     var poolTotal=poolRows.reduce(function(sum,row){return sum+numValue(row.count);},0);
     var reportTitle=info.type==='weekly'?'涉舟山网络正能量数据简报':info.title;
     return '<!doctype html><html><head><meta charset="utf-8"><title>'+escapeHtml(reportTitle+' '+period)+'</title>'+
-      '<style>body{font-family:SimSun,serif;font-size:14pt;line-height:1.8;color:#000}h1{text-align:center;font-size:22pt}h2{font-size:18pt;margin-top:24pt}table{border-collapse:collapse;width:100%;margin:12pt 0}caption{font-weight:bold;margin-bottom:6pt}th,td{border:1px solid #000;padding:6pt;text-align:center;vertical-align:middle}p{text-indent:2em}.period,.figure-caption{text-align:center;text-indent:0}.detail{text-align:left}</style></head><body>'+
+      '<style>body{font-family:SimSun,serif;font-size:14pt;line-height:1.8;color:#000}h1{text-align:center;font-size:22pt}h2{font-size:18pt;margin-top:24pt}table{border-collapse:collapse;width:100%;margin:12pt 0}caption{font-weight:bold;margin-bottom:6pt}th,td{border:1px solid #000;padding:6pt;text-align:center;vertical-align:middle}p{text-indent:2em}.period,.figure-caption{text-align:center;text-indent:0}.detail{text-align:left;word-break:break-word}.matrix-report-table{table-layout:fixed}.matrix-report-table th:nth-child(1){width:17%}.matrix-report-table th:nth-child(2){width:12%}.matrix-report-table th:nth-child(3){width:71%}</style></head><body>'+
       '<h1>'+escapeHtml(reportTitle)+'</h1><p class="period">'+escapeHtml(period)+'</p>'+
       '<h2>一、总体情况</h2><p>'+escapeHtml(formatReportPeriod(period))+'，我办监测发现主要新闻 APP、网站和社交平台涉舟山信息共计'+escapeHtml(data.totalText||weeklyPublicOpinionSummary.totalText)+'。整体来看，正向情绪内容占比'+escapeHtml(data.positiveEmotionPercent||86.7)+'%；正能量稿件情感分布中赞扬类占比'+escapeHtml(data.praisePercent||56.7)+'%（见图 1）。</p><p class="figure-caption">图 1：正能量稿件情感分布图</p>'+
-      '<h2>二、工作情况</h2><p>'+escapeHtml(formatWorkPeriod(period))+'，共产生全网涉舟山正能量热点事件'+hotRows.length+'个（见表 1），其中阅读量超500万热点事件'+hotEventsOverWan(hotRows,500)+'个，涉舟山正面热点报道事件总阅读量超过'+yiText(reachTotal)+'亿。舟山'+poolRows.length+'个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品'+poolTotal+'篇次（见表 2）。从账号表现来看，本周共有'+matrixAccountTotal(matrixRows)+'个活跃正能量账号参与传播（见表 3）。</p>'+
+      '<h2>二、工作情况</h2><p>'+escapeHtml(formatWorkPeriod(period))+'，共产生全网涉舟山正能量热点事件'+hotRows.length+'个（见表 1），其中阅读量超500万热点事件'+hotEventsOverWan(hotRows,500)+'个，涉舟山正面热点报道事件总阅读量超过'+yiText(reachTotal)+'亿。舟山'+poolRows.length+'个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品'+poolTotal+'篇次（见表 2）。'+escapeHtml(contributionWorkText(matrixRows))+'</p>'+
       '<table><caption>表 1. 涉舟山正能量热点事件</caption><thead><tr><th>序号</th><th>事件</th><th>属地</th><th>传播量</th><th>主持人</th></tr></thead><tbody>'+hotRows.map(function(row,idx){return '<tr><td>'+(idx+1)+'</td><td>'+escapeHtml(row.event)+'</td><td>'+escapeHtml(row.region)+'</td><td>'+escapeHtml(hotReachText(row))+'</td><td>'+escapeHtml(row.host)+'</td></tr>';}).join('')+'</tbody></table>'+
       '<h2>三、“新莓汇”正能量稿池投稿情况</h2><table><caption>表 2. “新莓汇”正能量稿池投稿情况</caption><thead><tr><th>序号</th><th>投稿账号</th><th>篇次</th></tr></thead><tbody>'+poolRows.map(function(row,idx){return '<tr><td>'+(idx+1)+'</td><td>'+escapeHtml(row.account)+'</td><td>'+escapeHtml(row.count)+'（热点选题稿件 '+escapeHtml(row.hotTopicCount)+' 篇）</td></tr>';}).join('')+'</tbody></table>'+
-      '<h2>四、矩阵账号本周内容及传播效果</h2><table><caption>表 3. 矩阵账号本周内容及传播效果</caption><thead><tr><th>地区</th><th>账号数量</th><th>地区内账号发文总量</th><th>账号发文详情</th><th>互动量</th></tr></thead><tbody>'+matrixRows.map(function(row){return '<tr><td>'+escapeHtml(displayReportCell(row.region))+'</td><td>'+escapeHtml(displayReportCell(row.accountCount))+'</td><td>'+escapeHtml(displayReportCell(row.totalPosts))+'</td><td class="detail">'+escapeHtml(displayReportCell(row.postDetails))+'</td><td>'+escapeHtml(displayReportCell(row.interact))+'</td></tr>';}).join('')+'</tbody></table>'+
+      '<h2>四、正能量账号名单</h2><table class="matrix-report-table"><caption>表 3. 正能量账号名单</caption><thead><tr><th>属地</th><th>数量</th><th>账号名单</th></tr></thead><tbody>'+contributionTableHtml(matrixRows)+'</tbody></table>'+
       '</body></html>';
   }
   function downloadReportDocx(info){
@@ -5046,7 +5109,7 @@ if(document.readyState==='loading'){
     var data=reportData||weeklyReportData[defaultWeeklyReportId];
     var poolRows=data.pool||[];
     var hotRows=data.hot||[];
-    var matrixRows=data.matrix||[];
+    var matrixRows=getContributionRows(data);
     var matrixTotal=matrixAccountTotal(matrixRows);
     var poolTotal=poolRows.reduce(function(sum,row){return sum+numValue(row.count);},0);
     var reachTotal=hotRows.reduce(function(sum,row){return sum+numValue(row.reachWan);},0);
@@ -5059,7 +5122,7 @@ if(document.readyState==='loading'){
       previewOverviewText.innerHTML=escapeHtml(formatReportPeriod(displayPeriod))+'，我办监测发现主要新闻 <strong>APP</strong>、网站和社交平台涉舟山信息共计<strong>'+escapeHtml(data.totalText||weeklyPublicOpinionSummary.totalText)+'</strong>。整体来看，正向情绪内容占比<strong>'+escapeHtml(data.positiveEmotionPercent||86.7)+'%</strong>；正能量稿件情感分布中赞扬类占比<strong>'+escapeHtml(data.praisePercent||56.7)+'%</strong>（见图 1）。';
     }
     if(previewWorkText){
-      previewWorkText.innerHTML=escapeHtml(formatWorkPeriod(displayPeriod))+'，共产生全网涉舟山正能量热点事件<strong>'+hotRows.length+'</strong>个（见表 1），其中阅读量超500万热点事件<strong>'+hotEventsOverWan(hotRows,500)+'</strong>个，涉舟山正面热点报道事件总阅读量超过<strong>'+yiText(reachTotal)+'</strong>亿。舟山<strong>'+poolRows.length+'</strong>个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品<strong>'+poolTotal+'</strong>篇次（见表 2）。从账号表现来看，本周共有<strong>'+matrixTotal+'</strong>个活跃正能量账号参与传播（见表 3）。';
+      previewWorkText.innerHTML=escapeHtml(formatWorkPeriod(displayPeriod))+'，共产生全网涉舟山正能量热点事件<strong>'+hotRows.length+'</strong>个（见表 1），其中阅读量超500万热点事件<strong>'+hotEventsOverWan(hotRows,500)+'</strong>个，涉舟山正面热点报道事件总阅读量超过<strong>'+yiText(reachTotal)+'</strong>亿。舟山<strong>'+poolRows.length+'</strong>个网络传播主体向省“新莓汇”正能量稿池推送正能量稿件作品<strong>'+poolTotal+'</strong>篇次（见表 2）。'+escapeHtml(contributionWorkText(matrixRows))+'';
     }
     if(previewPoolBody){
       previewPoolBody.innerHTML=poolRows.length?poolRows.map(function(row,idx){
@@ -5072,9 +5135,7 @@ if(document.readyState==='loading'){
       }).join(''):'<tr><td colspan="5">本周期内暂无热点事件数据。</td></tr>';
     }
     if(previewMatrixBody){
-      previewMatrixBody.innerHTML=matrixRows.length?matrixRows.map(function(row){
-        return '<tr><td>'+escapeHtml(displayReportCell(row.region))+'</td><td>'+escapeHtml(displayReportCell(row.accountCount))+'</td><td>'+escapeHtml(displayReportCell(row.totalPosts))+'</td><td>'+escapeHtml(displayReportCell(row.postDetails))+'</td><td>'+escapeHtml(displayReportCell(row.interact))+'</td></tr>';
-      }).join(''):'<tr><td colspan="5">本周期内暂无矩阵账号传播数据。</td></tr>';
+      previewMatrixBody.innerHTML=contributionTableHtml(matrixRows);
     }
   }
   var downloadReportDocxBtn=document.getElementById('downloadReportDocx');
