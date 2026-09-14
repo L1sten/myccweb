@@ -172,3 +172,8 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{
   outline: 2px solid var(--danger);
   outline-offset: 3px;
 }
+
+/* Keep conditional form fields hidden despite the form-row display rule. */
+.prototype-modal .form-row[hidden]{display:none!important}
+
+.replenish-empty{padding:24px 18px;text-align:center;color:var(--muted);font-size:14px;line-height:1.7}.replenish-empty strong{display:block;color:var(--ink);font-size:16px}.replenish-empty p{margin:8px 0 0}
