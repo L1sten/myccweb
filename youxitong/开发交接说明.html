@@ -95,14 +95,14 @@
 <li><code>GET /api/hotel/wallet/recharges</code>：按当前酒店隔离，支持 <code>limit/offset</code> 分页。</li>
 <li><code>GET /api/admin/wallet/recharges</code>：<code>hotel_org_id</code>、<code>approval_status</code> 与 <code>limit/offset</code>；审批状态支持 <code>PENDING/APPROVED/REJECTED</code>，不传表示全部。</li>
 <li><code>GET /api/admin/wallet?hotel_org_id=...</code>：独立查询所选酒店当前余额，不从分页流水推断余额。</li>
-<li><code>POST /api/admin/wallet/recharges</code>：平台登记待审批申请，原付款参考号仍必填以兼容既有防重机制，<strong>不再直接入账</strong>。旧客户端必须随本次后端更新同步升级，不可把成功响应提示为到账。</li>
+<li><code>POST /api/admin/wallet/recharges</code>：平台登记待审批申请，新客户端提交 <code>hotel_org_id</code>、<code>amount_cents</code>、可选 <code>description</code> 与显式 <code>idempotency_key</code>，不再填写或提交付款参考号；旧 <code>external_reference</code> 仅用于兼容回退防重，<strong>不再直接入账</strong>。旧客户端必须随本次后端更新同步升级，不可把成功响应提示为到账。</li>
 <li><code>POST /api/admin/wallet/recharges/{id}/review</code>：<code>approved</code>、<code>external_reference</code>（通过时必填的核验银行流水号）、<code>note</code>（驳回时必填的原因）。同一核验银行流水不得跨申请或跨酒店重复入账。</li>
-<li>充值记录返回 <code>id</code>（充值业务 ID）、<code>hotel_org_id</code>、<code>amount_cents</code>、<code>payment_reference</code>（原始付款参考号，酒店申请可为空，Web 登记仍必填）、<code>external_reference</code>（核验银行流水号）、<code>description</code>、<code>approval_status</code>、<code>wallet_entry_id</code>、<code>review_note</code>、<code>created_at</code>、<code>reviewed_at</code>。待审批及驳回无入账流水 ID，不以申请 ID 冒充账本 ID。</li>
-<li>钱包流水补充 <code>business_id</code>、<code>external_reference</code>、<code>approval_status</code>，通过 <code>wallet_entry_id</code> 对应实际账本 <code>id</code>；原 <code>business_key</code> 仅在后台保留，用于内部关联和防重复入账；内部账本 ID 和业务关联键均不在 Web 与小程序界面展示。历史流水没有审批记录时关联业务 ID 和审批状态为空，页面明确展示历史未审批，不猜测或回填审批人。</li>
+<li>充值记录返回 <code>id</code>（充值业务 ID）、<code>hotel_org_id</code>、<code>amount_cents</code>、<code>payment_reference</code>（历史原始付款参考号，仅后台兼容保留，不在两端表单、列表或详情展示）、<code>external_reference</code>（核验银行流水号）、<code>description</code>、<code>approval_status</code>、<code>wallet_entry_id</code>、<code>review_note</code>、<code>created_at</code>、<code>reviewed_at</code>。待审批及驳回无入账流水 ID，不以申请 ID 冒充账本 ID。</li>
+<li>钱包流水补充 <code>business_id</code>、<code>external_reference</code>、<code>approval_status</code>，通过 <code>wallet_entry_id</code> 对应实际账本 <code>id</code>；原 <code>business_key</code> 仅在后台保留，用于内部关联和防重复入账；入账流水 ID、业务关联键及历史付款参考号均只在后台保留，不在 Web 与小程序界面展示。历史流水没有审批记录时关联业务 ID 和审批状态为空，页面明确展示历史未审批，不猜测或回填审批人。</li>
 </ul>
 <h3>手机账户展示</h3>
 <ul>
-<li>余额卡下直接展示金额、可选备注与提交按钮，不再打开申请弹窗。记录列表以中文状态或业务类型、金额和时间紧凑展示，点击展开业务 ID、银行号、备注及审批说明。待审批和驳回申请可查；已通过申请与已加载的对应入账流水合并展示，尚未加载对应流水时保留已入账摘要；未入账申请不能套用钱包余额伪造变动后余额。Web 兼容登记仍须填写付款参考号；仅酒店申请允许该字段缺省，审批通过仍必须核验并绑定银行流水号。账户记录按发生或申请时间合并倒序，整体无记录时显示“暂无账户流水”；实际客户端两类记录各按 20 条分页获取，静态原型合并后按每页 20 条展示。</li>
+<li>余额卡下直接展示金额、可选备注与提交按钮，不再打开申请弹窗。记录列表以中文状态或业务类型、金额和时间紧凑展示，点击展开业务 ID、银行号、备注及审批说明。待审批和驳回申请可查；已通过申请与已加载的对应入账流水合并展示，尚未加载对应流水时保留已入账摘要；未入账申请不能套用钱包余额伪造变动后余额。Web 申请只选择酒店、填写金额与可选备注，两端均不输入或展示付款参考号；历史值仅后台兼容保留。审批通过仍必须核验并绑定银行流水号。账户记录按发生或申请时间合并倒序，整体无记录时显示“暂无账户流水”；实际客户端两类记录各按 20 条分页获取，静态原型合并后按每页 20 条展示。</li>
 </ul>
 <h3>联调验收</h3>
 <p>1. 酒店申请 12.34 元，得到业务 ID 和待审批状态，余额、账本均不变。</p>
