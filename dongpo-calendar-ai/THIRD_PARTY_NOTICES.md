@@ -2,15 +2,15 @@
 
 本文件用于开发、上线与内容审查。正式发布时，关于页、项目内许可证与实际使用文件必须保持一致。
 
-## 1. 霞鹜文楷 GB Lite
+## 1. 志莽行（Zhi Mang Xing）
 
-- 字体名称：霞鹜文楷 GB Lite（LXGW WenKai GB Lite）
-- 原始文件：`LXGWWenKaiGBLite-Regular.ttf`
-- 字体作者：LXGW
-- 版权声明：Copyright 2024–2026 LXGW；Copyright 2020 The Klee Project Authors
-- 上游项目：https://github.com/lxgw/LxgwWenKaiGB-Lite
+- 字体名称：志莽行（Zhi Mang Xing）
+- 上游字体文件：`ZhiMangXing-Regular.ttf`（未纳入当前原型）
+- 项目作者：The Zhi Mang Xing Project Authors
+- 版权声明：Copyright 2018 The Zhi Mang Xing Project Authors
+- 上游项目：https://github.com/google/fonts/tree/main/ofl/zhimangxing
 - 许可协议：SIL Open Font License 1.1
-- 本地许可证：`fonts/LXGWWenKaiGBLite-OFL.txt`
+- 本地许可证：`fonts/OFL-ZhiMangXing.txt`
 - 本项目状态：当前原型不加载该字体文件，仅在关于页保留字体名称、作者与许可说明。
 - 使用提醒：后续如正式接入，应由前端另行评估小程序包体、字符覆盖与字体加载方案。
 

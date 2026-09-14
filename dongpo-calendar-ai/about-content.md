@@ -2,8 +2,8 @@
 
 > 使用位置：微信小程序「我的 → 关于」  
 > 内容状态：原型可用，正式上线前需补齐文末 5 项信息
-> 原型版本：v1.0.17
-> 更新日期：2026-08-26
+> 原型版本：v1.0.19
+> 更新日期：2026-09-14
 
 ## 页面标题
 
@@ -25,11 +25,11 @@
 
 ## 字体与音乐授权
 
-**字体许可：霞鹜文楷 GB Lite（LXGW WenKai GB Lite）**  
-贡献者：LXGW 及 Klee Project Authors；许可协议：**SIL Open Font License 1.1**。
+**字体许可：志莽行（Zhi Mang Xing）**
+项目作者：The Zhi Mang Xing Project Authors；来源：[Google Fonts](https://github.com/google/fonts/tree/main/ofl/zhimangxing)；许可：[SIL Open Font License 1.1](./fonts/OFL-ZhiMangXing.txt)。
 
 **音乐素材许可：古琴曲《醉渔唱晚》**  
-演奏与录音：Charlie Huang（Charles R. Tsua）；录制时间：2013-10-06；来源：[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Guqin-Zuiyu_Changwan.ogg)；许可：[CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)。发布时必须保留演奏者署名、来源和许可链接；如剪辑、转码、混音或改编，须注明改动，并以相同或兼容许可发布该改编录音。
+演奏与录音：Charlie Huang（Charles R. Tsua）；录制时间：2013-10-06；来源：[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Guqin-Zuiyu_Changwan.ogg)；许可：[CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)。
 
 ## 版本信息
 
@@ -59,4 +59,4 @@
 
 已确认的运营信息：运营主体为“广东创新竞争力经济研究院（有限合伙）”；联系地址为“惠州市江北东江二路二号富力丽港中心酒店20层09号”；反馈受理时间为工作日 9:00—18:00，非工作时间提交的反馈于下一工作日受理。
 
-字体或音乐文件发生替换、子集化、转码或剪辑时，需同步更新本页素材清单、改动说明和许可证文件。
+字体或音乐文件发生替换时，需同步更新本页素材清单和许可证文件。
