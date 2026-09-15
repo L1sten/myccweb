@@ -14,7 +14,7 @@ function fixture() {
   source = source.replace(/\}\)\(\);\s*$/, `
     render=function(){}; closeModal=function(){}; modalShell=function(){}; showToast=function(){}; identityError=function(message){testError=message;};
     var testError='';
-    globalThis.api={state:state,repair:linenRepairSnapshots,financials:linenFinancials,aggregate:linenAggregate,roles:roles,web:renderWebContent,resource:actualResource,ordered:linenOrdered,card:linenCard,html:function(tab){mobileOrderTab=tab;return mobileOrders(roles.hotel_admin);},catalog:catalog,data:syncData,setup:linenSetup,order:linenOrder,lines:linenLines,available:linenAvailable,action:linenAction,balance:syncBalance,error:function(){return testError;},draft:function(d){linenRefundDraft=d;},review:function(id){linenRefundReview=id;}};
+    globalThis.api={businessMatch:businessMatch,businessCandidates:businessCandidates,businessScope:businessScope,identityUsers:identity.users,dashboardDates:dashboardDates,within:dashboardWithin,validateMember:identityValidate,wallet:syncWallet,dashboard:actualDashboard,state:state,menu:managementNavigation,membersHtml:function(kind,id){identity.query={org:id,q:'',role:'',status:''};return managementMemberPage(kind);},mobile:renderMobile,profile:mobileProfile,replenish:mobileReplenish,org:identityOrg,eligible:syncEligible,directoryHtml:managementDirectory,priceHtml:function(kind,id){managementPrices[kind]=id;return managementPricePage(kind);},managementRows:managementPriceRows,managementAction:managementAction,managementSection:managementSection,managementDraft:function(d){managementPriceDraft=d;},getManagementDraft:function(){return managementPriceDraft;},repair:linenRepairSnapshots,financials:linenFinancials,aggregate:linenAggregate,roles:roles,web:renderWebContent,resource:actualResource,ordered:linenOrdered,card:linenCard,html:function(tab){mobileOrderTab=tab;return mobileOrders(roles.hotel_admin);},catalog:catalog,data:syncData,setup:linenSetup,order:linenOrder,lines:linenLines,available:linenAvailable,action:linenAction,balance:syncBalance,error:function(){return testError;},draft:function(d){linenRefundDraft=d;},review:function(id){linenRefundReview=id;}};
   })();`);
   vm.runInNewContext(source, context);
   context.api.setup();
@@ -152,4 +152,93 @@ test('hotel card shows financial summary only when the order has a refund reques
     assert.match(f.card(order),/净支付/);
   }
   assert.doesNotMatch(f.card(f.order('RP202609070018')),/原订单金额|净支付/);
+});
+
+
+test('platform modules are split and legacy names resolve without exposing factory-only data',()=>{
+ const f=fixture();for(const key of ['platform_admin','platform_ops','platform_finance']){const nav=f.roles[key].nav;assert.ok(nav.includes('酒店档案'));assert.ok(nav.includes('工厂协议价'));assert.ok(!nav.includes('客户与组织'));assert.ok(!nav.includes('协议价格'));}
+ assert.equal(f.managementSection('酒店与站点'),'酒店档案');assert.equal(f.managementSection('洗涤厂与站点'),'工厂档案');assert.equal(f.managementSection('协议价格'),'酒店协议价');
+ for(const key of ['factory_admin','factory_operator','factory_finance'])assert.ok(!f.roles[key].nav.includes('酒店协议价'));
+});
+
+test('split price rows include unset SKUs and save zero independently without changing order snapshots',()=>{
+ const f=fixture();f.state.role='platform_admin';const rows=f.managementRows('hotel','org-hotel-yunqi');assert.ok(rows.some(r=>!r.configured));const beforeOrders=JSON.stringify(f.catalog.orders),factoryBefore=JSON.stringify(f.data.linenPrices.factory);
+ f.managementDraft({kind:'hotel',org:'org-hotel-yunqi',sku:'linen-duvet',before:800,saving:false});f.input('managementPriceAmount','0');f.managementAction('managementPriceSave');
+ assert.equal(f.data.linenPrices.hotel['org-hotel-yunqi|linen-duvet'],0);assert.equal(f.managementRows('hotel','org-hotel-yunqi').find(r=>r.sku.id==='linen-duvet').configured,true);assert.equal(JSON.stringify(f.data.linenPrices.factory),factoryBefore);assert.equal(JSON.stringify(f.catalog.orders),beforeOrders);assert.equal(f.getManagementDraft(),null);f.managementAction('managementPriceSave');
+ for(const kind of ['hotel','factory']){const html=f.priceHtml(kind,kind==='hotel'?'org-hotel-yunqi':'org-factory-1');assert.doesNotMatch(html,/设置状态|已设置/);assert.match(html,/当前协议价/);assert.match(html,/未设置/);}assert.match(f.priceHtml('hotel','org-hotel-yunqi'),/¥0\.00/);
+});
+
+test('price errors preserve input and stale snapshots cannot overwrite another change',()=>{
+ const f=fixture();f.state.role='platform_admin';f.managementRows('hotel','org-hotel-yunqi');f.managementDraft({kind:'hotel',org:'org-hotel-yunqi',sku:'linen-duvet',before:800,saving:false});f.input('managementPriceAmount','1.234');f.managementAction('managementPriceSave');assert.equal(f.getManagementDraft().amount,'1.234');assert.equal(f.data.linenPrices.hotel['org-hotel-yunqi|linen-duvet'],800);
+ f.data.linenPrices.hotel['org-hotel-yunqi|linen-duvet']=900;f.input('managementPriceAmount','10');f.managementAction('managementPriceSave');assert.match(f.error(),/其他操作/);assert.equal(f.data.linenPrices.hotel['org-hotel-yunqi|linen-duvet'],900);
+ f.state.role='factory_operator';f.managementAction('managementPriceSave');assert.equal(f.data.linenPrices.hotel['org-hotel-yunqi|linen-duvet'],900);
+});
+
+
+test('directory and immediate price pages omit simulated paging and sort SKU names',()=>{
+ const f=fixture();f.state.role='platform_admin';assert.doesNotMatch(f.directoryHtml('hotel'),/class="pagination"/);const html=f.priceHtml('hotel','org-hotel-yunqi');assert.doesNotMatch(html,/class="pagination"/);const names=f.managementRows('hotel','org-hotel-yunqi').map(r=>r.sku.name);assert.equal(names.join(','),[...names].sort((a,b)=>a.localeCompare(b,'zh-CN')).join(','));
+});
+
+test('inactive organizations can maintain prices without restoring order eligibility',()=>{
+ const f=fixture();f.state.role='platform_admin';f.managementRows('hotel','org-hotel-yunqi');f.org('org-hotel-yunqi').active=false;assert.match(f.priceHtml('hotel','org-hotel-yunqi'),/managementPriceEdit/);f.managementDraft({kind:'hotel',org:'org-hotel-yunqi',sku:'linen-duvet',before:800,saving:false});f.input('managementPriceAmount','9.50');f.managementAction('managementPriceSave');assert.equal(f.data.linenPrices.hotel['org-hotel-yunqi|linen-duvet'],950);assert.equal(f.org('org-hotel-yunqi').active,false);assert.equal(f.eligible('org-hotel-yunqi').length,0);
+});
+
+
+test('hotel mobile uses image tabs and removes employee paths, identity badge and repeated header copy',()=>{
+ const f=fixture();f.state.role='hotel_admin';f.state.section='员工';let html=f.mobile(f.roles.hotel_admin);assert.equal(f.state.section,'我的');assert.doesNotMatch(html,/员工账号|当前身份|优洗通 · 酒店管理员/);assert.equal((html.match(/class="mobile-tab-icon"/g)||[]).length,4);assert.match(html,/tab-profile-active.svg/);assert.doesNotMatch(f.replenish(f.roles.hotel_admin),/下单校验|提交时校验品类额度/);
+ for(const name of ['replenish','orders','store','profile'])for(const suffix of ['','-active'])assert.match(fs.readFileSync(path.join(__dirname,'../assets/icons/tab-'+name+suffix+'.svg'),'utf8'),/viewBox="0 0 24 24"/);
+});
+
+test('sidebar renders local stateful SVGs and accessible labels',()=>{
+ const f=fixture();f.state.role='platform_admin';f.state.section='酒店档案';const html=f.menu(f.roles.platform_admin);assert.match(html,/nav-hotel-active.svg/);assert.match(html,/aria-label="酒店档案" aria-current="page"/);assert.doesNotMatch(html,/class="nav-symbol">[^<]/);for(const match of html.matchAll(/src="([^"]+)"/g))assert.ok(fs.existsSync(path.join(__dirname,'..',match[1])));
+});
+
+test('member pages default to all members of the selected type with one filter group',()=>{
+ const f=fixture();f.state.role='platform_admin';const html=f.membersHtml('hotel','');assert.match(html,/<table/);assert.match(html,/managementMemberAdd:hotel/);assert.doesNotMatch(html,/维护账号/);assert.match(html,/>编辑<\/button>/);assert.equal((html.match(/class="filter-bar/g)||[]).length,1);assert.doesNotMatch(html,/value="org-factory-1"/);assert.match(html,/全部酒店/);assert.match(f.membersHtml('factory',''),/managementMemberAdd:factory/);assert.doesNotMatch(f.membersHtml('factory','org-hotel-yunqi'),/<table/);
+});
+
+test('all-organizations prices and wallet defaults do not invent an aggregate balance',()=>{
+ const f=fixture();f.state.role='platform_admin';assert.ok(f.managementRows('hotel','').length>f.managementRows('hotel','org-hotel-yunqi').length);const html=f.priceHtml('hotel','');assert.match(html,/酒店名称/);assert.match(html,/managementPriceKeyword/);assert.doesNotMatch(html,/设置状态/);const wallet=f.wallet();assert.match(wallet,/全部酒店/);assert.doesNotMatch(wallet,/sync-wallet-balance/);assert.match(wallet,/酒店名称/);
+});
+test('dashboard grouping preserves factory isolation',()=>{
+ const f=fixture();const p=f.dashboard(f.roles.platform_admin),factory=f.dashboard(f.roles.factory_operator);for(const label of ['业务概况','酒店金额','工厂应付','平台资金'])assert.match(p,new RegExp('<h3>'+label));assert.match(factory,/<h3>工厂应收/);assert.doesNotMatch(factory,/酒店金额|酒店原额|平台资金|平台净毛利/);
+});
+
+test('typed member creation rejects other organization kinds and stopped organizations',()=>{
+ const f=fixture();f.state.role='platform_admin';assert.match(f.validateMember({memberKind:'hotel',org:'org-factory-1'}),/当前类型/);f.org('org-hotel-yunqi').active=false;assert.match(f.validateMember({memberKind:'hotel',org:'org-hotel-yunqi'}),/启用组织/);
+});
+
+test('dashboard date cohort includes boundary days and filters orders without changing prices',()=>{
+ const f=fixture();f.dashboardDates.preset='custom';f.dashboardDates.start='2026-09-06';f.dashboardDates.end='2026-09-06';assert.equal(f.within('2026-09-06 23:59'),true);assert.equal(f.within('2026-09-07 00:00'),false);assert.equal(f.within('unknown'),false);const html=f.dashboard(f.roles.platform_admin);assert.match(html,/369.60/);assert.doesNotMatch(html,/WORKSPACE|1,075.60/);f.dashboardDates.start='2025-01-01';f.dashboardDates.end='2025-12-31';assert.doesNotMatch(f.dashboard(f.roles.platform_admin),/369.60/);
+});
+
+test('invalid dashboard drafts never change the applied date cohort',()=>{
+ const f=fixture();f.dashboardDates.preset='custom';f.dashboardDates.start='2026-09-06';f.dashboardDates.end='2026-09-06';f.dashboardDates.draftStart='2026-10-01';f.dashboardDates.draftEnd='2026-09-01';const html=f.dashboard(f.roles.platform_admin);assert.match(html,/369.60/);assert.match(html,/id="dashboardStart" type="date" value="2026-10-01"/);assert.match(html,/id="dashboardEnd" type="date" value="2026-09-01"/);assert.equal(f.within('2026-09-06'),true);
+});
+
+test('user permissions page is fixed to platform org while retaining existing role policy',()=>{
+ const f=fixture();f.state.role='platform_admin';f.state.section='平台成员';let html=f.web(f.roles.platform_admin);assert.match(html,/identityAdd:org-platform/);assert.doesNotMatch(html,/hotel_operator|factory_operator|value="org-hotel-yunqi"/);assert.doesNotMatch(html,/value="driver"/);assert.match(html,/value="platform_admin"/);f.state.role='platform_ops';html=f.web(f.roles.platform_ops);assert.doesNotMatch(html,/identityAdd/);assert.doesNotMatch(html,/data-action="identityEdit:user-platform_admin"/);f.state.role='platform_finance';html=f.web(f.roles.platform_finance);assert.doesNotMatch(html,/identityAdd|identityEdit/);
+});
+
+test('platform organization cannot accept driver accounts',()=>{
+ const f=fixture();f.state.role='platform_admin';const error=f.validateMember({org:'org-platform',name:'司机测试',login:'new_driver_probe',role:'driver',area:'东区',hotels:['org-hotel-yunqi']});assert.match(error,/角色与所属组织/);
+});
+
+test('unknown cached platform drivers are preserved and flagged rather than reassigned',()=>{
+ const f=fixture();f.identityUsers.push({id:'old-platform-driver',org:'org-platform',role:'driver',name:'历史司机',login:'legacy_driver',active:true,createdAt:'2026-09-01',hotels:[],area:''});f.state.role='platform_admin';f.state.section='平台成员';assert.doesNotMatch(f.web(f.roles.platform_admin),/legacy_driver/);f.state.section='司机管理';const html=f.web(f.roles.platform_admin);assert.match(html,/legacy_driver/);assert.match(html,/归属异常，待核查/);assert.doesNotMatch(html,/identityEdit:old-platform-driver/);assert.equal(f.identityUsers.find(u=>u.id==='old-platform-driver').org,'org-platform');
+});
+
+test('factory members exclude drivers while driver management retains them',()=>{
+ const f=fixture();f.state.role='platform_admin';f.state.section='工厂成员';const members=f.web(f.roles.platform_admin);assert.doesNotMatch(members,/value="driver"|identityEdit:user-driver/);assert.match(members,/factory_admin/);assert.match(f.validateMember({memberKind:'factory',org:'org-factory-1',role:'driver'}),/司机管理/);f.state.section='司机管理';assert.match(f.web(f.roles.platform_admin),/identityEdit:user-driver/);
+});
+
+test('legacy platform menu resolves and shared member tables retain organization and action spacing',()=>{
+ const f=fixture();f.state.role='platform_admin';assert.equal(f.managementSection('用户与权限'),'平台成员');f.state.section='平台成员';const html=f.web(f.roles.platform_admin);assert.match(html,/所属组织/);assert.match(html,/member-row-actions/);assert.doesNotMatch(html,/data-identity-field="org"/);assert.equal((html.match(/class="filter-bar/g)||[]).length,1);
+});
+
+test('order filters combine dates and organizations, retaining undated rows only without range',()=>{
+ const f=fixture(),order=f.order('RP202609060086');assert.equal(f.businessMatch('orders',order,{hotel:order.hotel,factory:order.factory,status:'3',start_date:'2026-09-06',end_date:'2026-09-06'}),true);assert.equal(f.businessMatch('orders',order,{hotel:'other'}),false);assert.equal(f.businessMatch('orders',order,{start_date:'2026-09-07'}),false);const unknown={...order,id:'old-undated',createdAt:''};assert.equal(f.businessMatch('orders',unknown,{}),true);assert.equal(f.businessMatch('orders',unknown,{end_date:'2026-12-31'}),false);
+});
+test('refund filters derive hotel and historical linen candidates from original order scope',()=>{
+ const f=fixture(),o=f.order('RP202609060086');f.data.linenRefunds.push({id:'filter-refund',order:o.id,hotel:'wrong-cache-hotel',factory:'wrong-cache-factory',sku:'linen-duvet',name:'被套',status:'PENDING'});const scope=f.businessScope('refunds',f.roles.factory_operator);assert.equal(scope.length,1);assert.equal(f.businessCandidates('refunds',scope,'hotel')[0].id,o.hotel);assert.equal(f.businessCandidates('refunds',scope,'sku')[0].id,'linen-duvet');assert.equal(f.businessMatch('refunds',scope[0],{hotel:o.hotel,sku:'linen-duvet',status:'PENDING'}),true);assert.equal(f.businessMatch('refunds',scope[0],{sku:'other'}),false);
 });
