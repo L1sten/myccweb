@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<script src="../auth.js"></script>
+<title>对话过程反馈 · 会展智媒通</title>
+<style>
+:root{--blue:#2878ff;--deep:#1459d9;--soft:#edf4ff;--ink:#182230;--muted:#667085;--line:#e4eaf2;--bg:#f3f7fc;--green:#067647;--amber:#945600;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--bg)}button,input,select{font:inherit}button,select{cursor:pointer}button{border:1px solid var(--line);background:white;border-radius:10px;color:inherit;padding:10px 14px;min-height:44px}button:hover{background:var(--soft)}button:active{transform:translateY(1px)}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid #88b7ff;outline-offset:2px}.primary{background:var(--blue);color:white;border-color:var(--blue)}.primary:hover{background:var(--deep)}[hidden]{display:none!important}
+.review-header{height:66px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;background:white;border-bottom:1px solid var(--line);gap:12px}.brand{display:flex;align-items:center;gap:12px}.brand-symbol{width:32px;height:32px;background:var(--blue);border-radius:10px;display:grid;place-items:center;color:white;font-weight:700}.brand strong{font-size:16px}.eyebrow{font-size:11px;letter-spacing:1.5px;color:var(--muted);margin-top:4px}.review-label{font-size:12px;color:var(--muted)}
+.app-split{display:flex;height:calc(100dvh - 66px);overflow:hidden}.page-container{flex:1;min-width:0;position:relative;overflow:hidden}.system-shell{height:100%;position:relative;overflow:auto;padding:22px 24px 18px}.stage{display:flex;flex-direction:column;align-items:center;gap:14px;min-height:100%}.stage-bar{width:100%;max-width:780px;display:flex;justify-content:space-between;align-items:center;gap:10px}.stage-bar span{font-size:12px;color:var(--muted)}.stage-bar strong{font-size:14px;font-weight:600}.stage-controls{display:flex;gap:7px}.stage-controls button{font-size:12px;padding:8px 12px}.phone{width:min(408px,100%);height:min(760px,calc(100dvh - 180px));min-height:420px;background:white;border:7px solid #233044;border-radius:35px;box-shadow:0 18px 44px #18223017;position:relative;overflow:hidden;display:flex;flex-direction:column}.chat{flex:1;overflow:auto;padding:20px 16px;overscroll-behavior:contain;overflow-anchor:none}.turn{margin:0 0 25px}.user-message{margin:0 0 18px auto;width:fit-content;max-width:92%;border-radius:16px 16px 4px 16px;padding:12px 14px;background:var(--blue);color:white;font-size:14px;line-height:1.65;overflow-wrap:anywhere}.status-dot{height:7px;width:7px;flex:0 0 7px;background:var(--blue);border-radius:50%}.running .status-dot{animation:pulse 1.3s ease-in-out infinite}.wait{border-top:1px solid var(--line);padding:10px 12px;color:var(--amber);font-size:12px;line-height:1.65}.answer{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.85;margin-top:14px}.answer:empty{display:none}.streaming .answer:not(:empty):after{content:"";display:inline-block;height:14px;width:3px;background:var(--blue);margin-left:4px;vertical-align:middle}.notice{font-size:12px;line-height:1.65;color:var(--red);margin-top:12px}.retry{font-size:12px;margin-top:9px;color:var(--deep)}.reply-meta{margin-top:12px;font-size:11px;color:var(--muted)}.latest{position:absolute;bottom:99px;left:50%;transform:translateX(-50%);border-radius:22px;box-shadow:0 4px 16px #18223012;color:var(--deep);font-size:12px;white-space:nowrap}.latest:active{transform:translateX(-50%)}.stage-foot{font-size:11px;color:var(--muted);text-align:center;line-height:1.7;max-width:460px}
+.tweaks{position:absolute;top:72px;right:24px;width:min(320px,calc(100% - 32px));background:white;border:1px solid var(--line);border-radius:16px;box-shadow:0 16px 44px #18223022;padding:18px;z-index:15}.tweaks-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.tweaks-head strong{font-size:15px}.tweaks-head button{border:0;padding:6px;min-height:32px}.tweaks label{display:block;font-size:12px;color:var(--muted);margin:14px 0 7px}.tweaks select{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:white;font-size:13px}.tweaks p{font-size:12px;color:var(--muted);line-height:1.65}.tweaks .actions{display:flex;gap:8px;margin-top:15px}.tweaks .actions button{flex:1;font-size:12px}.event-readout{padding:9px;background:var(--bg);border-radius:8px;font-size:11px;line-height:1.6;color:var(--muted);overflow-wrap:anywhere}
+.split-drag{width:5px;flex:0 0 5px;background:#e7edf5;cursor:col-resize;touch-action:none}.split-drag:hover,.split-drag.dragging{background:var(--blue)}.prd-panel{width:49%;flex-shrink:0;display:flex;flex-direction:column;min-width:0;background:white;overflow:hidden}.prd-panel.collapsed{width:0!important}.prd-panel-head{padding:18px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}.prd-panel-head strong{font-size:14px}.prd-panel-head span{font-size:11px;color:var(--muted)}.prd-body{display:flex;min-height:0;flex:1}.prd-toc{width:154px;flex-shrink:0;border-right:1px solid var(--line);padding:20px 12px;overflow:auto}.prd-toc button{display:block;border:0;text-align:left;min-height:32px;font-size:11px;line-height:1.65;padding:7px 8px;width:100%;color:var(--muted)}.prd-toc button:hover{color:var(--deep)}.prd-content{position:relative;flex:1;min-width:0;overflow:auto;padding:18px 26px 100px;font-size:13px;line-height:1.9;overflow-wrap:anywhere}.prd-content h1{font-size:22px;line-height:1.5;letter-spacing:-.5px;margin:8px 0 22px}.prd-content h2{font-size:17px;line-height:1.6;margin:28px 0 13px;padding-top:14px;border-top:1px solid var(--line)}.prd-content h3{font-size:14px;margin:22px 0 8px}.prd-content h4{font-size:13px}.prd-content ul{padding-left:19px;margin:8px 0}.prd-content li{margin:5px 0}.prd-content p{margin:8px 0}.prd-content table{border-collapse:collapse;font-size:11px;width:100%;table-layout:fixed}.prd-content td,.prd-content th{border:1px solid var(--line);padding:7px;vertical-align:top;text-align:left}.prd-content th{background:var(--bg)}.prd-content hr{border:0;border-top:1px solid var(--line);margin:24px 0}.top-controls{position:fixed;bottom:16px;right:16px;display:flex;flex-direction:column;gap:6px;z-index:30}.top-controls button{font-size:11px;box-shadow:0 2px 10px #1822300c}.record{position:fixed;inset:0;background:#18223055;z-index:40;display:grid;place-items:center;padding:24px}.record-box{background:white;max-width:420px;border-radius:18px;padding:24px;font-size:13px;line-height:1.8}.record-box h2{font-size:18px}
+@keyframes pulse{50%{opacity:.35}}@media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}@media(max-width:1100px){.prd-toc{display:none}.system-shell{padding:16px}.prd-content{padding:18px 20px 100px}}@media(max-width:760px){.review-header{height:58px;padding:0 14px}.review-label{display:none}.brand strong{font-size:14px}.app-split{height:calc(100dvh - 58px)}.prd-panel{width:100%!important}.app-split.mobile-doc .prd-panel{width:100%!important}.app-split.mobile-doc .page-container,.app-split.mobile-doc .split-drag{display:none}.app-split:not(.mobile-doc) .prd-panel,.app-split:not(.mobile-doc) .split-drag{display:none}.system-shell{padding:10px}.phone{height:calc(100dvh - 170px);min-height:350px;border-width:1px;border-color:var(--line);border-radius:22px;box-shadow:none}.stage{gap:10px}.stage-bar{max-width:408px}.stage-foot{padding:0 68px 0 0;font-size:10px}.top-controls{right:8px;bottom:8px}.top-controls button{min-height:32px;padding:7px 10px}.prd-panel-head{padding:16px}.tweaks{right:10px;top:62px}.prd-content{padding-bottom:160px}.brand-symbol{width:28px;height:28px}}
+</style><link rel="stylesheet" href="role-ui.css"></head><body>
+<header class="review-header"><div class="brand"><div class="brand-symbol">潮</div><div><strong>对话过程反馈</strong><div class="eyebrow">会展智媒通 · 专项需求</div></div></div><span class="review-label">交互评审版 · 本地模拟 · 2026.09</span></header>
+<div class="app-split" id="split"><main class="page-container"><div class="system-shell"><div class="stage">
+<div class="stage-bar"><div><strong>移动端预览</strong><br><span id="sceneLabel">截图时间线复现</span></div><div class="stage-controls"><button id="homeReset">返回首页</button><button id="replay">开始演示</button><button id="tweakToggle" aria-expanded="false">场景设置</button></div></div>
+<div class="role-switch" aria-label="评审角色切换"><button data-role-switch="visitor" aria-pressed="true">普通用户</button><button data-role-switch="exhibitor" aria-pressed="false">展商</button><button data-role-switch="trader" aria-pressed="false">客商</button><button data-role-switch="media" aria-pressed="false">媒体</button></div>
+<section class="phone" id="phone" data-role="visitor" aria-label="数小潮移动端对话">
+<div class="glow glow-one"></div><div class="glow glow-two"></div><div class="glow glow-three"></div>
+<div class="chat" id="chat"><div id="realHome"><header class="source-welcome"><h1>Hi，我是「数小潮」</h1><p id="roleSubtitle"></p><button class="source-audio" id="voiceToggle" aria-label="语音播报" aria-expanded="false"><img class="tinted" alt="" src="assets/visitor-badge.png"></button></header>
+<div class="source-card"><img class="source-mascot" src="assets/visitor-hero.png" alt=""><div class="source-card-head"><strong id="featureTitle"></strong><span id="featureTagline"></span></div><div class="feature-grid" id="featureGrid"></div></div>
+<div class="source-recommend"><div class="recommend-head"><div class="interest">你可能感兴趣</div><button class="refresh" id="refreshQuestions"><img class="tinted" src="assets/visitor-refresh-icon.png" alt="">换一批</button></div><div class="source-questions" id="questions"></div></div></div><div id="turns"></div></div>
+<button class="latest" id="latest" hidden>回到最新 ↓</button>
+<form class="source-composer" id="composer"><div class="quick-actions" id="quickActions"></div><div class="source-input-row"><div class="source-input-wrap"><button type="button" class="mic-btn" id="mic" aria-label="语音"><img src="assets/mic.svg" alt=""></button><input id="prompt" aria-label="问题" placeholder="有什么需要问数小潮的吗～" maxlength="2000" autocomplete="off"><button class="send-icon" id="send" aria-label="发送" disabled hidden><img src="assets/send.svg" alt=""></button></div><button type="button" class="lang-btn" id="languageToggle" aria-label="语言" aria-expanded="false"><img class="tinted" src="assets/visitor-language-switch.png" alt=""></button></div><div id="sendHint" class="source-hint" hidden>回答完成后可发送</div><p class="source-disclaimer">以上内容由 AI 生成，请谨慎甄别</p></form>
+<div class="popup voice-popup" id="voiceMenu" hidden><button id="speechSwitch" type="button" aria-pressed="false">语音播报：关闭</button><button id="clearChat" type="button">清空对话</button></div>
+<div class="popup language-popup" id="languageMenu" hidden><button type="button" data-language="中文">中文</button><button type="button" data-language="English">English</button><button type="button" data-language="日本語">日本語</button><button type="button" data-language="한국어">한국어</button></div>
+<div class="popup service-popup" id="serviceMenu" hidden><button type="button" data-service="展会服务">展会服务<small>停车场、服务台、洗手间、交通方式</small></button><button type="button" data-service="订餐服务">订餐服务<small>查看馆内和周边餐饮联系方式</small></button><button type="button" data-service="一键亮码">一键亮码<small>实时获取并展示入场二维码</small></button></div><div id="uiToast" class="ui-toast" hidden role="status"></div>
+</section>
+<div class="stage-foot"><span id="sourceNote">合成事件演示，不连接真实服务。</span><br>场景设置、倍速及事件记录仅用于评审，不属于用户界面。</div>
+</div></div><aside class="tweaks" id="tweaks" hidden aria-label="场景设置"><div class="tweaks-head"><strong>Tweaks · 场景设置</strong><button id="tweakClose" aria-label="关闭场景设置">关闭</button></div><label for="scenario">演示场景</label><select id="scenario"></select><label for="speed">演示时钟</label><select id="speed"><option value="1">1× 真实时间</option><option value="5">5× 加速演示</option></select><label for="role">预览角色</label><select id="role"><option value="visitor">普通用户</option><option value="exhibitor">展商</option><option value="trader">客商</option><option value="media">媒体</option></select><p id="scenarioHelp"></p><div class="event-readout" id="eventReadout" role="status">等待演示</div><div class="actions"><button class="primary" id="applyScene">开始该场景</button><button id="nextEvent">下一事件</button></div><p>“下一事件”推进模拟时钟；真实产品仅由收到的事件更新步骤。</p></aside></main><div class="split-drag" id="splitDrag" tabindex="0" role="separator" aria-orientation="vertical" aria-label="调整需求面板宽度"></div><aside class="prd-panel" id="prdPanel"><div class="prd-panel-head"><strong>需求文档</strong><span>PRD / v1.3 · 待评审</span></div><div class="prd-body"><nav class="prd-toc" id="prdToc" aria-label="文档目录"></nav><article class="prd-content" id="prdContent"></article></div></aside></div>
+<div class="top-controls"><button id="prdToggle">收起需求</button><button id="download">下载 PRD</button><button id="records">更新记录</button></div><div class="record" id="recordModal" hidden role="dialog" aria-modal="true" aria-labelledby="recordTitle"><div class="record-box"><h2 id="recordTitle">更新记录</h2><p>当前为本地评审稿，暂无发布记录。</p><button id="recordClose">关闭</button></div></div>
+<textarea id="prdMdSource" style="display:none"># 会展智媒通对话过程反馈需求文档
+
+版本：v1.3　需求范围：用户输入问题至本轮回答完成或异常终止
+
+## 1. 产品概述
+
+### 1.1 背景与目标
+
+对话等待期间持续显示“思考中”，用户无法判断问题是否收到、查询是否推进或回答是否开始。本模块将等待反馈细化为有事实依据的当前状态，让用户尽早看到有效反馈，并在答案到达后立即阅读。
+
+- 发送后立即呈现用户问题和提交状态。
+- 首段回答前在原“思考中”位置显示当前一句状态；首段回答出现后由正文替换。
+- 正式回答到达即显示；无过程信息也能正常回答。
+- 对长等待、查询失败、回答中断和空回答给出明确且真实的反馈。
+
+### 1.2 使用场景与起止边界
+
+用户在现有对话输入框中输入问题，发送后等待处理，并阅读逐步生成的回答。需求从输入问题开始，到本轮回答完整结束或明确异常终止为止；异常后的重新提问作为恢复操作纳入本期。规则适用于现有各角色的问答，不重新定义角色页面或权限。
+
+### 1.3 本期范围与约束
+
+- 覆盖问题输入与发送、提交反馈、首段回答前的状态提示、正文生成与完成、异常恢复及本轮阅读保护。
+- 首段回答前只更新原“思考中”位置的一句状态；首个非空正文出现后由回答替换，不保留过程查看能力。
+- 不展示思考原文、内部服务标识、原始业务数据或鉴权信息，不使用虚构进度或预计完成时间。
+- 不涉及首页、角色切换、欢迎语、功能入口、推荐问题配置、快捷服务、语音、多语言及回答完成后的评价或分享功能。
+
+## 2. 全局交互规则
+
+### 2.1 页面结构与顺序
+
+对话区域按轮次先后排列。每轮发送后，在原“思考中”位置呈现当前一句状态；首个非空正式回答到达时，正文立即替换状态行。之后仅展示流式正文及末尾生成光标，异常说明位于该轮回答之后。状态只属于当前轮次，不新增独立过程卡片或历史过程入口。
+
+### 2.2 问题输入与提交
+
+问题内容字段：
+
+- **展示规则**：使用现有对话输入框，沿用现有引导文案；输入内容可编辑，发送后在本轮用户消息中完整展示，长内容正常换行。
+- **交互规则**：支持输入、修改、清空和发送；空输入或仅空白内容不可发送。生成期间可编辑下一条问题，但不能发起另一轮。
+- **数据规则**：以用户本次提交的问题作为本轮输入，不与其他轮次混合；不涉及筛选或排序。
+
+提交与轮次规则：
+
+- 非空问题可发送；仅空白内容视为空，不创建轮次。
+- 发送后立即创建用户消息，显示“正在理解问题”，清空本次输入。
+- 同一会话只允许一轮在途。生成期间允许编辑下一条问题，但禁用发送，提示“回答完成后可发送”。
+- 重复点击发送不创建重复轮次；已提交问题在本轮中只读。
+- 明确结束、失败或空回答结束后恢复发送。长等待本身不解除在途状态。
+- 重新提问使用原问题创建新轮次，旧轮次及已有内容保留；不覆盖输入区正在编辑的草稿。
+
+### 2.3 空状态、权限与排序
+
+- 问题发送后，从“正在理解问题”开始等待；无明确进展时不补造后续流程。
+- 对话轮次按发送顺序排列；每轮仅显示当前一句状态，不显示步骤列表。
+- 本模块无筛选、分页、批量操作和额外权限点。用户只能查看当前授权会话中的内容。
+- 无对话访问权限时沿用原有访问限制，不单独暴露处理过程。
+
+## 3. 模块一：首段回答前的当前状态
+
+### 3.1 当前状态行
+
+- **展示规则**：仅替换原“思考中”那一行，显示当前一句业务状态；长文案自然换行。无长等待时不单独显示耗时。首个非空正式回答到达即移除状态行及等待提示，由正文占用该位置；不保留独立过程卡片、步骤列表、展开按钮或历史过程入口。
+- **交互规则**：状态只读，不可点击查看过程。状态更新不影响用户阅读位置。首段回答出现后，本轮不再恢复状态行；后续工具活动、正文间歇、空白内容或长等待均不能让状态重新出现。
+- **数据规则**：取数范围为本轮处理信息，不涉及筛选或排序。发送后默认显示“正在理解问题”，作为初始等待文案，不表示已确认服务受理或分析阶段开始；收到受理通知但没有新阶段时保持该文案，不展示提交或受理过程。后续只有实际进入对应阶段，才显示“正在查询相关信息”或“正在整理回答”。多个查询同时执行时显示“正在查询相关信息（N 项）”，N 仅计当前执行中的查询；未知服务统一使用“相关服务”，不暴露内部名称。
+
+### 3.2 真实进展与状态归并
+
+- 真实进展表明正在匹配常见问题时显示“正在匹配常见问题”；正在检索资料时显示“正在检索相关资料”，不提前预测进展。
+- 只有笼统服务处理通知、无法确定具体查询对象时，显示“正在处理相关信息”。
+- 首次实际分析显示“正在理解问题”；再次实际进入分析时显示“正在进一步分析”。分析结束仅表示该阶段结束，不代表整轮回答完成。
+- 同一次查询的不同来源通知合并判断，不重复计算执行数量；不同查询分别判断状态，但不向用户列出历史明细。
+- 当前有查询执行时显示其对应查询状态；否则显示最近一次有效阶段或查询结果。查询完成、失败、结束只描述查询自身，不表示整轮回答完成。
+
+| 已知事实 | 首段回答前的状态文案 | 后续判断 |
+|---|---|---|
+| 查询实际开始 | 正在查询相关信息，或已确认的业务文案 | 等待真实结果，不提前标为完成 |
+| 明确取得成功结果且无其他执行中的查询 | 查询完成 | 之后按实际新阶段更新，不由迟到的开始信息倒退 |
+| 明确查询失败且无其他执行中的查询 | 本次查询未成功 | 仍可继续处理与生成回答，不立即终止整轮 |
+| 仅确认执行结束、未确认结果且无其他执行中的查询 | 查询已结束，结果待确认 | 不推断成功；之后按真实进展更新 |
+
+- 重复进展不改变已确认状态、不重置等待计时，也不增加正在执行的查询数量。
+- 结果先于开始信息出现时，以已知结果判断；迟到的开始信息不使状态倒退。
+- 同一次查询已明确失败后，不被迟到的成功信息覆盖；实际再次执行视为新的查询。
+- 首段回答出现后，这些进展仅参与内部状态判断，不再显示任何过程状态。正常答案结束不能反推所有查询均成功。
+
+### 3.3 长等待提示
+
+- **展示规则**：仅在首段回答尚未出现时，连续 10 秒没有有效进展，在当前状态旁补充“暂未收到新的处理进展，已等待 X 秒”；连续 30 秒后补充“本次等待较久”。不常驻显示总耗时。首个非空正文出现时，等待提示随状态行一起移除。
+- **交互规则**：等待提示只读；恢复有效进展后移除提示，不移动阅读位置。首段回答出现后，即使正文长时间未继续增长也不恢复等待提示，保持已有正文与生成光标。
+- **数据规则**：等待时长从发送或最近一次有效进展起计。有效进展包括首次受理确认、新的实际阶段、查询状态实际变化或新的正式回答内容；重复通知、无内容的连接维持和计时刷新不计入。内部总耗时仍从发送起计，明确结束或失败时冻结，与无进展时长分别计算，不混入下一轮。等待秒数按完整秒显示，不涉及筛选或排序；计时异常不得显示负值或编造数字，必要时显示“计时暂不可用”。
+- 10 秒与 30 秒只控制首段回答前的等待提示，不触发虚构进展、自动重试或失败判定。
+
+## 4. 模块二：正式回答与阅读保护
+
+### 4.1 正式回答正文
+
+- **展示规则**：首个非空正式回答到达即呈现，同时移除当前状态行与等待提示，随后新增内容持续显示；不等待查询全部结束。生成中仅保留正文和末尾生成光标，不额外显示“正在生成回答”状态。过程文字不得混入正文。长文本、段落和列表正常换行。
+- **交互规则**：生成中允许阅读已显示内容；空字符串或仅空白内容不能触发首段出现。异常时保留已收到的正文并标注“回答未完成”，不恢复过程状态。
+- **数据规则**：仅采用本轮正式回答内容；理解、规划和过程摘要不作为正式答案。不涉及筛选；按正文原有顺序累计呈现，不重复追加已经显示的内容。不同轮次内容不得合并。
+
+### 4.2 回答状态
+
+- **展示规则**：有正文且收到明确完成信息，移除末尾生成光标，保留完整正文；不增加过程完成条。只有正文暂时停止增长，不视为完成。失败时显示“回答未完成”；结束但无非空正文时显示“未获得回答，请重新提问”。
+- **交互规则**：回答成功完成后结束生成状态；失败或空回答结束后允许重新提问。异常说明不影响正文阅读，结束或失败后不恢复过程状态。
+- **数据规则**：状态仅针对本轮，以正文是否存在及明确终止事实判定，不涉及筛选或排序。终态确定后不再接收迟到内容改变本轮；新一轮单独计算状态。
+
+### 4.3 阅读位置与新内容入口
+
+- 用户位于对话底部时，新增内容持续跟随显示。
+- 用户主动上翻后停止自动跟随；状态变化、计时刷新和回答追加均不抢回底部。
+- 离开底部且有新内容时显示“回到最新”；点击后定位最新内容并恢复跟随。
+- 用户自行回到底部后同样恢复跟随并隐藏入口；纯计时刷新不视为新内容。
+
+## 5. 模块三：异常反馈与操作
+
+### 5.1 异常分类
+
+- **提交失败**：明确提交失败时显示“问题提交失败，请重新提问”，保留用户消息，不显示已开始查询。
+- **单次查询失败**：首段回答前按当前查询事实更新状态，首段回答后不显示过程状态；仍有处理活动时继续等待或生成，不立即终止整轮。
+- **连接中断或整轮处理错误**：终止本轮生成并移除状态行或生成光标；无正文显示“回答中断，请重新提问”，有正文保留并标注“回答未完成”，不恢复过程状态。
+- **空回答结束**：移除状态行；明确结束但正文为空或仅空白时显示“未获得回答，请重新提问”，不显示回答完成。
+- **长等待**：首段回答前按阈值补充等待提示；首段回答后保留正文与生成光标，不恢复等待或过程行；不推断网络断开或服务失败。
+- **缺少过程内容**：保持可证实的受理或等待状态；正式回答到达后直接显示，不补齐“理解—查询—整理”流程。
+
+### 5.2 操作状态矩阵
+
+以下操作均沿用现有会话权限，不新增权限项；不可访问会话时不展示本模块操作。
+
+| 操作 | 展示与可用条件 | 禁用或隐藏规则 | 点击反馈与结果 |
+|---|---|---|---|
+| 发送 | 输入非空且无在途轮次 | 空输入禁用；在途时禁用并说明“回答完成后可发送” | 立即追加用户消息与提交状态，无二次确认 |
+| 重新提问 | 本轮明确失败或空回答结束后展示 | 另有轮次在途时禁用并说明原因 | 原问题创建新轮次，旧内容保留，无二次确认 |
+| 回到最新 | 用户离开底部且有新内容时可用 | 已到最新位置时隐藏 | 滚动到最新内容并恢复跟随 |
+
+- 本期不提供取消生成、编辑已发送消息、自动重试和批量重试。
+- 重新提问失败按新轮次异常处理，不反复自动发送；用户现有草稿保持不变。
+
+## 6. 验收标准
+
+### 6.1 场景验收
+
+| 场景 | 必须观察到的结果 |
+|---|---|
+| 输入与提交 | 空值及仅空白内容不可发送；有效问题发送后立即显示用户消息与提交状态；生成期间重复发送不创建新轮次 |
+| 直接回答 | 提交后立即显示当前状态；首个非空正文立即替换状态行，无步骤列表；明确结束后移除生成光标 |
+| 单工具查询 | 首段回答前按真实查询进展更新同一状态行；首段正文出现即移除该行 |
+| 多工具执行 | 仅显示当前一句状态，并发执行数量正确；不生成多行步骤清单 |
+| 工具失败后继续回答 | 首段前按当前事实反馈失败或其他活动；正式答案仍可正常生成，首段后不恢复工具状态 |
+| 无思考内容 | 无空白思考区；真实状态正常显示，首段出现即替换 |
+| 多轮分析与查询 | 首段前随真实进展更新理解问题、常见问题匹配、进一步分析、资料检索等当前文案；阶段结束不误判整轮完成 |
+| 长等待 | 首段前 10 秒无进展显示等待秒数，30 秒补充较久提示；首段后不再显示过程或等待提示 |
+| 部分答案后中断 | 正文保留并标为未完成，生成光标移除，不恢复过程行；可重新提问 |
+| 空答案结束 | 移除状态行，说明未获得回答，不显示成功；可重新提问 |
+
+### 6.2 一致性与边界验收
+
+- 首个非空正式回答出现时，当前状态和等待提示同时移除；全程没有独立过程卡片、步骤列表、展开按钮或历史过程入口。
+- 首段后的工具事件、再次分析、空白片段和正文停顿均不能恢复状态行；生成中只有正文与末尾生成光标。
+- 重复开始、结果或结束通知不重复计算查询，不重置等待时长；同一次查询不同来源的通知合并判断。
+- 笼统服务处理通知只更新当前文案；多轮分析依据实际阶段计算，不补造进度。
+- 仅收到查询结束信息不显示成功；结果先到、开始后到时状态不倒退。
+- 新轮次开始后，旧轮次迟到信息不混入新轮次，也不改写已终止的旧轮次。
+- 一轮生成时重复发送无效，可编辑草稿；生成结束后恢复发送，重新提问不覆盖草稿。
+- 总耗时与无进展时长分别计算，首段前 10 秒和 30 秒边界正确；终态计时冻结，不常驻展示总耗时。
+- 上翻阅读时任何增量变化不抢滚动；回到最新后恢复跟随；长文本正常换行。
+- 四角色反馈规则一致且不扩大原有数据可见范围；业务界面不出现内部标识、原始返回或鉴权信息。
+</textarea>
+<script src="role-ui.js"></script>
+<script>
+'use strict';
+const changelogData=[{"time": "2026-09-20 15:45", "description": "首次发布四角色对话过程反馈演示、需求文档与接口依据；保留现有事件驱动原型，定时文案方案暂未实现。"}];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// Synthetic fixtures: time schedules replay events, never infer production progress from elapsed time.
+const chunkA='可以先根据到场时间和关注方向筛选活动。\n\n';
+const chunkB='建议按这三个维度安排：\n\n1. 关注主题：优先选择与业务方向相关的交流活动。\n2. 现场距离：为展区之间的步行留出时间。\n3. 参加条件：确认是否需要预约以及入场要求。\n\n';
+const chunkC='具体场次与时间，请以主办方当日公布的活动安排为准。你更关注哪个主题？';
+const E=(t,type,extra={})=>({t,type,...extra});
+const tool=(t,id,status,name='activity')=>E(t,'tool',{id,status,name,plan:'p1'});
+const SCENARIOS={
+ screenshot:{name:'截图时间线复现',question:'服务台',help:'按截图可读时间复现：规划 → FAQ 匹配 → 再分析 → 资料检索 → 再分析 → 正文。首事件至首正文约 6.927 秒；发送前段耗时未知。',events:[
+ E(0,'plan',{plan:'p1',status:'PROCESSING'}),tool(1.687,'faq','START','faq'),E(1.767,'plan',{plan:'p1',status:'COMPLETE'}),E(1.767,'service',{plan:'p1'}),E(1.778,'plugin',{plan:'p1',id:'faq',name:'faq'}),
+ E(2.040,'tool',{plan:'p1',id:'faq',name:'faq',status:'END'}),E(2.040,'plan',{plan:'p2',status:'PROCESSING'}),E(3.447,'tool',{plan:'p2',id:'rag',name:'knowledge',status:'START'}),E(3.793,'plan',{plan:'p2',status:'COMPLETE'}),E(3.793,'service',{plan:'p2'}),E(3.801,'plugin',{plan:'p2',id:'rag',name:'knowledge'}),E(4.018,'tool',{plan:'p2',id:'rag',name:'knowledge',status:'END'}),E(4.018,'plan',{plan:'p3',status:'PROCESSING'}),E(5.914,'plan',{plan:'p3',status:'COMPLETE'}),E(5.914,'service',{plan:'p3'}),E(6.927,'summary'),E(6.927,'content',{text:'服务'}),E(6.938,'content',{text:'台位置请以现场'}),E(6.950,'content',{text:'指引为准。'}),E(6.975,'end')
+ ]},
+ single:{name:'单工具查询',help:'开始 → 成功 → 结束 → 正文增量。首段到达即展示。',events:[E(1,'planning'),tool(2,'a','START'),tool(4,'a','SUCCESS'),tool(4.5,'a','END'),E(5,'summary'),E(6,'content',{text:chunkA}),E(7,'content',{text:chunkB}),E(8,'content',{text:chunkC}),E(8.5,'end')]},
+ direct:{name:'直接回答',help:'无规划和工具事件，首段正文直接开始展示。',events:[E(1.5,'content',{text:'你好，我是数小潮，可以协助你了解展会信息。'}),E(3,'content',{text:'\n\n你可以告诉我感兴趣的展区、服务或活动方向。'}),E(4,'end')]},
+ multi:{name:'多工具执行',help:'两个查询并行。故意重放开始事件，并发送迟到的开始事件，验证不会重复或倒退。',events:[E(1,'planning'),tool(2,'a','START'),tool(2.2,'b','START','venue'),tool(2.6,'a','START'),tool(4,'b','SUCCESS','venue'),tool(4.3,'b','START','venue'),tool(5,'a','SUCCESS'),tool(5.3,'b','END','venue'),E(6,'summary'),E(7,'content',{text:chunkA+chunkB}),E(8,'content',{text:chunkC}),E(9,'end')]},
+ failure:{name:'工具失败后继续回答',help:'一次查询失败，保留失败事实；后续回答正常完成。',events:[E(1,'planning'),tool(2,'a','START'),tool(4,'a','FAILURE'),tool(4.5,'a','END'),E(5,'summary'),E(6,'content',{text:'本次没有取得活动安排，暂时无法核实具体场次。\n\n'}),E(7,'content',{text:chunkB+chunkC}),E(8,'end')]},
+ noThinking:{name:'无思考内容',help:'有阶段与工具状态但没有思考文字，进度照常展示。',events:[E(1,'planning'),tool(2,'a','START','unknown'),tool(4,'a','SUCCESS','unknown'),E(5,'summary'),E(6,'content',{text:chunkA}),E(7,'content',{text:chunkB+chunkC}),E(8,'end')]},
+ long:{name:'长等待',help:'开始查询后等待 34 秒；第 10/30 秒仅更新等待提示，不补造步骤。建议使用 5× 时钟。',events:[E(1,'planning'),tool(2,'a','START'),tool(36,'a','SUCCESS'),E(37,'summary'),E(38,'content',{text:chunkA+chunkB+chunkC}),E(39,'end')]},
+ interrupted:{name:'部分答案后中断',help:'已收到的正文保留，标注回答未完成，可重新提问。',events:[E(1,'planning'),E(2,'summary'),E(3,'content',{text:chunkA}),E(4,'content',{text:chunkB}),E(5,'error')]},
+ submitFail:{name:'提交失败',help:'明确提交失败，不声称已开始查询；允许重新提问。',events:[E(1,'error',{submission:true})]},
+ accepted:{name:'已受理但无步骤',help:'收到受理确认，无可识别阶段；保持单行等待，首字出现后直接替换。',events:[E(1,'accepted'),E(13,'content',{text:chunkA+chunkB+chunkC}),E(14,'end')]},
+ empty:{name:'空答案结束',help:'服务明确结束但没有正文，不呈现为回答成功。',events:[E(1,'planning'),E(3,'end')]},
+ endOnly:{name:'只有工具结束通知',help:'END 无 SUCCESS：只能展示调用已结束，不能展示查询成功。',events:[tool(1,'a','START'),tool(3,'a','END'),E(4,'summary'),E(5,'content',{text:'暂未取得可确认的查询结果。请以主办方公布的信息为准。'}),E(6,'end')]},
+ length:{name:'答案达到长度限制',help:'保留部分正文并标记未完成，不能当成正常完成。',events:[E(1,'summary'),E(2,'content',{text:chunkA+chunkB}),E(3,'end',{reason:'length'})]}
+};
+const labels={activity:'查询活动信息',venue:'查询展区信息',unknown:'查询相关服务',faq:'匹配常见问题',knowledge:'检索相关资料'};
+let turns=[],active=null,serial=0,follow=true,autoScrolling=false;
+let chosen='screenshot';
+function newModel(id,question,scene){return {id,question,scene,state:'running',steps:[],answer:'',status:'正在提交问题',lastProgress:0,time:0,answerStarted:false,events:SCENARIOS[scene].events,index:0,base:performance.now(),offset:0,rate:Number($('speed').value),notice:'',accepted:false,servicePlans:[]};}
+function step(m,key,name,status){let s=m.steps.find(s=>s.key===key);if(!s){s={key,name,status};m.steps.push(s);return true;}if(s.status===status)return false;
+ if(['success','failure','ended'].includes(s.status)&&status==='running')return false;
+ if(['success','failure'].includes(s.status)&&status==='ended')return false;
+ if(['success','failure'].includes(s.status)&&['success','failure'].includes(status))return false;
+ s.status=status;return true;}
+function reduce(m,e){if(m.state!=='running')return false;let changed=false;
+ if(e.type==='plan'){
+  const key='planning/'+e.plan,previous=m.steps.find(s=>s.key===key);
+  const count=m.steps.filter(s=>s.key.startsWith('planning/')).length;
+  changed=step(m,key,previous?previous.name:count?'进一步分析':'理解问题',e.status==='COMPLETE'?'ended':'running');
+  if(changed){const ongoing=m.steps.filter(s=>s.key.includes(':')&&s.status==='running');m.status=ongoing.length>1?'正在查询相关信息（'+ongoing.length+'项）':ongoing.length?'正在'+ongoing[0].name:e.status==='COMPLETE'?'等待后续处理':count?'正在进一步分析':'正在理解问题';}
+ }
+ if(e.type==='service'&&!m.servicePlans.includes(e.plan)){m.servicePlans.push(e.plan);if(!m.steps.some(s=>s.status==='running'))m.status='正在处理相关信息';changed=true;}
+ // Plugin PROCESSING shares the corresponding tool identity, so no second visible row.
+ if(e.type==='plugin'){changed=step(m,e.plan+':'+e.id,labels[e.name]||labels.unknown,'running');if(changed)m.status='正在'+(labels[e.name]||labels.unknown);}
+ if(e.type==='accepted'&&!m.accepted){m.accepted=true;m.status='已收到问题，等待处理进展';changed=true;}
+ if(e.type==='planning'){changed=step(m,'planning','理解问题','running');if(changed)m.status='正在理解问题';}
+ if(e.type==='tool'){
+  changed=step(m,e.plan+':'+e.id,labels[e.name]||labels.unknown,({START:'running',SUCCESS:'success',END:'ended',FAILURE:'failure'})[e.status]||'ended');
+  if(changed){const p=m.steps.find(s=>s.key==='planning');if(p)p.status='ended';const ongoing=m.steps.filter(s=>s.key.includes(':')&&s.status==='running');m.status=ongoing.length>1?'正在查询相关信息（'+ongoing.length+'项）':ongoing.length?'正在'+ongoing[0].name:statusText(m.steps.find(s=>s.key===e.plan+':'+e.id));}
+ }
+ if(e.type==='summary'){changed=step(m,'summary','整理回答','running');if(changed){m.status='正在整理回答';const p=m.steps.find(s=>s.key==='planning');if(p)p.status='ended';}}
+ if(e.type==='content'&&typeof e.text==='string'&&e.text.length){m.answer+=e.text;if(m.answer.trim()){m.answerStarted=true;m.status='正在生成回答';}changed=!!e.text.trim();}
+ if(e.type==='error'||e.type==='end'){
+  m.state=e.type==='error'||!m.answer.trim()||e.reason==='length'?'failed':'done';
+  m.notice=e.type==='error'?(e.submission?'问题提交失败，请重新提问。':m.answer.trim()?'连接已中断，回答未完成。已收到的内容为你保留。':'回答中断，请重新提问。'):!m.answer.trim()?'未获得回答，请重新提问。':e.reason==='length'?'回答达到长度限制，尚未完成。已收到的内容为你保留。':'';
+  m.steps.forEach(s=>{if(s.status==='running')s.status=(s.key==='summary'&&m.state==='done')?'success':'ended';});
+  m.status=m.state==='done'?'回答已完成':(e.type==='error'?(e.submission?'问题提交失败':'回答未完成'):m.answer.trim()?'回答未完成':'未获得回答');changed=true;
+ }
+ if(m.state==='running'&&m.answer.trim())m.status='正在生成回答';if(changed)m.lastProgress=m.time;return changed;
+}
+function elapsed(m){return m.state==='running'?m.offset+(performance.now()-m.base)/1000*m.rate:m.time;}
+function statusText(s){const isTool=s.key.includes(':');return isTool?{running:'查询中',success:'查询完成',failure:'本次查询未成功',ended:'查询已结束，结果待确认'}[s.status]:{running:'进行中',success:'已完成',failure:'未成功',ended:'已结束'}[s.status];}
+function render(m){const container=$('turn-'+m.id);if(!container)return;
+ container.className='turn '+(m.state==='running'?'streaming':'');
+ const pending=container.querySelector('.pending-status');pending.hidden=m.answerStarted||m.state!=='running';
+ container.querySelector('.pending-text').textContent=m.status;
+ const idle=Math.floor(m.time-m.lastProgress),wait=container.querySelector('.wait');wait.hidden=m.answerStarted||m.state!=='running'||idle<10;
+ wait.textContent='暂未收到新的处理进展，已等待 '+idle+' 秒。'+(idle>=30?'本次等待较久。':'');
+ const answer=container.querySelector('.answer');const visibleAnswer=m.answerStarted?m.answer:'';if(answer.textContent!==visibleAnswer)answer.textContent=visibleAnswer;
+ container.querySelector('.notice').textContent=m.notice;
+ const retry=container.querySelector('.retry');retry.hidden=m.state!=='failed';retry.disabled=!!active&&active.state==='running';
+ container.querySelector('.reply-meta').textContent='';
+}
+function updateSend(){const busy=!!active&&active.state==='running';$('send').disabled=busy||!$('prompt').value.trim();$('send').hidden=!busy&&!$('prompt').value.trim();$('send').setAttribute('aria-label',busy?'正在回答':'发送');$('sendHint').hidden=!busy;
+ document.querySelectorAll('.source-question').forEach(b=>b.disabled=busy);document.querySelectorAll('.retry').forEach(b=>{b.disabled=busy;b.title=busy?'回答完成后可重新提问':'';});$('nextEvent').disabled=!busy;}
+function toBottom(){autoScrolling=true;$('chat').scrollTop=$('chat').scrollHeight;$('latest').hidden=true;requestAnimationFrame(()=>autoScrolling=false);}
+function start(question,scene=chosen,preserveDraft=false){if(active&&active.state==='running')return;const m=newModel(++serial,question,scene);turns.push(m);active=m;
+ const div=document.createElement('section');div.id='turn-'+m.id;div.className='turn';div.innerHTML='<div class="user-message"></div><div class="message-time user-time"></div><div class="assistant-bubble"><div class="pending-status" role="status"><span class="status-dot"></span><span class="pending-text"></span></div><div class="wait" hidden></div><div class="answer"></div><div class="notice" role="status"></div><button class="retry" hidden>重新提问</button><div class="reply-meta"></div></div><div class="message-time assistant-time"></div>';
+ div.querySelector('.user-message').textContent=question;
+ const timeLabel=new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit',hour12:false});div.querySelector('.user-time').textContent=timeLabel;div.querySelector('.assistant-time').textContent=timeLabel;
+ div.querySelector('.retry').onclick=()=>start(m.question,m.scene,true);
+ $('turns').append(div);if(!preserveDraft)$('prompt').value='';follow=true;render(m);updateSend();toBottom();
+}
+function tick(){if(!active||active.state!=='running')return;const m=active;m.time=elapsed(m);let changed=false;
+ while(m.index<m.events.length&&m.events[m.index].t<=m.time){const e=m.events[m.index++];changed=reduce(m,e)||changed;$('eventReadout').textContent='模拟 '+m.time.toFixed(1)+'s · '+e.type+(e.status?' / '+e.status:'');if(m.state!=='running')break;}
+ render(m);updateSend();if(changed){if(follow)toBottom();else $('latest').hidden=false;}
+}
+function resetScene(){active=null;turns=[];$('turns').replaceChildren();chosen=$('scenario').value;$('sceneLabel').textContent=SCENARIOS[chosen].name;$('scenarioHelp').textContent=SCENARIOS[chosen].help;$('eventReadout').textContent='等待演示';$('sourceNote').textContent=chosen==='screenshot'?'截图节奏复现：首事件记为 0 秒；正文采用演示文案，查询结果未作业务核验。':'合成事件演示，不连接真实服务。';start(SCENARIOS[chosen].question||(chosen==='direct'?'你能帮我做什么？':'今天有哪些值得推荐的活动安排？'));}
+
+function homeOnly(){active=null;turns=[];follow=true;$('turns').replaceChildren();$('prompt').value='';$('latest').hidden=true;$('chat').scrollTop=0;$('sourceNote').textContent='真实首页 UI · 点击问题或“开始演示”体验单行状态反馈；业务内容为本地演示。';$('eventReadout').textContent='等待演示';$('uiToast').hidden=true;updateSend();}
+function switchRole(key){homeOnly();showRoleHome(key);$('voiceToggle').setAttribute('aria-expanded','false');$('languageToggle').setAttribute('aria-expanded','false');updateSend();}
+function initRoleControls(){
+ document.querySelectorAll('[data-role-switch]').forEach(b=>b.onclick=()=>switchRole(b.dataset.roleSwitch));$('homeReset').onclick=()=>switchRole(currentRole);
+ $('questions').onclick=e=>{const b=e.target.closest('[data-question]');if(b&&!b.disabled)start(b.dataset.question);};
+ $('refreshQuestions').onclick=()=>{questionOffset=(questionOffset+1)%4;renderQuestions();updateSend();};
+ $('featureGrid').onclick=e=>{const b=e.target.closest('[data-feature]');if(b)uiToast('该服务暂未开放');};
+ $('quickActions').onclick=e=>{const b=e.target.closest('[data-quick]');if(!b)return;if(b.dataset.quick==='逛展服务')$('serviceMenu').hidden=!$('serviceMenu').hidden;else uiToast('该服务暂未开放');};
+ $('serviceMenu').onclick=e=>{const b=e.target.closest('[data-service]');if(!b)return;$('serviceMenu').hidden=true;if(b.dataset.service==='展会服务'){if(!active||active.state!=='running')start('服务台','screenshot');else uiToast('请等待当前回答完成');}else uiToast('该服务暂未开放');};
+ $('mic').onclick=()=>uiToast('暂不支持语音输入');
+ $('voiceToggle').onclick=()=>{$('voiceMenu').hidden=!$('voiceMenu').hidden;$('voiceToggle').setAttribute('aria-expanded',String(!$('voiceMenu').hidden));};
+ $('speechSwitch').onclick=()=>uiToast('暂不支持语音播报');
+ $('clearChat').onclick=()=>{if(confirm('确定清空当前对话吗？'))switchRole(currentRole);};
+ $('languageToggle').onclick=()=>{$('languageMenu').hidden=!$('languageMenu').hidden;$('languageToggle').setAttribute('aria-expanded',String(!$('languageMenu').hidden));};
+ $('languageMenu').onclick=e=>{const b=e.target.closest('[data-language]');if(!b)return;$('languageMenu').hidden=true;$('languageToggle').setAttribute('aria-expanded','false');if(b.dataset.language!=='中文')uiToast('当前暂不支持该语言');};
+ $('phone').addEventListener('click',e=>{if(!e.target.closest('#voiceMenu,#voiceToggle')){$('voiceMenu').hidden=true;$('voiceToggle').setAttribute('aria-expanded','false');}if(!e.target.closest('#languageMenu,#languageToggle')){$('languageMenu').hidden=true;$('languageToggle').setAttribute('aria-expanded','false');}if(!e.target.closest('#serviceMenu,#quickActions'))$('serviceMenu').hidden=true;});
+}
+function tweaks(open){$('tweaks').hidden=!open;$('tweakToggle').setAttribute('aria-expanded',String(open));}
+function inline(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/`([^`]+)`/g,'<code>$1</code>');}
+function markdown(md){const lines=md.split('\n');let out='',heads=[],lists=[],table=false;const closeLists=()=>{while(lists.length){out+='</li></ul>';lists.pop();}};const closeTable=()=>{if(table){out+='</tbody></table>';table=false;}};
+ for(let i=0;i<lines.length;i++){const raw=lines[i],t=raw.trim();if(!t){closeLists();closeTable();continue;}let h=t.match(/^(#{1,6})\s+(.+)$/);if(h){closeLists();closeTable();const id='doc-'+heads.length;heads.push({id,level:h[1].length,text:h[2]});out+='<h'+h[1].length+' id="'+id+'">'+inline(h[2])+'</h'+h[1].length+'>';continue;}
+ if(/^---+$/.test(t)){closeLists();closeTable();out+='<hr>';continue;}
+ if(/^\|.*\|$/.test(t)){closeLists();const cells=t.slice(1,-1).split('|').map(x=>x.trim());if(!table){const header=/^\|[\s:|\-]+\|$/.test((lines[i+1]||'').trim());out+='<table>'+(header?'<thead><tr>'+cells.map(c=>'<th>'+inline(c)+'</th>').join('')+'</tr></thead><tbody>':'<tbody>');table=true;if(header){i++;continue;}}out+='<tr>'+cells.map(c=>'<td>'+inline(c)+'</td>').join('')+'</tr>';continue;}
+ closeTable();const li=raw.match(/^(\s*)[-*]\s+(.+)$/);if(li){const d=Math.floor(li[1].length/2);while(lists.length>d+1){out+='</li></ul>';lists.pop();}if(lists.length===d+1)out+='</li><li>';else{out+='<ul><li>';lists.push(d);}out+=inline(li[2]);continue;}closeLists();out+='<p>'+inline(t)+'</p>';
+ }closeLists();closeTable();return {html:out,heads};}
+function toggleDoc(){const mobile=matchMedia('(max-width:760px)').matches;if(mobile){$('split').classList.toggle('mobile-doc');$('prdToggle').textContent=$('split').classList.contains('mobile-doc')?'返回原型':'查看需求';}else{$('prdPanel').classList.toggle('collapsed');$('splitDrag').hidden=$('prdPanel').classList.contains('collapsed');$('prdToggle').textContent=$('prdPanel').classList.contains('collapsed')?'查看需求':'收起需求';}}
+function setWidth(w){const width=Math.max(280,Math.min(innerWidth*.7,w));$('prdPanel').style.width=width+'px';$('splitDrag').setAttribute('aria-valuenow',Math.round(width));}
+document.addEventListener('DOMContentLoaded',()=>{
+ const rendered=markdown($('prdMdSource').textContent.trim());$('prdContent').innerHTML=rendered.html;rendered.heads.filter(h=>h.level<=2).forEach(h=>{const b=document.createElement('button');b.textContent=h.text;b.onclick=()=>{const target=$(h.id);$('prdContent').scrollTop+=target.getBoundingClientRect().top-$('prdContent').getBoundingClientRect().top-14;};$('prdToc').append(b);});
+ Object.entries(SCENARIOS).forEach(([key,s])=>{const o=document.createElement('option');o.value=key;o.textContent=s.name;$('scenario').append(o);});
+ $('scenario').onchange=()=>$('scenarioHelp').textContent=SCENARIOS[$('scenario').value].help;
+ $('applyScene').onclick=()=>{resetScene();tweaks(false);};$('replay').onclick=resetScene;$('tweakToggle').onclick=()=>tweaks($('tweaks').hidden);$('tweakClose').onclick=()=>tweaks(false);
+ $('speed').onchange=()=>{if(active&&active.state==='running'){active.offset=elapsed(active);active.base=performance.now();active.rate=Number($('speed').value);}};
+ $('role').onchange=()=>switchRole($('role').value);
+ $('nextEvent').onclick=()=>{if(!active||active.state!=='running')return;active.offset=Math.max(elapsed(active),active.events[active.index]?.t||0);active.base=performance.now();tick();};
+ $('prompt').oninput=updateSend;$('composer').onsubmit=e=>{e.preventDefault();if(!$('send').disabled)start($('prompt').value.trim());};
+ $('chat').addEventListener('scroll',()=>{if(autoScrolling)return;follow=$('chat').scrollHeight-$('chat').clientHeight-$('chat').scrollTop<45;if(follow)$('latest').hidden=true;});$('latest').onclick=()=>{follow=true;toBottom();};
+ $('prdToggle').onclick=toggleDoc;if(matchMedia('(max-width:760px)').matches)$('prdToggle').textContent='查看需求';
+ $('download').onclick=()=>{const url=URL.createObjectURL(new Blob([$ ('prdMdSource').textContent],{type:'text/markdown;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='会展智媒通对话过程反馈需求文档.md';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+ $('records').onclick=()=>{$('recordModal').hidden=false;$('recordClose').focus();};$('recordClose').onclick=()=>{$('recordModal').hidden=true;$('records').focus();};
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){tweaks(false);if(!$('recordModal').hidden){$('recordModal').hidden=true;$('records').focus();}}if(e.key==='Tab'&&!$('recordModal').hidden){e.preventDefault();$('recordClose').focus();}});
+ const drag=$('splitDrag');drag.addEventListener('pointerdown',e=>{if($('prdPanel').classList.contains('collapsed'))return;const start=e.clientX,width=$('prdPanel').getBoundingClientRect().width;drag.setPointerCapture(e.pointerId);drag.classList.add('dragging');document.body.style.userSelect='none';document.body.style.cursor='col-resize';const move=ev=>setWidth(width+start-ev.clientX);const up=()=>{drag.classList.remove('dragging');document.body.style.userSelect='';document.body.style.cursor='';drag.removeEventListener('pointermove',move);drag.removeEventListener('pointerup',up);drag.removeEventListener('pointercancel',up);};drag.addEventListener('pointermove',move);drag.addEventListener('pointerup',up);drag.addEventListener('pointercancel',up);});drag.onkeydown=e=>{if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();setWidth($('prdPanel').getBoundingClientRect().width+(e.key==='ArrowLeft'?20:-20));}};
+ initRoleControls();switchRole('visitor');setInterval(tick,100);
+});
+</script></body></html>

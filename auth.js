@@ -1,6 +1,7 @@
 (function () {
 
   var HASHES = {
+    "hzzx-chat-progress": "ffb24f9bda0c9606b71258e15b903c99ceec53532d07f0ca4f1503c6f75ec2d3",
     root: "6f743079bb6c445c48b42820cc8a251af7a6e64dca56712e99d54b9dfb7bbf0d",
     "ai-report-center":
       "396b4a65224bbf68a8fe005e35713490aefccfa868106b7edf07949516ba5054",
