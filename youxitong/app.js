@@ -511,10 +511,15 @@
   function syncProducts(){return header('商城商品','维护商品种类、图片、统一售价与库存。',identityWritable()?button('种类管理','syncCategories','secondary-button')+button('新增商品','createProduct','primary-button'):'')+panel('商品列表','',table(['商品名称','种类','商品图片','商品说明','统一售价','可售库存','操作'],syncData.products.map(function(p){return[esc(p.name),esc(p.category),p.image?'<img class="sync-product-thumb" src="'+esc(p.image)+'" alt="'+esc(p.name)+'">':'—',esc(p.description),money(p.price/100),p.stock,(identityWritable()?button('编辑','syncProductEdit:'+p.id,'text-button'):'')+syncDeleteButton('product',p.id)];})));}
   function syncShowCategories(){modalShell('商品种类管理','', '<div class="catalog-management-head"><span>商品种类</span>'+button('新增种类','syncCategoryNew','primary-button')+'</div>'+table(['种类名称','操作'],syncData.categories.slice().sort(function(a,b){return a.localeCompare(b,'zh-CN');}).map(function(name){return[esc(name),syncDeleteButton('category',encodeURIComponent(name))];})),button('关闭','closeModal','secondary-button'));}
   function syncNewCategory(){modalShell('新增商品种类','',syncField('种类名称（必填）','category','','text')+'<p class="identity-error" role="alert"></p>',button('取消','syncCategories','secondary-button')+button('确认新增','syncCategoryCreate','primary-button'));}
+  var syncProductStockSnapshot=null;
+  function syncUpdateProductStock(id,quantity,expected){if(!identityWritable())return '无编辑权限';var p=syncData.products.find(function(p){return p.id===id;});if(!p)return '商品不存在';if(!Number.isSafeInteger(quantity)||quantity<0||quantity>2147483647)return '库存须为非负整数';if(p.stock!==expected)return '库存已变化，请关闭后重新打开编辑';p.stock=quantity;syncSave();return '';}
   function syncShowProduct(id){
     var p=id?syncData.products.find(function(item){return item.id===id;}):null;
     if(id&&!p){showToast('商品不存在，请重新选择');return;}
     syncProductEditId=p?p.id:'';syncProductImage=p?p.image||'':'';syncImageBusy=false;
+    syncProductStockSnapshot=p?p.stock:null;
+    if(p){modalShell('编辑商城商品','', '<div class="readonly-detail"><p>商品名称：'+esc(p.name)+'</p><p>商品种类：'+esc(p.category)+'</p><p>商品说明：'+esc(p.description)+'</p>'+(p.image?'<img class="sync-product-preview" src="'+esc(p.image)+'" alt="商品图片">':'<p>商品图片：—</p>')+'<p>统一售价：'+money(p.price/100)+'</p></div>'+syncField('可售库存','stock',p.stock,'number')+'<p class="identity-error" role="alert"></p>',button('取消','closeModal','secondary-button')+button('确认保存','syncProductSave','primary-button'));return;}
+
     modalShell(p?'编辑商城商品':'新增商城商品','',
       syncField('商品名称（必填）','name',p?p.name:'')+
       '<label class="form-row"><span>商品种类（必填）</span><select data-sync-field="category" aria-label="商品种类"><option value="">请选择商品种类</option>'+syncData.categories.map(function(name){return '<option'+(p&&p.category===name?' selected':'')+'>'+esc(name)+'</option>';}).join('')+'</select></label>'+
@@ -522,7 +527,7 @@
       syncField('商品说明（必填）','description',p?p.description:'')+
       '<label class="form-row"><span>商品图片</span><input type="file" data-sync-image accept="image/png,image/jpeg" aria-label="上传商品图片"></label><div id="syncImagePreview">'+(syncProductImage?'<img class="sync-product-preview" src="'+esc(syncProductImage)+'" alt="商品图片预览">'+button('移除图片','syncImageRemove','secondary-button'):'')+'</div><p class="sync-hint">PNG/JPEG，1MB以内，宽高不超过2048。原型仅本地预览。</p>'+
       syncField('统一售价（元）','price',p?(p.price/100).toFixed(2):'','number')+
-      (p?'<label class="form-row"><span>当前库存</span><input aria-label="当前库存" value="'+p.stock+'" readonly></label><p class="sync-hint">编辑不调整库存，已下单商品的名称和价格保持不变。</p>':syncField('初始库存','stock','','number'))+
+      syncField('初始库存','stock','','number')+
       '<p class="identity-error" role="alert"></p>',button('取消','closeModal','secondary-button')+button('确认保存','syncProductSave','primary-button'));
   }
   function syncUpload(file){if(!file)return;if(!['image/png','image/jpeg'].includes(file.type)||!file.size||file.size>1048576){identityError('请选择1MB以内PNG或JPEG图片');return;}syncImageBusy=true;var save=modal.querySelector('[data-action="syncProductSave"]');if(save)save.disabled=true;var reader=new FileReader();function finish(){syncImageBusy=false;if(save&&save.isConnected)save.disabled=false;}reader.onerror=function(){finish();identityError('图片读取失败，请重试');};reader.onload=function(){var img=new Image();img.onerror=function(){finish();identityError('不是可识别的图片，请重新选择');};img.onload=function(){finish();if(img.width>2048||img.height>2048){identityError('图片宽高不能超过2048');return;}if(!save||!save.isConnected)return;syncProductImage=String(reader.result);modal.querySelector('#syncImagePreview').innerHTML='<img class="sync-product-preview" src="'+esc(syncProductImage)+'" alt="商品图片预览">'+button('移除图片','syncImageRemove','secondary-button');identityError('');};img.src=String(reader.result);};reader.readAsDataURL(file);}
@@ -633,14 +638,14 @@
       if(syncImageBusy)return true;
       var product=syncProductEditId?syncData.products.find(function(p){return p.id===syncProductEditId;}):null;
       if(syncProductEditId&&!product)return identityError('商品不存在，请关闭后重新选择'),true;
+      if(product){var stockError=d.stock===''||d.stock===undefined?'请输入库存':syncUpdateProductStock(product.id,Number(d.stock),syncProductStockSnapshot);if(stockError)return identityError(stockError),true;closeModal();render();showToast('库存已更新','success');return true;}
       if(!d.name||!d.description||!syncData.categories.includes(d.category))return identityError('填写名称和说明，并选择已管理的种类'),true;
       var price=syncMoney(d.price),stock=Number(d.stock);
       if(price===null)return identityError('售价须为大于零且最多两位小数的元金额'),true;
       if(!product&&(!Number.isSafeInteger(stock)||stock<=0))return identityError('初始库存须为正整数'),true;
       if(d.name.length>120||d.description.length>500)return identityError('名称最多120字，说明最多500字'),true;
       var values={name:d.name,category:d.category,description:d.description,price:price,image:syncProductImage};
-      if(product)Object.assign(product,values);
-      else syncData.products.push(Object.assign({id:'p-new-'+syncData.next++,stock:stock,used:false},values));
+      syncData.products.push(Object.assign({id:'p-new-'+syncData.next++,stock:stock,used:false},values));
       syncSave();closeModal();render();showToast(product?'商品已更新':'商品已保存到本地原型','success');
     }
 
