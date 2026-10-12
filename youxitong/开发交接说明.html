@@ -392,6 +392,8 @@
 <h3>订单与退污筛选契约补充</h3>
 <p>管理端订单查询支持 <code>start_date</code>、<code>end_date</code>、<code>hotel_org_id</code>、平台侧 <code>factory_org_id</code> 与状态组合；日期默认不传表示全部，起止日均包含。退污查询支持 <code>hotel_org_id</code>、<code>sku_id</code> 与状态组合。列表及总数使用相同过滤条件。</p>
 <p><code>/api/admin/order-filter-options</code> 与 <code>/api/factory/order-filter-options</code> 返回 <code>hotels</code>、<code>factories</code>、<code>skus</code> 三组 <code>{id,name}</code> 候选，覆盖全部授权历史订单，不受当前页限制，包含历史停用对象。工厂候选、列表与总数固定在当前工厂范围；酒店移动接口及资金写入事务未变。</p>
+<h3>退污列表工厂扣减展示</h3>
+<p>平台与工厂的整单退污列表及详情统一展示工厂扣减，详情不展示酒店销售单价、申请金额和实退金额；酒店端展示保持不变。实际项目使用服务端 <code>factory_deduction_cents</code>，酒店端该字段为 null；待确认、待入库和驳回为零，完成退款后按实际通过数量与历史工厂成本快照汇总。本次仅补充查询与展示，不修改退款、结算及账本事务。</p>
 
 </main>
 </body>
