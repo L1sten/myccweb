@@ -112,7 +112,7 @@ test('report retains all order counts while delivered-only approval counts and a
   f.state.role='factory_admin';let html=f.resource('业务报表',f.roles.factory_admin);
   assert.match(html,/<td>2<\/td><td>184<\/td><td>1<\/td><td>3<\/td><td>¥254\.40<\/td><td>¥16\.50<\/td><td>¥237\.90<\/td>/);
   assert.match(html,/累计原布草件数/);assert.match(html,/退污通过件数/);
-  f.state.section='退污退款';html=f.web(f.roles.factory_admin);assert.doesNotMatch(html,/¥16\.50|¥24\.00|¥40\.00|申请金额|实际退款/);assert.match(html,/暂无整单退污申请/);
+  f.state.section='退污返洗';html=f.web(f.roles.factory_admin);assert.doesNotMatch(html,/¥16\.50|¥24\.00|¥40\.00|申请金额|实际退款/);assert.match(html,/暂无整单退污申请/);
   f.state.role='platform_admin';html=f.resource('工厂结算',f.roles.platform_admin);
   assert.match(html,/<td>1<\/td><td>64<\/td><td>3<\/td><td>¥254\.40<\/td><td>¥16\.50<\/td><td>¥237\.90<\/td>/);
 });
@@ -283,7 +283,7 @@ test('daily inbound derives its site from the hotel and exposes no site selector
 });
 
 test('management refunds show only whole applications with shared filtering paging and isolated money',()=>{
- const f=fixture(),o=f.order('RP202609060086');f.flowSetup();f.state.role='platform_admin';f.state.section='退污退款';
+ const f=fixture(),o=f.order('RP202609060086');f.flowSetup();f.state.role='platform_admin';f.state.section='退污返洗';
  f.data.linenRefunds.push({id:'hidden-legacy',order:o.id,hotel:o.hotel,factory:o.factory,sku:'linen-duvet',quantity:1,approved:0,status:'PENDING'});
  f.data.returnRequests=Array.from({length:21},(_,i)=>({id:'WHOLE-'+i,order:o.id,hotel:o.hotel,factory:o.factory,status:'PENDING',reason:'测试',refundCents:0,lines:[{sku:'linen-duvet',name:'被套',quantity:2,received:0,hotelPrice:800,factoryPrice:550},{sku:'linen-sheet',name:'床单',quantity:1,received:0,hotelPrice:500,factoryPrice:300}]}));
  let html=f.web(f.roles.platform_admin);assert.equal((html.match(/class="data-table"/g)||[]).length,1);assert.match(html,/工厂扣减/);assert.doesNotMatch(html,/申请 \/ 实退金额|¥21.00/);f.data.returnRequests[0].status='REFUNDED';assert.match(f.web(f.roles.platform_admin),/¥14.00/);f.action('flowReturnDetail:WHOLE-0');assert.match(f.modalHtml(),/工厂扣减：¥14.00/);assert.doesNotMatch(f.modalHtml(),/申请金额|实际退款/);f.data.returnRequests[0].status='PENDING';assert.match(html,/共 21 条/);assert.doesNotMatch(html,/hidden-legacy|WHOLE-20|旧单已同意|布草进度/);assert.match(html,/WHOLE-0/);

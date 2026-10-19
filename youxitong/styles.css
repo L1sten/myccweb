@@ -258,3 +258,122 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{
 .mobile-modal .modal-card>header{padding:16px}.mobile-modal .modal-card>header h2{font-size:20px}.mobile-modal .modal-card>header small{font-size:12px}.mobile-modal .modal-content{font-size:14px}.mobile-modal .modal-card>footer{padding:12px 16px 16px;gap:8px}.mobile-modal .modal-card>footer button{font-size:14px;min-height:44px}.mobile-modal .data-table td{font-size:14px}.mobile-modal .data-table td::before,.mobile-modal .identity-alert,.mobile-modal .identity-error{font-size:12px}
 .phone-screen .store-live-page{padding-bottom:112px}.phone-screen .store-live-checkout{padding:12px 16px;gap:12px;background:#fff;border-top:1px solid #dce4ef}.phone-screen .store-live-checkout .store-cart-trigger{flex:1;width:auto;min-width:0;border:0;padding:0;text-align:left;background:transparent;color:var(--mobile-navy)}.store-cart-trigger span,.store-cart-trigger strong{display:block}.store-cart-trigger span{font-size:12px;color:#63748a}.phone-screen .store-cart-trigger strong{font-size:20px;line-height:1.4}.phone-screen .store-live-checkout>.primary-button{width:auto;min-width:100px;flex-shrink:0;font-size:14px}
 .mobile-modal .store-cart-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:16px;background:#fff;border:1px solid #dce4ef;border-radius:8px;margin-bottom:12px}.store-cart-row strong,.store-cart-row small{display:block;overflow-wrap:anywhere}.store-cart-row strong{font-size:14px}.store-cart-row small{font-size:12px;color:#63748a;margin-top:4px}.store-cart-row>b{font-size:16px}.store-cart-controls{grid-column:1/-1;display:flex;align-items:center;gap:8px}.mobile-modal .store-cart-controls button{min-height:44px;padding:8px 10px;font-size:12px}.store-cart-controls span{min-width:24px;text-align:center}.store-cart-controls .link-button{margin-left:auto;color:#63748a}.store-cart-total{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0;border-top:1px solid #dce4ef}.store-cart-total strong{font-size:24px;color:#041b43}.store-cart-empty{padding:40px 8px;text-align:center}.store-cart-empty p,.store-checkout-note{font-size:12px;color:#63748a}.store-success{padding:24px 0}.store-success>strong{display:inline-block;background:#a9df18;color:#041b43;padding:6px 12px;border-radius:8px;font-size:18px}.store-success p{overflow-wrap:anywhere}.mobile-modal.store-cart-sheet .modal-card{height:82%;margin-top:auto;border-radius:12px 12px 0 0}.mobile-modal.store-cart-sheet.show{background:#041b4340;display:flex;align-items:flex-end}.mobile-modal.store-cart-sheet .modal-card>header{border-radius:12px 12px 0 0}
+/* V1.9 modules share the established blue, neutral and table tokens. */
+.v19-form{display:grid;gap:14px;min-width:0}
+.v19-form .form-row{margin:0}
+.v19-form .data-table-wrap{max-width:100%;overflow:auto}
+.v19-form .data-table input[type=number]{min-width:90px;max-width:130px}
+.v19-checks{display:flex;flex-wrap:wrap;gap:12px 20px;padding:14px;background:#f6f8fc;border-radius:8px}
+.v19-checks>strong{width:100%;color:#14233f}
+.v19-checks label{display:inline-flex;align-items:center;gap:8px;min-height:36px}
+.v19-checks input{width:18px;height:18px}
+.v19-payment-notice{color:#677c9c;font-size:13px;line-height:1.7}
+.v19-payment-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.v19-payment-actions button{min-height:44px;white-space:normal}
+.v19-driver-info p{margin:9px 0;overflow-wrap:anywhere}
+
+.laundry-icon img{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit}
+
+.prototype-modal:not(.mobile-modal) .modal-card:has(.v19-form){max-height:calc(100dvh - 106px)}
+.modal-card:has(.v19-form) .modal-content{min-height:0}
+.modal-card:has(.v19-form)>header,.modal-card:has(.v19-form)>footer{flex-shrink:0}
+@media(min-width:680px){.modal-card.wide .v19-form:has([data-v19-field=plate]){grid-template-columns:repeat(2,minmax(0,1fr))}.modal-card.wide .v19-form:has([data-v19-field=plate])>p,.modal-card.wide .v19-form:has([data-v19-field=plate])>.v19-checks{grid-column:1/-1}}
+
+#v19ReviewOperator[hidden]{display:none}
+
+/* PRD version changes: color the full marked section or clause. */
+.v19-added,.v19-adjusted{display:inline-block;padding:3px 9px;border-radius:5px;font-size:1em;font-weight:750;line-height:1.5;vertical-align:baseline;white-space:nowrap}.v19-added{color:#1d4ed8!important;background:#eff6ff;border:1px solid #93c5fd}.v19-adjusted{color:#a44708!important;background:#fff7ed;border:1px solid #fdba74}.v19-content-added{--v19-text:#1d4ed8}.v19-content-adjusted{--v19-text:#a44708}#prdContent .v19-content-added,#prdContent .v19-content-adjusted,#prdContent .v19-content-added *,#prdContent .v19-content-adjusted *{color:var(--v19-text)!important}
+
+/* Floor management: keep assignment and quota actions distinct. */
+.floor-row-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;min-width:190px}.floor-row-actions .link-button+.link-button{margin-left:0}.floor-row-actions .danger{margin-left:8px}.floor-owner-cell{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;min-width:112px}.floor-owner-name{overflow-wrap:anywhere;max-width:180px}.floor-owner-cell .link-button{margin:0}.floor-row-actions .link-button,.floor-owner-cell .link-button{white-space:nowrap}
+
+/* Floor owner: destructive action matches the dialog button sizing. */
+.modal-card footer .floor-unbind-button{color:#c03639;border-color:#efc5c6;background:#fff;white-space:nowrap}
+.modal-card footer .floor-unbind-button:hover{color:#a52629;border-color:#da9698;background:#fff4f4}
+.modal-card footer .floor-unbind-button:focus-visible{outline:2px solid #c03639;outline-offset:2px}
+
+/* V1.9.1 terminal scanning */
+
+
+/* WeChat recharge: same mobile sheet geometry as cart and checkout. */
+.wechat-recharge{display:block!important;padding-top:16px}.wechat-recharge>label{display:block;font-size:13px;font-weight:700;margin-bottom:8px}.wechat-recharge-input{display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);padding:6px 0 12px}.wechat-recharge-input>span{font-size:26px}.wechat-recharge-input input{width:100%;min-width:0;height:44px;border:0!important;background:transparent;font-size:24px!important}.wechat-recharge>button{width:100%;min-height:44px;margin-top:18px}.wechat-payment{text-align:center;padding:12px 0}.wechat-payment-state{font-size:18px;font-weight:700;color:var(--ink);margin:12px 0}.wechat-payment-amount{font-size:36px;line-height:1.35;letter-spacing:-1px;color:var(--ink)}.wechat-payment-caption{font-size:13px;color:var(--muted);margin:8px 0 18px}.wechat-payment dl{margin:0;padding:6px 16px;background:white;border:1px solid var(--line);border-radius:10px;text-align:left}.wechat-payment dl>div{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid var(--line-soft)}.wechat-payment dl>div:last-child{border-bottom:0}.wechat-payment dt{font-size:12px;color:var(--muted);flex-shrink:0}.wechat-payment dd{margin:0;text-align:right;font-size:13px;color:var(--ink);overflow-wrap:anywhere}.wechat-result-icon{width:56px;height:56px;display:grid;place-items:center;margin:0 auto;border-radius:50%;background:#e9f7f1;color:var(--success);font-size:30px}.wechat-payment-spinner{width:42px;height:42px;margin:0 auto;border:3px solid var(--line);border-top-color:var(--blue-600);border-radius:50%;animation:wechat-spin .8s linear infinite}@keyframes wechat-spin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.wechat-payment-spinner{animation:none}}
+
+/* V1.9.3: read-only linen assets and third-party circulation records. */
+.asset-filters { align-items: flex-end; gap: 12px; }
+.asset-filters .form-row { flex: 1 1 150px; min-width: 135px; margin: 0; }
+.asset-filters .form-row input, .asset-filters .form-row select { width: 100%; min-width: 0; }
+.asset-filter-error { width: 100%; margin: 0; color: #b42318; }
+.asset-filter-error:empty { display: none; }
+.asset-panel .data-table { min-width: 1100px; }
+.asset-panel .data-table th { white-space: nowrap; }
+.asset-panel .data-table td { max-width: 220px; overflow-wrap: anywhere; vertical-align: top; }
+.asset-epc { display: inline-block; max-width: 210px; font: 12px/1.65 ui-monospace, SFMono-Regular, Consolas, monospace; overflow-wrap: anywhere; text-align: left; }
+.asset-empty { padding: 40px 16px; text-align: center; color: #647797; }
+.asset-empty strong { color: #344766; }
+.asset-pagination { gap: 12px; flex-wrap: wrap; }
+.asset-facts { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 20px; margin: 0 0 24px; }
+.asset-facts dt { color: #647797; font-size: 12px; margin-bottom: 7px; }
+.asset-facts dd { margin: 0; color: #182c4c; line-height: 1.6; overflow-wrap: anywhere; }
+.asset-location { display: grid; gap: 7px; padding: 18px; border-radius: 10px; background: #f0f5fe; color: #1b4d9e; }
+.asset-location small { color: #657d9c; }
+/* Asset trace table follows the reference's compact tabular layout. */
+.asset-trace { margin-top: 26px; color: #444; }
+.asset-trace-title { border-bottom: 1px solid #dcdcdc; }
+.asset-trace-title h3 { display: inline-block; margin: 0 0 -1px; padding: 13px 18px; border: 1px solid #dcdcdc; border-bottom-color: #fff; border-radius: 4px 4px 0 0; background: #fff; color: #606266; font-size: 16px; font-weight: 500; }
+.asset-trace-scroll { overflow-x: auto; overscroll-behavior-x: contain; }
+.asset-trace-table { width: 100%; min-width: 1040px; border-collapse: collapse; font-size: 14px; line-height: 1.5; table-layout: fixed; }
+.asset-trace-table th, .asset-trace-table td { padding: 13px 12px; border-bottom: 1px solid #ddd; text-align: left; overflow-wrap: anywhere; vertical-align: middle; }
+.asset-trace-table th { color: #444; background: #fff; font-size: 15px; font-weight: 600; border-bottom-width: 2px; }
+.asset-trace-table th:nth-child(1) { width: 10%; }
+.asset-trace-table th:nth-child(2) { width: 16%; }
+.asset-trace-table th:nth-child(3) { width: 9%; }
+.asset-trace-table th:nth-child(4) { width: 9%; }
+.asset-trace-table th:nth-child(5) { width: 19%; }
+.asset-trace-table th:nth-child(6) { width: 7%; }
+.asset-trace-table th:nth-child(7) { width: 19%; }
+.asset-trace-table th:nth-child(8) { width: 11%; }
+.asset-trace-table tbody tr:nth-child(odd) { background: #f8f8f8; }
+.asset-trace-table tbody tr:hover { background: #f2f6fc; }
+.asset-trace-table .link-button { font: inherit; text-align: left; overflow-wrap: anywhere; }
+.asset-trace-table .trace-empty { padding: 36px; color: #909399; text-align: center; }
+.asset-trace-pagination { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 10px; padding: 24px 0 4px; color: #606266; font-size: 14px; }
+.asset-trace-pagination select, .asset-trace-pagination input { height: 34px; padding: 5px 9px; border: 1px solid #dcdfe6; border-radius: 4px; color: #606266; background: white; font: inherit; }
+.asset-trace-pagination select { width: 110px; }
+.asset-trace-pagination input { width: 58px; text-align: center; }
+.asset-trace-pagination label { display: flex; align-items: center; gap: 8px; }
+.trace-page-buttons { display: flex; gap: 7px; }
+.trace-page-buttons button, .trace-ellipsis { min-width: 34px; height: 34px; display: inline-flex; justify-content: center; align-items: center; padding: 0 9px; border: 0; border-radius: 3px; background: #f4f4f5; color: #606266; font: inherit; cursor: pointer; }
+.trace-page-buttons button:hover:not(:disabled) { color: #409eff; }
+.trace-page-buttons button[aria-current="page"] { color: #fff; background: #409eff; }
+.trace-page-buttons button:disabled { color: #b9bec7; background: #f6f6f7; cursor: not-allowed; }
+.asset-trace :focus-visible { outline: 2px solid #409eff; outline-offset: 2px; }
+.asset-order-page { padding-bottom: 8px; }
+.terminal-retired { max-width: 500px; margin: 80px auto; padding: 32px; border: 1px solid #dce5f2; border-radius: 14px; background: #fff; color: #405776; line-height: 1.8; }
+.terminal-retired h1 { color: #142746; font-size: 22px; }
+@media(max-width:600px) { .asset-facts { grid-template-columns: 1fr; } .trace-page-buttons { flex-wrap: wrap; } .asset-trace-pagination { justify-content: flex-start; } }
+.asset-filters { flex-wrap: wrap; }
+.asset-filters .filter-actions { flex: 0 0 auto; white-space: nowrap; }
+.asset-filters .filter-actions button { min-width: 58px; }
+.asset-filters + .panel { margin-bottom: 14px; }
+.prototype-modal:has(.asset-detail) { grid-template-rows: minmax(0, 1fr); }
+.modal-card:has(.asset-detail) { width: min(1480px, 98%); max-width: 98%; max-height: calc(100vh - 106px); min-height: 0; overflow: hidden; }
+.modal-card:has(.asset-detail) > header, .modal-card:has(.asset-detail) > footer { flex: 0 0 auto; }
+.modal-content:has(> .asset-detail) { flex: 1 1 auto; min-height: 0; overflow: auto; overscroll-behavior: contain; }
+
+.asset-panel .data-table { font-size: 12px; }
+.asset-panel .data-table th { font-size: 11px; }
+.asset-list-panel .data-table th:last-child, .asset-list-panel .data-table td:last-child { position: sticky; right: 0; background: white; box-shadow: -1px 0 #e3e9f3; min-width: 58px; }
+.asset-list-panel .data-table th:last-child { background: #f5f7fb; }
+
+/* Quota rows share the same floor-derived columns at both levels. */
+.quota-rollup { min-width: 0; }
+.quota-rollup .data-table-wrap, .v19-form:has([data-v19-initial]) .data-table-wrap { max-width: 100%; overflow-x: auto; }
+.quota-rollup .data-table, .v19-form:has([data-v19-initial]) .data-table { min-width: 850px; }
+.quota-rollup th, .v19-form:has([data-v19-initial]) th { white-space: nowrap; }
+.quota-rollup td:first-child, .v19-form:has([data-v19-initial]) td:first-child { min-width: 100px; max-width: 160px; white-space: normal; overflow-wrap: anywhere; }
+.v19-form .data-table input[data-v19-initial], .v19-form .data-table input[data-v19-cap] { width: 92px; min-width: 70px; padding: 7px 9px; border: 1px solid var(--line); border-radius: 5px; color: var(--ink); font: inherit; }
+.modal-card.wide:has(.quota-rollup), .modal-card.wide:has([data-v19-initial]) { width: min(1080px,98%); }
+.quota-rollup .data-table td, .v19-form:has([data-v19-initial]) .data-table td { font-size: 12px; line-height: 1.5; }
+.quota-rollup .data-table th, .v19-form:has([data-v19-initial]) .data-table th { font-size: 11px; line-height: 1.5; }
+.prototype-modal:has(.quota-rollup), .prototype-modal:has([data-v19-initial]) { grid-template-columns: minmax(0,1fr); }
+.modal-card.wide:has(.quota-rollup), .modal-card.wide:has([data-v19-initial]) { min-width: 0; max-width: 100%; }
