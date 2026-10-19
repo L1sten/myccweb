@@ -7,8 +7,8 @@
     platform_finance:{label:'平台财务',surface:'web',org:'优洗通平台',subtitle:'经营数据、钱包流水与工厂结算',nav:['经营总览','业务订单','退污返洗','客户与组织','酒店与站点','洗涤厂与站点','协议价格','司机管理','钱包与流水','工厂结算','商城订单','平台成员']},
     hotel_admin:{label:'酒店管理员',surface:'mobile',org:'云栖酒店',subtitle:'补充、订单、账户与商城',nav:['补充','订单','商城','我的']},
     hotel_operator:{label:'酒店操作员',surface:'mobile',org:'云栖酒店',subtitle:'补充下单、订单与退污、商城',nav:['补充','订单','商城','我的']},
-    factory_admin:{label:'工厂管理员',surface:'factory',org:'桐乡洗涤一厂',subtitle:'本厂订单、退款、仓库与报表',nav:['经营总览','业务订单','退污返洗','布草与仓库','RFID 扫描记录','业务报表']},
-    factory_operator:{label:'工厂操作员',surface:'factory',org:'桐乡洗涤一厂',subtitle:'本厂订单履约、退款确认、仓库与扫描记录',nav:['经营总览','业务订单','退污返洗','布草与仓库','RFID 扫描记录','业务报表']},
+    factory_admin:{label:'工厂管理员',surface:'factory',org:'桐乡洗涤一厂',subtitle:'本厂订单、退款、布草统计与报表',nav:['经营总览','业务订单','退污返洗','布草统计','RFID 扫描记录','业务报表']},
+    factory_operator:{label:'工厂操作员',surface:'factory',org:'桐乡洗涤一厂',subtitle:'本厂订单履约、退款确认、布草统计与资产追踪',nav:['经营总览','业务订单','退污返洗','布草统计','RFID 扫描记录','业务报表']},
     factory_finance:{label:'工厂财务',surface:'factory',org:'桐乡洗涤一厂',subtitle:'本厂订单与报表只读',nav:['经营总览','业务订单','业务报表']},
     driver:{label:'司机',surface:'mobile',org:'桐乡洗涤一厂',subtitle:'本人负责区域与酒店清单',nav:['负责酒店']},
     terminal:{label:'厂内终端（工厂操作员）',surface:'terminal',org:'桐乡洗涤一厂',subtitle:'首次芯片入库与租赁备货',nav:['首次芯片入库','租赁备货']}
@@ -36,7 +36,7 @@
   function table(headers,rows){return '<div class="data-table-wrap"><table class="data-table"><thead><tr>'+headers.map(function(h){return '<th>'+esc(h)+'</th>';}).join('')+'</tr></thead><tbody>'+rows.map(function(row){return '<tr>'+row.map(function(cell){return '<td>'+cell+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></div><div class="pagination"><span>共 '+rows.length+' 条记录</span><div><button disabled>‹</button><button class="active">1</button><button disabled>›</button></div></div>';}
   function panel(title,aside,body,cls){return '<article class="panel '+(cls||'')+'"><div class="panel-head"><strong>'+esc(title)+'</strong><span>'+esc(aside||'')+'</span></div><div class="panel-body">'+body+'</div></article>';}
   function timeline(items){return '<div class="timeline">'+items.map(function(item,index){return '<div class="timeline-item '+(item.done?'done':'')+'"><i>'+((item.done||index===0)?'✓':'')+'</i><div><strong>'+esc(item.title)+'</strong><span>'+esc(item.time||'待处理')+'</span></div></div>';}).join('')+'</div>';}
-  function navSymbol(name){var symbols={'经营总览':'总','业务订单':'单','退污返洗':'退','客户与组织':'客','酒店与站点':'店','协议价格':'价','司机管理':'司','钱包与流水':'账','工厂结算':'结','商城商品':'商','商城订单':'购','平台成员':'权','布草与仓库':'仓','RFID 扫描记录':'芯','业务报表':'报','补充':'补','订单':'单','商城':'商','我的':'我','负责酒店':'店','首次芯片入库':'入','租赁备货':'备'};return symbols[name]||name.slice(0,1);}
+  function navSymbol(name){var symbols={'经营总览':'总','业务订单':'单','退污返洗':'退','客户与组织':'客','酒店与站点':'店','协议价格':'价','司机管理':'司','钱包与流水':'账','工厂结算':'结','商城商品':'商','商城订单':'购','平台成员':'权','布草统计':'仓','RFID 扫描记录':'芯','业务报表':'报','补充':'补','订单':'单','商城':'商','我的':'我','负责酒店':'店','首次芯片入库':'入','租赁备货':'备'};return symbols[name]||name.slice(0,1);}
 
   function specialState(title){
     var map={
@@ -80,7 +80,6 @@
     if(section==='工厂结算')return header(section,'按已送达订单中的工厂成本汇总各洗涤厂结算金额。','')+panel('结算汇总','线下结算',table(['工厂组织编号','洗涤厂','已送达订单','结算金额'],[['org-factory-1','桐乡洗涤一厂','128',money(126320)]]));
     if(section==='商城商品')return header(section,'维护酒店耗材商品、统一售价和可售库存。',platformWriter?button('新增商品','createProduct','primary-button'):'')+panel('商品列表','',table(['商品名称','分类','商品说明','统一售价','可售库存','状态'],[['客房高效清洁剂','客房清洁','500ml，温和低泡',money(39),'86',badge('正常','success')],['酒店香氛补充装','香氛用品','清新木质调',money(68),'0',badge('正常','success')]]));
     if(section==='商城订单')return mallOrdersPage();
-    if(section==='布草与仓库')return header(section,'按首次芯片入库和租赁备货事件汇总本工厂布草数量。','')+panel('仓库汇总','',table(['布草编号','布草品类','累计入库','累计备货','当前可用'],syncTerminalSkus().map(function(s){var counts={'linen-duvet':[8642,7356,1286],'linen-sheet':[7906,6920,986],'linen-towel':[5672,5486,186]}[s.id];return[esc(s.id),esc(s.name)].concat(counts||['未登记','未登记','未登记']);})));
     if(section==='RFID 扫描记录')return header(section,'查看厂内终端已提交并由系统确认的扫描事件。','')+panel('扫描事件','每页 20 条',table(['事件编号','工作模式','关联业务','布草品类','识别数量','采集方式','提交时间'],[['evt-20260907-028','首次芯片入库','IN-20260907-028','被套','42','MANUAL','2026-09-07 08:58'],['evt-20260907-019','租赁备货','RP202609070018','床单','60','MANUAL','2026-09-07 10:08']]));
     if(section==='业务报表')return header(section,'查看本工厂累计订单、已送达订单、布草总件数和工厂应收。','')+panel('工厂履约汇总','',table(['累计订单','已送达订单','布草总件数','工厂应收'],[['196','128','8268',money(126320)]]));
     return specialState(section);
@@ -791,8 +790,8 @@
   // Platform information architecture. Existing actions keep their data and safeguards.
   var managementQueries={hotel:{},factory:{}},managementPrices={hotel:'',factory:''},managementPriceKeywords={hotel:'',factory:''},managementPriceDraft=null,managementReturn=null,managementMembers={hotel:'',factory:''},managementMemberReturn=null;
   Object.keys(roles).filter(function(key){return key.indexOf('platform_')===0;}).forEach(function(key){var nav=[];roles[key].nav.forEach(function(name){if(name==='客户与组织')return;if(name==='酒店与站点')nav.push('酒店档案','酒店成员','酒店协议价');else if(name==='洗涤厂与站点')nav.push('工厂档案','工厂成员','工厂协议价');else if(name!=='协议价格')nav.push(name);});roles[key].nav=nav;});
-  function managementSection(section){if(section==='用户与权限')return '平台成员';if(section==='客户与组织'){var org=identityOrg(identity.members||identity.detail);return org&&org.type==='factory'?'工厂档案':'酒店档案';}return {'酒店与站点':'酒店档案','酒店与楼层':'酒店档案','酒店服务关系':'酒店档案','洗涤厂与站点':'工厂档案','协议价格':'酒店协议价'}[section]||section;}
-  function managementIcon(name,active){var key={'经营总览':'dashboard','业务订单':'orders','退污返洗':'refunds','酒店档案':'hotel','工厂档案':'factory','酒店成员':'members','工厂成员':'members','酒店协议价':'price','工厂协议价':'price','司机管理':'delivery','钱包与流水':'wallet','工厂结算':'settlement','商城商品':'products','商城订单':'store-orders','平台成员':'users','布草与仓库':'warehouse','RFID 扫描记录':'scan','业务报表':'reports'}[name]||'orders';return '<img class="sidebar-menu-icon" src="assets/icons/nav-'+key+(active?'-active':'')+'.svg" alt="" aria-hidden="true">';}
+  function managementSection(section){if(section==='布草与仓库')return '布草统计';if(section==='布草品类配置')return '品类配置';if(section==='用户与权限')return '平台成员';if(section==='客户与组织'){var org=identityOrg(identity.members||identity.detail);return org&&org.type==='factory'?'工厂档案':'酒店档案';}return {'酒店与站点':'酒店档案','酒店与楼层':'酒店档案','酒店服务关系':'酒店档案','洗涤厂与站点':'工厂档案','协议价格':'酒店协议价'}[section]||section;}
+  function managementIcon(name,active){var key={'经营总览':'dashboard','业务订单':'orders','退污返洗':'refunds','酒店档案':'hotel','工厂档案':'factory','酒店成员':'members','工厂成员':'members','酒店协议价':'price','工厂协议价':'price','司机管理':'delivery','钱包与流水':'wallet','工厂结算':'settlement','商城商品':'products','商城订单':'store-orders','平台成员':'users','布草统计':'warehouse','RFID 扫描记录':'scan','业务报表':'reports'}[name]||'orders';return '<img class="sidebar-menu-icon" src="assets/icons/nav-'+key+(active?'-active':'')+'.svg" alt="" aria-hidden="true">';}
   function managementNavigation(role){var groups=[['经营总览',['经营总览']],['业务管理',['业务订单','退污返洗']],['酒店管理',['酒店档案','酒店成员','酒店协议价']],['工厂管理',['工厂档案','工厂成员','工厂协议价']],['配送管理',['司机管理']],['财务管理',['钱包与流水','工厂结算']],['商城管理',['商城商品','商城订单']],['系统管理',['平台成员']]];if(role.surface!=='web')groups=[['工作空间',role.nav]];return groups.map(function(group){var items=group[1].filter(function(item){return role.nav.includes(item);});return items.length?'<div class="nav-group-label">'+esc(group[0])+'</div>'+items.map(function(item){return '<button class="nav-item '+(item===state.section?'active':'')+'" data-section="'+esc(item)+'" title="'+esc(item)+'" aria-label="'+esc(item)+'"'+(item===state.section?' aria-current="page"':'')+'><span class="nav-symbol">'+managementIcon(item,item===state.section)+'</span><span>'+esc(item)+'</span></button>';}).join(''):'';}).join('');}
   function managementRemember(){if(state.section==='酒店档案'||state.section==='工厂档案')managementQueries[state.section==='酒店档案'?'hotel':'factory']=Object.assign({},catalog.query);}
   function managementNavigate(section){var previousSection=state.section;managementRemember();state.section=managementSection(section);if(!roles[state.role].nav.includes(state.section))state.section=roles[state.role].nav[0];identity.detail='';identity.members='';catalog.detail='';if(previousSection!==state.section&&['酒店成员','工厂成员','平台成员'].includes(state.section)){identity.query={q:'',org:'',role:'',status:'',type:''};identity.queryDraft=null;identity.page=1;}if(state.section==='酒店档案'||state.section==='工厂档案')catalog.query=Object.assign({},managementQueries[state.section==='酒店档案'?'hotel':'factory']);render();}
@@ -945,8 +944,38 @@
   var flowTerminal=terminalWorkspace,flowInbound={mode:'DAILY',site:'',hotel:'',request:'',sku:'',quantity:'1',token:''};
   function flowDailySite(hotel){var site=catSite(catalog.mappings[hotel]);return site&&site.active&&site.factory==='org-factory-1'?site:null;}
   terminalWorkspace=function(role){if(state.section!=='酒店入库')return flowTerminal(role);flowSetup();var sites=catalog.sites.filter(function(s){return s.factory==='org-factory-1';}),requests=syncData.returnRequests.filter(function(r){return r.factory==='org-factory-1'&&r.status==='AWAITING_INBOUND';}),req=requests.find(function(r){return r.id===flowInbound.request;}),hotels=identity.orgs.filter(function(h){return h.type==='hotel'&&h.active&&flowDailySite(h.id);}),dailySite=flowDailySite(flowInbound.hotel);return '<header class="terminal-mobile-head"><h1>酒店布草入库</h1></header><section class="terminal-mobile-content"><div class="terminal-mode-switch">'+role.nav.map(function(n){return button(n,'flowTerminalNav:'+n,n===state.section?'primary-button':'secondary-button');}).join('')+'</div><div class="terminal-mobile-form">'+flowSelect('入库类型','mode',[{id:'DAILY',name:'日常回收'},{id:'RETURN',name:'退污入库'}],flowInbound.mode)+(flowInbound.mode==='RETURN'?flowSelect('退污申请','request',requests.map(function(r){return{id:r.id,name:r.id+' · '+(identityOrg(r.hotel)||{}).name};}),flowInbound.request):flowSelect('酒店','hotel',hotels,flowInbound.hotel)+(flowInbound.hotel?'<p class="field-label">承接站点：'+esc(dailySite?dailySite.name:'暂无有效承接站点，请先配置')+'</p>':''))+flowSelect('布草','sku',req?req.lines.map(function(l){return{id:l.sku,name:l.name+' · 待入库 '+(l.quantity-l.received)};}):syncTerminalSkus(),flowInbound.sku)+'<label>本次入库数量<input id="flowInboundQuantity" type="number" min="1" value="'+esc(flowInbound.quantity)+'"></label>'+button('登记入库','flowInboundSave','primary-button',!!flowInbound.completed||(flowInbound.mode==='DAILY'&&!dailySite))+(flowInbound.completed?button('开始新批次','flowNewBatch','secondary-button'):'')+'</div>'+'</section>';};
-  function flowAccountKeys(){flowSetup();return Array.from(new Set(Object.keys(syncData.hotelLinen).concat(Object.keys(syncData.quotas),syncData.receipts.map(function(r){return r.hotel+'|'+r.sku;}))));}
-  var flowResource=actualResource;actualResource=function(section,role){if(section!=='布草与仓库')return flowResource(section,role);flowSetup();var keys=flowAccountKeys().filter(function(key){var hotel=key.split('|')[0];return syncData.receipts.some(function(r){return r.hotel===hotel&&r.factory==='org-factory-1';})||catalog.orders.some(function(o){return o.hotel===hotel&&o.factory==='org-factory-1';});});return header(section,'','')+panel('酒店布草累计出入库','',managementTable(['酒店','布草','日常入库','退污入库','累计入库','备货出库'],keys.map(function(key){var p=key.split('|'),receipts=syncData.receipts.filter(function(r){return r.hotel===p[0]&&r.sku===p[1]&&r.factory==='org-factory-1';}),daily=receipts.filter(function(r){return r.type==='DAILY';}).reduce(function(n,r){return n+r.quantity;},0),refund=receipts.filter(function(r){return r.type==='RETURN';}).reduce(function(n,r){return n+r.quantity;},0),out=catalog.orders.filter(function(o){return o.hotel===p[0]&&o.factory==='org-factory-1';}).reduce(function(n,o){var l=linenLines(o).find(function(l){return l.sku===p[1];});return n+(l?Number((o.stocked||{})[l.name]||0):0);},0);return[esc((identityOrg(p[0])||{}).name),esc((syncTerminalSkus().find(function(s){return s.id===p[1];})||{}).name),daily,refund,daily+refund,out];})));};
+  function flowStatisticsAllowed(){return ['factory_admin','factory_operator'].includes(state.role);}
+  function flowStatistics(){
+    flowSetup();
+    if(!flowStatisticsAllowed())return {rows:[],error:'当前角色无权访问布草统计'};
+    // Keep the existing factory preview identity; hotel filters and mappings never determine scope.
+    var factory=v19&&v19.api.factory?v19.api.factory():'org-factory-1',rows=new Map(),seen=new Map(),error='';
+    function row(sku,name){if(!rows.has(sku)){var category=syncTerminalSkus().find(function(s){return s.id===sku;});rows.set(sku,{sku:sku,name:category?category.name:name||'历史品类',daily:0,refund:0,incoming:0,out:0});}return rows.get(sku);}
+    function add(target,key,quantity){if(!Number.isSafeInteger(quantity)||quantity<0||!Number.isSafeInteger(target[key]+quantity)){error='布草统计数量异常，请核查后重试';return;}target[key]+=quantity;}
+    syncTerminalSkus().filter(function(s){return s.active!==false;}).forEach(function(s){row(s.id,s.name);});
+    (syncData.receipts||[]).filter(function(r){return r.factory===factory&&['DAILY','RETURN'].includes(r.type);}).forEach(function(r){
+      if(!r.sku||!Number.isSafeInteger(r.quantity)||r.quantity<=0){error='布草统计入库记录异常，请核查后重试';return;}
+      if(r.token){var signature=JSON.stringify([r.hotel,r.sku,r.type,r.quantity,r.request||'']);if(seen.has(r.token)){if(seen.get(r.token)!==signature)error='布草统计入库批次重复，请核查后重试';return;}seen.set(r.token,signature);}
+      add(row(r.sku,r.name),r.type==='DAILY'?'daily':'refund',r.quantity);
+    });
+    // stocked is the committed successful quantity. Do not add reservations, initial stock, or EPC events.
+    catalog.orders.filter(function(o){return o.factory===factory;}).forEach(function(o){
+      linenLines(o).forEach(function(line){var quantity=(o.stocked||{})[line.name];if(quantity===undefined||quantity===0)return;
+        if(!line.sku||!Number.isSafeInteger(line.quantity)||line.quantity<0||!Number.isSafeInteger(quantity)||quantity<0||quantity>line.quantity){error='布草统计出库记录异常，请核查后重试';return;}
+        add(row(line.sku,line.name),'out',quantity);
+      });
+    });
+    rows.forEach(function(r){r.incoming=r.daily+r.refund;if(!Number.isSafeInteger(r.incoming))error='布草统计数量异常，请核查后重试';});
+    return {rows:Array.from(rows.values()).sort(function(a,b){return a.name.localeCompare(b.name,'zh-CN')||a.sku.localeCompare(b.sku);}),error:error};
+  }
+  var flowResource=actualResource;actualResource=function(section,role){
+    if(section==='布草与仓库'){state.section='布草统计';section='布草统计';}
+    if(section!=='布草统计')return flowResource(section,role);
+    if(!flowStatisticsAllowed())return header('无权访问','当前角色无权访问布草统计','');
+    var result=flowStatistics();
+    if(result.error)return header(section,'','')+'<div class="state-card error"><span class="state-icon">!</span><h3>数据加载失败</h3><p>'+esc(result.error)+'</p>'+button('重新加载','restore','primary-button')+'</div>';
+    return header(section,'','')+panel('本厂布草累计出入库','',managementTable(['布草品类','日常入库','退污入库','累计入库','累计出库'],result.rows.map(function(r){return[esc(r.name),r.daily,r.refund,r.incoming,r.out];}))+(result.rows.length?'':'<p class="identity-empty">暂无布草统计记录</p>'));
+  };
   function flowSelect(label,key,items,value){return '<label>'+label+'<select data-flow-inbound="'+key+'">'+identityOptions(items,value,'请选择')+'</select></label>';}
   root.addEventListener('change',function(e){var key=e.target.dataset.flowInbound;if(!key)return;flowInbound[key]=e.target.value;flowInbound.token='';flowInbound.completed=false;if(key==='mode'||key==='site'){flowInbound.hotel='';flowInbound.request='';flowInbound.sku='';}if(key==='hotel'){flowInbound.sku='';flowInbound.quantity='';}render();});
   var flowLegacyAction=linenAction;

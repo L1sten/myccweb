@@ -17,7 +17,7 @@ function fixture(){
   vm.runInNewContext(source,context);return context.api;
 }
 test('all six Web roles get asset nav without standalone flow or device menus',()=>{
-  const f=fixture();for(const role of ['platform_admin','platform_ops','platform_finance','factory_admin','factory_operator','factory_finance']){f.state.role=role;const nav=f.nav(f.roles[role]);for(const text of ['布草品类配置','布草资产'])assert.equal((nav.match(new RegExp('data-section="'+text+'"','g'))||[]).length,1);assert.doesNotMatch(nav,/终端设备|RFID 扫描记录|布草登记|data-section="流转记录"/);}
+  const f=fixture();for(const role of ['platform_admin','platform_ops','platform_finance','factory_admin','factory_operator','factory_finance']){f.state.role=role;const nav=f.nav(f.roles[role]);for(const text of ['品类配置','布草资产'])assert.equal((nav.match(new RegExp('data-section="'+text+'"','g'))||[]).length,1);assert.doesNotMatch(nav,/终端设备|RFID 扫描记录|布草登记|data-section="流转记录"/);}
 });
 test('asset list, detail and flows share EPCs and unique completed wash cycles',()=>{
   const f=fixture();for(const asset of f.assets.assets()){const flows=f.assets.events().filter(x=>x.epc===asset.epc);assert.equal(asset.washes,new Set(flows.filter(x=>x.action==='WASH_COMPLETE').map(x=>x.cycle)).size);assert.equal(asset.updated,flows.at(-1).time);f.assets.detail(asset.epc);assert.match(f.html(),/追踪记录/);f.action('assetTraceSize:'+asset.epc+':100');for(const flow of flows)assert.ok(f.html().includes('data-record-id="'+flow.id+'"'));}assert.equal(f.assets.assets()[0].washes,2);

@@ -125,7 +125,7 @@
       api:{db:db,assets:allAssets,events:allEvents,filtered:filtered,queries:queries,pages:pages,assetPage:assetPage,detail:detail},
       action:action,
       identityRender:function(section){if(orderNavigation){if(section==='业务订单'&&orderNavigation.role===state.role&&allowed())return orderNavigation.html;orderNavigation=null;}if(['终端设备','RFID 扫描记录','布草登记','流转记录'].includes(section)){state.section='布草资产';section='布草资产';}if(section==='布草资产')return allowed()?assetPage():c.header('无权访问','当前角色无权访问布草资产','');return previous.identityRender(section);},
-      navigation:function(role){var managed=['布草品类配置','布草资产'];var copy=Object.assign({},role,{nav:role.nav.filter(function(n){return !managed.includes(n);})});return c.legacy.navigation(copy)+'<div class="nav-group-label">布草管理</div>'+managed.filter(function(n){return role.nav.includes(n);}).map(navItem).join('');},
+      navigation:function(role){var managed=['品类配置','布草资产','布草统计'];var copy=Object.assign({},role,{nav:role.nav.filter(function(n){return !managed.includes(n);})});return c.legacy.navigation(copy)+'<div class="nav-group-label">布草管理</div>'+managed.filter(function(n){return role.nav.includes(n);}).map(navItem).join('');},
       terminal:function(){return '<section class="terminal-retired"><h1>工厂现场作业</h1><p>工厂终端由第三方提供，请使用现场作业系统。</p><p>平台和工厂管理端可查看布草资产及其追踪记录。</p></section>';}
     };
   };

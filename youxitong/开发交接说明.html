@@ -10,8 +10,19 @@
 *{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:#35435c;font:15px/1.8 "PingFang SC","Microsoft YaHei",sans-serif}.page{width:min(960px,calc(100% - 32px));margin:32px auto;padding:40px 48px;border:1px solid #dce3ed;border-radius:12px;background:#fff}h1,h2{color:#101c33;line-height:1.4}h1{margin:0 0 26px;padding-bottom:16px;border-bottom:2px solid #1f67e8;font-size:28px}h2{margin:28px 0 10px;font-size:20px}li{margin:9px 0}ul{padding-left:23px}@media(max-width:640px){.page{margin:0;width:100%;padding:24px 20px;border:0;border-radius:0}h1{font-size:23px}}@media print{body{background:#fff}.page{width:100%;margin:0;padding:0;border:0}h2{break-after:avoid}li{break-inside:avoid}}
 table{width:100%;border-collapse:collapse;margin:16px 0;table-layout:fixed}th,td{border:1px solid #dce3ed;padding:9px 12px;text-align:left;vertical-align:top;overflow-wrap:anywhere}th{background:#f5f7fb;color:#101c33}code{overflow-wrap:anywhere}pre{overflow:auto}.v19-added,.v19-adjusted{display:inline-block;padding:3px 9px;border-radius:5px;font-size:1em;font-weight:750;line-height:1.5;vertical-align:baseline;white-space:nowrap}.v19-added{color:#1d4ed8!important;background:#eff6ff;border:1px solid #93c5fd}.v19-adjusted{color:#a44708!important;background:#fff7ed;border:1px solid #fdba74}.v19-content-added{--v19-text:#1d4ed8}.v19-content-adjusted{--v19-text:#a44708}.v19-content-added,.v19-content-adjusted,.v19-content-added *,.v19-content-adjusted *{color:var(--v19-text)!important}</style>
 </head>
-<body><main class="page">
+<body>
+<main class="page">
 <h1>优洗通当前系统开发交接说明</h1>
+<h2 class="v19-content-adjusted"><span class="v19-adjusted">V1.9.5 调整</span> 布草统计与品类配置</h2>
+<ul class="v19-content-adjusted">
+<li>新增只读 GET /api/factory/linen-statistics，仅 FACTORY_ADMIN、FACTORY_OPERATOR 可用，工厂取当前 Actor；返回列表字段 sku_id、sku_name、daily_inbound_quantity、refund_inbound_quantity、inbound_quantity、outbound_quantity。不接收切换工厂的参数。</li>
+<li>分别按工厂、SKU 聚合已落地的 linen_inbound_batch/line（DAILY、REFUND）及 terminal_scan_event（RENTAL_STOCKING），再合并；累计入库为日常加退污。第三方事件已写入上述业务记录，不再叠加 linen_asset_flow。统计不依赖当前酒店服务关系、额度或楼层初始化。</li>
+<li>启用品类无记录返回0；停用品类有本厂有效历史入出记录继续返回。名称、ID稳定排序，旧 /api/factory/warehouse 保持兼容，Web 旧 warehouse 页面地址继续可用但改用新统计查询。</li>
+<li>实际 Web 与原型导航统一为“品类配置、布草资产、布草统计”，统计仅工厂管理员／操作员可见。页面直接展示服务端四项累计数量，无酒店拆行及当前可用量；请求失败保留错误与重试入口。</li>
+<li>品类列表和表单移除图片控件。已有 image_url / 原型 image 保留，编辑其他字段原值回传，新建不设图片；字段及旧契约不删除。酒店选品与商城图片不改。</li>
+<li>同步运行时 OpenAPI、Web 请求映射及生成类型；移动端无新接口消费者。不新增迁移，不改资金、额度和第三方写入事务，历史记录不重写。</li>
+<li>验证结论（2026-10-19）：Web 完整检查通过（255 项测试），小程序完整检查通过（56 项测试及 H5、微信构建），后端 Java17 verify 通过（217 项测试）。新增统计集成用例在独立 MySQL 8.4.5 测试库另行验证 7/7 通过；原型 99/99 测试通过，已分别在实际 Web 测试环境和原型浏览器核对统计列、旧地址、标题面包屑、导航权限及品类编辑无图片控件；组件及原型回归覆盖失败重试和图片原值保留。测试库、临时账号及过程文件清理；第三方真实接入和真实支付仍按既有待联调范围处理。</li>
+</ul>
 <h2 class="v19-content-adjusted"><span class="v19-adjusted">V1.9.4 调整</span> 资产页面与查询入口</h2>
 <ul class="v19-content-adjusted">
 <li>移除独立“流转记录”菜单和全局列表，保留资产详情完整分页轨迹。资产页去除“唯一登记数量”区块和当前环节筛选；资产当前环节字段仍只读展示。</li>
@@ -41,15 +52,15 @@ table{width:100%;border-collapse:collapse;margin:16px 0;table-layout:fixed}th,td
 <h2 class="v19-content-adjusted"><span class="v19-adjusted">V1.9.3 调整</span> 当前工程边界与历史替代</h2>
 <ul class="v19-content-adjusted">
 <li>以 V1.9 非硬件业务为基线；Web 保留工厂操作员既有履约／退污权限，小程序仅酒店与司机。旧 terminal 路由仅迁移提示和退出，无设备连接、扫描或工厂请求。移除自研 BLE/SDK、绑定会话、预建 EPC 与操作员必选站点新业务；V1.9.1/V1.9.2 的硬件契约只作历史出处，不能继续调用。</li>
-<li><span class="v19-adjusted">V1.9.4 调整</span> Web 与原型使用“布草品类配置／布草资产”，轨迹保留在资产详情，平台三角色全局只读资产、工厂三角色本厂只读；品类编辑仍限平台管理员／运营。原型保留非硬件微信充值、楼层额度与负责人交互，演示数据不替代真实终端联调。</li>
+<li class="v19-content-adjusted"><span class="v19-adjusted">V1.9.4 调整</span> Web 与原型使用“布草品类配置／布草资产”，轨迹保留在资产详情，平台三角色全局只读资产、工厂三角色本厂只读；品类编辑仍限平台管理员／运营。原型保留非硬件微信充值、楼层额度与负责人交互，演示数据不替代真实终端联调。</li>
 <li>本次不删除或重放已有设备、绑定、芯片、订单、退款、账本与扫描历史；不按日期推定业务统计起点，不补造未知芯片或初始额度。资产状态无人工修改接口。</li>
 </ul>
 <h3 class="v19-content-added"><span class="v19-added">V1.9.3 新增</span> 第三方身份与事件契约</h3>
-<ul class="v19-content-adjusted">
+<ul class="v19-content-added">
 <li>独立集成入口 <code>/api/integration/v1</code>，使用单独 Bearer 凭据与固定工厂范围，默认未启用；不是用户登录 token，也不是设备 SN。调用者不能通过传参扩大工厂权限；真实凭据放运行环境，不写文档或代码。</li>
 <li><code>GET /reference-data</code> 提供授权业务字典；<code>GET /orders</code>、<code>GET /refund-orders</code> 提供授权业务对象；<code>POST /events</code> 提交事件，<code>GET /events/{external_event_id}</code> 查询原结果。</li>
 <li>请求：<code>external_event_id</code>、<code>action</code>、<code>site_id</code>、<code>occurred_at</code>（Asia/Shanghai）及 <code>items</code> 必填；业务相关的 <code>hotel_org_id</code>、<code>floor_id</code>、<code>order_id</code>、<code>refund_order_id</code> 按动作提供，<code>actor_name</code> 必填，仅记录第三方操作人说明；真实授权身份是凭据对应的 <code>source_id</code>，不由该姓名决定。请求体上限256KiB；<code>items</code> 每批1至1000条，含 <code>epc</code>；登记动作同时提供 <code>sku_id</code>。</li>
-<li>上下文校验：<code>REGISTER</code> 及库内四动作不接受 <code>hotel_org_id/floor_id/order_id/refund_order_id</code>，库内事件沿用前序归属；<span class="v19-adjusted">V1.9.4 调整</span> <code>DAILY</code> 要求酒店及有效楼层，不接受订单或退污编号；<code>REFUND</code> 选择退污申请，原订单自动派生，不接受另选订单。</li>
+<li class="v19-content-adjusted">上下文校验：<code>REGISTER</code> 及库内四动作不接受 <code>hotel_org_id/floor_id/order_id/refund_order_id</code>，库内事件沿用前序归属；<span class="v19-adjusted">V1.9.4 调整</span> <code>DAILY</code> 要求酒店及有效楼层，不接受订单或退污编号；<code>REFUND</code> 选择退污申请，原订单自动派生，不接受另选订单。</li>
 <li>时间校验：<code>occurred_at</code> 明确使用上海时间，不得在未来、不得早于资产最新有效事件；旧时间进入待核对，不反向覆盖状态。</li>
 <li>动作枚举：<code>REGISTER</code>、<code>DIRTY_INBOUND</code>、<code>WASH_START</code>、<code>WASH_COMPLETE</code>、<code>CLEAN_INBOUND</code>、<code>STOCKING</code>、<code>DISPATCH</code>、<code>DELIVERY</code>、<code>DAILY</code>、<code>REFUND</code>。洗涤开始与完成要求 <code>cycle_id</code>，同芯片同洗涤循环完成只计一次。</li>
 <li>结果状态 <code>COMPLETED</code> 或 <code>NEEDS_REVIEW</code>。缺前序、旧发生时间等进入待核对，返回原因，不形成有效轨迹、不改变资产和资金；调用方应查询原批次结果，不把接收成功当业务完成。</li>
@@ -598,7 +609,6 @@ table{width:100%;border-collapse:collapse;margin:16px 0;table-layout:fixed}th,td
 <p><code>/api/admin/order-filter-options</code> 与 <code>/api/factory/order-filter-options</code> 返回 <code>hotels</code>、<code>factories</code>、<code>skus</code> 三组 <code>{id,name}</code> 候选，覆盖全部授权历史订单，不受当前页限制，包含历史停用对象。工厂候选、列表与总数固定在当前工厂范围；酒店移动接口及资金写入事务未变。</p>
 <h3>退污列表工厂扣减展示</h3>
 <p>平台与工厂的整单退污列表及详情统一展示工厂扣减，详情不展示酒店销售单价、申请金额和实退金额；酒店端展示保持不变。实际项目使用服务端 <code>factory_deduction_cents</code>，酒店端该字段为 null；待确认、待入库和驳回为零，完成退款后按实际通过数量与历史工厂成本快照汇总。本次仅补充查询与展示，不修改退款、结算及账本事务。</p>
-
 <h3>V1.9.4 原型入库归属核定（2026-10-19）</h3>
 <ul>
 <li>经用户确认，云栖酒店两笔被套日常入库均归1F：<code>IN-1791784121277-p7739y0ibg</code>（20件）和 <code>IN-mv64tex1-6iwigud</code>（1件）。</li>
@@ -606,7 +616,14 @@ table{width:100%;border-collapse:collapse;margin:16px 0;table-layout:fixed}th,td
 <li>当前本地1F与酒店被套汇总一致：日常入库21、退污入库0、累计入库21、未出库占用0、累计出库0、可下单量21。刷新不重复累计。</li>
 <li>这是原型演示数据修复，未改变V1.9.4产品规则、实际项目或生产数据；其他未核定记录继续保留校验。原型89项检查通过。</li>
 </ul>
+<h3>V1.9.4：资产追踪表与关联单据导航（2026-10-19）</h3>
+<ul>
+<li>资产详情追踪区改为八列表格；默认10条/页，支持10/20/50/100、首页/尾页、数字页和跳页。实际Web继续使用现有资产详情的 limit/offset 与 flow_total，不新增接口字段。</li>
+<li>当前事件契约不含追踪工位、工作组、备注，三列显示“—”；不得用站点或动作推造。业务客户展示酒店/楼层，无酒店时展示工厂/站点。来源系统名称不显示。</li>
+<li>关联业务订单进入主工作区订单详情，复用原详情字段及权限，不打开弹窗。返回恢复原资产、追踪页码/每页条数和资产列表条件；普通订单列表原详情入口保持。</li>
+<li>原型与实际Web同列序、分页和返回规则；关联不存在或无权的订单明确提示，不跳转替代记录。本调整仅涉及呈现和导航，不改变事件、数量、资金或历史记录。</li>
+</ul>
+
 </main>
-<section><h3>V1.9.4：资产追踪表与关联单据导航（2026-10-19）</h3><ul><li>资产详情追踪区改为八列表格；默认10条/页，支持10/20/50/100、首页/尾页、数字页和跳页。实际Web继续使用现有资产详情的 limit/offset 与 flow_total，不新增接口字段。</li><li>当前事件契约不含追踪工位、工作组、备注，三列显示“—”；不得用站点或动作推造。业务客户展示酒店/楼层，无酒店时展示工厂/站点。来源系统名称不显示。</li><li>关联业务订单进入主工作区订单详情，复用原详情字段及权限，不打开弹窗。返回恢复原资产、追踪页码/每页条数和资产列表条件；普通订单列表原详情入口保持。</li><li>原型与实际Web同列序、分页和返回规则；关联不存在或无权的订单明确提示，不跳转替代记录。本调整仅涉及呈现和导航，不改变事件、数量、资金或历史记录。</li></ul></section>
 </body>
 </html>
