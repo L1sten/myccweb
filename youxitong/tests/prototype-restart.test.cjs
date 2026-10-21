@@ -10,7 +10,7 @@ async function fixture(store=storage()){
  const element=()=>({innerHTML:'',value:'',addEventListener(){},querySelectorAll:()=>[],querySelector:()=>null,classList:{contains:()=>false,add(){},remove(){}}});
  const document={getElementById(id){if(!elements.has(id))elements.set(id,element());return elements.get(id);},addEventListener(){},querySelector:()=>null};
  const context={document,localStorage:store,sessionStorage:storage(),setTimeout,clearTimeout,URL,location:{href:'http://localhost/'},history:{replaceState(){}},navigator:{locks:{request:(name,options,callback)=>Promise.resolve(callback({name}))}},addEventListener:(name,fn)=>handlers[name]=fn};context.window=context;
- for(const file of ['prototype-reset-data.js','prototype-storage.js','v19.js','v193.js'])vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../'+file),'utf8'),context);
+ for(const file of ['prototype-reset-data.js','prototype-storage.js','v19.js','v193.js','driver-orders.js'])vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../'+file),'utf8'),context);
  const source=fs.readFileSync(path.join(__dirname,'../app.js'),'utf8').replace(/\}\)\(\);\s*$/,`
    var actualModal=modalShell,actualToast=showToast,actualRender=render;
    var testModal='';render=function(){};closeModal=function(){};modalShell=function(t,s,h,f){testModal=h+(f||'');};showToast=function(){};
@@ -45,7 +45,7 @@ test('new order, partial stocking and refund use 50/10/10/10/15 and write one de
  f.state.role='hotel_admin';f.catalog.selection[hotel]=floor;f.state.qty={'被套':40};f.showSubmit();f.submit();f.submit();
  assert.equal(f.catalog.orders.length,1);const order=f.catalog.orders[0];assert.equal(f.data.entries.filter(x=>x.type==='布草订单扣款').length,1);assert.equal(f.balance(hotel),1968000);assert.equal(f.account(hotel,sku).amount,10);
  order.progress=1;f.state.role='terminal';f.state.section='租赁备货';Object.assign(f.terminalDraft,{site:'site-factory-east',order:order.id,sku,quantity:'20'});f.stock();assert.equal(f.account(hotel,sku).amount,10);f.terminalDraft.fingerprint='';f.terminalDraft.quantity='20';f.stock();assert.equal(order.stocked['被套'],40);assert.equal(f.account(hotel,sku).amount,10);
- order.progress=3;order.deliveredAt=new Date().toISOString();f.state.role='hotel_admin';assert.equal(f.request(order.id,{[sku]:5},'污渍'),'');const req=f.data.returnRequests[0];f.state.role='factory_admin';assert.equal(f.review(req.id,true,''),'');
+ order.progress=3;order.deliveredAt=new Date().toISOString();f.state.role='driver';assert.equal(f.request(order.id,{[sku]:5},'污渍'),'');const req=f.data.returnRequests[0];f.state.role='factory_admin';assert.equal(f.review(req.id,true,''),'');
  f.state.role='terminal';assert.equal(f.receipt({token:'return-new',hotel,site:'site-factory-east',sku,quantity:5,request:req.id}),'');assert.equal(f.account(hotel,sku).amount,15);assert.equal(f.balance(hotel),1972000);
  const again=await fixture(f.store);again.setup();assert.equal(again.catalog.orders.length,1);assert.equal(again.account(hotel,sku).amount,15);assert.equal(again.balance(hotel),1972000);assert.equal(again.ledger(hotel).length,3);
 });

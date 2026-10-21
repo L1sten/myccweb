@@ -20,45 +20,46 @@ function fixture() {
   context.api.setup();
   return { ...context.api, input(id, value) { document.getElementById(id).value = value; } };
 }
-function apply(f, quantity) {
+// Retained pre-V1.8 rows are fixtures, never created through the retired hotel action.
+function seedLegacyRefund(f, quantity) {
   f.state.role = 'hotel_admin';
-  f.draft({ order: 'RP202609060086', sku: 'linen-duvet', quantity: String(quantity), reason: '明显污渍' });
-  f.input('linenRefundQuantity', String(quantity)); f.input('linenRefundReason', '明显污渍');
-  f.action('linenSubmit');
+  const o=f.order('RP202609060086'),line=f.lines(o)[0];
+  f.data.linenRefunds.unshift({id:'RF-legacy-'+f.data.linenRefunds.length,order:o.id,hotel:o.hotel,factory:o.factory,sku:line.sku,name:line.name,quantity,approved:0,price:line.hotelPrice,reason:'明显污渍',status:'PENDING',time:'2026-09-07 10:00'});
 }
 
-test('pending occupancy, partial approval, rejection and one-time ledger form a closed loop', () => {
+test('retained legacy refunds preserve pending occupancy, partial review and one-time ledger', () => {
   const f = fixture(), o = f.order('RP202609060086'), l = f.lines(o)[0];
   assert.equal(f.available(o, l), 20);
-  apply(f, 5); f.action('linenSubmit'); assert.equal(f.data.linenRefunds.length, 1); assert.equal(f.available(o, l), 15);
+  seedLegacyRefund(f, 5); f.action('linenSubmit'); assert.equal(f.data.linenRefunds.length, 1); assert.equal(f.available(o, l), 15);
   const request = f.data.linenRefunds[0], before = f.balance(o.hotel);
   f.state.role = 'factory_admin'; f.review(request.id); f.input('linenApproved', '3'); f.input('linenReviewNote', '部分通过'); f.action('linenApprove');
   assert.equal(f.available(o, l), 17); assert.equal(f.balance(o.hotel), before + 2400);
   f.review(request.id); f.action('linenApprove'); assert.equal(f.data.entries.length, 1);
-  apply(f, 2); assert.equal(f.available(o, l), 15);
+  seedLegacyRefund(f, 2); assert.equal(f.available(o, l), 15);
   f.state.role = 'factory_operator'; f.review(f.data.linenRefunds[0].id); f.input('linenReviewNote', '可正常使用'); f.action('linenReject');
   assert.equal(f.available(o, l), 17); assert.equal(f.data.entries.length, 1);
 });
 
-test('reject invalid quantity, cross-hotel request, undelivered order and missing historical price', () => {
+test('driver whole-order submission rejects invalid quantities, other hotels and invalid snapshots', () => {
   const f = fixture(), o = f.order('RP202609060086'), l = f.lines(o)[0];
-  for (const quantity of [0, 1.5, 21]) { apply(f, quantity); assert.equal(f.data.linenRefunds.length, 0); }
-  f.catalog.hotel = 'org-hotel-floorless'; apply(f, 1); assert.equal(f.data.linenRefunds.length, 0);
-  o.progress = 2; assert.equal(f.available(o, l), 0);
-  o.progress = 3; l.hotelPrice = null; assert.equal(f.available(o, l), 0);
+  f.state.role='driver';o.deliveredAt=new Date().toISOString();
+  for(const quantity of [0,1.5,21])assert.notEqual(f.flowSubmit(o.id,{[l.sku]:quantity},'污渍'),'');
+  const foreign={...o,id:'FOREIGN',hotel:'org-hotel-floorless'};f.catalog.orders.push(foreign);
+  assert.match(f.flowSubmit(foreign.id,{[l.sku]:1},'污渍'),/无权/);
+  o.progress=2;assert.notEqual(f.flowSubmit(o.id,{[l.sku]:1},'污渍'),'');
+  o.progress=3;l.hotelPrice=null;assert.notEqual(f.flowSubmit(o.id,{[l.sku]:1},'污渍'),'');
+  assert.equal(f.data.returnRequests.length,0);
 });
 
-
 test('reason limit is enforced even when called without native input limits', () => {
-  const f = fixture(); f.state.role = 'hotel_admin';
-  f.draft({ order: 'RP202609060086', sku: 'linen-duvet', quantity: '1', reason: '污'.repeat(201) });
-  f.input('linenRefundQuantity', '1'); f.input('linenRefundReason', '污'.repeat(201)); f.action('linenSubmit');
-  assert.equal(f.data.linenRefunds.length, 0); assert.match(f.error(), /200/);
+  const f=fixture(),o=f.order('RP202609060086');f.state.role='driver';o.deliveredAt=new Date().toISOString();
+  assert.match(f.flowSubmit(o.id,{'linen-duvet':1},'污'.repeat(201)),/200/);
+  assert.equal(f.data.returnRequests.length,0);
 });
 
 
 test('hotel refund labels and terminal-only quantities match the PRD without review notes', () => {
-  const f = fixture(); apply(f, 5);
+  const f = fixture(); seedLegacyRefund(f, 5);
   let html = f.html('refunds'); assert.match(html, /待检测/); assert.doesNotMatch(html, /通过 0|实退/);
   const row = f.data.linenRefunds[0]; row.status = 'APPROVED'; row.approved = 3; row.reviewNote = '不展示的核验内容';
   html = f.html('refunds'); assert.match(html, /已退款/); assert.match(html, /通过 3 件/); assert.match(html, /实退 ¥24.00/); assert.doesNotMatch(html, /不展示的核验内容|核验：/);
@@ -108,7 +109,7 @@ test('overapproved quantities and duplicate refund entries are anomalies, never 
 });
 
 test('report retains all order counts while delivered-only approval counts and amounts match settlements',()=>{
-  const f=fixture(); apply(f,5); const row=f.data.linenRefunds[0]; row.status='APPROVED';row.approved=3;
+  const f=fixture(); seedLegacyRefund(f,5); const row=f.data.linenRefunds[0]; row.status='APPROVED';row.approved=3;
   f.state.role='factory_admin';let html=f.resource('业务报表',f.roles.factory_admin);
   assert.match(html,/<td>2<\/td><td>184<\/td><td>1<\/td><td>3<\/td><td>¥254\.40<\/td><td>¥16\.50<\/td><td>¥237\.90<\/td>/);
   assert.match(html,/累计原布草件数/);assert.match(html,/退污通过件数/);
@@ -145,7 +146,7 @@ test('hotel card shows financial summary only when the order has a refund reques
   const f=fixture(),order=f.order('RP202609060086');
   assert.doesNotMatch(f.card(order),/原订单金额|已退金额|净支付|已通过退污/);
   assert.match(f.card(order),/369.60/);
-  apply(f,1);
+  seedLegacyRefund(f,1);
   for(const status of ['PENDING','APPROVED','REJECTED']) {
     f.data.linenRefunds[0].status=status;
     assert.match(f.card(order),/原订单金额/);
@@ -244,10 +245,10 @@ test('refund filters derive hotel and linen candidates from whole-order scope',(
 });
 
 test('version 2 whole-order return refunds once only after every approved item is received',()=>{
- const f=fixture(),o=f.order('RP202609060086');o.deliveredAt=new Date().toISOString();f.flowSetup();f.state.role='platform_admin';assert.equal(f.flowQuotaSave([{hotel:o.hotel,sku:'linen-duvet',cap:80},{hotel:o.hotel,sku:'linen-sheet',cap:90}]),'');assert.equal(f.flowAccount(o.hotel,'linen-duvet').amount,0);const balance=f.balance(o.hotel);f.state.role='hotel_admin';assert.equal(f.flowSubmit(o.id,{'linen-duvet':5,'linen-sheet':2},'污渍'), '');const r=f.data.returnRequests[0];assert.match(f.card(o),/有退污/);assert.match(f.flowSubmit(o.id,{'linen-duvet':1},'再次'),/仅可申请一次/);f.state.role='factory_operator';assert.equal(f.flowReview(r.id,true,''),'');assert.equal(r.status,'AWAITING_INBOUND');assert.equal(f.balance(o.hotel),balance);assert.equal(f.financials(o).hotelRefund,0);f.state.role='terminal';const receipt=(token,sku,quantity)=>f.flowReceipt({token,site:o.site,hotel:o.hotel,request:r.id,sku,quantity});assert.equal(receipt('batch-1','linen-duvet',3),'');assert.equal(f.flowAccount(o.hotel,'linen-duvet').amount,3);assert.equal(receipt('batch-1','linen-duvet',3),'');assert.equal(f.flowAccount(o.hotel,'linen-duvet').amount,3);assert.match(receipt('too-many','linen-duvet',3),/数量已变化/);assert.equal(receipt('batch-2','linen-duvet',2),'');assert.equal(f.balance(o.hotel),balance);assert.equal(receipt('batch-3','linen-sheet',2),'');assert.equal(r.status,'REFUNDED');assert.equal(f.balance(o.hotel),balance+5100);assert.equal(f.financials(o).hotelRefund,5100);assert.equal(f.financials(o).factoryDeduction,3510);assert.equal(receipt('batch-3','linen-sheet',2),'');assert.equal(f.balance(o.hotel),balance+5100);o.stocked={'被套':20};assert.equal(f.flowAccount(o.hotel,'linen-duvet').amount,5);
+ const f=fixture(),o=f.order('RP202609060086');o.deliveredAt=new Date().toISOString();f.flowSetup();f.state.role='platform_admin';assert.equal(f.flowQuotaSave([{hotel:o.hotel,sku:'linen-duvet',cap:80},{hotel:o.hotel,sku:'linen-sheet',cap:90}]),'');assert.equal(f.flowAccount(o.hotel,'linen-duvet').amount,0);const balance=f.balance(o.hotel);f.state.role='driver';assert.equal(f.flowSubmit(o.id,{'linen-duvet':5,'linen-sheet':2},'污渍'), '');const r=f.data.returnRequests[0];assert.match(f.card(o),/有退污/);assert.match(f.flowSubmit(o.id,{'linen-duvet':1},'再次'),/仅可申请一次/);f.state.role='factory_operator';assert.equal(f.flowReview(r.id,true,''),'');assert.equal(r.status,'AWAITING_INBOUND');assert.equal(f.balance(o.hotel),balance);assert.equal(f.financials(o).hotelRefund,0);f.state.role='terminal';const receipt=(token,sku,quantity)=>f.flowReceipt({token,site:o.site,hotel:o.hotel,request:r.id,sku,quantity});assert.equal(receipt('batch-1','linen-duvet',3),'');assert.equal(f.flowAccount(o.hotel,'linen-duvet').amount,3);assert.equal(receipt('batch-1','linen-duvet',3),'');assert.equal(f.flowAccount(o.hotel,'linen-duvet').amount,3);assert.match(receipt('too-many','linen-duvet',3),/数量已变化/);assert.equal(receipt('batch-2','linen-duvet',2),'');assert.equal(f.balance(o.hotel),balance);assert.equal(receipt('batch-3','linen-sheet',2),'');assert.equal(r.status,'REFUNDED');assert.equal(f.balance(o.hotel),balance+5100);assert.equal(f.financials(o).hotelRefund,5100);assert.equal(f.financials(o).factoryDeduction,3510);assert.equal(receipt('batch-3','linen-sheet',2),'');assert.equal(f.balance(o.hotel),balance+5100);o.stocked={'被套':20};assert.equal(f.flowAccount(o.hotel,'linen-duvet').amount,5);
 });
 test('return cutoff and rejected once-only remain, quota uses only actual inbound and new orders',()=>{
- const f=fixture(),o=f.order('RP202609060086');f.flowSetup();assert.match(f.flowReason(o),/可靠送达时间/);o.deliveredAt=new Date(Date.now()-86400000).toISOString();assert.match(f.flowReason(o),/24小时/);o.deliveredAt=new Date().toISOString();f.state.role='hotel_admin';assert.equal(f.flowSubmit(o.id,{'linen-duvet':1},'脏污'),'');f.state.role='factory_operator';assert.equal(f.flowReview(f.data.returnRequests[0].id,false,'不符合'),'');assert.match(f.flowReason(o),/仅可申请一次/);assert.equal(f.flowAccount(o.hotel,'linen-duvet').amount,0);f.state.role='terminal';assert.equal(f.flowReceipt({token:'daily',site:o.site,hotel:o.hotel,sku:'linen-duvet',quantity:50}),'');assert.equal(f.flowAccount(o.hotel,'linen-duvet').amount,50);f.catalog.orders.push({...o,id:'new-order',inventoryVersion:2,lines:[{sku:'linen-duvet',name:'被套',quantity:10}],qty:{'被套':10},stocked:{}});assert.equal(f.flowAccount(o.hotel,'linen-duvet').amount,40);f.catalog.orders.at(-1).stocked={'被套':10};assert.equal(f.flowAccount(o.hotel,'linen-duvet').amount,40);f.state.role='platform_admin';f.flowQuotaSave([{hotel:o.hotel,sku:'linen-duvet',cap:0}]);assert.equal(f.flowAccount(o.hotel,'linen-duvet').amount,0);
+ const f=fixture(),o=f.order('RP202609060086');f.flowSetup();assert.match(f.flowReason(o),/可靠送达时间/);o.deliveredAt=new Date(Date.now()-86400000).toISOString();assert.match(f.flowReason(o),/24小时/);o.deliveredAt=new Date().toISOString();f.state.role='driver';assert.equal(f.flowSubmit(o.id,{'linen-duvet':1},'脏污'),'');f.state.role='factory_operator';assert.equal(f.flowReview(f.data.returnRequests[0].id,false,'不符合'),'');assert.match(f.flowReason(o),/仅可申请一次/);assert.equal(f.flowAccount(o.hotel,'linen-duvet').amount,0);f.state.role='terminal';assert.equal(f.flowReceipt({token:'daily',site:o.site,hotel:o.hotel,sku:'linen-duvet',quantity:50}),'');assert.equal(f.flowAccount(o.hotel,'linen-duvet').amount,50);f.catalog.orders.push({...o,id:'new-order',inventoryVersion:2,lines:[{sku:'linen-duvet',name:'被套',quantity:10}],qty:{'被套':10},stocked:{}});assert.equal(f.flowAccount(o.hotel,'linen-duvet').amount,40);f.catalog.orders.at(-1).stocked={'被套':10};assert.equal(f.flowAccount(o.hotel,'linen-duvet').amount,40);f.state.role='platform_admin';f.flowQuotaSave([{hotel:o.hotel,sku:'linen-duvet',cap:0}]);assert.equal(f.flowAccount(o.hotel,'linen-duvet').amount,0);
 });
 test('platform direct recharge posts exactly once without bank reference or approval request',()=>{
  const f=fixture();f.state.role='platform_finance';const before=f.balance('org-hotel-yunqi'),requests=(f.data.rechargeRequests||[]).length;assert.equal(f.flowDirectRecharge('direct-1','org-hotel-yunqi',10000,'平台登记'),'');assert.equal(f.flowDirectRecharge('direct-1','org-hotel-yunqi',10000,'平台登记'),'');assert.equal(f.balance('org-hotel-yunqi'),before+10000);assert.equal((f.data.rechargeRequests||[]).length,requests);const entry=f.data.entries.find(e=>e.businessKey==='direct-recharge:direct-1');assert.equal(entry.bank,'');

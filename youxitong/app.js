@@ -18,7 +18,7 @@
     factory_admin:{label:'工厂管理员',surface:'factory',org:'桐乡洗涤一厂',subtitle:'本厂订单、退款、布草统计与报表',nav:['经营总览','业务订单','退污返洗','布草统计','RFID 扫描记录','业务报表']},
     factory_operator:{label:'工厂操作员',surface:'factory',org:'桐乡洗涤一厂',subtitle:'本厂订单履约、退款确认、布草统计与资产追踪',nav:['经营总览','业务订单','退污返洗','布草统计','RFID 扫描记录','业务报表']},
     factory_finance:{label:'工厂财务',surface:'factory',org:'桐乡洗涤一厂',subtitle:'本厂订单与报表只读',nav:['经营总览','业务订单','业务报表']},
-    driver:{label:'司机',surface:'mobile',org:'桐乡洗涤一厂',subtitle:'本人负责区域与酒店清单',nav:['负责酒店']},
+    driver:{label:'司机',surface:'mobile',org:'桐乡洗涤一厂',subtitle:'负责酒店订单、退污申请与进度',nav:['负责酒店']},
     terminal:{label:'厂内终端（工厂操作员）',surface:'terminal',org:'桐乡洗涤一厂',subtitle:'首次芯片入库与租赁备货',nav:['首次芯片入库','租赁备货']}
   };
   var state={role:'platform_admin',section:'经营总览',view:'normal',navCollapsed:false,qty:{'被套':0,'床单':0,'浴巾':0},scan:28,progress:0};
@@ -103,7 +103,7 @@
   ],users:[],query:{q:'',org:'',role:'',status:'',type:''},page:1,detail:'',draft:null,audit:[],next:100};
   var identityTypes={platform:'平台',hotel:'酒店',factory:'洗涤厂'};
   var identityRoleTypes={platform:['platform_admin','platform_ops','platform_finance'],hotel:['hotel_admin','hotel_operator'],factory:['factory_admin','factory_operator','factory_finance','driver']};
-  var identityCapabilities={platform_admin:'组织、全部账号、运营配置和财务管理',platform_ops:'组织、非平台角色账号、派单和业务配置；不办理财务充值',platform_finance:'充值、资金流水和财务工作台；组织与账号只读',hotel_admin:'本酒店成员、补货、退款、商城与酒店业务查询',hotel_operator:'本酒店补货、退款、商城与酒店业务查询；无成员管理',factory_admin:'本厂履约、退款确认、库存、终端、结算与报表；不管理账号',factory_operator:'本厂履约、退款确认、库存、终端及业务查询；不管理账号',factory_finance:'本厂订单、结算与报表查询',driver:'查看本人负责区域与酒店'};
+  var identityCapabilities={platform_admin:'组织、全部账号、运营配置和财务管理',platform_ops:'组织、非平台角色账号、派单和业务配置；不办理财务充值',platform_finance:'充值、资金流水和财务工作台；组织与账号只读',hotel_admin:'本酒店成员、补货、商城与订单、退污结果查询',hotel_operator:'本酒店补货、商城与授权楼层订单、退污结果查询；无成员管理',factory_admin:'本厂履约、退款确认、库存、终端、结算与报表；不管理账号',factory_operator:'本厂履约、退款确认、库存、终端及业务查询；不管理账号',factory_finance:'本厂订单、结算与报表查询',driver:'查看负责酒店订单与退污；按原工厂范围申请退污'};
   Object.keys(roles).filter(function(r){return r!=='terminal';}).forEach(function(r,i){identity.users.push({id:'user-'+r,org:r.indexOf('hotel_')===0?'org-hotel-yunqi':r.indexOf('factory_')===0||r==='driver'?'org-factory-1':'org-platform',role:r,name:roles[r].label,login:r,active:true,hotels:r==='driver'?['org-hotel-yunqi']:[],area:r==='driver'?'城东片区':'',sessions:1});});
   for(var identityIndex=0;identityIndex<10;identityIndex++)identity.users.push({id:'sample-'+identityIndex,org:'org-hotel-full',role:identityIndex===0?'hotel_admin':'hotel_operator',name:identityIndex===0?'悦澜管理员':'悦澜员工 '+identityIndex,login:'yuelan_'+identityIndex,active:true,hotels:[],sessions:1});
   identity.users.push({id:'sample-disabled',org:'org-hotel-full',role:'hotel_operator',name:'待恢复员工',login:'yuelan_disabled',active:false,hotels:[],sessions:0});
@@ -251,6 +251,7 @@
   }
 
   function driverHome(role){
+    if(driverOrders)return driverOrders.home(role);
     if(state.view!=='normal')return mobileState();
     var driver=identityUser('user-driver'),hotels=driver&&driver.active?(driver.hotels||[]).filter(function(id,i,ids){return ids.indexOf(id)===i;}).map(identityOrg).filter(function(o){return o&&o.type==='hotel';}):[],area=driver&&driver.area||'未设置区域';
     var rows=hotels.map(function(h,i){var site=catSite(catalog.mappings[h.id]);return '<article class="driver-hotel-row"><i>'+String(i+1).padStart(2,'0')+'</i><div><strong>'+esc(h.name)+'</strong><small>'+esc(h.address||'地址未配置')+'</small><small>服务点：'+esc(site?site.name:'未配置')+'</small></div></article>';}).join('');
@@ -265,7 +266,7 @@
   function renderMobile(role){
     if(['员工','员工账号'].includes(state.section))state.section='我的';
     if(mobileLoggedOut)return mobileLogin();
-    var content=state.section==='补充'?mobileReplenish(role):state.section==='订单'?mobileOrders(role):state.section==='账户'?mobileAccount(role):state.section==='商城'?mobileStore(role):state.section==='负责酒店'?driverHome(role):mobileProfile(role);
+    var content=state.role==='driver'&&state.section==='司机酒店订单'&&driverOrders?driverOrders.page():state.section==='补充'?mobileReplenish(role):state.section==='订单'?mobileOrders(role):state.section==='账户'?mobileAccount(role):state.section==='商城'?mobileStore(role):state.section==='负责酒店'?driverHome(role):mobileProfile(role);
     var nav=state.role==='driver'?'':'<nav class="mobile-nav">'+role.nav.map(function(item){return '<button class="'+(item===state.section?'active':'')+'" data-section="'+esc(item)+'"><img class="mobile-tab-icon" src="assets/icons/tab-'+({'补充':'replenish','订单':'orders','商城':'store','我的':'profile'}[item]||'profile')+(item===state.section?'-active':'')+'.svg" alt=""><span>'+esc(item==='补充'?'布草':item)+'</span></button>';}).join('')+'</nav>';
     return '<div class="device-stage"><div class="phone-frame"><div class="phone-screen"><div class="mobile-scroll">'+content+'</div>'+(state.section==='商城'?storeCheckout():'')+nav+'</div></div><div class="device-caption"><b>'+esc(role.label)+'</b><span>'+(role.label==='司机'?'司机负责范围':'微信小程序')+'</span></div></div>';
   }
@@ -316,7 +317,7 @@
   }
   function showOrderDetail(){
     var role=roles[state.role],factory=role.surface==='factory';
-    var nextAction=state.progress===0?'开始备货':state.progress===1?'确认出库':state.progress===2?'确认送达':'履约完成';
+    var nextAction=state.progress===0?'开始备货':state.progress===1?'装车完成':state.progress===2?'确认送达':'履约完成';
     var summary=factory?'<div class="order-summary"><div><small>酒店 / 所属楼层</small><b>云栖酒店 · 8F</b></div><div><small>洗涤站点</small><b>东区站</b></div><div><small>总件数</small><b>120 件</b></div><div><small>当前待办</small><b>'+nextAction+'</b></div></div>':'<div class="order-summary"><div><small>酒店 / 所属楼层</small><b>云栖酒店 · 8F</b></div><div><small>洗涤站点</small><b>东区站</b></div><div><small>总件数</small><b>120 件</b></div><div><small>扣款金额</small><b>'+money(706)+'</b></div></div>';
     var detailTable=factory?table(['品类','数量'],[['被套','40 件'],['床单','60 件'],['浴巾','20 件']]):table(['品类','数量','销售单价','小计'],[['被套','40 件',money(8),money(320)],['床单','60 件',money(5.5),money(330)],['浴巾','20 件',money(2.8),money(56)] ]);
     modalShell('补充订单详情','RP202609070018',summary+'<p class="identity-alert">配送地址：桐乡市振兴路 18 号</p>'+detailTable+'<h3 class="modal-subtitle">履约状态</h3>'+timeline([{title:'订单已派发',time:'今日 09:42',done:true},{title:'工厂备货中',time:state.progress>0?'今日 10:08':'待处理',done:state.progress>0},{title:'配送中',time:state.progress>1?'今日 10:26':'待处理',done:state.progress>1},{title:'已送达',time:state.progress>2?'今日 11:06':'待处理',done:state.progress>2}]),button('关闭','closeModal','secondary-button')+(factory&&(state.role==='factory_admin'||state.role==='factory_operator')&&state.progress<3?button(nextAction,'advance','primary-button'):''),true);
@@ -465,7 +466,7 @@
     syncTerminalOrders();
     var order=syncTerminalOrder(id||'RP202609070018');
     if(!['factory_admin','factory_operator'].includes(state.role)||!order||order.factory!=='org-factory-1'){showToast('无权推进此订单');return;}
-    if(order.progress===1&&Object.keys(order.qty).some(function(name){return Number(order.stocked[name]||0)!==Number(order.qty[name]||0);})){showToast('订单各品类尚未备齐，不能确认出库');return;}
+    if(order.progress===1&&Object.keys(order.qty).some(function(name){return Number(order.stocked[name]||0)!==Number(order.qty[name]||0);})){showToast('订单各品类尚未备齐，不能标记装车完成');return;}
     if(order.progress>=3){showToast('订单已经完成');return;}
     order.progress+=1;if(order.progress===3&&!order.deliveredAt)order.deliveredAt=new Date().toISOString();if(order.id==='RP202609070018')state.progress=order.progress;catalogSave();closeModal();render();showToast('演示订单状态：'+syncTerminalStatus(order),'success');
   }
@@ -473,7 +474,7 @@
     if(!order)return;syncTerminalOrders();syncTerminalPriorDetail(order);
     var canAdvance=['factory_admin','factory_operator'].includes(state.role)&&order.factory==='org-factory-1',body=modal.querySelector('.modal-content'),footer=modal.querySelector('.modal-card > footer');
     if(body)body.insertAdjacentHTML('beforeend','<div class="sync-terminal-order-status"><strong>履约状态：'+syncTerminalStatus(order)+'</strong>'+table(['布草','订单数量','累计备货'],Object.keys(order.qty).filter(function(k){return order.qty[k]>0;}).map(function(k){return[esc(k),order.qty[k],Number(order.stocked[k]||0)];}))+'</div>');
-    if(footer&&canAdvance&&order.progress<3)footer.insertAdjacentHTML('beforeend',button(['开始备货','确认出库','确认送达'][order.progress],'advance:'+order.id,'primary-button'));
+    if(footer&&canAdvance&&order.progress<3)footer.insertAdjacentHTML('beforeend',button(['开始备货','装车完成','确认送达'][order.progress],'advance:'+order.id,'primary-button'));
   };
   showOrderDetail=function(){syncTerminalOrders();catOrderDetail(syncTerminalOrder('RP202609070018'));};
   var syncTerminalPriorOrders=actualOrders;actualOrders=function(role){
@@ -786,13 +787,92 @@
   function dashboardGroup(title,cards){return '<section class="dashboard-group"><h3>'+esc(title)+'</h3><div class="metric-grid">'+cards+'</div></section>';}
   actualDashboard=function(role){linenSetup();var factory=role.surface==='factory',orders=catalog.orders.filter(function(o){return (!factory||o.factory==='org-factory-1')&&o.progress>=0&&o.progress<=3&&dashboardWithin(linenTime(o));}),m=linenAggregate(orders),cards=metric('已派单订单',orders.filter(function(o){return o.progress===0;}).length+' 单','含待履约订单','')+metric('待确认退款',syncData.linenRefunds.concat(syncData.returnRequests||[]).filter(function(r){return r.status==='PENDING'&&dashboardWithin(r.time)&&(!factory||r.factory==='org-factory-1');}).length+' 单','待确认不扣减','warning');if(factory)cards+=metric('备货中订单',orders.filter(function(o){return o.progress===1;}).length+' 单','本厂订单','');if(!factory)cards+=metric('期间建档启用酒店',identity.orgs.filter(function(o){return o.type==='hotel'&&o.active&&dashboardWithin(o.createdAt);}).length+' 家','期间建档且当前启用','');var platformCards=factory?'':metric('累计充值',linenAmount(syncData.entries.filter(function(e){return ['线下充值','微信充值','平台直接充值'].includes(e.type)&&dashboardWithin(e.time);}).reduce(function(n,e){return n+e.cents;},0)),'已入账流水','')+metric('累计消费',linenAmount(m.hotelOriginal===null?null:m.hotelOriginal+(syncData.storeOrders||[]).filter(function(o){return dashboardWithin(o.time);}).reduce(function(n,o){return n+o.cents;},0)),'原始扣款累计，不扣退款','');var businessCards=cards;cards='';if(!factory)cards+=metric('酒店原额',linenAmount(m.hotelOriginal),'布草订单原销售额','')+metric('酒店退款',linenAmount(m.hotelRefund),'已通过实际退款','')+metric('酒店净支付',linenAmount(m.hotelNet),'原额减退款','success');var hotelCards=cards;cards='';cards+=metric(factory?'原工厂应收':'原工厂应付',linenAmount(m.factoryOriginal),'原订单成本总额','')+metric('退污扣减',linenAmount(m.factoryDeduction),'通过数量 × 原工厂成本价','')+metric(factory?'工厂净应收':'工厂净应付',linenAmount(m.factoryNet),'含已派单、备货中、配送中、已送达','success');if(!factory)platformCards+=metric('平台净毛利',linenAmount(m.margin),'酒店净支付减工厂净应付','success');return header(factory?'洗涤厂生产总览':'平台经营总览','',dashboardFilters())+dashboardGroup('业务概况',businessCards)+(factory?'':dashboardGroup('酒店金额',hotelCards))+dashboardGroup(factory?'工厂应收':'工厂应付',cards)+(factory?'':dashboardGroup('平台资金',platformCards));};
   var financePriorHotelDetail=catOrderDetail;
+  // Prototype-only adapter for a third-party STOCKING result; no asset registration.
+  var prototypeStockingDraft=null;
+  function prototypeStockingAccess(order,viewOnly){
+    var factory=v19&&v19.api.factory?v19.api.factory():'org-factory-1',user=identityUser('user-'+state.role),org=identityOrg(factory);
+    if(!['factory_admin','factory_operator'].includes(state.role)||!user||!user.active||user.org!==factory||!org||org.active===false||!order||order.factory!==factory)return '无权接收此订单的备货结果';
+    if(viewOnly?![1,2,3].includes(order.progress):order.progress!==1)return '仅备货中订单可接收备货结果，请先开始备货';
+    var site=catSite(order.site),hotel=identityOrg(order.hotel),floor=catalog.floors.find(function(f){return f.id===order.floorId&&f.hotel===order.hotel;});
+    if(!site||site.factory!==order.factory||!hotel||hotel.type!=='hotel'||!floor||order.inventoryVersion!==2)return '原订单酒店、楼层或工厂站点归属不完整，请先核查';
+    return '';
+  }
+  function prototypeStockingPlan(order){
+    var seen={},names={},error='',lines=linenLines(order).map(function(line){
+      var stocked=Object.prototype.hasOwnProperty.call(order.stocked||{},line.name)?order.stocked[line.name]:0;
+      if(!line.sku||!line.name||seen[line.sku]||names[line.name]||!Number.isSafeInteger(line.quantity)||line.quantity<0||!Number.isSafeInteger(stocked)||stocked<0||stocked>line.quantity)error='原订单品类或备货数量异常，请先核查';
+      seen[line.sku]=true;names[line.name]=true;return {sku:line.sku,name:line.name,planned:line.quantity,stocked:stocked,remaining:line.quantity-stocked};
+    });
+    if(!lines.length)error='原订单缺少布草明细，请先核查';
+    return {lines:lines,error:error};
+  }
+  function prototypeStockingSummary(order,editable){
+    var plan=prototypeStockingPlan(order),receipts=(catalog.prototypeStockingReceipts||[]).filter(function(r){return r.order===order.id&&r.factory===order.factory;});
+    return '<section class="prototype-stock-summary prototype-stock-intake"><h3>备货进度</h3>'+managementTable(['布草品类','计划数量','已备数量','剩余数量'].concat(editable?['本批数量']:[]),plan.lines.map(function(line){return [esc(line.name),line.planned,plan.error?'待核查':line.stocked,plan.error?'待核查':line.remaining].concat(editable?['<input type="number" min="0" max="'+line.remaining+'" step="1" data-stock-result="'+esc(line.sku)+'" aria-label="'+esc(line.name)+'本批备货数量" value="'+line.remaining+'"'+(line.remaining===0?' disabled':'')+'>']:[]);}))+(plan.error?'<p class="identity-error" role="alert">'+esc(plan.error)+'</p>':'')+'<details class="prototype-stock-history" open><summary>模拟接收批次（'+receipts.length+'）</summary>'+(receipts.length?managementTable(['接收批次','接收时间','接收角色','本批数量'],receipts.map(function(r){return [esc(r.id),esc(r.receivedAt),esc((roles[r.role]||{}).label||r.role),r.lines.map(function(l){return esc(l.name)+' '+l.quantity+' 件';}).join('<br>')];})):'<p class="sync-hint">暂无模拟接收批次</p>')+'</details></section>';
+  }
+  function prototypeStockingButton(order){
+    if(prototypeStockingAccess(order,true))return '';
+    return button('接收备货结果','stockResultOpen:'+order.id,'secondary-button');
+  }
+  function prototypeStockingOpen(id){
+    var order=catalog.orders.find(function(o){return o.id===id;}),error=prototypeStockingAccess(order,true);if(error){showToast(error);return;}
+    var plan=prototypeStockingPlan(order),editable=order.progress===1&&!plan.error&&plan.lines.some(function(l){return l.remaining>0;});
+    prototypeStockingDraft=editable?{token:'SIM-STOCK-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9),order:order.id,hotel:order.hotel,floorId:order.floorId,factory:order.factory,site:order.site,quantities:{}}:{order:order.id,readOnly:true};
+    if(editable)plan.lines.forEach(function(line){prototypeStockingDraft.quantities[line.sku]=String(line.remaining);});
+    modalShell('接收备货结果',order.id,'<div class="identity-alert"><strong>原型演示 · 第三方备货结果回传</strong><p>这里仅演示接收第三方作业结果，实际项目不提供人工录入备货数量的能力。</p><p>'+(editable?'本批默认填入剩余数量，可调整为分批结果；确认后才计入备货进度，备齐后仍需点击“装车完成”。':order.progress===1?'订单已备齐，可返回订单点击“装车完成”；备货进度与批次仅供查看。':'订单已出库，备货进度与批次仅供查看。')+'</p></div><dl class="prototype-stock-context"><dt>酒店 / 楼层</dt><dd>'+esc(order.hotelName||(identityOrg(order.hotel)||{}).name)+' / '+esc(order.floorName||(catalog.floors.find(function(f){return f.id===order.floorId;})||{}).name)+'</dd><dt>原工厂 / 站点</dt><dd>'+esc(order.factoryName||(identityOrg(order.factory)||{}).name)+' / '+esc(order.siteName||(catSite(order.site)||{}).name)+'</dd>'+(editable?'<dt>模拟批次</dt><dd>'+esc(prototypeStockingDraft.token)+'</dd>':'')+'</dl>'+prototypeStockingSummary(order,editable)+'<p class="identity-error" role="alert"></p>',button('返回订单','stockResultCancel','secondary-button')+(editable?button('确认接收本批','stockResultReceive','primary-button'):''),true);
+  }
+  function prototypeStockingPersist(){
+    if(prototypeStorageError)throw new Error(prototypeStorageError);
+    if(resetEnabled){
+      if(!prototypeStorage||!prototypeStorage.isReady())throw new Error('原型数据尚未就绪，请刷新后重试');
+      // Keep a transient write failure local to this form, using the existing atomic envelope.
+      prototypeStorage.assertCurrent();prototypeStorage.save(catalogSnapshot(),syncData);
+    }else localStorage.setItem('youxitong-catalog-prototype-v3',JSON.stringify(catalogSnapshot()));
+  }
+  function prototypeStockingReceive(payload){
+    var order=payload&&catalog.orders.find(function(o){return o.id===payload.order;}),error=prototypeStockingAccess(order);if(error)return {error:error};
+    if(!payload.token||typeof payload.token!=='string'||payload.token.length>120)return {error:'缺少有效模拟批次编号'};
+    if(['hotel','floorId','factory','site'].some(function(key){return payload[key]!==order[key];}))return {error:'原订单归属已变化，请重新打开订单核对'};
+    var plan=prototypeStockingPlan(order);if(plan.error)return {error:plan.error};
+    var quantities=payload.quantities;if(!quantities||typeof quantities!=='object'||Array.isArray(quantities))return {error:'请填写本批有效数量'};
+    var invalid=Object.keys(quantities).some(function(sku){return !plan.lines.some(function(l){return l.sku===sku;});}),lines=[];
+    plan.lines.forEach(function(line){var raw=quantities[line.sku],quantity=raw===undefined||raw===''?0:Number(raw);if(raw!==undefined&&typeof raw!=='number'&&typeof raw!=='string'||!Number.isSafeInteger(quantity)||quantity<0)invalid=true;if(quantity>0)lines.push({sku:line.sku,name:line.name,quantity:quantity,planned:line.planned,before:line.stocked,after:line.stocked+quantity});});
+    if(invalid||!lines.length)return {error:'本批至少一个品类须为正整数，其余可为0；不接受负数、小数或空批'};
+    var fingerprint=JSON.stringify({order:order.id,hotel:order.hotel,floorId:order.floorId,factory:order.factory,site:order.site,lines:lines.map(function(l){return {sku:l.sku,quantity:l.quantity};}).sort(function(a,b){return a.sku.localeCompare(b.sku);})});
+    var receipts=catalog.prototypeStockingReceipts;if(receipts!==undefined&&!Array.isArray(receipts))return {error:'历史模拟接收批次异常，请先核查'};
+    var prior=(receipts||[]).find(function(r){return r.id===payload.token;});if(prior)return prior.fingerprint===fingerprint?{receipt:prior,duplicate:true}:{error:'同一模拟批次不能更换订单、归属或数量'};
+    if(lines.some(function(l){return !Number.isSafeInteger(l.after)||l.after>l.planned;}))return {error:'本批数量超过剩余待备数量，请调整后重试'};
+    if(plan.lines.some(function(l){return l.planned>0&&flowAccount(order.hotel,l.sku).error;}))return {error:'原订单楼层额度数据异常，请先核查后接收'};
+    var previousStocked=order.stocked,hadStocked=Object.prototype.hasOwnProperty.call(order,'stocked'),hadReceipts=Object.prototype.hasOwnProperty.call(catalog,'prototypeStockingReceipts'),nextStocked=Object.assign({},previousStocked||{});
+    lines.forEach(function(l){nextStocked[l.name]=l.after;});
+    var receipt={id:payload.token,prototype:true,source:'prototype-third-party-stocking',order:order.id,hotel:order.hotel,floorId:order.floorId,factory:order.factory,site:order.site,role:state.role,receivedBy:'user-'+state.role,receivedAt:new Date().toISOString(),lines:lines,fingerprint:fingerprint};
+    order.stocked=nextStocked;catalog.prototypeStockingReceipts=(receipts||[]).concat([receipt]);
+    try{prototypeStockingPersist();}catch(saveError){
+      if(hadStocked)order.stocked=previousStocked;else delete order.stocked;
+      if(hadReceipts)catalog.prototypeStockingReceipts=receipts;else delete catalog.prototypeStockingReceipts;
+      return {error:'本批未保存，备货数量已恢复；输入已保留，可重试。'+(saveError.message||'本地存储失败')};
+    }
+    return {receipt:receipt,duplicate:false};
+  }
+  function prototypeStockingAction(action){
+    var parts=action.split(':'),name=parts[0];if(name.indexOf('stockResult')!==0)return false;
+    if(name==='stockResultOpen'){prototypeStockingOpen(parts.slice(1).join(':'));return true;}
+    if(name==='stockResultCancel'){var original=prototypeStockingDraft&&catalog.orders.find(function(o){return o.id===prototypeStockingDraft.order;});prototypeStockingDraft=null;closeModal();if(original)catOrderDetail(original);return true;}
+    if(name==='stockResultReceive'){
+      if(!prototypeStockingDraft||prototypeStockingDraft.readOnly||!modal.querySelector('[data-stock-result]')){identityError('接收表单已失效，请重新打开订单');return true;}
+      modal.querySelectorAll('[data-stock-result]').forEach(function(el){prototypeStockingDraft.quantities[el.dataset.stockResult]=el.value;});
+      var result=prototypeStockingReceive(prototypeStockingDraft);if(result.error){identityError(result.error);return true;}
+      var original=catalog.orders.find(function(o){return o.id===prototypeStockingDraft.order;});prototypeStockingDraft=null;closeModal();render();catOrderDetail(original);showToast(result.duplicate?'该模拟批次已接收，未重复计数':'本批备货结果已接收','success');return true;
+    }
+    return true;
+  }
   function financeOrderDetailContent(order){linenSetup();var factory=roles[state.role].surface==='factory',m=linenFinancials(order);return linenFinancialSummary(order,factory?'factory':'platform')+table(['布草品类','原数量','已通过退污'].concat(factory?['原成本单价','原工厂应收','退污扣减','工厂净应收']:['原销售单价','酒店原额','退款','净支付','原成本单价','原工厂应付','退污扣减','工厂净应付']),m.lines.map(function(x){return [esc(x.line.name),x.line.quantity,x.approved].concat(factory?[linenAmount(Number.isSafeInteger(x.line.factoryPrice)?x.line.factoryPrice:null),linenAmount(x.factoryOriginal),linenAmount(x.factoryDeduction),linenAmount(x.factoryNet)]:[linenAmount(Number.isSafeInteger(x.line.hotelPrice)?x.line.hotelPrice:null),linenAmount(x.hotelOriginal),linenAmount(x.hotelRefund),linenAmount(x.hotelNet),linenAmount(Number.isSafeInteger(x.line.factoryPrice)?x.line.factoryPrice:null),linenAmount(x.factoryOriginal),linenAmount(x.factoryDeduction),linenAmount(x.factoryNet)]);}))+'<p>所属楼层：'+esc(order.floorName||'未指定')+' · 配送地址：'+esc(order.address)+'</p><p>履约状态：'+esc(syncTerminalStatus(order))+'</p>';}
-  catOrderDetail=function(order){if(linenHotel())return financePriorHotelDetail(order);if(!order)return;linenSetup();var factory=roles[state.role].surface==='factory';if(factory&&order.factory!=='org-factory-1'){showToast('无权访问该订单');return;}var m=linenFinancials(order);modalShell('补充订单详情',order.id,financeOrderDetailContent(order),button('关闭','closeModal','secondary-button')+(factory&&['factory_admin','factory_operator'].includes(state.role)&&order.progress<3?button(['开始备货','确认出库','确认送达'][order.progress],'advance:'+order.id,'primary-button'):''),true);};
+  catOrderDetail=function(order){if(state.role==='driver'){if(driverOrders)driverOrders.detail(order);else showToast('司机订单模块暂不可用');return;}if(linenHotel())return financePriorHotelDetail(order);if(!order)return;linenSetup();var factory=roles[state.role].surface==='factory';if(factory&&order.factory!=='org-factory-1'){showToast('无权访问该订单');return;}var m=linenFinancials(order);modalShell('补充订单详情',order.id,financeOrderDetailContent(order),button('关闭','closeModal','secondary-button')+prototypeStockingButton(order)+(factory&&['factory_admin','factory_operator'].includes(state.role)&&order.progress<3?button(['开始备货','装车完成','确认送达'][order.progress],'advance:'+order.id,'primary-button'):''),true);};
 
-  function linenAction(action){var parts=action.split(':'),name=parts[0];if(name.indexOf('linen')!==0)return false;
+  function linenAction(action){if(prototypeStockingAction(action))return true;var parts=action.split(':'),name=parts[0];if(name.indexOf('linen')!==0)return false;
     if(name==='linenDetail'){catOrderDetail(linenOrder(parts[1]));return true;}
     if(name==='linenApply'){linenShowApply(parts[1]);return true;}
-    if(name==='linenSubmit'){linenCapture();var d=linenRefundDraft;if(!d)return true;var o=linenOrder(d.order),l=o&&linenLines(o).find(function(x){return x.sku===d.sku;}),q=Number(d.quantity);if(!linenHotel()||!o||o.hotel!==catHotel().id||o.progress!==3||!l)return identityError('订单已变化，请重新选择'),true;if(!d.reason.trim()||d.reason.trim().length>200)return identityError('请填写1至200字的退污原因'),true;if(!Number.isSafeInteger(q)||q<1)return identityError('申请数量须为正整数'),true;if(q>linenAvailable(o,l)){linenShowApply(o.id,true);identityError('可退数量已变化，请调整数量后重试；已保留原因');return true;}syncData.linenRefunds.unshift({id:'RF'+Date.now()+'-'+Math.random().toString(36).slice(2,6),order:o.id,hotel:o.hotel,factory:o.factory,sku:l.sku,name:l.name,quantity:q,approved:0,price:l.hotelPrice,reason:d.reason.trim(),status:'PENDING',time:new Date().toLocaleString('zh-CN')});linenRefundDraft=null;syncSave();closeModal();mobileOrderTab='refunds';state.section='订单';render();showToast('退污申请已提交','success');return true;}
+    if(name==='linenSubmit'){identityError('旧版退污申请入口已关闭，请由负责司机从订单发起整单退污');return true;}
     if(name==='linenReview'){var r=syncData.linenRefunds.find(function(x){return x.id===parts[1];});if(!['factory_admin','factory_operator'].includes(state.role)||!r||r.factory!=='org-factory-1'||r.status!=='PENDING')return true;linenRefundReview=r.id;modalShell('核验退污申请',r.id,'<p>'+esc(r.name)+' · 申请 '+r.quantity+' 件</p><p>退污原因：'+esc(r.reason)+'</p><label class="form-row"><span>通过数量</span><input id="linenApproved" type="number" min="1" max="'+r.quantity+'" step="1" value="'+r.quantity+'"></label><label class="form-row"><span>核验意见（驳回必填）</span><textarea id="linenReviewNote" maxlength="500"></textarea></label><p class="identity-error" role="alert"></p>',button('取消','closeModal','secondary-button')+button('驳回','linenReject','secondary-button')+button('确认通过','linenApprove','primary-button'));return true;}
     if(name==='linenApprove'||name==='linenReject'){var row=syncData.linenRefunds.find(function(x){return x.id===linenRefundReview;});if(!['factory_admin','factory_operator'].includes(state.role)||!row||row.factory!=='org-factory-1'||row.status!=='PENDING')return true;var note=document.getElementById('linenReviewNote').value.trim(),approved=name==='linenReject'?0:Number(document.getElementById('linenApproved').value);if(name==='linenReject'&&!note)return identityError('请填写驳回原因'),true;if(name==='linenApprove'&&(!Number.isSafeInteger(approved)||approved<1||approved>row.quantity))return identityError('通过数量须为申请数量以内的正整数'),true;var original=linenOrder(row.order),originalLine=original&&linenLines(original).find(function(l){return l.sku===row.sku;});if(name==='linenApprove'&&(!originalLine||!Number.isSafeInteger(originalLine.factoryPrice)||originalLine.factoryPrice<0||!Number.isSafeInteger(row.price)||row.price<0))return identityError('原订单价格快照缺失或异常，请核查后重试'),true;var cents=approved*row.price,after=syncBalance(row.hotel)+cents,key='linen-refund:'+row.id;if(!Number.isSafeInteger(cents)||!Number.isSafeInteger(after))return identityError('退款金额超出有效范围'),true;if(name==='linenApprove'&&!syncData.entries.some(function(e){return e.businessKey===key;})){syncData.balances[row.hotel]=after;syncData.entries.unshift({id:'WL'+Date.now(),hotel:row.hotel,type:'退污退款',cents:cents,after:after,businessId:row.id,businessKey:key,note:row.reason,time:new Date().toLocaleString('zh-CN')});}row.refundCents=cents;row.approved=approved;row.status=name==='linenApprove'?'APPROVED':'REJECTED';row.reviewNote=note;linenRefundReview=null;syncSave();closeModal();render();showToast(approved?'审核通过，退款已入账':'已驳回，可退数量已释放','success');return true;}
     return true;
@@ -848,16 +928,18 @@
     var content=role.surface==='mobile'?renderMobile(role):role.surface==='terminal'?renderTerminal(role):renderWeb(role);
     if(prototypeStorageError){renderPrototypeStorageError();return;}root.innerHTML=content;
     catReviewAccount();
+    if(driverOrders)driverOrders.afterRender();
     if(v19)v19.reviewAccount();
     var url=new URL(location.href);url.searchParams.set('role',state.role);history.replaceState(null,'',url.toString());
   }
-  function setRole(key){if(!roles[key])return;mallOrderQuery={hotel:'',page:1};businessQueries={orders:{},refunds:{}};businessDrafts={orders:null,refunds:null};businessPages={orders:1,refunds:1};businessErrors={orders:'',refunds:''};mobileOrderTab='orders';linenRefundDraft=null;linenRefundReview=null;mobileSession(false);mobileCart={};closeModal();identity.detail='';identity.members='';catalog.detail='';identity.queryDraft=null;identity.page=1;identity.query={q:'',org:'',role:'',status:'',type:''};state.role=key;state.section=roles[key].nav[0];state.view='normal';viewSelect.value='normal';render();}
+  function setRole(key){if(!roles[key])return;if(driverOrders)driverOrders.reset();mallOrderQuery={hotel:'',page:1};businessQueries={orders:{},refunds:{}};businessDrafts={orders:null,refunds:null};businessPages={orders:1,refunds:1};businessErrors={orders:'',refunds:''};mobileOrderTab='orders';linenRefundDraft=null;linenRefundReview=null;mobileSession(false);mobileCart={};closeModal();identity.detail='';identity.members='';catalog.detail='';identity.queryDraft=null;identity.page=1;identity.query={q:'',org:'',role:'',status:'',type:''};state.role=key;state.section=roles[key].nav[0];state.view='normal';viewSelect.value='normal';render();}
   function showToast(message,tone){if(prototypeStorageError)return;var el=document.getElementById('prototypeToast');el.textContent=message;el.className='prototype-toast show '+(tone||'');clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.className='prototype-toast';},2400);}
   function handleClick(event){
     var userMenu=document.getElementById('webUserMenu');
     if(userMenu&&!event.target.closest('.user-menu-wrap'))userMenu.classList.remove('show');
     var section=event.target.closest('[data-section]');if(section&&roles[state.role].surface==='web'){managementNavigate(section.dataset.section);return;}if(section){state.section=section.dataset.section;identity.detail='';identity.members='';catalog.detail='';catalog.query={};identity.queryDraft=null;identity.page=1;identity.query={q:'',org:'',role:'',status:'',type:''};render();return;}
     var actionEl=event.target.closest('[data-action]');if(!actionEl)return;var action=actionEl.dataset.action;
+    if(driverOrders&&driverOrders.action(action))return;
     if(managementAction(action))return;
     if(linenAction(action))return;
     if(rechargeAction(action))return;
@@ -931,15 +1013,62 @@
   root.addEventListener('input',identityRememberFilters);root.addEventListener('change',identityRememberFilters);
   root.addEventListener('submit',function(e){if(e.target.id==='mobileLoginForm'){e.preventDefault();var form=e.target;if(!form.elements.username.value.trim()||!form.elements.password.value){form.querySelector('.login-error').textContent='请输入账号和密码';return;}mobileSession(false);state.section=roles[state.role].nav[0];state.view='normal';viewSelect.value='normal';render();return;}if(e.target.matches('.identity-filter')){e.preventDefault();identityHandle('identitySearch');}});
   // Version 2 returns and hotel linen accounts. Legacy single-line returns remain immutable.
-  function flowSetup(){syncLinenSetup();if(!syncData.returnRequests)syncData.returnRequests=[];if(!syncData.hotelLinen)syncData.hotelLinen={};if(!syncData.receipts)syncData.receipts=[];}
+  function flowSetup(){syncLinenSetup();if(!Array.isArray(syncData.linenRefunds))syncData.linenRefunds=[];if(!syncData.returnRequests)syncData.returnRequests=[];if(!syncData.hotelLinen)syncData.hotelLinen={};if(!syncData.receipts)syncData.receipts=[];}
   function flowAccount(hotel,sku){if(v19&&v19.api.hotelAccount)return v19.api.hotelAccount(hotel,sku);flowSetup();var account=syncData.hotelLinen[hotel+'|'+sku],legacy=syncData.quotas[hotel+'|'+sku],cap=account?account.cap:legacy?legacy.amount:0,daily=0,refund=0,ordered=0,out=0,error='',seen={};function valid(n){return Number.isSafeInteger(n)&&n>=0;}function fail(){error='额度数据异常，请核查';}if(!valid(cap))fail();syncData.receipts.filter(function(r){return r.hotel===hotel&&r.sku===sku;}).forEach(function(r){if(!valid(r.quantity)||!['DAILY','RETURN'].includes(r.type)){fail();return;}if(r.token){if(seen[r.token]){fail();return;}seen[r.token]=true;}if(r.type==='DAILY')daily+=r.quantity;else refund+=r.quantity;});catalog.orders.filter(function(o){return o.hotel===hotel&&o.inventoryVersion===2;}).forEach(function(o){var lines=linenLines(o).filter(function(l){return l.sku===sku;});if(lines.length>1)fail();lines.forEach(function(l){var stocked=Object.prototype.hasOwnProperty.call(o.stocked||{},l.name)?o.stocked[l.name]:0;if(!valid(l.quantity)||!valid(stocked)||stocked>l.quantity){fail();return;}ordered+=l.quantity;out+=stocked;});});var initial=0,initials=(syncData.v19||{}).floorInitials||{};catalog.floors.filter(function(f){return f.hotel===hotel;}).forEach(function(f){var n=Object.prototype.hasOwnProperty.call(initials,f.id+'|'+sku)?initials[f.id+'|'+sku]:0;if(!valid(n))fail();else initial+=n;});var incoming=daily+refund,pending=ordered-out;if(![initial,daily,refund,incoming,ordered,out,pending,initial+incoming].every(valid))fail();return {cap:cap,initial:error?null:initial,daily:error?null:daily,refund:error?null:refund,incoming:error?null:incoming,ordered:error?null:ordered,pending:error?null:pending,out:error?null:out,amount:error?null:Math.min(cap,Math.max(0,initial+incoming-pending-out)),error:error,version:account?account.version:0};}
   syncQuota=function(hotel,sku){return flowAccount(hotel,sku);};
   syncQuotaDialog=function(hotel){flowSetup();quotaDraft=null;modalShell('酒店布草额度',esc((identityOrg(hotel)||{}).name),'<div class="quota-rollup"><p class="sync-hint">按楼层汇总</p>'+managementTable(['品类','初始化额度','额度上限','日常入库','退污入库','累计入库','未出库占用','累计出库','可下单量'],syncTerminalSkus().map(function(s){var a=flowAccount(hotel,s.id),display=function(n){return a.error?'数据异常，待核查':n;};return [esc(s.name)+'（'+esc(s.unit||'件')+'）',display(a.initial),display(a.cap),display(a.daily),display(a.refund),display(a.incoming),display(a.pending),display(a.out),display(a.amount)];}))+'</div>',button('关闭','closeModal','secondary-button'),true);};
 
   function flowQuotaSave(values){if(v19)return '酒店额度只读，请在楼层设置初始化额度与上限';if(!identityWritable())return '无权调整上限';flowSetup();if(values.some(function(x){return !Number.isSafeInteger(x.cap)||x.cap<0;}))return '上限须为非负整数';values.forEach(function(x){var key=x.hotel+'|'+x.sku,old=syncData.hotelLinen[key];syncData.hotelLinen[key]={cap:x.cap,version:(old?old.version:0)+1};syncData.quotaEvents.push({token:'CAP-'+Date.now()+'-'+key,hotel:x.hotel,sku:x.sku,before:old||null,after:syncData.hotelLinen[key],time:new Date().toISOString()});});syncSave();return '';}
   function flowReason(order){flowSetup();if(!order||order.progress!==3)return '订单尚未送达';var time=Date.parse(order.deliveredAt);if(!Number.isFinite(time))return '缺少可靠送达时间，请联系平台核查';if(Date.now()>=time+86400000)return '已超过送达后24小时申请期限';if(time>Date.now())return '送达时间异常，请核查';if(syncData.returnRequests.some(function(r){return r.order===order.id;})||syncData.linenRefunds.some(function(r){return r.order===order.id;}))return '该订单已申请退污，每单仅可申请一次';if(linenLines(order).some(function(l){return !Number.isSafeInteger(l.hotelPrice)||l.hotelPrice<0||!Number.isSafeInteger(l.factoryPrice)||l.factoryPrice<0;}))return '原订单价格快照不完整';return '';}
-  linenCanRefund=function(order){return !flowReason(order);};linenReason=flowReason;
-  function flowSubmit(orderId,quantities,reason){flowSetup();var order=linenOrder(orderId);if(!linenHotel()||!order||order.hotel!==catHotel().id)return '订单不存在或无权访问';var error=flowReason(order);if(error)return error;if(!reason.trim()||reason.trim().length>200)return '请填写1至200字的退污原因';var lines=[],invalid=false;linenLines(order).forEach(function(l){var q=Number(quantities[l.sku]||0);if(!Number.isSafeInteger(q)||q<0||q>l.quantity)invalid=true;if(q>0)lines.push({sku:l.sku,name:l.name,quantity:q,received:0,hotelPrice:l.hotelPrice,factoryPrice:l.factoryPrice});});if(lines.some(function(l){return !Number.isSafeInteger(l.quantity*l.hotelPrice)||!Number.isSafeInteger(l.quantity*l.factoryPrice);})||!Number.isSafeInteger(lines.reduce(function(n,l){return n+l.quantity*l.hotelPrice;},0)))return '原订单金额异常，请核查';if(invalid||!lines.length)return '至少选择一个品类，数量须为正整数且不超过原订单数量';syncData.returnRequests.unshift({id:'RT'+Date.now()+'-'+Math.random().toString(36).slice(2,6),version:2,order:order.id,hotel:order.hotel,factory:order.factory,site:order.site,status:'PENDING',reason:reason.trim(),lines:lines,time:new Date().toISOString(),refundCents:0});syncSave();return '';}
+  // Driver identity and the original order factory are checked on every read and write.
+  // A later hotel factory change does not remove the driver's existing assignment.
+  function currentDriver(){return identity.users.find(function(u){return u.id==='user-driver'&&u.role==='driver';});}
+  function driverScopeError(hotelId,factoryId){
+    var driver=currentDriver(),hotel=identityOrg(hotelId),factory=driver&&identityOrg(driver.org);
+    if(state.role!=='driver')return '退污申请须由负责司机发起，当前角色无权申请';
+    if(!driver||driver.active!==true||!factory||factory.type!=='factory'||factory.active===false)return '司机账号或所属工厂已停用，无权访问';
+    if(!hotel||hotel.type!=='hotel'||hotel.active===false||!(driver.hotels||[]).includes(hotelId))return '负责关系已失效或酒店已停用，无权访问';
+    if(factoryId!==undefined&&(!factoryId||factoryId!==driver.org))return '无权访问其他工厂的订单或退污';
+    return '';
+  }
+  function driverOrderError(order){return !order?'订单不存在或无权访问':driverScopeError(order.hotel,order.factory);}
+  function driverLoadingError(order){
+    var access=driverOrderError(order);if(access)return access;
+    var plan=prototypeStockingPlan(order);return plan.error||(!plan.lines.some(function(l){return l.planned>0;})?'订单缺少有效布草数量':plan.lines.some(function(l){return l.remaining!==0;})?'布草尚未备齐，请等待工厂备货完成':'');
+  }
+  // Prototype-only fulfilment; explicit target prevents a repeated click from advancing twice.
+  function prototypeDriverFulfil(orderId,target){
+    var order=catalog.orders.find(function(o){return o.id===orderId;}),access=driverOrderError(order);if(access)return {error:access};
+    if(![2,3].includes(target))return {error:'司机仅可确认装车完成或送达'};
+    if(![1,2,3].includes(order.progress))return {error:'订单尚未开始备货，请等待工厂处理'};
+    if(order.progress>=target)return {duplicate:true};
+    if(order.progress!==target-1)return {error:'请先完成装车，再确认送达'};
+    var loadingError=driverLoadingError(order);if(loadingError)return {error:loadingError};
+    if(target===3&&order.deliveredAt&&(!Number.isFinite(Date.parse(order.deliveredAt))||Date.parse(order.deliveredAt)>Date.now()))return {error:'历史送达时间异常，请先核查'};
+    var oldProgress=order.progress,oldTime=order.deliveredAt,hadTime=Object.prototype.hasOwnProperty.call(order,'deliveredAt'),oldEvents=order.prototypeFulfilmentEvents,hadEvents=Object.prototype.hasOwnProperty.call(order,'prototypeFulfilmentEvents');
+    if(oldEvents!==undefined&&!Array.isArray(oldEvents))return {error:'履约记录异常，请先核查'};
+    var now=new Date().toISOString();order.progress=target;if(target===3&&!order.deliveredAt)order.deliveredAt=now;
+    order.prototypeFulfilmentEvents=(oldEvents||[]).concat([{action:target===2?'LOADED':'DELIVERED',from:oldProgress,to:target,actor:currentDriver().id,time:now}]);
+    try{prototypeStockingPersist();}catch(error){order.progress=oldProgress;if(hadTime)order.deliveredAt=oldTime;else delete order.deliveredAt;if(hadEvents)order.prototypeFulfilmentEvents=oldEvents;else delete order.prototypeFulfilmentEvents;return {error:'操作未保存，订单状态已恢复，请重试。'+(error.message||'本地存储失败')};}
+    if(order.id==='RP202609070018')state.progress=target;
+    return {duplicate:false};
+  }
+  linenCanRefund=function(order){return !driverOrderError(order)&&!flowReason(order);};
+  linenReason=function(order){return linenHotel()?'退污由负责司机申请，酒店可查看处理进度与退款结果':driverOrderError(order)||flowReason(order);};
+  function flowSubmit(orderId,quantities,reason,token){
+    flowSetup();var order=catalog.orders.find(function(o){return o.id===orderId;}),access=driverOrderError(order);if(access)return access;
+    if(!quantities||typeof quantities!=='object'||Array.isArray(quantities))return '申请品类无效';
+    reason=typeof reason==='string'?reason.trim():'';if(!reason||reason.length>200)return '请填写1至200字的退污原因';
+    var original=linenLines(order),lines=[],invalid=Object.keys(quantities).some(function(sku){return !original.some(function(l){return l.sku===sku;});}),seen={};
+    original.forEach(function(l){var raw=quantities[l.sku],q=raw===undefined||raw===''?0:Number(raw);if(raw!==undefined&&typeof raw!=='string'&&typeof raw!=='number')invalid=true;if(seen[l.sku]||!Number.isSafeInteger(l.quantity)||l.quantity<0||!Number.isSafeInteger(q)||q<0||q>l.quantity)invalid=true;seen[l.sku]=true;if(q>0)lines.push({sku:l.sku,name:l.name,quantity:q,received:0,hotelPrice:l.hotelPrice,factoryPrice:l.factoryPrice});});
+    if(invalid||!lines.length)return '至少选择一个品类，数量须为正整数且不超过原订单数量';
+    if(lines.some(function(l){return !Number.isSafeInteger(l.hotelPrice)||l.hotelPrice<0||!Number.isSafeInteger(l.factoryPrice)||l.factoryPrice<0||!Number.isSafeInteger(l.quantity*l.hotelPrice)||!Number.isSafeInteger(l.quantity*l.factoryPrice);})||!Number.isSafeInteger(lines.reduce(function(n,l){return n+l.quantity*l.hotelPrice;},0)))return '原订单金额异常，请核查';
+    // Authorization must precede idempotency: a revoked driver cannot recover a previous response.
+    if(token){var prior=syncData.returnRequests.find(function(r){return r.clientToken===token;});if(prior)return prior.order===order.id&&prior.hotel===order.hotel&&prior.factory===order.factory&&prior.submittedBy===currentDriver().id&&prior.reason===reason&&prior.lines.length===lines.length&&lines.every(function(l){return prior.lines.some(function(p){return p.sku===l.sku&&p.quantity===l.quantity;});})?'':'同一申请编号不能更换内容';}
+    var error=flowReason(order);if(error)return error;
+    var request={id:'RT'+Date.now()+'-'+Math.random().toString(36).slice(2,6),version:2,order:order.id,hotel:order.hotel,factory:order.factory,site:order.site,floorId:order.floorId,floorName:order.floorName,status:'PENDING',reason:reason,lines:lines,time:new Date().toISOString(),refundCents:0,submittedBy:currentDriver().id,clientToken:token||''};
+    syncData.returnRequests.unshift(request);if(syncSave()===false){syncData.returnRequests.splice(syncData.returnRequests.indexOf(request),1);return prototypeStorageError||'保存失败，请保留当前申请并重试';}return '';
+  }
   function flowReview(id,approve,note){flowSetup();var r=syncData.returnRequests.find(function(x){return x.id===id;});if(!['factory_admin','factory_operator'].includes(state.role)||!r||r.factory!=='org-factory-1')return '无权审核';if(r.status!=='PENDING')return '申请已处理';if(!approve&&!note.trim())return '驳回原因必填';r.status=approve?'AWAITING_INBOUND':'REJECTED';r.reviewNote=note.trim();r.reviewedAt=new Date().toISOString();syncSave();return '';}
   function flowReceipt(payload){flowSetup();if(state.role!=='terminal')return '仅厂内终端可入库';if(!payload.token)return '缺少批次标识';var prior=syncData.receipts.find(function(x){return x.token===payload.token;});if(prior)return prior.factory==='org-factory-1'&&prior.hotel===payload.hotel&&prior.site===payload.site&&prior.sku===payload.sku&&prior.quantity===payload.quantity&&prior.request===(payload.request||'')?'':'同一批次不能更换内容';var q=payload.quantity,site=catSite(payload.site),hotel=identityOrg(payload.hotel),sku=syncTerminalSkus().find(function(s){return s.id===payload.sku;});if(!site||site.factory!=='org-factory-1'||!hotel||hotel.type!=='hotel'||!sku||!Number.isSafeInteger(q)||q<=0)return '请选择有效站点、酒店、品类及正整数数量';var req=null,line=null;if(payload.request){req=syncData.returnRequests.find(function(r){return r.id===payload.request;});line=req&&req.lines.find(function(l){return l.sku===payload.sku;});if(!req||req.status!=='AWAITING_INBOUND'||req.factory!==site.factory||req.site!==site.id||req.hotel!==hotel.id||!line||q>line.quantity-line.received)return '退污申请状态、原站点或剩余待入库数量已变化';}else if(!site.active||!hotel.active||catalog.mappings[hotel.id]!==site.id)return '日常回收仅可登记本站当前服务的启用酒店';
     if(flowAccount(hotel.id,sku.id).error)return '额度数据异常，请核查后登记';if(!Number.isSafeInteger(flowAccount(hotel.id,sku.id).incoming+q))return '累计入库数量超出范围';if(req&&req.lines.every(function(l){return l.received+(l===line?q:0)===l.quantity;})){var cents=req.lines.reduce(function(n,l){return n+l.quantity*l.hotelPrice;},0);if(!Number.isSafeInteger(cents)||!Number.isSafeInteger(syncBalance(req.hotel)+cents))return '退款金额异常，未登记本批次';}
@@ -951,7 +1080,7 @@
   function flowCards(hotel){flowSetup();return syncData.returnRequests.filter(function(r){return r.hotel===hotel;}).map(function(r){return '<article class="order-card" role="button" tabindex="0" data-action="flowReturnDetail:'+r.id+'"><header><strong>'+esc(r.id)+'</strong>'+badge(flowLabel(r.status),r.status==='REFUNDED'?'success':'')+'</header><p>关联布草订单 '+esc(r.order)+'</p><p>申请金额 '+linenAmount(r.lines.reduce(function(n,l){return n+l.quantity*l.hotelPrice;},0))+' · 实退 '+linenAmount(r.refundCents)+'</p></article>';}).join('');}
   var flowMobileOrders=mobileOrders;mobileOrders=function(role){flowSetup();var saved=mobileOrderTab;if(saved==='store')mobileOrderTab='orders';var html=flowMobileOrders(role);mobileOrderTab=saved;var tabs='<div class="mobile-tabs"><button data-action="ordersTab" class="'+(saved==='orders'?'active':'')+'">布草订单</button><button data-action="flowStoreTab" class="'+(saved==='store'?'active':'')+'">商城订单</button><button data-action="refundsTab" class="'+(saved==='refunds'?'active':'')+'">退污记录</button></div>';
     if(saved==='store')return mobileHead(role,'订单')+'<section class="mobile-page">'+tabs+((syncData.storeOrders||[]).filter(function(o){return o.hotel===catHotel().id;}).map(function(o){return '<article class="order-card" data-action="flowStoreDetail:'+esc(o.no)+'"><header><strong>'+esc(o.no)+'</strong></header><p>'+esc(o.lines)+'</p><footer>'+linenAmount(o.cents)+button('查看详情','flowStoreDetail:'+o.no,'link-button')+'</footer></article>';}).join('')||'<p class="identity-empty">暂无商城订单</p>')+'</section>';
-    html=html.replace(/<div class="mobile-tabs">[\s\S]*?<\/div>/,tabs);if(saved==='refunds')html=html.replace(tabs,tabs+flowCards(catHotel().id));if(saved==='refunds'&&flowCards(catHotel().id))html=html.replace('<p class="identity-empty">暂无退污记录</p>','');html=html.replace('<h1>布草订单</h1>','<h1>订单</h1>');return html.replace('仅已送达且仍有可退数量的订单明细可发起；通过后退款至预存账户。','送达后24小时内，每单仅可申请一次、多品类。工厂整单审核，全量入库后自动退款。');};
+    html=html.replace(/<div class="mobile-tabs">[\s\S]*?<\/div>/,tabs);if(saved==='refunds')html=html.replace(tabs,tabs+flowCards(catHotel().id));if(saved==='refunds'&&flowCards(catHotel().id))html=html.replace('<p class="identity-empty">暂无退污记录</p>','');html=html.replace('<h1>布草订单</h1>','<h1>订单</h1>');return html.replace('仅已送达且仍有可退数量的订单明细可发起；通过后退款至预存账户。','退污由负责司机申请，酒店可查看进度与金额；工厂整单确认，全部入库后退款至酒店预存账户。');};
   var flowLegacyScope=businessScope;businessScope=function(kind,role){if(kind!=='refunds')return flowLegacyScope(kind,role);flowSetup();return syncData.returnRequests.filter(function(r){return role.surface!=='factory'||r.factory==='org-factory-1';});};
   var flowLegacyAvailable=linenAvailable;linenAvailable=function(order,line){flowSetup();if(syncData.returnRequests.some(function(r){return r.order===order.id;}))return 0;return flowLegacyAvailable(order,line);};
   actualRefunds=function(role){flowSetup();var scope=businessScope('refunds',role),rows=scope.filter(function(r){return businessMatch('refunds',r,businessQueries.refunds);}).map(function(r){return [esc(r.id),esc(r.order),esc((identityOrg(r.hotel)||{}).name),flowLabel(r.status),linenAmount(r.status==='REFUNDED'?r.lines.reduce(function(n,l){return n+l.quantity*l.factoryPrice;},0):0),button('详情','flowReturnDetail:'+r.id,'link-button')+(r.status==='PENDING'&&['factory_admin','factory_operator'].includes(state.role)?button('审核','flowReview:'+r.id,'link-button'):'')];});return header('退污返洗','','')+businessFilters('refunds',scope,role)+panel('整单退污申请','',businessTable('refunds',['申请号','订单号','酒店','状态','工厂扣减','操作'],rows)+(rows.length?'':'<p class="identity-empty">暂无整单退污申请</p>'));};
@@ -994,7 +1123,7 @@
   function flowSelect(label,key,items,value){return '<label>'+label+'<select data-flow-inbound="'+key+'">'+identityOptions(items,value,'请选择')+'</select></label>';}
   root.addEventListener('change',function(e){var key=e.target.dataset.flowInbound;if(!key)return;flowInbound[key]=e.target.value;flowInbound.token='';flowInbound.completed=false;if(key==='mode'||key==='site'){flowInbound.hotel='';flowInbound.request='';flowInbound.sku='';}if(key==='hotel'){flowInbound.sku='';flowInbound.quantity='';}render();});
   var flowLegacyAction=linenAction;
-  linenAction=function(action){flowSetup();var p=action.split(':'),name=p[0];if(name==='linenApply'){var order=linenOrder(p[1]),error=flowReason(order);if(error){showToast(error);return true;}modalShell('申请整单退污',order.id,linenLines(order).map(function(l){return '<label class="form-row"><span>'+esc(l.name)+' · 原数量 '+l.quantity+'</span><input data-flow-return="'+l.sku+'" type="number" min="0" max="'+l.quantity+'" value="0"></label>';}).join('')+'<label class="form-row"><span>退污原因</span><textarea id="flowReturnReason" maxlength="200"></textarea></label><p class="identity-error" role="alert"></p>',button('取消','closeModal','secondary-button')+button('提交申请','flowSubmit:'+order.id,'primary-button'));return true;}
+  linenAction=function(action){if(driverOrders&&driverOrders.action(action))return true;flowSetup();var p=action.split(':'),name=p[0];if(['linenApply','flowSubmit','linenSubmit'].includes(name)&&state.role!=='driver'){identityError('酒店仅可查看退污进度，申请须由负责司机发起');showToast('退污申请须由负责司机发起');return true;}if(name==='linenApply'){var order=linenOrder(p[1]),error=driverOrderError(order)||flowReason(order);if(error){showToast(error);return true;}modalShell('申请整单退污',order.id,linenLines(order).map(function(l){return '<label class="form-row"><span>'+esc(l.name)+' · 原数量 '+l.quantity+'</span><input data-flow-return="'+l.sku+'" type="number" min="0" max="'+l.quantity+'" value="0"></label>';}).join('')+'<label class="form-row"><span>退污原因</span><textarea id="flowReturnReason" maxlength="200"></textarea></label><p class="identity-error" role="alert"></p>',button('取消','closeModal','secondary-button')+button('提交申请','flowSubmit:'+order.id,'primary-button'));return true;}
     if(name.indexOf('flow')!==0)return flowLegacyAction(action);
     if(name==='flowSubmit'){var quantities={};modal.querySelectorAll('[data-flow-return]').forEach(function(el){quantities[el.dataset.flowReturn]=el.value;});var error=flowSubmit(p[1],quantities,document.getElementById('flowReturnReason').value);if(error)identityError(error);else{closeModal();mobileOrderTab='refunds';state.section='订单';render();}return true;}
     if(name==='flowStoreTab'){mobileOrderTab='store';render();return true;}
@@ -1008,21 +1137,33 @@
     return true;};
 
   // Additive V1.9 capabilities live in a separate module, sharing the existing data/transactions.
-  var v19=null;
+  var v19=null,driverOrders=null;
   if(window.YouxitongV19){
     var v19Context={state:state,data:syncData,catalog:catalog,identity:identity,roles:roles,categories:linenCategories,root:root,modal:modal,document:document,terminalDraft:terminalDraft,inbound:flowInbound,
       orderDetailContent:financeOrderDetailContent,esc:esc,button:button,table:managementTable,panel:panel,header:header,money:money,badge:badge,icon:managementIcon,
       hotel:catHotel,org:identityOrg,site:catSite,lines:linenLines,account:flowAccount,flowSetup:flowSetup,dailySite:flowDailySite,balance:syncBalance,recharges:rechargeRows,parseMoney:syncMoney,passwordError:passwordError,
       deleteFloor:function(id){return syncDeleteButton('floor',id);},manageFloors:function(id){catManage(id,'floors');},
       save:function(){syncSave();},open:function(){modalShell.apply(null,arguments);},close:function(){closeModal();},render:function(){render();},toast:function(){showToast.apply(null,arguments);},error:function(m){identityError(m);},
-      legacy:{identityRender:identityRender,navigation:managementNavigation,wallet:syncWallet,mobileAccount:mobileAccount,driverHome:driverHome,floorTable:catFloorTable,eligible:syncEligible,basket:syncBasket,replenish:mobileReplenish,mobileOrders:mobileOrders,detail:catOrderDetail,submitReturn:flowSubmit,receipt:flowReceipt,terminal:terminalWorkspace,terminalSubmit:syncTerminalSubmit}
+      legacy:{identityRender:identityRender,navigation:managementNavigation,wallet:syncWallet,mobileAccount:mobileAccount,floorTable:catFloorTable,eligible:syncEligible,basket:syncBasket,replenish:mobileReplenish,mobileOrders:mobileOrders,detail:catOrderDetail,submitReturn:flowSubmit,receipt:flowReceipt,terminal:terminalWorkspace,terminalSubmit:syncTerminalSubmit}
     };
     v19=window.YouxitongV19(v19Context);
-    identityRender=v19.identityRender;managementNavigation=v19.navigation;syncWallet=v19.wallet;mobileAccount=v19.mobileAccount;driverHome=v19.driverHome;catFloorTable=v19.floorTable;syncEligible=v19.eligible;syncBasket=v19.basket;mobileReplenish=v19.replenish;catShowFloors=v19.chooseFloor;mobileOrders=v19.mobileOrders;catOrderDetail=v19.detail;flowSubmit=v19.submitReturn;flowReceipt=v19.receipt;terminalWorkspace=v19.terminal;syncTerminalSubmit=v19.terminalSubmit;
+    identityRender=v19.identityRender;managementNavigation=v19.navigation;syncWallet=v19.wallet;mobileAccount=v19.mobileAccount;catFloorTable=v19.floorTable;syncEligible=v19.eligible;syncBasket=v19.basket;mobileReplenish=v19.replenish;catShowFloors=v19.chooseFloor;mobileOrders=v19.mobileOrders;catOrderDetail=v19.detail;flowSubmit=v19.submitReturn;flowReceipt=v19.receipt;terminalWorkspace=v19.terminal;syncTerminalSubmit=v19.terminalSubmit;
     var v19LegacyAction=linenAction;linenAction=function(action){return v19.action(action)||v19LegacyAction(action);};
     flowDirectRecharge=function(){return 'V1.9 已关闭直接入账，请登记线下充值申请并审批';};
     if(window.YouxitongV193){var v193=window.YouxitongV193(v19Context,v19);identityRender=v193.identityRender;managementNavigation=v193.navigation;terminalWorkspace=v193.terminal;var v193LegacyAction=linenAction;linenAction=function(action){return v193.action(action)||v193LegacyAction(action);};}
   }
+
+  // Explicit composition: driver navigation, read models and prototype fulfilment/forms.
+  if(window.YouxitongDriverOrders)driverOrders=window.YouxitongDriverOrders({
+    state:state,data:syncData,catalog:catalog,identity:identity,root:root,modal:modal,document:document,
+    esc:esc,button:button,badge:badge,table:managementTable,money:money,amount:linenAmount,
+    driver:currentDriver,scopeError:driverScopeError,orderError:driverOrderError,org:identityOrg,site:catSite,
+    lines:linenLines,ordered:linenOrdered,orderTime:linenTime,status:syncTerminalStatus,financials:linenFinancials,summary:linenFinancialSummary,
+    reason:flowReason,refundLabel:flowLabel,setup:flowSetup,submit:function(){return flowSubmit.apply(null,arguments);},
+    loadingError:driverLoadingError,fulfil:prototypeDriverFulfil,
+    open:function(){modalShell.apply(null,arguments);},close:function(){closeModal();},render:function(){render();},
+    toast:function(m){showToast(m);},error:function(m){identityError(m);}
+  });
 
   if(resetEnabled){
     window.addEventListener('storage',function(event){if(event.key===null||window.YouxitongPrototypeStorage&&event.key===window.YouxitongPrototypeStorage.STATE_KEY)prototypeWritable();});
