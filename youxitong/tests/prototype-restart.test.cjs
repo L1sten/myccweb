@@ -6,10 +6,10 @@ const path=require('node:path');
 const {STATE_KEY,CATALOG_KEY,BUSINESS_KEY}=require('../prototype-storage.js');
 function storage(){const map=new Map();return {getItem:k=>map.has(k)?map.get(k):null,setItem:(k,v)=>map.set(k,v)};}
 async function fixture(store=storage()){
- const elements=new Map();const handlers={};
+ const elements=new Map();const handlers={};let reloads=0;
  const element=()=>({innerHTML:'',value:'',addEventListener(){},querySelectorAll:()=>[],querySelector:()=>null,classList:{contains:()=>false,add(){},remove(){}}});
  const document={getElementById(id){if(!elements.has(id))elements.set(id,element());return elements.get(id);},addEventListener(){},querySelector:()=>null};
- const context={document,localStorage:store,sessionStorage:storage(),setTimeout,clearTimeout,URL,location:{href:'http://localhost/'},history:{replaceState(){}},navigator:{locks:{request:(name,options,callback)=>Promise.resolve(callback({name}))}},addEventListener:(name,fn)=>handlers[name]=fn};context.window=context;
+ const context={document,localStorage:store,sessionStorage:storage(),setTimeout,clearTimeout,URL,location:{href:'http://localhost/',reload(){reloads++;}},history:{replaceState(){}},navigator:{locks:{request:(name,options,callback)=>Promise.resolve(callback({name}))}},addEventListener:(name,fn)=>handlers[name]=fn};context.window=context;
  for(const file of ['prototype-reset-data.js','prototype-storage.js','v19.js','v193.js','driver-orders.js'])vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../'+file),'utf8'),context);
  const source=fs.readFileSync(path.join(__dirname,'../app.js'),'utf8').replace(/\}\)\(\);\s*$/,`
    var actualModal=modalShell,actualToast=showToast,actualRender=render;
@@ -17,12 +17,12 @@ async function fixture(store=storage()){
    globalThis.api={state:state,data:syncData,catalog:catalog,roles:roles,identity:identity,categories:linenCategories,
      v19:v19.api,assets:v193.api,account:flowAccount,receipt:flowReceipt,request:flowSubmit,review:flowReview,
      stock:syncTerminalSubmit,terminalDraft:terminalDraft,setup:linenSetup,ledger:rechargeLedger,balance:syncBalance,
-     save:syncSave,stats:flowStatistics,showSubmit:showSubmitOrder,submit:function(){return catHandle('catSubmitOrder');},
+     save:syncSave,writer:prototypeWriter,whenWritable:prototypeWhenWritable,stats:flowStatistics,showSubmit:showSubmitOrder,submit:function(){return catHandle('catSubmitOrder');},
      page:actualOrders,refundPage:actualRefunds,report:actualResource,quota:syncQuotaDialog,dashboard:actualDashboard,
      html:function(){return testModal;},error:function(){return prototypeStorageError;},snapshot:catalogSnapshot,
      originalModal:actualModal,originalToast:actualToast,originalRender:actualRender,root:root,modal:modal};
  })();`);
- await vm.runInNewContext(source,context);return {...context.api,store,handlers};
+ await vm.runInNewContext(source,context);return {...context.api,store,handlers,reloads:()=>reloads};
 }
 const hotel='org-hotel-yunqi',floor=hotel+'-floor-0',sku='linen-duvet';
 test('fresh browser has no auto-created linen history, zero quantities and a single opening recharge',async()=>{
@@ -68,4 +68,26 @@ test('dashboard includes retained posted WeChat recharges without counting pendi
  f.data.entries.unshift({hotel,type:'微信充值',cents:11100,time:new Date().toISOString()});
  f.data.recharges=[{hotel,cents:999900,status:'PENDING',time:new Date().toISOString()}];
  assert.match(f.dashboard(f.roles.platform_admin),/¥20,111\.00/);assert.doesNotMatch(f.dashboard(f.roles.platform_admin),/¥30,110\.00/);
+});
+
+test('background page pauses without a sticky data error, resumes unchanged drafts and defers asynchronous work',async()=>{
+ const f=await fixture(),before=f.store.getItem(STATE_KEY);let writes=0;
+ f.state.qty={'被套':7};f.handlers.blur();
+ assert.equal(f.writer.status(),'paused');assert.equal(f.error(),'');
+ f.whenWritable(()=>writes++);assert.equal(writes,0);
+ f.handlers.beforeunload();assert.equal(f.store.getItem(STATE_KEY),before);assert.equal(f.error(),'');
+ assert.equal(f.save(),false);assert.equal(f.error(),'');
+ f.handlers.focus();await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(f.writer.status(),'active');assert.equal(writes,1);assert.equal(f.state.qty['被套'],7);assert.equal(f.reloads(),0);
+ f.writer.close();
+});
+test('restored page reloads a newer committed snapshot before any deferred business action',async()=>{
+ const s=storage(),a=await fixture(s);let resumedWrites=0;
+ a.handlers.pagehide({persisted:true});a.whenWritable(()=>resumedWrites++);
+ const b=await fixture(s);assert.equal(b.v19.saveFloorCaps(floor,[{sku,cap:100,initial:50}]),'');
+ a.handlers.storage({key:STATE_KEY});assert.equal(a.error(),'');
+ a.handlers.pageshow({persisted:true});await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(a.reloads(),1);assert.equal(resumedWrites,0);assert.equal(a.save(),false);
+ assert.equal((await fixture(s)).account(hotel,sku).initial,50);
+ a.writer.close();b.writer.close();
 });

@@ -37,6 +37,6 @@ test('invalid legacy JSON, invalid shape and unknown money fail without committi
 test('exclusive browser writer lease blocks simultaneous tabs and never falls back without Web Locks',async()=>{
  const {acquireWriter}=require('../prototype-storage.js');let held=false;
  const navigator={locks:{request:async(name,options,callback)=>{assert.equal(name,'youxitong-prototype-writer-v1');assert.equal(options.ifAvailable,true);if(held)return callback(null);held=true;return callback({name});}}};
- await acquireWriter(navigator);await assert.rejects(()=>acquireWriter(navigator),/另一个标签页/);await assert.rejects(()=>acquireWriter({}),/不支持/);
+ const lease=await acquireWriter(navigator);await assert.rejects(()=>acquireWriter(navigator),{code:'WRITER_BUSY'});lease.release();await assert.rejects(()=>acquireWriter({}),/不支持/);
 });
 test('no-op save does not invalidate other observers',()=>{const s=storage(seed()),{c,result}=init(s);const raw=s.getItem(STATE_KEY);c.save(result.catalogSnapshot,result.businessSnapshot);assert.equal(s.getItem(STATE_KEY),raw);});

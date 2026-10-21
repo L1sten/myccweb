@@ -13,15 +13,88 @@
     if (!navigator || !navigator.locks) return Promise.reject(new Error('当前浏览器不支持原型数据保护，请使用新版 Chrome 或 Firefox。'));
     return new Promise(function (resolve, reject) {
       navigator.locks.request('youxitong-prototype-writer-v1', {mode:'exclusive', ifAvailable:true}, function (lock) {
-        if (!lock) { reject(new Error('另一个标签页正在使用本地原型，请关闭该标签页后刷新继续。')); return; }
-        resolve();
-        // The browser releases this lock when the document is destroyed. Keeping
-        // it across synchronous UI actions prevents check/set races in storage.
-        return new Promise(function () {});
+        if (!lock) { var busy=new Error('另一个原型页面正在操作，释放后将自动恢复。');busy.code='WRITER_BUSY';reject(busy);return; }
+        var held=true,releaseLock;
+        var lifetime=new Promise(function (release) { releaseLock=release; });
+        resolve({
+          assertHeld:function () { if(!held)throw new Error('当前页面已暂停写入，请返回此页面后继续。'); },
+          release:function () { held=false;releaseLock(); }
+        });
+        return lifetime;
       }).catch(reject);
     });
   }
-  function create(storage, engine) {
+  // Only the active document holds the writer lease. A restored document must
+  // reacquire it before checking its snapshot; never steal a legacy page's lock.
+  function manageWriter(browser,onStatus) {
+    var document=browser.document,lease=null,pending=false,left=false,blurred=false,closed=false,timer=null,handedOff=false,channel=null;
+    var clientId=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2),handoffVersion=0,handoffOwner='',requestedTransfer=false;
+    var resolveReady,rejectReady,settled=false;
+    var ready=new Promise(function(resolve,reject){resolveReady=resolve;rejectReady=reject;});
+    var status='waiting';
+    function active(){return !closed&&!left&&!blurred&&!handedOff&&document.visibilityState!=='hidden';}
+    function notify(next,error){status=next;if(onStatus)onStatus(next,error);}
+    function clearRetry(){if(timer!==null){browser.clearTimeout(timer);timer=null;}}
+    function release(){clearRetry();if(lease){lease.release();lease=null;}}
+    function pause(){release();notify('paused');}
+    function retry(){if(active()&&timer===null)timer=browser.setTimeout(function(){timer=null;resume();},1000);}
+    function resume(takeOver){
+      if(takeOver===true&&!closed&&!left&&document.visibilityState!=='hidden'){
+        blurred=false;handedOff=false;requestedTransfer=true;
+        if(channel){handoffVersion=Math.max(handoffVersion+1,Date.now());handoffOwner=clientId;channel.postMessage({type:'request-writer',version:handoffVersion,owner:clientId});}
+      }
+      if(!active()||pending||lease)return;
+      clearRetry();pending=true;notify('waiting');
+      acquireWriter(browser.navigator).then(function(next){
+        pending=false;
+        if(!active()){next.release();return;}
+        lease=next;requestedTransfer=false;notify('active');
+        if(!settled){settled=true;resolveReady(session);}
+      },function(error){
+        pending=false;
+        if(closed)return;
+        if(error.code==='WRITER_BUSY'){if(active()){notify('waiting');retry();}return;}
+        notify('error',error);if(!settled){settled=true;rejectReady(error);}
+      });
+    }
+    function hidden(){if(document.visibilityState==='hidden')pause();else{blurred=false;handedOff=false;resume();}}
+    function hide(){left=true;pause();}
+    function show(){left=false;blurred=false;handedOff=false;resume();}
+    function blur(){blurred=true;pause();}
+    function focus(){blurred=false;handedOff=false;resume();}
+    var listeners=[['pagehide',hide],['pageshow',show],['blur',blur],['focus',focus]];
+    var session={
+      ready:ready,
+      assertHeld:function(){if(!lease)throw new Error('当前页面已暂停写入，请返回此页面后继续。');lease.assertHeld();},
+      status:function(){return status;},
+      resume:resume,
+      close:function(){closed=true;release();status='paused';if(channel)channel.close();listeners.forEach(function(pair){if(browser.removeEventListener)browser.removeEventListener(pair[0],pair[1]);});if(document.removeEventListener)document.removeEventListener('visibilitychange',hidden);}
+    };
+    // Install before requesting: navigation/hiding can happen while acquiring.
+    listeners.forEach(function(pair){browser.addEventListener(pair[0],pair[1]);});
+    document.addEventListener('visibilitychange',hidden);
+    if(browser.BroadcastChannel){
+      try{channel=new browser.BroadcastChannel('youxitong-prototype-writer-transfer-v1');
+        channel.onmessage=function(event){
+          var request=event.data;
+          if(closed||!request||!Number.isSafeInteger(request.version)||request.version<=0)return;
+          if(request.type==='writer-version'&&request.target===clientId&&requestedTransfer&&active()&&request.version>=handoffVersion){
+            handoffVersion=request.version;resume(true);return;
+          }
+          if(request.type==='request-writer'&&typeof request.owner==='string'){
+            if(request.version>handoffVersion||(request.version===handoffVersion&&request.owner>handoffOwner)){
+              handoffVersion=request.version;handoffOwner=request.owner;requestedTransfer=false;handedOff=true;pause();
+            }else if(request.owner!==clientId){
+              channel.postMessage({type:'writer-version',target:request.owner,version:handoffVersion});
+            }
+          }
+        };
+      }catch(ignore){channel=null;}
+    }
+    resume();
+    return session;
+  }
+  function create(storage, engine, writer) {
     if (!engine) throw new Error('重置模块未加载，请刷新重试。');
     var loadedRaw = storage.getItem(STATE_KEY);
     var envelope = parse(loadedRaw, '原型数据');
@@ -38,6 +111,7 @@
     }
     if (envelope) validate(envelope);
     function assertCurrent() {
+      if(writer)writer.assertHeld();
       if (storage.getItem(STATE_KEY) !== loadedRaw) {
         throw new Error('原型数据已在其他标签页更新，请刷新后继续。');
       }
@@ -94,7 +168,7 @@
       isReady:function () { return initialized; }
     };
   }
-  var api = {create:create, acquireWriter:acquireWriter, STATE_KEY:STATE_KEY, BACKUP_KEY:BACKUP_KEY, CATALOG_KEY:CATALOG_KEY, BUSINESS_KEY:BUSINESS_KEY};
+  var api = {create:create, acquireWriter:acquireWriter, manageWriter:manageWriter, STATE_KEY:STATE_KEY, BACKUP_KEY:BACKUP_KEY, CATALOG_KEY:CATALOG_KEY, BUSINESS_KEY:BUSINESS_KEY};
   global.YouxitongPrototypeStorage = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);

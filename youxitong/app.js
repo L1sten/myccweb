@@ -1,11 +1,30 @@
 (async function(){
   'use strict';
   var resetEnabled=window.youxitongFreshLinenRequired===true||!!window.YouxitongResetData;
-  var prototypeStorage=null,prototypeStorageError='';
-  try{if(resetEnabled){await window.YouxitongPrototypeStorage.acquireWriter(window.navigator);prototypeStorage=window.YouxitongPrototypeStorage.create(localStorage,window.YouxitongResetData);}}catch(error){prototypeStorageError=error.message||'原型存储不可用，请刷新重试。';}
+  var prototypeStorage=null,prototypeStorageError='',prototypeWriter=null,prototypeDeferred=[];
+  function renderPrototypeWriterStatus(status){
+    if(!document.createElement)return;
+    var host=document.getElementById('pageContainer'),overlay=document.getElementById('prototypeWriterPause');
+    if(status==='active'){if(overlay)overlay.remove();return;}
+    if(!host)return;
+    if(!overlay){overlay=document.createElement('section');overlay.id='prototypeWriterPause';overlay.className='prototype-writer-pause';overlay.setAttribute('role','status');host.appendChild(overlay);}
+    overlay.innerHTML='<div class="prototype-writer-card"><h2>'+(status==='paused'?'当前页面已暂停':'正在连接原型')+'</h2><p>'+(status==='paused'?'可切回此页面继续操作，已保存的数据不受影响。':'另一个原型页面正在使用。点击下方按钮可切换到此页；旧版本页面需先刷新或关闭。')+'</p><button type="button" class="primary-button" data-prototype-resume>在此页面继续</button></div>';
+    overlay.querySelector('button').onclick=function(){if(prototypeWriter)prototypeWriter.resume(true);};
+  }
+  function prototypeWriterStatus(status,error){
+    if(status==='error'){prototypeStorageFailed(error);return;}
+    if(status==='active'&&prototypeStorage){
+      try{prototypeStorage.assertCurrent();}
+      catch(error){prototypeWriter.close();location.reload();return;}
+    }
+    renderPrototypeWriterStatus(status);
+    if(status==='active'&&prototypeStorage){var deferred=prototypeDeferred;prototypeDeferred=[];deferred.forEach(function(run){if(prototypeWritable())run();});}
+  }
+  function prototypeWhenWritable(run){if(prototypeWriter&&prototypeWriter.status()!=='active'){prototypeDeferred.push(run);return;}if(prototypeWritable())run();}
+  try{if(resetEnabled){prototypeWriter=window.YouxitongPrototypeStorage.manageWriter(window,prototypeWriterStatus);await prototypeWriter.ready;prototypeStorage=window.YouxitongPrototypeStorage.create(localStorage,window.YouxitongResetData,prototypeWriter);}}catch(error){prototypeStorageError=error.message||'原型存储不可用，请刷新重试。';renderPrototypeWriterStatus('active');}
   function prototypeStorageFailed(error){prototypeStorageError=error.message||'原型存储写入失败，已保留上次保存的数据，请刷新重试。';renderPrototypeStorageError();}
   function renderPrototypeStorageError(){if(!root)return;modal.classList.remove('show');root.innerHTML='<section class="panel" style="margin:24px"><div class="panel-body"><h2>原型数据暂未就绪</h2><p role="alert">'+esc(prototypeStorageError)+'</p><button class="primary-button" data-prototype-reload>刷新重试</button></div></section>';}
-  function prototypeWritable(){if(prototypeStorageError)return false;try{if(prototypeStorage)prototypeStorage.assertCurrent();return true;}catch(error){prototypeStorageFailed(error);return false;}}
+  function prototypeWritable(){if(prototypeStorageError)return false;if(prototypeWriter&&prototypeWriter.status()!=='active'){renderPrototypeWriterStatus(prototypeWriter.status());return false;}try{if(prototypeStorage)prototypeStorage.assertCurrent();return true;}catch(error){prototypeStorageFailed(error);return false;}}
   function catalogSnapshot(){return {catalog:catalog,orgs:identity.orgs,users:identity.users,identityNext:identity.next,qty:state.qty};}
   function savePrototypeState(){if(!prototypeWritable())return false;try{catalog.drafts[catalog.hotel]=Object.assign({},state.qty);prototypeStorage.save(catalogSnapshot(),syncData);return true;}catch(error){prototypeStorageFailed(error);return false;}}
 
@@ -241,7 +260,7 @@
     if(/^store(?:Cart)?(?:Plus|Minus):/.test(action)){var minus=action.indexOf('Minus:')>=0;if(!p||(!minus&&p.status&&p.status!=='ACTIVE'))return true;var next=Math.max(0,(mobileCart[id]||0)+(minus?-1:1));if(next>p.stock&&!minus){showToast('库存仅剩 '+p.stock+' 件');return true;}mobileCart[id]=next;storeConfirmDraft=null;render();if(action.indexOf('storeCart')===0)storeCartOpen();return true;}
     var b=storeBasket();if(!b.count){storeCartOpen();return true;}
     if(action==='storeConfirm'){storeConfirmDraft=storeSnapshot();storeModalShell('确认商城订单',catHotel().name,storeCartRows(false)+'<div class="store-cart-total"><span>共 '+b.count+' 件 · 合计</span><strong>'+money(b.cents/100)+'</strong></div><p class="store-checkout-note">提交后将从预存账户扣款。请核对商品和数量。</p>',button('返回购物车','storeCart','secondary-button')+button('确认并提交','storeSubmit','primary-button'));return true;}
-    if(action==='storeSubmit'){if(!storeConfirmDraft){storeCartOpen('请核对商品后再提交');return true;}var draft=storeConfirmDraft,token='STORE-'+Date.now()+'-'+Math.random().toString(36).slice(2,8);storeSubmitting=true;storeModalShell('正在提交','商城','<p role="status">正在确认库存和余额，请稍候。</p>',button('提交中…','storeSubmit','primary-button',true));setTimeout(function(){var result=storeCommit(draft,token);storeSubmitting=false;storeConfirmDraft=null;render();if(result.error){if(!mobileLoggedOut)storeCartOpen(result.error);return;}if(mobileLoggedOut)return;storeModalShell('订单已提交','商城','<div class="store-success"><strong>提交成功</strong><p>订单号 '+esc(result.order.no)+'</p><p>已扣款 '+money(result.order.cents/100)+'，可在商城订单中查看详情。</p></div>',button('继续选购','storeContinue','secondary-button')+button('查看订单','flowStoreDetail:'+result.order.no,'primary-button'));},350);return true;}
+    if(action==='storeSubmit'){if(!storeConfirmDraft){storeCartOpen('请核对商品后再提交');return true;}var draft=storeConfirmDraft,token='STORE-'+Date.now()+'-'+Math.random().toString(36).slice(2,8);storeSubmitting=true;storeModalShell('正在提交','商城','<p role="status">正在确认库存和余额，请稍候。</p>',button('提交中…','storeSubmit','primary-button',true));setTimeout(function(){prototypeWhenWritable(function(){var result=storeCommit(draft,token);storeSubmitting=false;storeConfirmDraft=null;render();if(result.error){if(!mobileLoggedOut)storeCartOpen(result.error);return;}if(mobileLoggedOut)return;storeModalShell('订单已提交','商城','<div class="store-success"><strong>提交成功</strong><p>订单号 '+esc(result.order.no)+'</p><p>已扣款 '+money(result.order.cents/100)+'，可在商城订单中查看详情。</p></div>',button('继续选购','storeContinue','secondary-button')+button('查看订单','flowStoreDetail:'+result.order.no,'primary-button'));});},350);return true;}
     return false;
   }
 
@@ -426,7 +445,7 @@
   function catSyncMappingNames(changedKey){var d=catalog.draft;if(!d||!['mapping','dispatch'].includes(d.kind))return;var factoryInput=modal.querySelector('[data-cat-name="factory"]'),siteInput=modal.querySelector('[data-cat-name="site"]');if(!factoryInput||!siteInput)return;var factoryId=factoryInput.value;if(factoryId!==d.factory){d.factory=factoryId;d.site='';var sites=catalog.sites.filter(function(s){return s.factory===d.factory&&s.active;});siteInput.innerHTML=identityOptions(sites,'','请选择站点');}d.site=siteInput.value;siteInput.disabled=!d.factory;if(changedKey){var error=modal.querySelector('.identity-error');if(error)error.textContent='';}}
   modal.addEventListener('input',function(e){if(e.target.dataset.catName)catSyncMappingNames(e.target.dataset.catName);});
   modal.addEventListener('change',function(e){if(e.target.dataset.catName)catSyncMappingNames(e.target.dataset.catName);});
-  window.addEventListener('beforeunload',catalogSave);
+  window.addEventListener('beforeunload',function(){if(!prototypeWriter||prototypeWriter.status()==='active')catalogSave();});
 
 
   var linenCategories=[{id:'linen-duvet',name:'被套',active:true},{id:'linen-sheet',name:'床单',active:true},{id:'linen-towel',name:'浴巾',active:true},{id:'linen-square-towel',name:'方巾'},{id:'linen-floor-mat',name:'地巾'},{id:'linen-face-towel',name:'面巾'},{id:'linen-inner-pillowcase',name:'内枕套'},{id:'linen-outer-pillowcase',name:'外枕套'}];
@@ -1143,7 +1162,7 @@
       orderDetailContent:financeOrderDetailContent,esc:esc,button:button,table:managementTable,panel:panel,header:header,money:money,badge:badge,icon:managementIcon,
       hotel:catHotel,org:identityOrg,site:catSite,lines:linenLines,account:flowAccount,flowSetup:flowSetup,dailySite:flowDailySite,balance:syncBalance,recharges:rechargeRows,parseMoney:syncMoney,passwordError:passwordError,
       deleteFloor:function(id){return syncDeleteButton('floor',id);},manageFloors:function(id){catManage(id,'floors');},
-      save:function(){syncSave();},open:function(){modalShell.apply(null,arguments);},close:function(){closeModal();},render:function(){render();},toast:function(){showToast.apply(null,arguments);},error:function(m){identityError(m);},
+      whenWritable:prototypeWhenWritable,save:function(){syncSave();},open:function(){modalShell.apply(null,arguments);},close:function(){closeModal();},render:function(){render();},toast:function(){showToast.apply(null,arguments);},error:function(m){identityError(m);},
       legacy:{identityRender:identityRender,navigation:managementNavigation,wallet:syncWallet,mobileAccount:mobileAccount,floorTable:catFloorTable,eligible:syncEligible,basket:syncBasket,replenish:mobileReplenish,mobileOrders:mobileOrders,detail:catOrderDetail,submitReturn:flowSubmit,receipt:flowReceipt,terminal:terminalWorkspace,terminalSubmit:syncTerminalSubmit}
     };
     v19=window.YouxitongV19(v19Context);
@@ -1166,10 +1185,11 @@
   });
 
   if(resetEnabled){
-    window.addEventListener('storage',function(event){if(event.key===null||window.YouxitongPrototypeStorage&&event.key===window.YouxitongPrototypeStorage.STATE_KEY)prototypeWritable();});
+    window.addEventListener('storage',function(event){if(prototypeWriter&&prototypeWriter.status()!=='active')return;if(event.key===null||window.YouxitongPrototypeStorage&&event.key===window.YouxitongPrototypeStorage.STATE_KEY)prototypeWritable();});
     ['click','change','input','submit'].forEach(function(type){document.addEventListener(type,function(event){
+      if(event.target.closest&&event.target.closest('[data-prototype-resume]')){event.preventDefault();event.stopImmediatePropagation();if(type==='click')prototypeWriter.resume(true);return;}
       if(event.target.closest&&event.target.closest('[data-prototype-reload]')){event.preventDefault();event.stopImmediatePropagation();if(type==='click')location.reload();return;}
-      if(!prototypeWritable()){event.preventDefault();event.stopImmediatePropagation();renderPrototypeStorageError();}
+      if(!prototypeWritable()){event.preventDefault();event.stopImmediatePropagation();if(prototypeStorageError)renderPrototypeStorageError();}
     },true);});
   }
   roleSelect.addEventListener('change',function(){setRole(this.value);});
