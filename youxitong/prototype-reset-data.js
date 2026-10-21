@@ -38,6 +38,19 @@
       after: 2000000, bank: OPENING_BANK, businessKey: OPENING_KEY,
       time: '2026-09-01 10:06', note: '历史到账记录'};
   }
+  // Before recharge approval was introduced (b047f79), syncRechargeSave wrote
+  // exactly these six fields and the wallet displayed them as 线下充值.
+  // Recognize that complete format only; a missing type alone proves nothing.
+  function normalizeLegacyRecharge(entry) {
+    var fields = ['hotel', 'cents', 'after', 'bank', 'note', 'time'];
+    if (!object(entry) || Object.keys(entry).length !== fields.length ||
+        !fields.every(function (key) { return own(entry, key); }) ||
+        !Number.isSafeInteger(entry.cents) || entry.cents <= 0 ||
+        !Number.isSafeInteger(entry.after) || !text(entry.bank) || entry.bank.length > 80 ||
+        !text(entry.time) || typeof entry.note !== 'string') return false;
+    entry.type = '线下充值';
+    return true;
+  }
   function classify(entry, index, hotels) {
     var path = 'entries[' + index + ']';
     requiredObject(entry, path);
@@ -81,8 +94,9 @@
     }));
   }
   function wallet(entries, hotels) {
-    var seen = Object.create(null), retained = [], removed = 0, duplicates = 0, foundOpening = false;
+    var seen = Object.create(null), retained = [], removed = 0, duplicates = 0, foundOpening = false, legacyRecharges = 0;
     entries.forEach(function (entry, index) {
+      if (normalizeLegacyRecharge(entry)) legacyRecharges++;
       var kind = classify(entry, index, hotels);
       if (isOpening(entry)) {
         if (kind !== 'recharge' || entry.type !== '线下充值' || entry.hotel !== OPENING_HOTEL || entry.cents !== 2000000 || bank(entry.bank) !== OPENING_BANK.toLowerCase()) {
@@ -117,7 +131,8 @@
       entry.after = after;
       set(balances, entry.hotel, after);
     }
-    return {entries: retained, balances: balances, linenEntries: removed, duplicateEntries: duplicates, openingRechargeAdded: added};
+    return {entries: retained, balances: balances, linenEntries: removed, duplicateEntries: duplicates,
+      openingRechargeAdded: added, legacyRecharges: legacyRecharges};
   }
   function prepare(catalogSnapshot, businessSnapshot) {
     requiredObject(catalogSnapshot, 'catalogSnapshot');
@@ -211,7 +226,8 @@
       retained: {entries: data.entries.length, recharges: optionalArray(data, 'recharges', 'businessSnapshot').length,
         storeOrders: optionalArray(data, 'storeOrders', 'businessSnapshot').length,
         payments: optionalArray(v19, 'payments', 'v19').length},
-      balances: clone(data.balances), openingRechargeAdded: result.openingRechargeAdded
+      balances: clone(data.balances), openingRechargeAdded: result.openingRechargeAdded,
+      normalizedLegacyRecharges: result.legacyRecharges
     }};
   }
 

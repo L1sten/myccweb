@@ -40,6 +40,19 @@ test('old unassigned refunds reset once while organization, floor owner, store a
  const f=await fixture(s);assert.equal(f.error(),'');assert.equal(f.data.receipts.length,0);assert.equal(f.data.returnRequests.length,0);assert.equal(f.catalog.orders.length,0);assert.equal(f.account(hotel,sku).amount,0);assert.equal(f.v19.store.floorBindings[floor],'user-hotel_operator');assert.equal(f.data.storeOrders[0].no,'SC1');assert.equal(f.data.recharges[0].status,'PENDING');assert.equal(f.balance(hotel),1996100);
  assert.equal(f.v19.saveFloorCaps(floor,[{sku,cap:100,initial:50}]),'');const again=await fixture(s);assert.equal(again.account(hotel,sku).amount,50);assert.equal(again.balance(hotel),1996100);
 });
+
+test('driver startup accepts the original recharge at entries[23] and refresh keeps new business',async()=>{
+ const base=await fixture(),cat=JSON.parse(JSON.stringify(base.snapshot())),biz=JSON.parse(JSON.stringify(base.data));
+ biz.entries=Array.from({length:23},(_,i)=>({hotel,type:'线下充值',cents:100,bank:'BANK-TEST-'+i,time:'2026/9/14 10:00:00'}));
+ biz.entries.push({hotel,cents:12345,after:1280345,bank:'0001-OLD',note:'',time:'2026/9/12 10:00:00'});
+ const s=storage();s.setItem(CATALOG_KEY,JSON.stringify(cat));s.setItem(BUSINESS_KEY,JSON.stringify(biz));
+ const f=await fixture(s);f.state.role='driver';f.state.section=f.roles.driver.nav[0];f.originalRender();
+ assert.equal(f.error(),'');assert.match(f.root.innerHTML,/司机工作台/);assert.doesNotMatch(f.root.innerHTML,/原型数据暂未就绪/);
+ assert.equal(f.balance(hotel),2014645);assert.equal(f.data.entries[23].type,'线下充值');
+ f.state.role='platform_admin';
+ assert.equal(f.v19.saveFloorCaps(floor,[{sku,cap:100,initial:50}]),'');
+ const again=await fixture(s);assert.equal(again.error(),'');assert.equal(again.account(hotel,sku).initial,50);assert.equal(again.balance(hotel),2014645);
+});
 test('new order, partial stocking and refund use 50/10/10/10/15 and write one debit across reload',async()=>{
  const f=await fixture();assert.equal(f.v19.saveFloorCaps(floor,[{sku,cap:100,initial:50}]),'');assert.equal(f.account(hotel,sku).amount,50);
  f.state.role='hotel_admin';f.catalog.selection[hotel]=floor;f.state.qty={'被套':40};f.showSubmit();f.submit();f.submit();

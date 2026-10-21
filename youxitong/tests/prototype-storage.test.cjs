@@ -40,3 +40,13 @@ test('exclusive browser writer lease blocks simultaneous tabs and never falls ba
  const lease=await acquireWriter(navigator);await assert.rejects(()=>acquireWriter(navigator),{code:'WRITER_BUSY'});lease.release();await assert.rejects(()=>acquireWriter({}),/不支持/);
 });
 test('no-op save does not invalidate other observers',()=>{const s=storage(seed()),{c,result}=init(s);const raw=s.getItem(STATE_KEY);c.save(result.catalogSnapshot,result.businessSnapshot);assert.equal(s.getItem(STATE_KEY),raw);});
+
+test('legacy recharge retry preserves exact backup and never reruns a completed reset',()=>{
+ const [cat,biz]=inputs();biz.entries=[{hotel:'org-hotel-yunqi',cents:12345,after:1280345,bank:'0001-OLD',note:'',time:'2026/9/12 10:00:00'}];
+ const raw=JSON.stringify(biz),s=storage({[CATALOG_KEY]:JSON.stringify(cat),[BUSINESS_KEY]:raw});
+ const {c,result}=init(s);assert.equal(JSON.parse(s.getItem(BACKUP_KEY)).business,raw);assert.equal(s.getItem(BUSINESS_KEY),raw);
+ assert.equal(result.businessSnapshot.entries[0].type,'线下充值');assert.equal(result.businessSnapshot.balances['org-hotel-yunqi'],2012345);
+ result.catalogSnapshot.catalog.orders.push({id:'AFTER-RESET'});c.save(result.catalogSnapshot,result.businessSnapshot);
+ const before=s.getItem(STATE_KEY),backup=s.getItem(BACKUP_KEY);init(s);
+ assert.equal(s.getItem(STATE_KEY),before);assert.equal(s.getItem(BACKUP_KEY),backup);
+});

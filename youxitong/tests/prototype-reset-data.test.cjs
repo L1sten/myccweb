@@ -39,6 +39,7 @@ function fixture() {
 }
 function run(f) { return reset.prepare(f.catalogSnapshot, f.businessSnapshot); }
 function recharge(hotel, cents, extra={}) { return {hotel,cents,type:'线下充值',...extra}; }
+function legacyRecharge(extra={}) { return {hotel:'org-hotel-yunqi',cents:12345,after:1280345,bank:'0001-OLD',note:'历史直接充值',time:'2026/9/12 10:00:00',...extra}; }
 function deepFreeze(value) { if (value && typeof value === 'object') { Object.freeze(value); Object.values(value).forEach(deepFreeze); } return value; }
 
 test('browser and Node export the same contract without browser/storage dependencies', () => {
@@ -145,6 +146,35 @@ test('known return keys are removed, even for the older ledger shape without a t
     {hotel:'org-hotel-yunqi',cents:0,type:'布草订单扣款',bank:'RP-FREE'}
   ];
   assert.equal(run(f).summary.removed.linenEntries,3);
+});
+
+test('recognizes the original six-field offline recharge without changing the source snapshot', () => {
+  const f=fixture(), old=legacyRecharge();
+  f.businessSnapshot.entries=[old];deepFreeze(f);
+  const r=run(f), saved=r.businessSnapshot.entries[0];
+  assert.deepEqual(old,legacyRecharge());assert.equal(saved.type,'线下充值');
+  for(const key of ['hotel','cents','bank','note','time'])assert.equal(saved[key],old[key]);
+  assert.equal(saved.after,2012345);assert.equal(r.businessSnapshot.balances[old.hotel],2012345);
+  assert.equal(r.summary.normalizedLegacyRecharges,1);
+  assert.equal(run({catalogSnapshot:r.catalogSnapshot,businessSnapshot:r.businessSnapshot}).summary.normalizedLegacyRecharges,0);
+});
+
+test('legacy recharge normalization retains bank deduplication and conflict detection', () => {
+  const f=fixture(), old=legacyRecharge();
+  f.businessSnapshot.entries=[old,{...old,type:'线下充值',after:999}];
+  const r=run(f);assert.equal(r.summary.removed.duplicateEntries,1);assert.equal(r.businessSnapshot.balances[old.hotel],2012345);
+  for(const conflict of [{cents:54321},{hotel:'hotel-2'}]){
+    f.businessSnapshot.entries=[old,{...old,...conflict}];assert.throws(()=>run(f),/重复业务标识内容冲突/);
+  }
+});
+
+test('does not guess other missing, empty or conflicting funding types as legacy recharge', () => {
+  const cases=[{cents:-1},{cents:0},{bank:''},{bank:'x'.repeat(81)},{time:''},{after:1.5},{note:null},
+    {type:''},{type:null},{type:'未知类型'},{businessId:'RC1'},{businessKey:'wechat-prototype:WX1'},
+    {approvalStatus:'PENDING'},{kind:'线下充值'}];
+  for(const change of cases){const f=fixture();f.businessSnapshot.entries=[legacyRecharge(change)];assert.throws(()=>run(f),/未知资金类型/);}
+  const f=fixture(), missing=legacyRecharge();delete missing.after;f.businessSnapshot.entries=[missing];assert.throws(()=>run(f),/未知资金类型/);
+  f.businessSnapshot.entries=[legacyRecharge({hotel:'unknown'})];assert.throws(()=>run(f),/未知酒店/);
 });
 
 test('requires complete nonempty snapshots and reports malformed collections instead of guessing', () => {
