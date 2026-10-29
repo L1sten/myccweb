@@ -1,6 +1,7 @@
 (function () {
 
   var HASHES = {
+    "positive-energy-situation-zhoushan": "99a71ba25cb60402863f541504360aead30e8e86515e8fb80c605ebf395a99ba",
     "ningbo-media-evaluation": "5666506a7505f3b4654d3cc9ac5f3d9002dbaede4f92ecda92e78a3a721c13fe",
     "positive-energy-situation": "99a71ba25cb60402863f541504360aead30e8e86515e8fb80c605ebf395a99ba",
     "hzzx-chat-progress": "ffb24f9bda0c9606b71258e15b903c99ceec53532d07f0ca4f1503c6f75ec2d3",
